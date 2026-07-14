@@ -72,28 +72,56 @@ export default function App() {
   // Target service for scheduler preselection
   const [preselectedServiceTitle, setPreselectedServiceTitle] = useState("");
 
-  // Set up active section observer on scroll
+  // Set up active section observer using a highly performant IntersectionObserver
   useEffect(() => {
-    const handleScroll = () => {
-      const sections = ["home", "about", "services", "pricing", "testimonials", "faqs", "blogs", "contact"];
-      const scrollPosition = window.scrollY + 150;
-
-      for (const section of sections) {
-        const el = document.getElementById(section);
-        if (el) {
-          const top = el.offsetTop;
-          const height = el.offsetHeight;
-          if (scrollPosition >= top && scrollPosition < top + height) {
-            setActiveSection(section);
-            break;
-          }
-        }
-      }
+    const sections = ["home", "about", "services", "pricing", "testimonials", "faqs", "blogs", "contact"];
+    const observerOptions = {
+      root: null,
+      rootMargin: "-40% 0px -40% 0px", // Focus on the middle band of the screen
+      threshold: 0,
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) {
+        observer.observe(el);
+      }
+    });
+
+    return () => {
+      observer.disconnect();
+    };
   }, []);
+
+  // Set up body scroll-locking and Escape key handler for Blog Reader modal
+  useEffect(() => {
+    if (selectedBlog) {
+      const originalStyle = window.getComputedStyle(document.body).overflow;
+      document.body.style.overflow = "hidden";
+
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
+          setSelectedBlog(null);
+        }
+      };
+      window.addEventListener("keydown", handleKeyDown);
+
+      return () => {
+        document.body.style.overflow = originalStyle;
+        window.removeEventListener("keydown", handleKeyDown);
+      };
+    }
+  }, [selectedBlog]);
 
   // Helper to resolve Service icons dynamically
   const getServiceIcon = (iconName: string) => {
@@ -995,20 +1023,26 @@ export default function App() {
 
           {/* Blog Read Modal Popup */}
           {selectedBlog && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm">
+            <div 
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="blog-modal-title"
+            >
               <div className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] md:max-h-[80vh] animate-scaleUp">
                 {/* Header */}
                 <div className="bg-navy-900 p-6 md:p-8 text-white relative">
                   <button
                     onClick={() => setSelectedBlog(null)}
-                    className="absolute top-4 right-4 p-2 text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors"
+                    className="absolute top-4 right-4 p-2 text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
+                    aria-label="Close article modal"
                   >
                     <X className="w-5 h-5" />
                   </button>
                   <span className="text-[9px] bg-gold-400 text-navy-950 font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-3 inline-block">
                     {selectedBlog.tag}
                   </span>
-                  <h3 className="font-display text-xl md:text-3xl font-bold tracking-tight mb-2">
+                  <h3 id="blog-modal-title" className="font-display text-xl md:text-3xl font-bold tracking-tight mb-2">
                     {selectedBlog.title}
                   </h3>
                   <div className="flex flex-wrap gap-4 text-xs text-slate-400 font-medium">

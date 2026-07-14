@@ -110,18 +110,20 @@ export default function TaxCalculator() {
           /* Corporate Tax Panel */
           <div className="space-y-5 animate-fadeIn">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 flex justify-between">
+              <label htmlFor="ct-profit-range" className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 flex justify-between">
                 <span>Annual Taxable Profit (AED)</span>
                 <span className="text-navy-800 font-mono text-sm">{formatAED(taxableProfit)}</span>
               </label>
               <input
+                id="ct-profit-range"
                 type="range"
                 min="50000"
                 max="5000000"
                 step="25000"
                 value={taxableProfit}
                 onChange={(e) => setTaxableProfit(Number(e.target.value))}
-                className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-gold-500"
+                className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-gold-500 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:outline-none"
+                aria-label="Annual taxable profit slider"
               />
               <div className="flex justify-between text-[10px] text-slate-400 font-semibold mt-1">
                 <span>AED 50k</span>
@@ -130,11 +132,13 @@ export default function TaxCalculator() {
                 <span>AED 5M+</span>
               </div>
               <div className="mt-3">
+                <label htmlFor="ct-profit-number" className="sr-only">Exact Taxable Profit (AED)</label>
                 <input
+                  id="ct-profit-number"
                   type="number"
                   value={taxableProfit}
                   onChange={(e) => setTaxableProfit(Math.max(0, Number(e.target.value)))}
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none font-mono"
+                  className="w-full px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none font-mono focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:outline-none"
                   placeholder="Enter exact profit"
                 />
               </div>
@@ -194,47 +198,55 @@ export default function TaxCalculator() {
           /* VAT Estimator Panel */
           <div className="space-y-4 animate-fadeIn">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 flex justify-between">
+              <label htmlFor="vat-sales-range" className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 flex justify-between">
                 <span>Annual Taxable Sales (AED)</span>
                 <span className="text-navy-800 font-mono text-sm">{formatAED(salesAmount)}</span>
               </label>
               <input
+                id="vat-sales-range"
                 type="range"
                 min="10000"
                 max="2000000"
                 step="10000"
                 value={salesAmount}
                 onChange={(e) => setSalesAmount(Number(e.target.value))}
-                className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-gold-500"
+                className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-gold-500 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:outline-none"
+                aria-label="Annual taxable sales slider"
               />
+              <label htmlFor="vat-sales-number" className="sr-only">Exact Taxable Sales (AED)</label>
               <input
+                id="vat-sales-number"
                 type="number"
                 value={salesAmount}
                 onChange={(e) => setSalesAmount(Math.max(0, Number(e.target.value)))}
-                className="w-full mt-2 px-4 py-1.5 border border-slate-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none font-mono"
+                className="w-full mt-2 px-4 py-1.5 border border-slate-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none font-mono focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:outline-none"
                 placeholder="Exact sales"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 flex justify-between">
+              <label htmlFor="vat-expense-range" className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 flex justify-between">
                 <span>Taxable Expenses & Purchases (AED)</span>
                 <span className="text-navy-800 font-mono text-sm">{formatAED(expenseAmount)}</span>
               </label>
               <input
+                id="vat-expense-range"
                 type="range"
                 min="0"
                 max="2000000"
                 step="10000"
                 value={expenseAmount}
                 onChange={(e) => setExpenseAmount(Number(e.target.value))}
-                className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-gold-500"
+                className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-gold-500 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:outline-none"
+                aria-label="Taxable expenses and purchases slider"
               />
+              <label htmlFor="vat-expense-number" className="sr-only">Exact Taxable Expenses (AED)</label>
               <input
+                id="vat-expense-number"
                 type="number"
                 value={expenseAmount}
                 onChange={(e) => setExpenseAmount(Math.max(0, Number(e.target.value)))}
-                className="w-full mt-2 px-4 py-1.5 border border-slate-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none font-mono"
+                className="w-full mt-2 px-4 py-1.5 border border-slate-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none font-mono focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:outline-none"
                 placeholder="Exact expenses"
               />
             </div>

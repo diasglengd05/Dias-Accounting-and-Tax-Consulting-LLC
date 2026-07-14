@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { X, Check, Clock, ShieldCheck, Mail, Phone, Calendar } from "lucide-react";
 import { Service } from "../types";
 import { submitToGoogleSheetsDirectly } from "../lib/sheetsService";
@@ -18,6 +18,26 @@ export default function ServiceModal({ service, isOpen, onClose, onBookCall }: S
   const [email, setEmail] = useState("");
   const [company, setCompany] = useState("");
   const [phone, setPhone] = useState("");
+
+  // Accessibility & Usability: Lock background scroll and listen for Escape key
+  useEffect(() => {
+    if (isOpen && service) {
+      const originalStyle = window.getComputedStyle(document.body).overflow;
+      document.body.style.overflow = "hidden";
+
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
+          onClose();
+        }
+      };
+      window.addEventListener("keydown", handleKeyDown);
+
+      return () => {
+        document.body.style.overflow = originalStyle;
+        window.removeEventListener("keydown", handleKeyDown);
+      };
+    }
+  }, [isOpen, service, onClose]);
 
   if (!isOpen || !service) return null;
 
@@ -60,26 +80,31 @@ export default function ServiceModal({ service, isOpen, onClose, onBookCall }: S
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm transition-opacity">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm transition-opacity"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="service-modal-title"
+    >
       {/* Container */}
       <div className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh] md:max-h-[85vh] animate-scaleUp">
         
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2 text-slate-400 bg-slate-100 hover:bg-slate-200 hover:text-slate-800 rounded-full transition-colors"
+          className="absolute top-4 right-4 z-10 p-2 text-slate-400 bg-slate-100 hover:bg-slate-200 hover:text-slate-800 rounded-full transition-colors focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:outline-none"
           aria-label="Close modal"
         >
           <X className="w-5 h-5" />
         </button>
-
+  
         {/* Left Side: Service Details */}
         <div className="flex-1 p-6 md:p-8 overflow-y-auto">
           <div className="inline-flex items-center justify-center p-3 bg-gold-50 border border-gold-200 text-gold-600 rounded-2xl mb-4">
             <ShieldCheck className="w-6 h-6" />
           </div>
           
-          <h3 className="font-display text-2xl md:text-3xl font-bold text-navy-950 tracking-tight mb-3">
+          <h3 id="service-modal-title" className="font-display text-2xl md:text-3xl font-bold text-navy-950 tracking-tight mb-3">
             {service.title}
           </h3>
           
@@ -152,56 +177,60 @@ export default function ServiceModal({ service, isOpen, onClose, onBookCall }: S
 
               <form onSubmit={handleInquirySubmit} className="space-y-3">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                  <label htmlFor="modal-client-name" className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
                     Your Name
                   </label>
                   <input
+                    id="modal-client-name"
                     type="text"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white text-slate-800 focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none"
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white text-slate-800 focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
                     placeholder="Full Name"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                  <label htmlFor="modal-client-email" className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
                     Work Email
                   </label>
                   <input
+                    id="modal-client-email"
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white text-slate-800 focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none"
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white text-slate-800 focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
                     placeholder="name@company.ae"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                  <label htmlFor="modal-client-company" className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
                     Company Name
                   </label>
                   <input
+                    id="modal-client-company"
                     type="text"
                     value={company}
                     onChange={(e) => setCompany(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white text-slate-800 focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none"
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white text-slate-800 focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
                     placeholder="Company LLC"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                  <label htmlFor="modal-client-phone" className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
                     Mobile Number
                   </label>
                   <input
+                    id="modal-client-phone"
                     type="tel"
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white text-slate-800 focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none"
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg text-xs bg-white text-slate-800 focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
                     placeholder="+971 52 922 6958"
                   />
                 </div>

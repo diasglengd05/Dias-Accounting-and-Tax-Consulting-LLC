@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { X, Shield, Lock, FileText, Globe, Key, Mail, MapPin } from "lucide-react";
 
 interface PrivacyPolicyModalProps {
@@ -7,10 +7,35 @@ interface PrivacyPolicyModalProps {
 }
 
 export default function PrivacyPolicyModal({ isOpen, onClose }: PrivacyPolicyModalProps) {
+  // Accessibility & Usability: Lock background scroll and listen for Escape key
+  useEffect(() => {
+    if (isOpen) {
+      const originalStyle = window.getComputedStyle(document.body).overflow;
+      document.body.style.overflow = "hidden";
+
+      const handleKeyDown = (e: KeyboardEvent) => {
+        if (e.key === "Escape") {
+          onClose();
+        }
+      };
+      window.addEventListener("keydown", handleKeyDown);
+
+      return () => {
+        document.body.style.overflow = originalStyle;
+        window.removeEventListener("keydown", handleKeyDown);
+      };
+    }
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm transition-opacity">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm transition-opacity"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="privacy-modal-title"
+    >
       {/* Container */}
       <div className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] md:max-h-[85vh] animate-scaleUp">
         
@@ -21,7 +46,7 @@ export default function PrivacyPolicyModal({ isOpen, onClose }: PrivacyPolicyMod
               <Shield className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-display text-lg md:text-xl font-bold text-navy-950 tracking-tight">
+              <h3 id="privacy-modal-title" className="font-display text-lg md:text-xl font-bold text-navy-950 tracking-tight">
                 Privacy Policy
               </h3>
               <p className="text-slate-400 text-xs font-medium">Last Updated: June 2026</p>
