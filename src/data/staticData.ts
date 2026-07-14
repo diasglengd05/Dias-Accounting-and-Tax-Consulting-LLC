@@ -321,3 +321,43 @@ export const testimonialsData = [
   }
 ];
 
+export const faqsData = [
+  {
+    id: "faq-1",
+    category: "Corporate Tax",
+    question: "Who is subject to UAE Corporate Tax, and what is the rate?",
+    answer: "Effective from financial years starting on or after June 1, 2023, UAE Corporate Tax applies to all business and commercial activities in the UAE. The standard rates are 0% for taxable income up to AED 375,000 to support startups, and 9% for taxable income exceeding AED 375,000. Free zone businesses may also qualify for 0% tax on eligible income if they meet strict 'Qualifying Free Zone Person' requirements."
+  },
+  {
+    id: "faq-2",
+    category: "Compliance & Bookkeeping",
+    question: "Is bookkeeping mandatory for UAE companies even if they are exempt from tax?",
+    answer: "Yes. Under both the UAE Commercial Companies Law and the Tax Procedures Law, all registered businesses must keep proper, audited, or complete books of accounts and financial records for at least 5 years. This includes free zone companies, startups, and offshore entities, regardless of whether they cross the taxable income threshold or are registered for VAT."
+  },
+  {
+    id: "faq-3",
+    category: "VAT",
+    question: "When is a UAE business required to register for VAT?",
+    answer: "VAT registration is mandatory if your business's taxable supplies and imports exceed AED 375,000 over the previous 12 months, or are expected to exceed it in the next 30 days. You can also register voluntarily if your taxable turnover or expenses exceed AED 187,500."
+  },
+  {
+    id: "faq-4",
+    category: "Backlog Accounting",
+    question: "What is Backlog Bookkeeping and why is it urgent right now?",
+    answer: "Backlog Bookkeeping involves reconstructing and auditing your historical transactions, bank statements, and invoices for periods where records weren't kept. With Corporate Tax filing deadlines for 2024 and 2025 fast approaching (including the critical 31st July filing deadline), you cannot file a tax return without accurate retroactive financial statements."
+  },
+  {
+    id: "faq-5",
+    category: "Corporate Tax",
+    question: "What are the penalties for late Corporate Tax registration or filing?",
+    answer: "Late registration for UAE Corporate Tax attracts a direct administrative penalty of AED 10,000. Late filing or late payment of corporate taxes incurs additional percentage-based penalties of up to 4% per month of the tax due. Resolving these before deadlines is crucial to avoid severe regulatory consequences."
+  },
+  {
+    id: "faq-6",
+    category: "Pricing & Services",
+    question: "Are your packages transparent, and are there any hidden fees?",
+    answer: "Yes, we pride ourselves on absolute transparency. Our monthly accounting plans include dedicated bookkeeping, reconciliations, and reporting under a fixed-fee model. Special limited-time historical cleanups, custom tax advisory, and tax audits are quoted upfront separately."
+  }
+];
+
+

@@ -30,11 +30,12 @@ import {
   Facebook,
   Star,
   Quote,
+  ChevronDown,
 } from "lucide-react";
 
 // Imports from our modular files
-import { Service, BlogPost, PricingTier, Testimonial } from "./types";
-import { servicesData, blogsData, pricingTiers, testimonialsData } from "./data/staticData";
+import { Service, BlogPost, PricingTier, Testimonial, FAQItem } from "./types";
+import { servicesData, blogsData, pricingTiers, testimonialsData, faqsData } from "./data/staticData";
 import DiasLogo from "./components/DiasLogo";
 import TaxCalculator from "./components/TaxCalculator";
 import ServiceModal from "./components/ServiceModal";
@@ -55,6 +56,9 @@ export default function App() {
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedBlog, setSelectedBlog] = useState<BlogPost | null>(null);
   const [privacyOpen, setPrivacyOpen] = useState(false);
+
+  // FAQ state
+  const [openFaq, setOpenFaq] = useState<string | null>(null);
   
   // Custom states for contact submission
   const [contactSubmitted, setContactSubmitted] = useState(false);
@@ -71,7 +75,7 @@ export default function App() {
   // Set up active section observer on scroll
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ["home", "about", "services", "pricing", "blogs", "contact"];
+      const sections = ["home", "about", "services", "pricing", "testimonials", "faqs", "blogs", "contact"];
       const scrollPosition = window.scrollY + 150;
 
       for (const section of sections) {
@@ -187,6 +191,7 @@ export default function App() {
               { id: "about", label: "About Us" },
               { id: "services", label: "Services" },
               { id: "pricing", label: "Pricing" },
+              { id: "faqs", label: "FAQ" },
               { id: "blogs", label: "Blogs" },
               { id: "contact", label: "Contact Us" },
             ].map((link) => (
@@ -234,6 +239,7 @@ export default function App() {
                 { id: "about", label: "About Us" },
                 { id: "services", label: "Services" },
                 { id: "pricing", label: "Pricing" },
+                { id: "faqs", label: "FAQ" },
                 { id: "blogs", label: "Blogs" },
                 { id: "contact", label: "Contact Us" },
               ].map((link) => (
@@ -835,6 +841,80 @@ export default function App() {
                 </div>
               </div>
             ))}
+          </div>
+
+        </div>
+      </section>
+
+      {/* 6.6 FAQ Section */}
+      <section id="faqs" className="py-20 bg-slate-50 border-t border-slate-100">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          
+          {/* Section Header */}
+          <div className="text-center space-y-3 max-w-2xl mx-auto">
+            <span className="text-xs text-gold-600 font-bold uppercase tracking-widest block">
+              Knowledge Base
+            </span>
+            <h2 className="font-display text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-slate-500 text-sm">
+              Get clear, professional answers on UAE Corporate Tax, VAT thresholds, accounting requirements, and general tax compliance.
+            </p>
+          </div>
+
+          {/* Accordion List */}
+          <div className="space-y-4 max-w-3xl mx-auto">
+            {faqsData.map((faq) => {
+              const isOpen = openFaq === faq.id;
+              return (
+                <div 
+                  key={faq.id} 
+                  className="bg-white border border-slate-100 rounded-2xl overflow-hidden transition-all duration-300 shadow-sm hover:shadow-md"
+                >
+                  <button
+                    onClick={() => setOpenFaq(isOpen ? null : faq.id)}
+                    className="w-full px-6 py-5 text-left flex items-center justify-between gap-4 cursor-pointer focus:outline-none"
+                    aria-expanded={isOpen}
+                  >
+                    <div className="space-y-1.5">
+                      {faq.category && (
+                        <span className="inline-block bg-navy-50 text-navy-800 text-[9px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-md">
+                          {faq.category}
+                        </span>
+                      )}
+                      <h3 className="font-display text-sm sm:text-base font-bold text-navy-950 hover:text-gold-600 transition-colors duration-200">
+                        {faq.question}
+                      </h3>
+                    </div>
+                    <span 
+                      className={`flex-shrink-0 w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-500 transition-transform duration-300 ${
+                        isOpen ? "transform rotate-180 bg-gold-500 text-navy-950" : "group-hover:bg-slate-100"
+                      }`}
+                    >
+                      <ChevronDown className="w-4 h-4" />
+                    </span>
+                  </button>
+
+                  {/* Collapsible Answer Body */}
+                  <div 
+                    className={`transition-all duration-300 ease-in-out ${
+                      isOpen ? "max-h-96 opacity-100 border-t border-slate-50" : "max-h-0 opacity-0 pointer-events-none"
+                    } overflow-hidden`}
+                  >
+                    <div className="p-6 text-xs sm:text-sm text-slate-600 leading-relaxed space-y-3 bg-slate-50/40">
+                      <p>{faq.answer}</p>
+                      <div className="flex items-center gap-2 pt-2">
+                        <span className="text-[10px] text-slate-400 font-medium">Still have questions?</span>
+                        <a href="#contact" className="text-[10px] text-gold-600 hover:text-gold-700 font-bold flex items-center gap-0.5 transition-colors">
+                          Speak with our team <ArrowRight className="w-3 h-3" />
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
 
         </div>
