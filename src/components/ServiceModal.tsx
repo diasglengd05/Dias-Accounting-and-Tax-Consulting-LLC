@@ -130,7 +130,7 @@ export default function ServiceModal({ service, isOpen, onClose, onBookCall }: S
         </div>
 
         {/* Right Side: Consultation Booking & Inquiry Panel */}
-        <div className="w-full md:w-[350px] bg-slate-50 border-t md:border-t-0 md:border-l border-slate-100 pr-6 pb-[14px] pt-[180px] pl-[33px] md:pr-8 md:pb-[14px] md:pt-[180px] md:pl-[33px] flex flex-col justify-center overflow-y-auto">
+        <div className="w-full md:w-[350px] bg-slate-50 border-t md:border-t-0 md:border-l border-slate-100 p-6 md:p-8 flex flex-col justify-center overflow-y-auto">
           {formSubmitted ? (
             <div className="text-center py-8 space-y-4 animate-fadeIn">
               <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
