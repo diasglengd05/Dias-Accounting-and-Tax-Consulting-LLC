@@ -1,0 +1,27 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Safety Net: Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+    // Inquiries
+    match /inquiries/{inquiryId} {
+      // Clients can create inquiries (unauthenticated) with strict validation
+      allow create: if request.resource.data.keys().hasAll(['name', 'email', 'createdAt', 'synced', 'status'])
+        && request.resource.data.name is string && request.resource.data.name.size() <= 100
+        && request.resource.data.email is string && request.resource.data.email.size() <= 150
+        && request.resource.data.status is string && request.resource.data.status.size() <= 50;
+        
+      // Rest of the access can be read/updated by the server
+      allow read, update, delete: if true;
+    }
+
+    // Settings
+    match /settings/{settingId} {
+      allow read, write: if true;
+    }
+  }
+}

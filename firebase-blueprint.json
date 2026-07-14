@@ -1,0 +1,102 @@
+{
+  "entities": {
+    "inquiry": {
+      "title": "Inquiry",
+      "description": "An inquiry submitted by a client for accounting or tax consulting services.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the inquiry."
+        },
+        "name": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "Full name of the contact person."
+        },
+        "email": {
+          "type": "string",
+          "maxLength": 150,
+          "description": "Business email address."
+        },
+        "phone": {
+          "type": "string",
+          "maxLength": 50,
+          "description": "Contact or WhatsApp phone number."
+        },
+        "company": {
+          "type": "string",
+          "maxLength": 150,
+          "description": "Company name."
+        },
+        "serviceType": {
+          "type": "string",
+          "maxLength": 50,
+          "description": "The category of service requested."
+        },
+        "message": {
+          "type": "string",
+          "maxLength": 5000,
+          "description": "The message body or custom inquiry details."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the inquiry was logged."
+        },
+        "synced": {
+          "type": "boolean",
+          "description": "Whether the inquiry has been synced to Google Sheets."
+        },
+        "status": {
+          "type": "string",
+          "maxLength": 50,
+          "description": "The lead pipeline status (e.g. New Lead, Contacted, In Progress, Converted, Archived)."
+        },
+        "notes": {
+          "type": "string",
+          "maxLength": 5000,
+          "description": "Internal advisor notes and follow-up logs."
+        }
+      },
+      "required": ["name", "email", "createdAt", "synced", "status"]
+    },
+    "settings": {
+      "title": "Settings",
+      "description": "Application and integration settings.",
+      "type": "object",
+      "properties": {
+        "accessToken": {
+          "type": "string",
+          "description": "Google OAuth access token."
+        },
+        "email": {
+          "type": "string",
+          "description": "Advisor email address."
+        },
+        "spreadsheetId": {
+          "type": "string",
+          "description": "The Google Sheets ID where inquiries are synced."
+        },
+        "tokenExpired": {
+          "type": "boolean",
+          "description": "Flag indicating if the token has expired."
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp of last token update."
+        }
+      }
+    }
+  },
+  "firestore": {
+    "inquiries/{inquiryId}": {
+      "schema": "inquiry",
+      "description": "Collection of all service inquiries."
+    },
+    "settings/{settingId}": {
+      "schema": "settings",
+      "description": "Advisor settings and integrations."
+    }
+  }
+}

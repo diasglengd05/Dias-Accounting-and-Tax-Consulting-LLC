@@ -16,9 +16,13 @@ import {
   setDoc,
   where,
   limit,
-  disableNetwork
+  disableNetwork,
+  setLogLevel
 } from "firebase/firestore";
 import firebaseConfig from "./firebase-applet-config.json" with { type: "json" };
+
+// Silence internal Firestore SDK logs (prevents gRPC connection/stream warn/error dumps)
+setLogLevel("silent");
 
 // Initialize Firebase App on Server
 const firebaseApp = initializeApp(firebaseConfig);
@@ -164,6 +168,23 @@ const SecureStorageService = {
     if (isFirestoreAvailable && id && !id.startsWith("inq_")) {
       try {
         await updateDoc(doc(db, "inquiries", id), { synced: true });
+      } catch (err: any) {
+        console.warn(`Firestore update failed for inquiry ${id}:`, err.message || err);
+      }
+    }
+  },
+
+  async updateInquiry(id: string, updates: any): Promise<void> {
+    const local = readLocalDB();
+    const idx = local.inquiries.findIndex(i => i.id === id);
+    if (idx !== -1) {
+      local.inquiries[idx] = { ...local.inquiries[idx], ...updates };
+      writeLocalDB(local);
+    }
+
+    if (isFirestoreAvailable && id && !id.startsWith("inq_")) {
+      try {
+        await updateDoc(doc(db, "inquiries", id), updates);
       } catch (err: any) {
         console.warn(`Firestore update failed for inquiry ${id}:`, err.message || err);
       }
@@ -603,10 +624,38 @@ app.post("/api/sync-all", async (req, res) => {
   }
 });
 
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "dias2026";
+const ADMIN_TOKEN = "dias_admin_tok_" + Math.random().toString(36).substring(2) + Date.now().toString(36);
+
+const verifyAdminToken = (req: express.Request, res: express.Response, next: express.NextFunction) => {
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.startsWith("Bearer ") ? authHeader.substring(7) : null;
+  if (token && token === ADMIN_TOKEN) {
+    next();
+  } else {
+    res.status(401).json({ error: "Unauthorized access. Please log in again." });
+  }
+};
+
+/**
+ * Admin Login Route
+ */
+app.post("/api/admin/login", (req, res) => {
+  const { password } = req.body;
+  if (!password) {
+    return res.status(400).json({ error: "Password is required." });
+  }
+  if (password === ADMIN_PASSWORD) {
+    return res.json({ success: true, token: ADMIN_TOKEN });
+  } else {
+    return res.status(401).json({ error: "Invalid password." });
+  }
+});
+
 /**
  * Fetch All Inquiries (Secure Route for Advisor Portal)
  */
-app.get("/api/admin/inquiries", async (req, res) => {
+app.get("/api/admin/inquiries", verifyAdminToken, async (req, res) => {
   try {
     const inquiries = await SecureStorageService.getAllInquiries();
     return res.json(inquiries);
@@ -619,7 +668,7 @@ app.get("/api/admin/inquiries", async (req, res) => {
 /**
  * Mark Inquiry Synced (Secure Route for Advisor Portal)
  */
-app.post("/api/admin/mark-synced", async (req, res) => {
+app.post("/api/admin/mark-synced", verifyAdminToken, async (req, res) => {
   const { id } = req.body;
   if (!id) {
     return res.status(400).json({ error: "Inquiry ID is required." });
@@ -630,6 +679,27 @@ app.post("/api/admin/mark-synced", async (req, res) => {
   } catch (err: any) {
     console.error(`Failed to mark inquiry ${id} as synced:`, err);
     return res.status(500).json({ error: "Failed to update inquiry status." });
+  }
+});
+
+/**
+ * Update Inquiry Pipeline details (Secure Route for Advisor Portal)
+ */
+app.post("/api/admin/update-inquiry", verifyAdminToken, async (req, res) => {
+  const { id, status, notes } = req.body;
+  if (!id) {
+    return res.status(400).json({ error: "Inquiry ID is required." });
+  }
+  try {
+    const updates: any = {};
+    if (status !== undefined) updates.status = status;
+    if (notes !== undefined) updates.notes = notes;
+    
+    await SecureStorageService.updateInquiry(id, updates);
+    return res.json({ success: true });
+  } catch (err: any) {
+    console.error(`Failed to update inquiry ${id}:`, err);
+    return res.status(500).json({ error: "Failed to update inquiry." });
   }
 });
 
