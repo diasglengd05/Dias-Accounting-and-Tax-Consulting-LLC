@@ -277,3 +277,47 @@ export const pricingTiers: PricingTier[] = [
     ]
   }
 ];
+
+export const testimonialsData = [
+  {
+    id: "t1",
+    quote: "Dias Accounting has transformed our compliance process. Their Corporate Tax filing service was fast, thorough, and completely stress-free. Truly the gold standard for financial services in the UAE.",
+    authorName: "Tareq Al-Mansoori",
+    authorRole: "Managing Director",
+    authorCompany: "Apex Tech Ventures",
+    rating: 5,
+    location: "Dubai, UAE",
+    avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=120"
+  },
+  {
+    id: "t2",
+    quote: "The backlog accounting package saved us thousands in penalties. Their team reconstructed 12 months of books in record time with perfect organization.",
+    authorName: "Sarah Jenkins",
+    authorRole: "Founder & CEO",
+    authorCompany: "Vogue Retail Group",
+    rating: 5,
+    location: "Abu Dhabi, UAE",
+    avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=120"
+  },
+  {
+    id: "t3",
+    quote: "Highly knowledgeable and reactive. The tax calculator gave us a clear overview, and their team followed up with brilliant, custom structuring ideas.",
+    authorName: "Elena Rostova",
+    authorRole: "Chief Financial Officer",
+    authorCompany: "Helios Logistics",
+    rating: 5,
+    location: "Sharjah, UAE",
+    avatarUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=120"
+  },
+  {
+    id: "t4",
+    quote: "As a foreign business expanding into the free zone, the VAT registration can be daunting. Dias managed everything seamlessly, allowing us to focus entirely on growth.",
+    authorName: "Kenji Sato",
+    authorRole: "Regional Director",
+    authorCompany: "Pacific Rim Import-Export",
+    rating: 5,
+    location: "DMCC Dubai, UAE",
+    avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=120"
+  }
+];
+

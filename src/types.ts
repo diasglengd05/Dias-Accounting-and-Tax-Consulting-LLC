@@ -34,3 +34,15 @@ export interface PricingTier {
   features: string[];
   popular?: boolean;
 }
+
+export interface Testimonial {
+  id: string;
+  quote: string;
+  authorName: string;
+  authorRole: string;
+  authorCompany: string;
+  rating: number;
+  avatarUrl?: string;
+  location?: string;
+}
+

@@ -25,11 +25,16 @@ import {
   HelpCircle,
   Sparkles,
   Lock,
+  Linkedin,
+  Instagram,
+  Facebook,
+  Star,
+  Quote,
 } from "lucide-react";
 
 // Imports from our modular files
-import { Service, BlogPost, PricingTier } from "./types";
-import { servicesData, blogsData, pricingTiers } from "./data/staticData";
+import { Service, BlogPost, PricingTier, Testimonial } from "./types";
+import { servicesData, blogsData, pricingTiers, testimonialsData } from "./data/staticData";
 import DiasLogo from "./components/DiasLogo";
 import TaxCalculator from "./components/TaxCalculator";
 import ServiceModal from "./components/ServiceModal";
@@ -599,7 +604,84 @@ export default function App() {
           </div>
 
           {/* Pricing Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8 items-stretch">
+            {/* Special Limited-Time Offer Package */}
+            <div className="bg-white border-2 border-gold-500 rounded-3xl p-8 flex flex-col relative transition-all duration-300 shadow-lg shadow-gold-500/10 hover:shadow-xl hover:shadow-gold-500/20 ring-4 ring-gold-500/5">
+              {/* Limited Time Badge */}
+              <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gold-500 text-navy-950 text-[10px] font-extrabold uppercase tracking-widest px-4 py-1 rounded-full shadow-md">
+                Limited-Time Offer
+              </span>
+
+              {/* Package Header */}
+              <div className="text-center space-y-1 mb-4 mt-1">
+                <h3 className="font-display text-base font-extrabold text-navy-950 uppercase tracking-tight leading-snug">
+                  Backlog Accounting + <br />Corporate Tax Filing
+                </h3>
+                <p className="text-slate-500 text-[11px] font-medium">
+                  Complete Historical Compliance Package
+                </p>
+              </div>
+
+              {/* Deadline Alert Banner */}
+              <div className="bg-amber-50 border border-amber-200/60 rounded-xl p-3 text-center mb-6">
+                <p className="text-[10px] text-amber-800 font-bold leading-relaxed">
+                  Deadline alert! File by 31st July and dodge those penalties.
+                </p>
+              </div>
+
+              {/* Pricing breakdown */}
+              <div className="text-center space-y-1 pb-4 border-b border-slate-100 mb-6">
+                <div className="flex items-center justify-center gap-2">
+                  <span className="text-xs text-slate-400 font-semibold line-through">AED 3,000</span>
+                  <span className="bg-rose-100 text-rose-600 text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                    Save AED 500
+                  </span>
+                </div>
+                <div className="flex items-baseline justify-center gap-1.5">
+                  <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">AED</span>
+                  <span className="text-4xl font-extrabold font-mono text-navy-950 tracking-tight">
+                    2,500
+                  </span>
+                </div>
+                <div className="text-[10px] text-slate-400 font-bold space-y-0.5 mt-1">
+                  <div className="text-gold-600 uppercase tracking-wider text-[9px] font-bold">One-time, for FY 2025</div>
+                </div>
+              </div>
+
+              {/* Call to action button */}
+              <a
+                href="#contact"
+                className="w-full py-3.5 px-4 rounded-xl font-display font-bold text-xs text-center transition-all cursor-pointer bg-gold-500 hover:bg-gold-600 text-navy-950 shadow-md shadow-gold-500/20 mb-8"
+              >
+                Get Started
+              </a>
+
+              {/* Inclusions */}
+              <div className="space-y-3 flex-grow">
+                <span className="text-[10px] text-navy-950 font-extrabold uppercase tracking-wider block">
+                  What's Included:
+                </span>
+                <ul className="space-y-3 text-xs text-slate-600">
+                  <li className="flex gap-2 items-start">
+                    <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <span className="font-medium text-slate-700 leading-normal">Full-Year Backlog Bookkeeping for 2025</span>
+                  </li>
+                  <li className="flex gap-2 items-start">
+                    <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <span className="font-medium text-slate-700 leading-normal">Bank & Credit Card Reconciliation</span>
+                  </li>
+                  <li className="flex gap-2 items-start">
+                    <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <span className="font-medium text-slate-700 leading-normal">Corporate Tax Computation for 2025</span>
+                  </li>
+                  <li className="flex gap-2 items-start">
+                    <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                    <span className="font-medium text-slate-700 leading-normal">Corporate Tax Return Filing</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
             {pricingTiers.map((tier) => {
               // Convert pricing based on period
               const displayPrice = billingPeriod === "annual" 
@@ -651,7 +733,7 @@ export default function App() {
                     <ul className="space-y-2.5 text-xs text-slate-600">
                       {tier.features.map((feat, idx) => (
                         <li key={idx} className="flex gap-2 items-start">
-                          <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                           <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                           <span>{feat}</span>
                         </li>
                       ))}
@@ -678,6 +760,82 @@ export default function App() {
           <p className="text-center text-[10px] text-slate-400 font-medium">
             *Custom enterprise solutions, audit support packages, and historical clean-ups are quoted separately. Pricing excludes standard government VAT.
           </p>
+
+        </div>
+      </section>
+
+      {/* 6.5 Customer Testimonials Section */}
+      <section id="testimonials" className="py-20 bg-gradient-to-b from-slate-50 to-white border-t border-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+          
+          {/* Section Header */}
+          <div className="text-center space-y-3 max-w-2xl mx-auto">
+            <span className="text-xs text-gold-600 font-bold uppercase tracking-widest block">
+              Client Success Stories
+            </span>
+            <h2 className="font-display text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight">
+              What UAE Business Leaders Say
+            </h2>
+            <p className="text-slate-500 text-sm">
+              We partner with startups, free zone establishments, and multi-branch enterprises across the Emirates to deliver exceptional financial precision.
+            </p>
+          </div>
+
+          {/* Testimonial Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {testimonialsData.map((t) => (
+              <div 
+                key={t.id} 
+                className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between group hover:border-gold-500/30"
+              >
+                <div className="space-y-4">
+                  {/* Rating Stars */}
+                  <div className="flex gap-1">
+                    {[...Array(t.rating)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-gold-500 text-gold-500" />
+                    ))}
+                  </div>
+
+                  {/* Quote Icon & Content */}
+                  <div className="relative">
+                    <Quote className="w-8 h-8 text-slate-100 absolute -top-4 -left-2 -z-0 transform -rotate-12 group-hover:text-gold-100 transition-colors duration-300" />
+                    <p className="text-xs text-slate-600 leading-relaxed italic relative z-10">
+                      "{t.quote}"
+                    </p>
+                  </div>
+                </div>
+
+                {/* Author Info */}
+                <div className="flex items-center gap-3 pt-6 mt-6 border-t border-slate-50">
+                  {t.avatarUrl ? (
+                    <img 
+                      src={t.avatarUrl} 
+                      alt={t.authorName} 
+                      className="w-10 h-10 rounded-full object-cover border border-slate-100"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-navy-50 text-navy-900 font-bold flex items-center justify-center text-xs">
+                      {t.authorName.charAt(0)}
+                    </div>
+                  )}
+                  <div className="min-w-0">
+                    <h4 className="font-display text-xs font-bold text-navy-950 truncate">
+                      {t.authorName}
+                    </h4>
+                    <p className="text-[10px] text-slate-400 truncate">
+                      {t.authorRole}, <span className="font-semibold text-slate-500">{t.authorCompany}</span>
+                    </p>
+                    {t.location && (
+                      <p className="text-[9px] text-gold-600 font-medium mt-0.5">
+                        {t.location}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
 
         </div>
       </section>
@@ -1041,6 +1199,36 @@ export default function App() {
                 <span>Registrations: </span>
                 <span className="font-mono text-gold-400">Trade Licence: 2646813.01</span>
               </div>
+              {/* Social Connections */}
+              <div className="flex items-center justify-center md:justify-start gap-3 pt-2">
+                <a
+                  href="https://www.linkedin.com/company/diasaccounting/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-full bg-white/5 border border-white/10 hover:border-gold-400/50 hover:bg-gold-500/10 hover:text-gold-400 flex items-center justify-center text-slate-400 transition-all duration-300"
+                  aria-label="LinkedIn Profile"
+                >
+                  <Linkedin className="w-4 h-4" />
+                </a>
+                <a
+                  href="https://www.instagram.com/diasuae.ae/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-full bg-white/5 border border-white/10 hover:border-gold-400/50 hover:bg-gold-500/10 hover:text-gold-400 flex items-center justify-center text-slate-400 transition-all duration-300"
+                  aria-label="Instagram Profile"
+                >
+                  <Instagram className="w-4 h-4" />
+                </a>
+                <a
+                  href="https://www.facebook.com/diasuae"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-full bg-white/5 border border-white/10 hover:border-gold-400/50 hover:bg-gold-500/10 hover:text-gold-400 flex items-center justify-center text-slate-400 transition-all duration-300"
+                  aria-label="Facebook Profile"
+                >
+                  <Facebook className="w-4 h-4" />
+                </a>
+              </div>
             </div>
 
             {/* Quick Links Column */}
@@ -1115,6 +1303,45 @@ export default function App() {
       </footer>
 
       {/* 10. Global WhatsApp Floating Widget */}
+      <div className="fixed bottom-[88px] right-[34px] md:right-8 z-40 flex flex-col gap-2.5 items-center">
+        <a
+          href="https://www.linkedin.com/company/diasaccounting/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white text-navy-900 hover:text-gold-500 border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.08)] flex items-center justify-center transition-all duration-300 hover:scale-110 group relative"
+          aria-label="LinkedIn"
+        >
+          <Linkedin className="w-4.5 h-4.5 md:w-5 md:h-5" />
+          <span className="absolute right-12 scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 bg-navy-950 text-white text-[10px] font-bold py-1 px-2.5 rounded-md shadow-md transition-all duration-200 pointer-events-none whitespace-nowrap">
+            LinkedIn
+          </span>
+        </a>
+        <a
+          href="https://www.instagram.com/diasuae.ae/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white text-navy-900 hover:text-gold-500 border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.08)] flex items-center justify-center transition-all duration-300 hover:scale-110 group relative"
+          aria-label="Instagram"
+        >
+          <Instagram className="w-4.5 h-4.5 md:w-5 md:h-5" />
+          <span className="absolute right-12 scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 bg-navy-950 text-white text-[10px] font-bold py-1 px-2.5 rounded-md shadow-md transition-all duration-200 pointer-events-none whitespace-nowrap">
+            Instagram
+          </span>
+        </a>
+        <a
+          href="https://www.facebook.com/diasuae"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white text-navy-900 hover:text-gold-500 border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.08)] flex items-center justify-center transition-all duration-300 hover:scale-110 group relative"
+          aria-label="Facebook"
+        >
+          <Facebook className="w-4.5 h-4.5 md:w-5 md:h-5" />
+          <span className="absolute right-12 scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 bg-navy-950 text-white text-[10px] font-bold py-1 px-2.5 rounded-md shadow-md transition-all duration-200 pointer-events-none whitespace-nowrap">
+            Facebook
+          </span>
+        </a>
+      </div>
+
       <WhatsAppWidget />
 
       {/* 11. Privacy Policy Modal */}
