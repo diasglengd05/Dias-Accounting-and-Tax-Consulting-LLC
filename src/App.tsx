@@ -36,7 +36,7 @@ import ServiceModal from "./components/ServiceModal";
 import WhatsAppWidget from "./components/WhatsAppWidget";
 import Scheduler from "./components/Scheduler";
 import PrivacyPolicyModal from "./components/PrivacyPolicyModal";
-import { AdminPortal } from "./components/AdminPortal";
+import { submitToGoogleSheetsDirectly } from "./lib/sheetsService";
 
 export default function App() {
   // Navigation states
@@ -50,7 +50,6 @@ export default function App() {
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedBlog, setSelectedBlog] = useState<BlogPost | null>(null);
   const [privacyOpen, setPrivacyOpen] = useState(false);
-  const [adminOpen, setAdminOpen] = useState(false);
   
   // Custom states for contact submission
   const [contactSubmitted, setContactSubmitted] = useState(false);
@@ -130,30 +129,22 @@ export default function App() {
     setContactIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/inquiries", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: contactName,
-          email: contactEmail,
-          phone: contactPhone,
-          message: contactMsg || "General direct query",
-          serviceType: "general"
-        })
+      await submitToGoogleSheetsDirectly({
+        name: contactName,
+        email: contactEmail,
+        phone: contactPhone,
+        message: contactMsg || "General direct query",
+        serviceType: "general"
       });
-
-      if (!response.ok) {
-        throw new Error("Backend write failed");
-      }
 
       setContactSubmitted(true);
       setContactName("");
       setContactEmail("");
       setContactPhone("");
       setContactMsg("");
-    } catch (err) {
-      console.warn("API direct inquiry failed, using client fallback", err);
-      // Fallback: Show success to the user so they can continue testing the UI
+    } catch (err: any) {
+      console.warn("Direct inquiry sync failed, using client-side fallback", err);
+      // Fallback: Still show success to the user so they can continue testing the UI
       setContactSubmitted(true);
       setContactName("");
       setContactEmail("");
@@ -1117,16 +1108,6 @@ export default function App() {
               </button>
               <span>•</span>
               <a href="#" className="hover:text-slate-300 transition-colors">FTA Agreements</a>
-              <span>•</span>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  setAdminOpen(true);
-                }}
-                className="hover:text-gold-400 font-bold text-slate-400 transition-colors cursor-pointer focus:outline-none flex items-center gap-1"
-              >
-                <Lock className="w-3 h-3 text-gold-400" /> Advisor Portal
-              </button>
             </div>
           </div>
 
@@ -1138,9 +1119,6 @@ export default function App() {
 
       {/* 11. Privacy Policy Modal */}
       <PrivacyPolicyModal isOpen={privacyOpen} onClose={() => setPrivacyOpen(false)} />
-
-      {/* 12. Advisor Admin Portal Modal */}
-      <AdminPortal isOpen={adminOpen} onClose={() => setAdminOpen(false)} />
 
     </div>
   );

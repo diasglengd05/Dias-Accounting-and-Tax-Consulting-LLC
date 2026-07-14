@@ -255,8 +255,23 @@ const getServiceDisplayName = (id: string): string => {
  * Google Drive Search and Sheets Creation Helper
  */
 async function serverFindOrCreateSpreadsheet(accessToken: string, savedSheetId: string | null): Promise<string> {
+  const targetId = "12DjTgoDGdU05oRWFiiQFJ5fLhW4G9rctepWBuOXGDuY";
   const title = "Dias Tax Consultation Inquiries";
   
+  // 1. Verify and use the user's specific spreadsheet ID first
+  try {
+    const verifyRes = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${targetId}?fields=spreadsheetId`, {
+      headers: { Authorization: `Bearer ${accessToken}` }
+    });
+    if (verifyRes.ok) {
+      console.log(`Verified user's target spreadsheet ID: ${targetId}`);
+      return targetId;
+    }
+  } catch (err) {
+    console.warn("Verification of user's target spreadsheet failed:", err);
+  }
+
+  // 2. Fallback to savedSheetId
   if (savedSheetId) {
     try {
       const verifyRes = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${savedSheetId}?fields=spreadsheetId`, {
@@ -521,16 +536,17 @@ app.post("/api/save-token", async (req, res) => {
 
   try {
     const oauthData = await SecureStorageService.getSettings("google_oauth");
-    let savedSheetId: string | null = null;
+    let savedSheetId = "12DjTgoDGdU05oRWFiiQFJ5fLhW4G9rctepWBuOXGDuY";
     
-    if (oauthData) {
-      savedSheetId = oauthData.spreadsheetId || null;
+    if (oauthData && oauthData.spreadsheetId) {
+      savedSheetId = oauthData.spreadsheetId;
     }
 
     // Save token to SecureStorage settings
     await SecureStorageService.saveSettings("google_oauth", {
       accessToken,
       email: email || "unknown@diasaccounting.ae",
+      spreadsheetId: savedSheetId,
       updatedAt: new Date().toISOString(),
       tokenExpired: false
     });

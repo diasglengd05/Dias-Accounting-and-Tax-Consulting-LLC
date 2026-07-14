@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { X, Check, Clock, ShieldCheck, Mail, Phone, Calendar } from "lucide-react";
 import { Service } from "../types";
+import { submitToGoogleSheetsDirectly } from "../lib/sheetsService";
 
 interface ServiceModalProps {
   service: Service | null;
@@ -31,21 +32,14 @@ export default function ServiceModal({ service, isOpen, onClose, onBookCall }: S
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/inquiries", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name,
-          email,
-          phone,
-          company: company || "N/A",
-          serviceType: service.id || "general"
-        })
+      await submitToGoogleSheetsDirectly({
+        name,
+        email,
+        phone,
+        company: company || "N/A",
+        message: `Inquiry for: ${service.title}`,
+        serviceType: service.id || "general"
       });
-
-      if (!response.ok) {
-        throw new Error("Backend write failed");
-      }
 
       setFormSubmitted(true);
       setName("");

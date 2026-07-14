@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import { User } from "firebase/auth";
 import { initAuth, googleSignIn, logout } from "../lib/firebase";
-import { findOrCreateSpreadsheet, appendInquiryRow, InquiryData } from "../lib/sheetsService";
+import { findOrCreateSpreadsheet, appendInquiryRow, InquiryData, submitToGoogleSheetsDirectly } from "../lib/sheetsService";
 
 interface SchedulerProps {
   preselectedService?: string;
@@ -270,7 +270,7 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    console.log("Submitting consultation inquiry form...", { name, email, phone, company, serviceType });
+    console.log("Submitting consultation inquiry form directly to Google Sheet...", { name, email, phone, company, serviceType });
 
     if (!name || !email || !phone) {
       console.warn("Form submission rejected: missing required fields", { name, email, phone });
@@ -279,60 +279,37 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
     }
 
     setIsSubmitting(true);
-    
-    const newInquiryPayload = {
-      name,
-      email,
-      phone,
-      company: company || "N/A",
-      serviceType,
-      createdAt: new Date().toISOString(),
-      synced: false,
-      status: "New Lead"
-    };
 
     try {
-      let docId = "local_" + Date.now();
-      let wasSynced = false;
+      await submitToGoogleSheetsDirectly({
+        name,
+        email,
+        phone,
+        company: company || "N/A",
+        message: `Consultation Booked: ${getServiceLabel(serviceType)}`,
+        serviceType: serviceType || "general"
+      });
 
-      // Primary Flow: Call server-side API endpoint for secure creation and immediate automatic sync
-      try {
-        const response = await fetch("/api/inquiries", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name,
-            email,
-            phone,
-            company: company || "N/A",
-            serviceType
-          })
-        });
-        const resData = await response.json();
-        if (response.ok) {
-          docId = resData.inquiryId || docId;
-          wasSynced = !!resData.autoSynced;
-          if (wasSynced && resData.spreadsheetId) {
-            setSpreadsheetId(resData.spreadsheetId);
-            localStorage.setItem("dias_tax_sheet_id", resData.spreadsheetId);
-          }
-        } else {
-          throw new Error(resData.error || "Failed to save via API");
-        }
-      } catch (apiErr) {
-        console.warn("API write failed, saved to local cache only:", apiErr);
-      }
-
-      // Step 2: Save to local storage as backup
+      // Save to local storage as backup
       const localRaw = localStorage.getItem("dias_local_inquiries");
       const localList = localRaw ? JSON.parse(localRaw) : [];
-      localList.push({ id: docId, ...newInquiryPayload, synced: wasSynced });
+      localList.push({ 
+        id: "local_" + Date.now(), 
+        name, 
+        email, 
+        phone, 
+        company: company || "N/A", 
+        serviceType, 
+        createdAt: new Date().toISOString(), 
+        synced: true,
+        status: "New Lead"
+      });
       localStorage.setItem("dias_local_inquiries", JSON.stringify(localList));
 
       setIsSuccess(true);
     } catch (err: any) {
-      console.error("Inquiry logging error:", err);
-      setError("An error occurred while saving your inquiry. Please try again.");
+      console.error("Direct Google Sheets submission error:", err);
+      setError("An error occurred while saving your inquiry directly to Sheets. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -729,8 +706,8 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
             <div className="max-w-md mx-auto bg-slate-50 border border-slate-100 rounded-2xl p-4 text-left space-y-3">
               <div className="flex items-center justify-between border-b border-slate-200/60 pb-2 text-xs">
                 <span className="text-slate-500 font-medium">Inquiry Status:</span>
-                <span className="inline-flex items-center gap-1 bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full text-[9px] font-bold border border-amber-100">
-                  Awaiting Sync
+                <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-full text-[9px] font-bold border border-emerald-100">
+                  <Check className="w-3 h-3" /> Synced to Sheets
                 </span>
               </div>
               <div className="flex items-center justify-between border-b border-slate-200/60 pb-2 text-xs">
