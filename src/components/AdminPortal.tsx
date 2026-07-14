@@ -97,9 +97,28 @@ export function AdminPortal({ isOpen, onClose }: AdminPortalProps) {
         throw new Error("Session expired. Please log in again.");
       }
       if (!response.ok) {
-        throw new Error("Failed to fetch inquiries");
+        let errMsg = "Failed to fetch inquiries";
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          try {
+            const errJson = await response.json();
+            errMsg = errJson.error || errMsg;
+          } catch (_) {}
+        } else {
+          const rawText = await response.text();
+          errMsg = rawText || errMsg;
+        }
+        throw new Error(errMsg);
       }
-      const data = await response.json();
+
+      const contentType = response.headers.get("content-type");
+      let data;
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        const rawText = await response.text();
+        throw new Error(`Invalid response format from server: ${rawText.substring(0, 100)}`);
+      }
       setInquiries(data);
     } catch (err: any) {
       setError(err.message || "Could not load pipeline data.");
@@ -124,11 +143,28 @@ export function AdminPortal({ isOpen, onClose }: AdminPortalProps) {
       });
 
       if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.error || "Incorrect password.");
+        let errMsg = "Incorrect password.";
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          try {
+            const errJson = await response.json();
+            errMsg = errJson.error || errMsg;
+          } catch (_) {}
+        } else {
+          const rawText = await response.text();
+          errMsg = rawText || errMsg;
+        }
+        throw new Error(errMsg);
       }
 
-      const data = await response.json();
+      const contentType = response.headers.get("content-type");
+      let data;
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        const rawText = await response.text();
+        throw new Error(`Invalid response format from server: ${rawText.substring(0, 100)}`);
+      }
       setToken(data.token);
       sessionStorage.setItem("dias_admin_token", data.token);
       setIsAuthenticated(true);
@@ -235,9 +271,28 @@ export function AdminPortal({ isOpen, onClose }: AdminPortalProps) {
       const response = await fetch("/api/sync-all", {
         method: "POST"
       });
-      const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.error || "Sync execution failed.");
+        let errMsg = "Sync execution failed.";
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          try {
+            const errJson = await response.json();
+            errMsg = errJson.error || errMsg;
+          } catch (_) {}
+        } else {
+          const rawText = await response.text();
+          errMsg = rawText || errMsg;
+        }
+        throw new Error(errMsg);
+      }
+
+      const contentType = response.headers.get("content-type");
+      let data;
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        const rawText = await response.text();
+        throw new Error(`Invalid response format from server: ${rawText.substring(0, 100)}`);
       }
       setSyncMessage(`Successfully synchronized ${data.syncedCount || 0} unsynced inquiries with Google Sheets!`);
       fetchInquiries();
