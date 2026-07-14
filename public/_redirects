@@ -1,0 +1,19 @@
+# ----------------------------------------------------------------------
+# Netlify Redirects Configuration
+# Dias Accounting and Tax Consulting LLC
+# ----------------------------------------------------------------------
+
+# 1. Standard Accounting Pages Redirects (Old Google Sites -> New SPA Sections)
+# Redirecting old indexed paths with a 301 Permanent Redirect to clean homepage anchor sections
+/tax-preparation      /#services     301
+/corporate-finance    /#services     301
+/contact-us           /#contact      301
+
+# 2. SPA Rewrite Rule
+# Forces Netlify to serve index.html for any deep URLs, allowing client-side routing to handle them
+/*                    /index.html    200
+
+# 3. Catch-all Redirect for any lingering broken links from old indexation
+# (Optional) If you are not using client-side sub-routes and want unmatched requests to go directly 
+# to the homepage as a 301, uncomment the line below:
+# /*                  /              301!
