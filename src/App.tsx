@@ -46,7 +46,7 @@ import { submitToGoogleSheetsDirectly } from "./lib/sheetsService";
 
 export default function App() {
   // Navigation states
-  const [activeSection, setActiveSection] = useState("home");
+  const [activeSection, setActiveSection] = useState("contact");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Pricing duration state
@@ -71,6 +71,20 @@ export default function App() {
 
   // Target service for scheduler preselection
   const [preselectedServiceTitle, setPreselectedServiceTitle] = useState("");
+
+  // Directly scroll visitors to the Contact Us section on initial load
+  useEffect(() => {
+    const hash = window.location.hash;
+    // Unless visitor explicitly specified a different section like #services or #pricing, jump to #contact
+    if (!hash || hash === "#contact" || hash === "#home") {
+      const contactElement = document.getElementById("contact");
+      if (contactElement) {
+        setTimeout(() => {
+          contactElement.scrollIntoView({ behavior: "smooth" });
+        }, 150);
+      }
+    }
+  }, []);
 
   // Set up active section observer using a highly performant IntersectionObserver
   useEffect(() => {

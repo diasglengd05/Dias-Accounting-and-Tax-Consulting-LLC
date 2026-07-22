@@ -8,6 +8,7 @@
 /tax-preparation      /#services     301
 /corporate-finance    /#services     301
 /contact-us           /#contact      301
+/contact              /#contact      301
 
 # 2. SPA Rewrite Rule
 # Forces Netlify to serve index.html for any deep URLs, allowing client-side routing to handle them
