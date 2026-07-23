@@ -37,12 +37,14 @@ import {
 import { Service, BlogPost, PricingTier, Testimonial, FAQItem } from "./types";
 import { servicesData, blogsData, pricingTiers, testimonialsData, faqsData } from "./data/staticData";
 import DiasLogo from "./components/DiasLogo";
-import TaxCalculator from "./components/TaxCalculator";
-import ServiceModal from "./components/ServiceModal";
-import WhatsAppWidget from "./components/WhatsAppWidget";
-import Scheduler from "./components/Scheduler";
-import PrivacyPolicyModal from "./components/PrivacyPolicyModal";
 import { submitToGoogleSheetsDirectly } from "./lib/sheetsService";
+
+// Lazy-loaded components for fast mobile JS execution & small initial bundle size
+const TaxCalculator = React.lazy(() => import("./components/TaxCalculator"));
+const ServiceModal = React.lazy(() => import("./components/ServiceModal"));
+const WhatsAppWidget = React.lazy(() => import("./components/WhatsAppWidget"));
+const Scheduler = React.lazy(() => import("./components/Scheduler"));
+const PrivacyPolicyModal = React.lazy(() => import("./components/PrivacyPolicyModal"));
 
 export default function App() {
   // Navigation states
@@ -265,7 +267,7 @@ export default function App() {
           {/* Mobile Hamburguer Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden p-2 text-slate-500 hover:text-navy-900 rounded-lg focus:outline-none cursor-pointer"
+            className="md:hidden w-11 h-11 flex items-center justify-center p-2 text-slate-600 hover:text-navy-900 hover:bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-500 cursor-pointer"
             aria-label="Toggle navigation menu"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -387,7 +389,9 @@ export default function App() {
 
             {/* Right Column: UAE Tax Planner Applet Widget */}
             <div className="lg:col-span-5 w-full max-w-md mx-auto lg:max-w-none">
-              <TaxCalculator />
+              <React.Suspense fallback={<div className="bg-white rounded-3xl p-8 shadow-xl border border-slate-100 animate-pulse h-96 flex items-center justify-center text-slate-400 text-xs">Loading Tax Estimator...</div>}>
+                <TaxCalculator />
+              </React.Suspense>
             </div>
 
           </div>
@@ -493,18 +497,20 @@ export default function App() {
           </div>
 
           {/* Service detail Modal */}
-          <ServiceModal
-            isOpen={selectedService !== null}
-            service={selectedService}
-            onClose={() => setSelectedService(null)}
-            onBookCall={handlePreselectedCallBooking}
-          />
+          <React.Suspense fallback={null}>
+            <ServiceModal
+              isOpen={selectedService !== null}
+              service={selectedService}
+              onClose={() => setSelectedService(null)}
+              onBookCall={handlePreselectedCallBooking}
+            />
+          </React.Suspense>
 
         </div>
       </section>
 
       {/* 5. "Why Partner With Us" Section */}
-      <section id="about" className="py-20 bg-white relative overflow-hidden">
+      <section id="about" className="py-20 bg-white relative overflow-hidden cv-auto">
         {/* Subtle decorative grid background */}
         <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: "radial-gradient(#0f172a 1.5px, transparent 1.5px)", backgroundSize: "24px 24px" }} />
 
@@ -858,7 +864,11 @@ export default function App() {
                   {t.avatarUrl ? (
                     <img 
                       src={t.avatarUrl} 
-                      alt={t.authorName} 
+                      alt={t.authorName}
+                      width={40}
+                      height={40}
+                      loading="lazy"
+                      decoding="async" 
                       className="w-10 h-10 rounded-full object-cover border border-slate-100"
                       referrerPolicy="no-referrer"
                     />
@@ -1018,6 +1028,10 @@ export default function App() {
                       <img
                         src={blog.author.avatar}
                         alt={blog.author.name}
+                        width={32}
+                        height={32}
+                        loading="lazy"
+                        decoding="async"
                         className="w-8 h-8 rounded-full object-cover border border-slate-200"
                       />
                       <div className="leading-tight">
@@ -1116,7 +1130,9 @@ export default function App() {
             
             {/* Left Column: Scheduler Form */}
             <div className="lg:col-span-7">
-              <Scheduler preselectedService={preselectedServiceTitle} />
+              <React.Suspense fallback={<div className="bg-white rounded-3xl p-8 shadow-xl border border-slate-100 animate-pulse h-96 flex items-center justify-center text-slate-400 text-xs">Loading Consultation Scheduler...</div>}>
+                <Scheduler preselectedService={preselectedServiceTitle} />
+              </React.Suspense>
             </div>
 
             {/* Right Column: Traditional contact + Map Mockup */}
@@ -1470,10 +1486,10 @@ export default function App() {
         </a>
       </div>
 
-      <WhatsAppWidget />
-
-      {/* 11. Privacy Policy Modal */}
-      <PrivacyPolicyModal isOpen={privacyOpen} onClose={() => setPrivacyOpen(false)} />
+      <React.Suspense fallback={null}>
+        <WhatsAppWidget />
+        <PrivacyPolicyModal isOpen={privacyOpen} onClose={() => setPrivacyOpen(false)} />
+      </React.Suspense>
 
     </div>
   );

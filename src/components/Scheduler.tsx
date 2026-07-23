@@ -496,7 +496,7 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
                     <div className="space-y-1">
                       <p className="text-[10px] uppercase text-slate-400 font-bold tracking-wider">Authorized Account</p>
                       <div className="flex items-center gap-2">
-                        <img src={currentUser.photoURL || ""} alt="" className="w-5 h-5 rounded-full border" referrerPolicy="no-referrer" />
+                        <img src={currentUser.photoURL || ""} alt="" width={20} height={20} loading="lazy" decoding="async" className="w-5 h-5 rounded-full border" referrerPolicy="no-referrer" />
                         <span className="text-xs font-bold text-navy-950">{currentUser.email}</span>
                       </div>
                     </div>

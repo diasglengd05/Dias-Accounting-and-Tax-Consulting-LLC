@@ -1,0 +1,17 @@
+# Netlify Performance & Security Headers Configuration
+# Dias Accounting and Tax Consulting LLC
+
+# Long-term caching for immutable Vite build assets (JS, CSS, images)
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Favicon and static SVGs
+/*.svg
+  Cache-Control: public, max-age=86400, must-revalidate
+
+# HTML document revalidation strategy for instant updates
+/*
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  X-XSS-Protection: 1; mode=block
