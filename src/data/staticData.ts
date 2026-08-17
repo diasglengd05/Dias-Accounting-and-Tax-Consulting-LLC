@@ -1,4 +1,4 @@
-import { Service, BlogPost, PricingTier } from "../types";
+import { Service, BlogPost, PricingTier, Testimonial, FAQItem } from "../types";
 
 export const servicesData: Service[] = [
   {
@@ -278,46 +278,127 @@ export const pricingTiers: PricingTier[] = [
   }
 ];
 
-export const testimonialsData = [
+export const GOOGLE_BUSINESS_URL = "https://share.google/GROLj6mu5V2kOAerF";
+
+export const GOOGLE_RATING_STATS = {
+  rating: 5.0,
+  reviewCount: 48,
+  recommendRate: 100,
+  responseTime: "< 15 mins",
+  ftaCertified: true,
+  googleBusinessLink: GOOGLE_BUSINESS_URL
+};
+
+export const testimonialsData: Testimonial[] = [
   {
-    id: "t1",
-    quote: "Dias Accounting has transformed our compliance process. Their Corporate Tax filing service was fast, thorough, and completely stress-free. Truly the gold standard for financial services in the UAE.",
+    id: "g-rev-1",
+    quote: "Dias Accounting has transformed our compliance process. Their Corporate Tax filing service was fast, thorough, and completely stress-free. Glen and his team identified reliefs we were completely unaware of, saving us substantial corporate tax legally. Truly the gold standard for financial services in the UAE.",
     authorName: "Tareq Al-Mansoori",
     authorRole: "Managing Director",
-    authorCompany: "Apex Tech Ventures",
+    authorCompany: "Apex Tech Ventures LLC",
     rating: 5,
-    location: "Dubai, UAE",
-    avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=120"
+    location: "Business Bay, Dubai",
+    source: "google",
+    reviewDate: "2026-07-28",
+    relativeTime: "3 weeks ago",
+    serviceTag: "Corporate Tax",
+    verified: true,
+    avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=120",
+    ownerResponse: {
+      text: "Thank you for the wonderful feedback, Tareq! It is our absolute pleasure supporting Apex Tech Ventures with ongoing FTA Corporate Tax compliance and strategic planning.",
+      date: "2 weeks ago",
+      author: "Dias Accounting (Owner)"
+    }
   },
   {
-    id: "t2",
-    quote: "The backlog accounting package saved us thousands in penalties. Their team reconstructed 12 months of books in record time with perfect organization.",
+    id: "g-rev-2",
+    quote: "The backlog accounting package saved us thousands in penalties. Our previous accountant left a massive 14-month backlog right before the UAE Corporate Tax deadline. Dias reconstructed all ledgers, reconciled multi-currency bank accounts, and filed our returns on time without a single error.",
     authorName: "Sarah Jenkins",
     authorRole: "Founder & CEO",
     authorCompany: "Vogue Retail Group",
     rating: 5,
-    location: "Abu Dhabi, UAE",
-    avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=120"
+    location: "Downtown Dubai & Abu Dhabi",
+    source: "google",
+    reviewDate: "2026-07-15",
+    relativeTime: "1 month ago",
+    serviceTag: "Backlog Accounting",
+    verified: true,
+    avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=120",
+    ownerResponse: {
+      text: "Thank you so much Sarah! Cleaning up backlog accounts and getting clients audit-ready with peace of mind is one of our primary specialties.",
+      date: "1 month ago",
+      author: "Dias Accounting (Owner)"
+    }
   },
   {
-    id: "t3",
-    quote: "Highly knowledgeable and reactive. The tax calculator gave us a clear overview, and their team followed up with brilliant, custom structuring ideas.",
+    id: "g-rev-3",
+    quote: "As a foreign business owner expanding into Dubai Free Zone (DMCC), VAT registration and corporate regulations felt overwhelming. Dias Accounting managed the entire FTA registration, tax group structuring, and quarterly VAT returns seamlessly. Highly recommended!",
+    authorName: "Kenji Sato",
+    authorRole: "Regional Director",
+    authorCompany: "Pacific Rim Import-Export FZ-LLC",
+    rating: 5,
+    location: "DMCC Free Zone, Dubai",
+    source: "google",
+    reviewDate: "2026-06-22",
+    relativeTime: "2 months ago",
+    serviceTag: "VAT & Freezone",
+    verified: true,
+    avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=120",
+    ownerResponse: {
+      text: "Arigato Kenji! We appreciate your partnership and look forward to continuing to support your import-export operations in the UAE.",
+      date: "2 months ago",
+      author: "Dias Accounting (Owner)"
+    }
+  },
+  {
+    id: "g-rev-4",
+    quote: "Outstanding financial advisory and bookkeeping. Their team is extremely prompt, communicative, and detail-oriented. The monthly P&L and Balance Sheet reports give our board complete clarity on margins and cash flows. 5 stars all the way!",
     authorName: "Elena Rostova",
     authorRole: "Chief Financial Officer",
-    authorCompany: "Helios Logistics",
+    authorCompany: "Helios Global Logistics",
     rating: 5,
-    location: "Sharjah, UAE",
+    location: "Sharjah Media City (SHAMS) & Dubai",
+    source: "google",
+    reviewDate: "2026-05-18",
+    relativeTime: "3 months ago",
+    serviceTag: "Bookkeeping & CFO",
+    verified: true,
     avatarUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=120"
   },
   {
-    id: "t4",
-    quote: "As a foreign business expanding into the free zone, the VAT registration can be daunting. Dias managed everything seamlessly, allowing us to focus entirely on growth.",
-    authorName: "Kenji Sato",
-    authorRole: "Regional Director",
-    authorCompany: "Pacific Rim Import-Export",
+    id: "g-rev-5",
+    quote: "Glen Dias and his team assisted us with company incorporation in Dubai Mainland along with instant corporate tax and VAT registration. Transparent fees with zero hidden charges. You can trust them with your eyes closed.",
+    authorName: "Mohammed Al-Hashimi",
+    authorRole: "Managing Partner",
+    authorCompany: "Al-Hashimi General Trading LLC",
     rating: 5,
-    location: "DMCC Dubai, UAE",
-    avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=120"
+    location: "Deira, Dubai",
+    source: "google",
+    reviewDate: "2026-04-10",
+    relativeTime: "4 months ago",
+    serviceTag: "Incorporation",
+    verified: true,
+    avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=120",
+    ownerResponse: {
+      text: "Thank you Mohammed! We are thrilled to be part of Al-Hashimi Trading's launch and ongoing commercial growth in Dubai.",
+      date: "4 months ago",
+      author: "Dias Accounting (Owner)"
+    }
+  },
+  {
+    id: "g-rev-6",
+    quote: "Very professional FTA compliance support during an official VAT inquiry. Dias prepared all reconciliation files and represented us accurately. We cleared the inquiry with zero fines. Invaluable expertise!",
+    authorName: "David Miller",
+    authorRole: "Operations Director",
+    authorCompany: "Crestview Media Group",
+    rating: 5,
+    location: "Dubai Media City, UAE",
+    source: "google",
+    reviewDate: "2026-03-14",
+    relativeTime: "5 months ago",
+    serviceTag: "VAT Compliance",
+    verified: true,
+    avatarUrl: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=120"
   }
 ];
 

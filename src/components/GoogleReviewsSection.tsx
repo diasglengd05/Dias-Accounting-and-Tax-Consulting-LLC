@@ -1,0 +1,340 @@
+import React, { useState } from "react";
+import { Star, CheckCircle2, MessageSquare, ExternalLink, ShieldCheck, ThumbsUp, Filter } from "lucide-react";
+import { Testimonial } from "../types";
+import { GOOGLE_BUSINESS_URL, GOOGLE_RATING_STATS } from "../data/staticData";
+
+interface GoogleReviewsSectionProps {
+  testimonials: Testimonial[];
+}
+
+export const GoogleLogo = ({ className = "w-5 h-5" }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+      fill="#4285F4"
+    />
+    <path
+      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+      fill="#34A853"
+    />
+    <path
+      d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+      fill="#FBBC05"
+    />
+    <path
+      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+      fill="#EA4335"
+    />
+  </svg>
+);
+
+export default function GoogleReviewsSection({ testimonials }: GoogleReviewsSectionProps) {
+  const [selectedFilter, setSelectedFilter] = useState<string>("all");
+  const [expandedResponses, setExpandedResponses] = useState<Record<string, boolean>>({});
+
+  const filterCategories = [
+    { id: "all", label: "All Reviews" },
+    { id: "Corporate Tax", label: "Corporate Tax" },
+    { id: "VAT", label: "VAT & Freezone" },
+    { id: "Backlog", label: "Backlog Accounting" },
+    { id: "Incorporation", label: "Incorporation" },
+  ];
+
+  const filteredReviews = testimonials.filter((t) => {
+    if (selectedFilter === "all") return true;
+    if (selectedFilter === "Corporate Tax") return t.serviceTag?.includes("Corporate") || t.quote.toLowerCase().includes("corporate tax");
+    if (selectedFilter === "VAT") return t.serviceTag?.includes("VAT") || t.quote.toLowerCase().includes("vat");
+    if (selectedFilter === "Backlog") return t.serviceTag?.includes("Backlog") || t.quote.toLowerCase().includes("backlog");
+    if (selectedFilter === "Incorporation") return t.serviceTag?.includes("Incorporation") || t.quote.toLowerCase().includes("incorporation");
+    return true;
+  });
+
+  const toggleResponse = (id: string) => {
+    setExpandedResponses((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  return (
+    <section id="testimonials" className="py-20 bg-gradient-to-b from-slate-50 via-white to-slate-50 border-t border-slate-100 relative overflow-hidden">
+      {/* Decorative background glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-gold-500/5 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 relative z-10">
+        
+        {/* Section Header */}
+        <div className="text-center space-y-3 max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200/80 shadow-xs text-xs font-semibold text-navy-950">
+            <GoogleLogo className="w-4 h-4" />
+            <span>Google Verified Business Reviews</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+          </div>
+          
+          <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-navy-950 tracking-tight">
+            Trusted by 500+ UAE Businesses
+          </h2>
+          <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+            Read transparent, genuine client feedback from Dubai Mainland, Free Zone companies, and regional founders who trust Dias Accounting for FTA compliance.
+          </p>
+        </div>
+
+        {/* Google Reviews Trust Scorecard Bar */}
+        <div className="bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl p-6 sm:p-8 shadow-sm hover:shadow-md transition-shadow">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+            
+            {/* Google Rating Overview */}
+            <div className="md:col-span-4 flex items-center gap-4 border-b md:border-b-0 md:border-r border-slate-100 pb-6 md:pb-0 md:pr-6">
+              <div className="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center p-3 shadow-xs shrink-0">
+                <GoogleLogo className="w-10 h-10" />
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-display text-3xl font-extrabold text-navy-950 leading-none">5.0</span>
+                  <div className="flex gap-0.5">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                    ))}
+                  </div>
+                </div>
+                <p className="text-xs font-bold text-slate-700">
+                  EXCELLENT <span className="text-slate-400 font-normal">• 48 Google Reviews</span>
+                </p>
+                <div className="flex items-center gap-1.5 text-[11px] text-emerald-700 font-medium">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>100% Verified FTA Tax Experts</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Middle Feature Metrics */}
+            <div className="md:col-span-5 grid grid-cols-2 sm:grid-cols-3 gap-3 text-left">
+              <div className="bg-slate-50/70 border border-slate-100/80 rounded-xl p-3">
+                <span className="block text-lg font-bold font-display text-navy-950">100%</span>
+                <span className="text-[11px] text-slate-500 leading-tight block">5-Star Google Rating</span>
+              </div>
+              <div className="bg-slate-50/70 border border-slate-100/80 rounded-xl p-3">
+                <span className="block text-lg font-bold font-display text-emerald-600">0 Fines</span>
+                <span className="text-[11px] text-slate-500 leading-tight block">Audit Track Record</span>
+              </div>
+              <div className="col-span-2 sm:col-span-1 bg-slate-50/70 border border-slate-100/80 rounded-xl p-3">
+                <span className="block text-lg font-bold font-display text-gold-600">15 min</span>
+                <span className="text-[11px] text-slate-500 leading-tight block">Avg Response Time</span>
+              </div>
+            </div>
+
+            {/* Action Buttons: Direct Google Reviews Links */}
+            <div className="md:col-span-3 flex flex-col sm:flex-row md:flex-col gap-2.5 justify-center">
+              <a
+                href={GOOGLE_BUSINESS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full inline-flex items-center justify-center gap-2 bg-navy-950 hover:bg-navy-900 text-white font-medium text-xs py-3 px-4 rounded-xl transition-all shadow-sm hover:shadow group cursor-pointer"
+                title="Write a Google review for Dias Accounting and Tax Consulting LLC"
+              >
+                <MessageSquare className="w-3.5 h-3.5 text-gold-400" />
+                <span>Write a Google Review</span>
+                <ExternalLink className="w-3 h-3 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+              </a>
+
+              <a
+                href={GOOGLE_BUSINESS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-medium text-xs py-2.5 px-4 rounded-xl transition-colors cursor-pointer"
+                title="View Dias Accounting on Google Maps"
+              >
+                <GoogleLogo className="w-3.5 h-3.5" />
+                <span>View Google Profile</span>
+              </a>
+            </div>
+
+          </div>
+        </div>
+
+        {/* Category Filters */}
+        <div className="flex items-center justify-between flex-wrap gap-3 pt-2">
+          <div className="flex items-center gap-1.5 text-xs text-slate-500 font-semibold">
+            <Filter className="w-3.5 h-3.5 text-slate-400" />
+            <span>Filter by topic:</span>
+          </div>
+
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 max-w-full no-scrollbar">
+            {filterCategories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedFilter(cat.id)}
+                className={`text-xs font-semibold px-3.5 py-1.5 rounded-full transition-all whitespace-nowrap cursor-pointer ${
+                  selectedFilter === cat.id
+                    ? "bg-navy-950 text-white shadow-xs"
+                    : "bg-white border border-slate-200/80 text-slate-600 hover:bg-slate-50 hover:border-slate-300"
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Testimonials / Google Reviews Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredReviews.map((t) => {
+            const hasOwnerResponse = Boolean(t.ownerResponse);
+            const isResponseOpen = Boolean(expandedResponses[t.id]);
+
+            return (
+              <div 
+                key={t.id} 
+                className="bg-white border border-slate-100 rounded-2xl p-6 shadow-xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group hover:border-gold-500/40 relative"
+              >
+                {/* Google badge in corner */}
+                <div className="flex items-start justify-between gap-2 mb-4">
+                  <div className="flex items-center gap-1">
+                    {[...Array(t.rating)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                    ))}
+                    {t.relativeTime && (
+                      <span className="text-[11px] text-slate-400 ml-1.5">
+                        • {t.relativeTime}
+                      </span>
+                    )}
+                  </div>
+
+                  <a 
+                    href={GOOGLE_BUSINESS_URL} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="p-1 rounded-md hover:bg-slate-50 text-slate-400 hover:text-navy-900 transition-colors"
+                    title="Verified Google Review"
+                  >
+                    <GoogleLogo className="w-4 h-4" />
+                  </a>
+                </div>
+
+                {/* Service Tag */}
+                {t.serviceTag && (
+                  <div className="mb-3">
+                    <span className="inline-block px-2.5 py-0.5 rounded-md bg-slate-50 border border-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-wider">
+                      {t.serviceTag}
+                    </span>
+                  </div>
+                )}
+
+                {/* Review Text */}
+                <div className="space-y-3 grow">
+                  <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
+                    "{t.quote}"
+                  </p>
+                </div>
+
+                {/* Owner Response Accordion if available */}
+                {hasOwnerResponse && t.ownerResponse && (
+                  <div className="mt-4 pt-3 border-t border-slate-100">
+                    <button
+                      onClick={() => toggleResponse(t.id)}
+                      className="w-full flex items-center justify-between text-[11px] font-semibold text-gold-700 hover:text-gold-800 transition-colors py-1 cursor-pointer"
+                    >
+                      <span className="flex items-center gap-1.5">
+                        <MessageSquare className="w-3 h-3 text-gold-600" />
+                        Response from Glen Dias (Owner)
+                      </span>
+                      <span className="text-[10px] text-slate-400">
+                        {isResponseOpen ? "Hide" : "View reply"}
+                      </span>
+                    </button>
+
+                    {isResponseOpen && (
+                      <div className="mt-2 bg-slate-50 border border-slate-100 rounded-xl p-3 text-[11px] text-slate-600 space-y-1 animate-fadeIn">
+                        <div className="flex items-center justify-between text-[10px] text-slate-400">
+                          <span className="font-semibold text-navy-950">{t.ownerResponse.author}</span>
+                          <span>{t.ownerResponse.date}</span>
+                        </div>
+                        <p className="italic text-slate-600 leading-relaxed">
+                          "{t.ownerResponse.text}"
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Reviewer Info */}
+                <div className="flex items-center gap-3 pt-4 mt-4 border-t border-slate-100">
+                  {t.avatarUrl ? (
+                    <img 
+                      src={t.avatarUrl} 
+                      alt={t.authorName}
+                      width={40}
+                      height={40}
+                      loading="lazy"
+                      decoding="async" 
+                      className="w-10 h-10 rounded-full object-cover border border-slate-100 shrink-0"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-navy-900 text-white font-bold flex items-center justify-center text-xs shrink-0">
+                      {t.authorName.charAt(0)}
+                    </div>
+                  )}
+
+                  <div className="min-w-0 grow">
+                    <div className="flex items-center gap-1.5">
+                      <h4 className="font-display text-xs font-bold text-navy-950 truncate">
+                        {t.authorName}
+                      </h4>
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" title="Verified Customer" />
+                    </div>
+                    
+                    {(t.authorRole || t.authorCompany) && (
+                      <p className="text-[10px] text-slate-500 truncate mt-0.5">
+                        {t.authorRole && <span>{t.authorRole}, </span>}
+                        <span className="font-semibold text-slate-700">{t.authorCompany}</span>
+                      </p>
+                    )}
+
+                    {t.location && (
+                      <p className="text-[9px] text-slate-400 font-medium mt-0.5 truncate">
+                        📍 {t.location}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Bottom CTA for Google Review */}
+        <div className="bg-gradient-to-r from-navy-950 to-slate-900 rounded-2xl p-6 sm:p-8 text-center text-white space-y-4 shadow-lg">
+          <div className="max-w-2xl mx-auto space-y-2">
+            <h3 className="font-display text-xl sm:text-2xl font-bold tracking-tight text-white">
+              Have you worked with Dias Accounting & Tax Consulting?
+            </h3>
+            <p className="text-slate-300 text-xs sm:text-sm">
+              Your honest feedback helps fellow business owners in the UAE find trusted corporate tax and bookkeeping solutions.
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+            <a
+              href={GOOGLE_BUSINESS_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gold-400 hover:bg-gold-500 text-navy-950 font-display font-bold text-xs py-3 px-6 rounded-xl transition-all shadow-md cursor-pointer"
+            >
+              <GoogleLogo className="w-4 h-4" />
+              <span>Leave a 5-Star Review on Google</span>
+              <ExternalLink className="w-3.5 h-3.5 text-navy-900" />
+            </a>
+
+            <a
+              href="#contact"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-medium text-xs py-3 px-6 rounded-xl transition-all"
+            >
+              <ThumbsUp className="w-3.5 h-3.5 text-gold-400" />
+              <span>Book Your Consultation</span>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  );
+}

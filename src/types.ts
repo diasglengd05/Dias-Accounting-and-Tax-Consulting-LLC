@@ -39,11 +39,21 @@ export interface Testimonial {
   id: string;
   quote: string;
   authorName: string;
-  authorRole: string;
-  authorCompany: string;
+  authorRole?: string;
+  authorCompany?: string;
   rating: number;
   avatarUrl?: string;
   location?: string;
+  source?: "google" | "direct";
+  reviewDate?: string;
+  relativeTime?: string;
+  serviceTag?: string;
+  verified?: boolean;
+  ownerResponse?: {
+    text: string;
+    date: string;
+    author: string;
+  };
 }
 
 export interface FAQItem {

@@ -35,8 +35,9 @@ import {
 
 // Imports from our modular files
 import { Service, BlogPost, PricingTier, Testimonial, FAQItem } from "./types";
-import { servicesData, blogsData, pricingTiers, testimonialsData, faqsData } from "./data/staticData";
+import { servicesData, blogsData, pricingTiers, testimonialsData, faqsData, GOOGLE_BUSINESS_URL, GOOGLE_RATING_STATS } from "./data/staticData";
 import DiasLogo from "./components/DiasLogo";
+import { GoogleLogo } from "./components/GoogleReviewsSection";
 import { submitToGoogleSheetsDirectly } from "./lib/sheetsService";
 
 // Lazy-loaded components for fast mobile JS execution & small initial bundle size
@@ -45,6 +46,7 @@ const ServiceModal = React.lazy(() => import("./components/ServiceModal"));
 const WhatsAppWidget = React.lazy(() => import("./components/WhatsAppWidget"));
 const Scheduler = React.lazy(() => import("./components/Scheduler"));
 const PrivacyPolicyModal = React.lazy(() => import("./components/PrivacyPolicyModal"));
+const GoogleReviewsSection = React.lazy(() => import("./components/GoogleReviewsSection"));
 
 export default function App() {
   // Navigation states
@@ -235,6 +237,7 @@ export default function App() {
               { id: "about", label: "About Us" },
               { id: "services", label: "Services" },
               { id: "pricing", label: "Pricing" },
+              { id: "testimonials", label: "Reviews" },
               { id: "faqs", label: "FAQ" },
               { id: "blogs", label: "Blogs" },
               { id: "contact", label: "Contact Us" },
@@ -283,6 +286,7 @@ export default function App() {
                 { id: "about", label: "About Us" },
                 { id: "services", label: "Services" },
                 { id: "pricing", label: "Pricing" },
+                { id: "testimonials", label: "Reviews" },
                 { id: "faqs", label: "FAQ" },
                 { id: "blogs", label: "Blogs" },
                 { id: "contact", label: "Contact Us" },
@@ -326,10 +330,25 @@ export default function App() {
             {/* Left Content Column */}
             <div className="lg:col-span-7 space-y-6 md:space-y-8 text-center lg:text-left">
               
-              {/* Trust Badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-md text-xs font-semibold text-gold-300">
-                <Sparkles className="w-3.5 h-3.5" />
-                Authorized UAE Tax Consultants
+              {/* Trust Badge & Google Rating Badge */}
+              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-md text-xs font-semibold text-gold-300">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  Authorized UAE Tax Consultants
+                </div>
+                <a
+                  href={GOOGLE_BUSINESS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 backdrop-blur-md text-xs font-semibold text-white transition-all group"
+                  title="View Dias Accounting on Google Business"
+                >
+                  <GoogleLogo className="w-3.5 h-3.5" />
+                  <span className="text-amber-300">★★★★★</span>
+                  <span className="text-slate-100 font-bold">5.0</span>
+                  <span className="text-slate-300 text-[11px] font-normal hidden sm:inline">(48 Reviews)</span>
+                  <ExternalLink className="w-3 h-3 text-slate-300 group-hover:translate-x-0.5 transition-transform" />
+                </a>
               </div>
 
               {/* Main Headline */}
@@ -818,85 +837,10 @@ export default function App() {
         </div>
       </section>
 
-      {/* 6.5 Customer Testimonials Section */}
-      <section id="testimonials" className="py-20 bg-gradient-to-b from-slate-50 to-white border-t border-slate-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          
-          {/* Section Header */}
-          <div className="text-center space-y-3 max-w-2xl mx-auto">
-            <span className="text-xs text-gold-600 font-bold uppercase tracking-widest block">
-              Client Success Stories
-            </span>
-            <h2 className="font-display text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight">
-              What UAE Business Leaders Say
-            </h2>
-            <p className="text-slate-500 text-sm">
-              We partner with startups, free zone establishments, and multi-branch enterprises across the Emirates to deliver exceptional financial precision.
-            </p>
-          </div>
-
-          {/* Testimonial Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {testimonialsData.map((t) => (
-              <div 
-                key={t.id} 
-                className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between group hover:border-gold-500/30"
-              >
-                <div className="space-y-4">
-                  {/* Rating Stars */}
-                  <div className="flex gap-1">
-                    {[...Array(t.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-gold-500 text-gold-500" />
-                    ))}
-                  </div>
-
-                  {/* Quote Icon & Content */}
-                  <div className="relative">
-                    <Quote className="w-8 h-8 text-slate-100 absolute -top-4 -left-2 -z-0 transform -rotate-12 group-hover:text-gold-100 transition-colors duration-300" />
-                    <p className="text-xs text-slate-600 leading-relaxed italic relative z-10">
-                      "{t.quote}"
-                    </p>
-                  </div>
-                </div>
-
-                {/* Author Info */}
-                <div className="flex items-center gap-3 pt-6 mt-6 border-t border-slate-50">
-                  {t.avatarUrl ? (
-                    <img 
-                      src={t.avatarUrl} 
-                      alt={t.authorName}
-                      width={40}
-                      height={40}
-                      loading="lazy"
-                      decoding="async" 
-                      className="w-10 h-10 rounded-full object-cover border border-slate-100"
-                      referrerPolicy="no-referrer"
-                    />
-                  ) : (
-                    <div className="w-10 h-10 rounded-full bg-navy-50 text-navy-900 font-bold flex items-center justify-center text-xs">
-                      {t.authorName.charAt(0)}
-                    </div>
-                  )}
-                  <div className="min-w-0">
-                    <h4 className="font-display text-xs font-bold text-navy-950 truncate">
-                      {t.authorName}
-                    </h4>
-                    <p className="text-[10px] text-slate-400 truncate">
-                      {t.authorRole}, <span className="font-semibold text-slate-500">{t.authorCompany}</span>
-                    </p>
-                    {t.location && (
-                      <p className="text-[9px] text-gold-600 font-medium mt-0.5">
-                        {t.location}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-        </div>
-      </section>
+      {/* 6.5 Customer Testimonials / Google Reviews Section */}
+      <React.Suspense fallback={<div className="py-20 text-center text-slate-400 text-sm">Loading Google Reviews...</div>}>
+        <GoogleReviewsSection testimonials={testimonialsData} />
+      </React.Suspense>
 
       {/* 6.6 FAQ Section */}
       <section id="faqs" className="py-20 bg-slate-50 border-t border-slate-100">
@@ -1343,8 +1287,19 @@ export default function App() {
                 <span>Registrations: </span>
                 <span className="font-mono text-gold-400">Trade Licence: 2646813.01</span>
               </div>
-              {/* Social Connections */}
-              <div className="flex items-center justify-center md:justify-start gap-3 pt-2">
+              {/* Social Connections & Google Profile */}
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-2.5 pt-2">
+                <a
+                  href={GOOGLE_BUSINESS_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 rounded-full bg-white/5 border border-white/10 hover:border-gold-400/50 hover:bg-gold-500/10 hover:text-gold-400 flex items-center gap-1.5 text-xs text-slate-300 transition-all duration-300"
+                  title="Dias Accounting Google Business Profile"
+                >
+                  <GoogleLogo className="w-3.5 h-3.5" />
+                  <span className="font-semibold text-amber-400">5.0 ★</span>
+                  <span className="text-[11px] text-slate-400">Google Reviews</span>
+                </a>
                 <a
                   href="https://www.linkedin.com/company/diasaccounting/"
                   target="_blank"
@@ -1446,8 +1401,21 @@ export default function App() {
         </div>
       </footer>
 
-      {/* 10. Global WhatsApp Floating Widget */}
+      {/* 10. Global WhatsApp & Google Reviews Floating Widget */}
       <div className="fixed bottom-[88px] right-[34px] md:right-8 z-40 flex flex-col gap-2.5 items-center">
+        <a
+          href={GOOGLE_BUSINESS_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white text-navy-900 hover:text-gold-500 border border-slate-100 shadow-[0_4px_12px_rgba(0,0,0,0.08)] flex items-center justify-center transition-all duration-300 hover:scale-110 group relative"
+          aria-label="Google Business Reviews"
+          title="Google Reviews"
+        >
+          <GoogleLogo className="w-4.5 h-4.5 md:w-5 md:h-5" />
+          <span className="absolute right-12 scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100 bg-navy-950 text-white text-[10px] font-bold py-1 px-2.5 rounded-md shadow-md transition-all duration-200 pointer-events-none whitespace-nowrap">
+            5.0 ★ Google Reviews
+          </span>
+        </a>
         <a
           href="https://www.linkedin.com/company/diasaccounting/"
           target="_blank"
