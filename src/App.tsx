@@ -42,6 +42,8 @@ import { submitToGoogleSheetsDirectly } from "./lib/sheetsService";
 import ComplianceAlertBanner from "./components/ComplianceAlertBanner";
 import StickyMobileLeadBar from "./components/StickyMobileLeadBar";
 import useDynamicSEO from "./hooks/useDynamicSEO";
+import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
+import LanguageToggle from "./components/LanguageToggle";
 
 // Lazy-loaded components for fast mobile JS execution & small initial bundle size
 const TaxCalculator = React.lazy(() => import("./components/TaxCalculator"));
@@ -53,7 +55,9 @@ const GoogleReviewsSection = React.lazy(() => import("./components/GoogleReviews
 const TaxHealthCheckModal = React.lazy(() => import("./components/TaxHealthCheckModal"));
 const LeadMagnetDownloadModal = React.lazy(() => import("./components/LeadMagnetDownloadModal"));
 
-export default function App() {
+function MainApp() {
+  const { t, language, isRTL } = useLanguage();
+
   // Navigation states
   const [activeSection, setActiveSection] = useState("contact");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -78,6 +82,7 @@ export default function App() {
     activeSection,
     selectedService,
     selectedBlog,
+    language,
   });
   
   // Custom states for contact submission
@@ -250,21 +255,21 @@ export default function App() {
           </a>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1.5 lg:gap-3 font-medium text-sm text-slate-600">
+          <nav className="hidden md:flex items-center gap-1 lg:gap-2 font-medium text-sm text-slate-600">
             {[
-              { id: "home", label: "Home" },
-              { id: "about", label: "About Us" },
-              { id: "services", label: "Services" },
-              { id: "pricing", label: "Pricing" },
-              { id: "testimonials", label: "Reviews" },
-              { id: "faqs", label: "FAQ" },
-              { id: "blogs", label: "Blogs" },
-              { id: "contact", label: "Contact Us" },
+              { id: "home", label: t.nav.home },
+              { id: "about", label: t.nav.about },
+              { id: "services", label: t.nav.services },
+              { id: "pricing", label: t.nav.pricing },
+              { id: "testimonials", label: t.nav.reviews },
+              { id: "faqs", label: t.nav.faq },
+              { id: "blogs", label: t.nav.blogs },
+              { id: "contact", label: t.nav.contact },
             ].map((link) => (
               <a
                 key={link.id}
                 href={`#${link.id}`}
-                className={`px-3 py-2 rounded-lg transition-all ${
+                className={`px-2.5 py-2 rounded-lg transition-all text-xs lg:text-sm ${
                   activeSection === link.id
                     ? "bg-navy-50 text-navy-800 font-bold"
                     : "hover:text-navy-800 hover:bg-slate-50"
@@ -275,18 +280,19 @@ export default function App() {
             ))}
           </nav>
 
-          {/* Header Action Button (Desktop Only) */}
-          <div className="hidden md:flex items-center">
+          {/* Header Actions: Language Selector & Booking CTA (Desktop Only) */}
+          <div className="hidden md:flex items-center gap-2.5">
+            <LanguageToggle variant="desktop" />
             <a
               href="#contact"
-              className="bg-navy-900 hover:bg-navy-950 text-white font-display font-bold py-2.5 px-5 rounded-xl text-xs tracking-tight transition-all shadow-md hover:shadow-lg active:scale-98 cursor-pointer flex items-center gap-1"
+              className="bg-navy-900 hover:bg-navy-950 text-white font-display font-bold py-2.5 px-4 lg:px-5 rounded-xl text-xs tracking-tight transition-all shadow-md hover:shadow-lg active:scale-98 cursor-pointer flex items-center gap-1.5"
             >
               <Calendar className="w-3.5 h-3.5 text-gold-400" />
-              Book Consultation
+              <span>{t.nav.bookConsultation}</span>
             </a>
           </div>
 
-          {/* Mobile Hamburguer Toggle */}
+          {/* Mobile Hamburger Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden w-11 h-11 flex items-center justify-center p-2 text-slate-600 hover:text-navy-900 hover:bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-500 cursor-pointer"
@@ -299,22 +305,25 @@ export default function App() {
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
           <div className="md:hidden absolute top-20 left-0 w-full bg-white border-b border-slate-100 shadow-xl z-50 animate-fadeIn">
-            <div className="px-4 pt-2 pb-6 space-y-1.5 font-medium text-slate-600">
+            <div className="px-4 pt-3 pb-6 space-y-2 font-medium text-slate-600">
+              <div className="pb-2 mb-1 border-b border-slate-100">
+                <LanguageToggle variant="mobile" />
+              </div>
               {[
-                { id: "home", label: "Home" },
-                { id: "about", label: "About Us" },
-                { id: "services", label: "Services" },
-                { id: "pricing", label: "Pricing" },
-                { id: "testimonials", label: "Reviews" },
-                { id: "faqs", label: "FAQ" },
-                { id: "blogs", label: "Blogs" },
-                { id: "contact", label: "Contact Us" },
+                { id: "home", label: t.nav.home },
+                { id: "about", label: t.nav.about },
+                { id: "services", label: t.nav.services },
+                { id: "pricing", label: t.nav.pricing },
+                { id: "testimonials", label: t.nav.reviews },
+                { id: "faqs", label: t.nav.faq },
+                { id: "blogs", label: t.nav.blogs },
+                { id: "contact", label: t.nav.contact },
               ].map((link) => (
                 <a
                   key={link.id}
                   href={`#${link.id}`}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`block px-4 py-3 rounded-xl transition-all ${
+                  className={`block px-4 py-2.5 rounded-xl transition-all ${
                     activeSection === link.id
                       ? "bg-navy-50 text-navy-800 font-bold"
                       : "hover:text-navy-800 hover:bg-slate-50"
@@ -323,13 +332,13 @@ export default function App() {
                   {link.label}
                 </a>
               ))}
-              <div className="pt-4 px-4">
+              <div className="pt-2">
                 <a
                   href="#contact"
                   onClick={() => setMobileMenuOpen(false)}
                   className="w-full bg-navy-900 hover:bg-navy-950 text-white font-display font-bold py-3 px-4 rounded-xl text-center text-xs tracking-tight transition-all shadow-md block"
                 >
-                  Book Free consultation
+                  {t.nav.bookConsultation}
                 </a>
               </div>
             </div>
@@ -353,7 +362,7 @@ export default function App() {
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5">
                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-md text-xs font-semibold text-gold-300">
                   <Sparkles className="w-3.5 h-3.5" />
-                  Authorized UAE Tax Consultants
+                  {t.hero.badge}
                 </div>
                 <a
                   href={GOOGLE_BUSINESS_URL}
@@ -365,23 +374,23 @@ export default function App() {
                   <GoogleLogo className="w-3.5 h-3.5" />
                   <span className="text-amber-300">★★★★★</span>
                   <span className="text-slate-100 font-bold">5.0</span>
-                  <span className="text-slate-300 text-[11px] font-normal hidden sm:inline">(48 Reviews)</span>
+                  <span className="text-slate-300 text-[11px] font-normal hidden sm:inline">{t.hero.googleRatingText}</span>
                   <ExternalLink className="w-3 h-3 text-slate-300 group-hover:translate-x-0.5 transition-transform" />
                 </a>
               </div>
 
               {/* Main Headline */}
               <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] text-white">
-                Financial Clarity, <br />
+                {t.hero.headlinePart1} <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-gold-400 to-emerald-400">
-                  Engineered
+                  {t.hero.headlineGradient}
                 </span>{" "}
-                for Your Growth
+                {t.hero.headlinePart2}
               </h1>
 
               {/* Subheadline */}
               <p className="text-slate-300 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                Expert accounting, VAT, and corporate tax advisory tailored for UAE businesses. We turn complex numbers into actionable strategies.
+                {t.hero.subheadline}
               </p>
 
               {/* Action and trust triggers */}
@@ -390,7 +399,7 @@ export default function App() {
                   href="#contact"
                   className="w-full sm:w-auto bg-gradient-to-tr from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-navy-950 font-display font-bold py-3.5 px-6 rounded-xl shadow-xl hover:shadow-gold-500/25 transition-all text-sm flex items-center justify-center gap-2 group cursor-pointer"
                 >
-                  <span>Book Free Consultation</span>
+                  <span>{t.hero.ctaConsultation}</span>
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </a>
 
@@ -399,14 +408,14 @@ export default function App() {
                   className="w-full sm:w-auto bg-white/10 hover:bg-white/20 border border-white/20 hover:border-gold-400/60 text-white font-display font-bold py-3.5 px-6 rounded-xl backdrop-blur-md transition-all text-sm flex items-center justify-center gap-2 cursor-pointer group hover:scale-[1.02] active:scale-98"
                 >
                   <ShieldCheck className="w-4 h-4 text-gold-400 group-hover:scale-110 transition-transform" />
-                  <span>Check 2026 Penalty Risk (Free)</span>
+                  <span>{t.hero.ctaRiskAudit}</span>
                 </button>
 
                 <a
                   href="#services"
                   className="w-full sm:w-auto border border-white/10 hover:border-white/30 hover:bg-white/5 text-slate-300 hover:text-white font-display font-semibold py-3.5 px-5 rounded-xl transition-all text-xs flex items-center justify-center gap-1.5"
                 >
-                  Explore Services
+                  {t.hero.ctaServices}
                 </a>
               </div>
 
@@ -415,19 +424,19 @@ export default function App() {
                 <div>
                   <span className="block text-2xl font-bold font-display text-gold-400">500+</span>
                   <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mt-0.5">
-                    UAE SMEs Served
+                    {t.hero.stats.smesLabel}
                   </span>
                 </div>
                 <div>
                   <span className="block text-2xl font-bold font-display text-gold-400">100%</span>
                   <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mt-0.5">
-                    Tax Compliance Pass
+                    {t.hero.stats.complianceLabel}
                   </span>
                 </div>
                 <div>
                   <span className="block text-2xl font-bold font-display text-gold-400">AED 50M+</span>
                   <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mt-0.5">
-                    Business Savings
+                    {t.hero.stats.savingsLabel}
                   </span>
                 </div>
               </div>
@@ -449,7 +458,7 @@ export default function App() {
       <section className="bg-white border-y border-slate-100 py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
           <span className="text-xs text-slate-400 font-bold uppercase tracking-widest block">
-            We Use the World's Best Software
+            {t.partners.label}
           </span>
           <div className="flex flex-wrap items-center justify-center gap-6 sm:gap-12 md:gap-16">
             
@@ -460,7 +469,7 @@ export default function App() {
                 <path d="M40 45 L50 55 L70 35" fill="none" stroke="currentColor" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               <span className="font-display font-bold text-slate-700 text-sm group-hover:text-teal-600 transition-colors">
-                Wafeq <span className="text-[9px] font-bold text-teal-600 bg-teal-50 px-1 py-0.5 rounded ml-1">Certified</span>
+                Wafeq <span className="text-[9px] font-bold text-teal-600 bg-teal-50 px-1 py-0.5 rounded ml-1">{t.partners.certified}</span>
               </span>
             </div>
 
@@ -473,7 +482,7 @@ export default function App() {
                 <div className="w-2.5 h-2.5 bg-amber-500 rounded-full" />
               </div>
               <span className="font-display font-bold text-slate-700 text-sm group-hover:text-amber-600 transition-colors">
-                Zoho Books <span className="text-[9px] font-bold text-amber-600 bg-amber-50 px-1 py-0.5 rounded ml-1">Pro</span>
+                Zoho Books <span className="text-[9px] font-bold text-amber-600 bg-amber-50 px-1 py-0.5 rounded ml-1">{t.partners.pro}</span>
               </span>
             </div>
 
@@ -484,7 +493,7 @@ export default function App() {
                 <rect x="35" y="35" width="30" height="30" rx="4" fill="currentColor" />
               </svg>
               <span className="font-display font-bold text-slate-700 text-sm group-hover:text-green-600 transition-colors">
-                QuickBooks <span className="text-[9px] font-bold text-green-600 bg-green-50 px-1 py-0.5 rounded ml-1">Partner</span>
+                QuickBooks <span className="text-[9px] font-bold text-green-600 bg-green-50 px-1 py-0.5 rounded ml-1">{t.partners.partner}</span>
               </span>
             </div>
 
@@ -499,19 +508,19 @@ export default function App() {
           {/* Section Header */}
           <div className="text-center space-y-3 max-w-2xl mx-auto">
             <span className="text-xs text-gold-600 font-bold uppercase tracking-widest block">
-              UAE Regulatory Compliance
+              {t.services.badge}
             </span>
             <h2 className="font-display text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight">
-              Our Core Financial Services
+              {t.services.title}
             </h2>
             <p className="text-slate-500 text-sm">
-              We engineer precise accounting structures, register corporate tax, submit VAT filing, and incorporate businesses legally inside the United Arab Emirates.
+              {t.services.subtitle}
             </p>
           </div>
 
           {/* Responsive Services Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {servicesData.map((service) => (
+            {(t.services.items || servicesData || []).map((service) => (
               <div
                 key={service.id}
                 className="premium-card rounded-3xl p-6 flex flex-col group"
@@ -536,7 +545,7 @@ export default function App() {
                   onClick={() => setSelectedService(service)}
                   className="w-full mt-auto border border-slate-100 bg-slate-50 hover:bg-navy-900 text-navy-800 hover:text-white font-display font-semibold py-2.5 px-4 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                 >
-                  Read More
+                  <span>{t.services.readMore}</span>
                   <ChevronRight className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -567,30 +576,30 @@ export default function App() {
             {/* Left Content Column */}
             <div className="lg:col-span-5 space-y-6">
               <span className="text-xs text-gold-600 font-bold uppercase tracking-widest block">
-                The Dias Advantage
+                {t.about.badge}
               </span>
               <h2 className="font-display text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight">
-                Why Partners Grow <br className="hidden sm:inline" />
-                Smarter With Us
+                {t.about.title} <br className="hidden sm:inline" />
+                {t.about.titleLine2}
               </h2>
               <p className="text-slate-600 text-sm leading-relaxed">
-                At Dias Accounting, we don't just crunch numbers—we engineer growth. We fuse UAE tax legislation mastery with advanced accounting frameworks to deliver premium compliance structure and financial optimization strategies.
+                {t.about.description}
               </p>
 
               {/* Statistics Panel */}
               <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-100">
                 <div className="space-y-1">
                   <div className="flex items-baseline gap-1">
-                    <span className="text-3xl font-extrabold font-display text-navy-900">99.8%</span>
+                    <span className="text-3xl font-extrabold font-display text-navy-900">{t.about.accuracyStat}</span>
                     <span className="text-xs text-emerald-600 font-bold">▲</span>
                   </div>
-                  <span className="text-xs text-slate-500 font-semibold block">Bookkeeping Accuracy Rate</span>
+                  <span className="text-xs text-slate-500 font-semibold block">{t.about.accuracyLabel}</span>
                 </div>
                 <div className="space-y-1">
                   <div className="flex items-baseline gap-1">
-                    <span className="text-3xl font-extrabold font-display text-navy-900">4-Hour</span>
+                    <span className="text-3xl font-extrabold font-display text-navy-900">{t.about.slaStat}</span>
                   </div>
-                  <span className="text-xs text-slate-500 font-semibold block">Average Inquiry Response SLA</span>
+                  <span className="text-xs text-slate-500 font-semibold block">{t.about.slaLabel}</span>
                 </div>
               </div>
 
@@ -598,14 +607,14 @@ export default function App() {
               <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex gap-3 items-center text-xs text-slate-600">
                 <Users className="w-5 h-5 text-gold-500 shrink-0" />
                 <span>
-                  Our specialists are legally certified by the Federal Tax Authority (FTA) and hold prestigious global certifications (ACCA, CPA).
+                  {t.about.trustStatement}
                 </span>
               </div>
             </div>
 
             {/* Right List Column: Benefits Visual blocks */}
             <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {[
+              {(t.about.pillars || [
                 {
                   title: "Optimized Performance",
                   desc: "We stream your financials, analyze operational costs, and construct dashboards that eliminate cash leaks.",
@@ -626,7 +635,7 @@ export default function App() {
                   desc: "Replace intuition with crystal-clear analytics. We offer regular, actionable financial briefings for growth scaling.",
                   bullets: ["Forecast modelling", "Real-time ledger access"],
                 },
-              ].map((benefit, idx) => (
+              ]).map((benefit, idx) => (
                 <div
                   key={idx}
                   className="bg-slate-50 border border-slate-100 hover:border-gold-300/60 hover:bg-white rounded-3xl p-5 transition-all hover:shadow-lg group"
@@ -640,18 +649,20 @@ export default function App() {
                     </h3>
                   </div>
                   <p className="text-slate-500 text-[11px] leading-relaxed mb-4">
-                    {benefit.desc}
+                    {benefit.description || (benefit as any).desc}
                   </p>
-                  <div className="flex flex-wrap gap-1.5 pt-2 border-t border-slate-200/40">
-                    {benefit.bullets.map((b, bIdx) => (
-                      <span
-                        key={bIdx}
-                        className="text-[9px] bg-white border border-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded-full"
-                      >
-                        {b}
-                      </span>
-                    ))}
-                  </div>
+                  {(benefit.bullets && benefit.bullets.length > 0) && (
+                    <div className="flex flex-wrap gap-1.5 pt-2 border-t border-slate-200/40">
+                      {benefit.bullets.map((b, bIdx) => (
+                        <span
+                          key={bIdx}
+                          className="text-[9px] bg-white border border-slate-100 text-slate-600 font-bold px-2 py-0.5 rounded-full"
+                        >
+                          {b}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -667,13 +678,13 @@ export default function App() {
           {/* Section Header */}
           <div className="text-center space-y-4 max-w-2xl mx-auto">
             <span className="text-xs text-gold-600 font-bold uppercase tracking-widest block">
-              Transparent, Cost-Effective Plans
+              {t.pricing.badge}
             </span>
             <h2 className="font-display text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight">
-              Flexible Bookkeeping & Tax Tiers
+              {t.pricing.title}
             </h2>
             <p className="text-slate-500 text-sm">
-              Premium accounting shouldn't cost corporate fortunes. Select the perfect tier for your operations, or request a custom proposal.
+              {t.pricing.subtitle}
             </p>
 
             {/* Toggle Button */}
@@ -686,7 +697,7 @@ export default function App() {
                     : "text-slate-500 hover:text-slate-800"
                 }`}
               >
-                Monthly Billing
+                {t.pricing.monthly}
               </button>
               <button
                 onClick={() => setBillingPeriod("annual")}
@@ -696,9 +707,9 @@ export default function App() {
                     : "text-slate-500 hover:text-slate-800"
                 }`}
               >
-                Annual Billing
+                <span>{t.pricing.annual}</span>
                 <span className="bg-emerald-100 text-emerald-800 text-[9px] font-extrabold px-1.5 py-0.5 rounded-full leading-none">
-                  Best Value
+                  {t.pricing.annualSavingsBadge}
                 </span>
               </button>
             </div>
@@ -709,7 +720,7 @@ export default function App() {
             {/* Special Limited-Time Offer Package */}
             <div className="bg-white border-2 border-gold-500 rounded-3xl p-8 flex flex-col relative transition-all duration-300 shadow-lg shadow-gold-500/10 hover:shadow-xl hover:shadow-gold-500/20 ring-4 ring-gold-500/5">
               {/* Limited Time Badge */}
-              <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gold-500 text-navy-950 text-[10px] font-extrabold uppercase tracking-widest px-4 py-1 rounded-full shadow-md">
+              <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gold-500 text-navy-950 text-[10px] font-extrabold uppercase tracking-widest px-4 py-1 rounded-full shadow-md whitespace-nowrap">
                 Limited-Time Offer
               </span>
 
@@ -754,7 +765,7 @@ export default function App() {
                 href="#contact"
                 className="w-full py-3.5 px-4 rounded-xl font-display font-bold text-xs text-center transition-all cursor-pointer bg-gold-500 hover:bg-gold-600 text-navy-950 shadow-md shadow-gold-500/20 mb-8"
               >
-                Get Started
+                {t.pricing.getStartedBtn}
               </a>
 
               {/* Inclusions */}
@@ -783,7 +794,7 @@ export default function App() {
               </div>
             </div>
 
-            {pricingTiers.map((tier) => {
+            {(t.pricing.tiers || pricingTiers || []).map((tier) => {
               // Convert pricing based on period
               const displayPrice = billingPeriod === "annual" 
                 ? tier.annualPrice 
@@ -800,8 +811,8 @@ export default function App() {
                 >
                   {/* Popular badge */}
                   {tier.popular && (
-                    <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gold-500 text-navy-950 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-md">
-                      Most Selected Plan
+                    <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gold-500 text-navy-950 text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full shadow-md whitespace-nowrap">
+                      {t.pricing.popularBadge}
                     </span>
                   )}
 
@@ -832,7 +843,7 @@ export default function App() {
                       Plan Inclusions:
                     </span>
                     <ul className="space-y-2.5 text-xs text-slate-600">
-                      {tier.features.map((feat, idx) => (
+                      {(tier.features || []).map((feat, idx) => (
                         <li key={idx} className="flex gap-2 items-start">
                            <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                           <span>{feat}</span>
@@ -850,7 +861,7 @@ export default function App() {
                         : "bg-navy-900 hover:bg-navy-950 text-white"
                     }`}
                   >
-                    Select {tier.name}
+                    {t.pricing.getStartedBtn}
                   </a>
                 </div>
               );
@@ -878,27 +889,27 @@ export default function App() {
             <div className="space-y-4 text-center lg:text-left max-w-2xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-400/20 border border-gold-400/30 text-gold-300 text-xs font-bold">
                 <BookOpen className="w-3.5 h-3.5" />
-                <span>Free Executive Compliance Resource</span>
+                <span>{t.leadMagnet.badge}</span>
               </div>
 
               <h3 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-white">
-                Download the 2026 UAE Corporate Tax & VAT Playbook
+                {t.leadMagnet.title}
               </h3>
 
               <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                A 15-page practitioner handbook prepared by Dias Accounting covering EmaraTax registration deadlines, 0% Free Zone Qualifying Income rules, Small Business Relief thresholds, and 100% input VAT recovery rules.
+                {t.leadMagnet.description}
               </p>
 
               {/* Feature Pills */}
               <div className="flex flex-wrap gap-2 justify-center lg:justify-start pt-1 text-[11px]">
                 <span className="bg-white/10 px-3 py-1 rounded-lg text-slate-200 font-semibold border border-white/10">
-                  ✓ Small Business Relief (AED 3M)
+                  {t.leadMagnet.point1}
                 </span>
                 <span className="bg-white/10 px-3 py-1 rounded-lg text-slate-200 font-semibold border border-white/10">
-                  ✓ Free Zone 0% QFZP Framework
+                  {t.leadMagnet.point2}
                 </span>
                 <span className="bg-white/10 px-3 py-1 rounded-lg text-slate-200 font-semibold border border-white/10">
-                  ✓ 10-Point VAT Invoice Checklist
+                  {t.leadMagnet.point3}
                 </span>
               </div>
             </div>
@@ -910,7 +921,7 @@ export default function App() {
                 className="w-full bg-gradient-to-r from-gold-400 via-gold-500 to-gold-600 hover:from-gold-500 hover:to-gold-700 text-navy-950 font-display font-bold py-3.5 px-6 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer hover:scale-105 active:scale-95"
               >
                 <BookOpen className="w-4 h-4" />
-                <span>Download Free Playbook (PDF)</span>
+                <span>{t.leadMagnet.downloadBtn}</span>
               </button>
 
               <button
@@ -918,7 +929,7 @@ export default function App() {
                 className="w-full bg-white/10 hover:bg-white/20 border border-white/20 text-white font-display font-semibold py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-2 text-xs cursor-pointer"
               >
                 <ShieldCheck className="w-4 h-4 text-gold-400" />
-                <span>Run 60-Sec Penalty Risk Audit</span>
+                <span>{t.leadMagnet.riskAuditBtn}</span>
               </button>
             </div>
 
@@ -926,31 +937,31 @@ export default function App() {
         </div>
       </section>
 
-      {/* 6.5 Customer Testimonials / Google Reviews Section */}
-      <React.Suspense fallback={<div className="py-20 text-center text-slate-400 text-sm">Loading Google Reviews...</div>}>
-        <GoogleReviewsSection testimonials={testimonialsData} />
-      </React.Suspense>
+    {/* 6.5 Customer Testimonials / Google Reviews Section */}
+    <React.Suspense fallback={<div className="py-20 text-center text-slate-400 text-sm">Loading Google Reviews...</div>}>
+      <GoogleReviewsSection testimonials={testimonialsData} />
+    </React.Suspense>
 
-      {/* 6.6 FAQ Section */}
-      <section id="faqs" className="py-20 bg-slate-50 border-t border-slate-100">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          
-          {/* Section Header */}
-          <div className="text-center space-y-3 max-w-2xl mx-auto">
-            <span className="text-xs text-gold-600 font-bold uppercase tracking-widest block">
-              Knowledge Base
-            </span>
-            <h2 className="font-display text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight">
-              Frequently Asked Questions
-            </h2>
-            <p className="text-slate-500 text-sm">
-              Get clear, professional answers on UAE Corporate Tax, VAT thresholds, accounting requirements, and general tax compliance.
-            </p>
-          </div>
+    {/* 6.6 FAQ Section */}
+    <section id="faqs" className="py-20 bg-slate-50 border-t border-slate-100">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        
+        {/* Section Header */}
+        <div className="text-center space-y-3 max-w-2xl mx-auto">
+          <span className="text-xs text-gold-600 font-bold uppercase tracking-widest block">
+            {t.faqs.badge}
+          </span>
+          <h2 className="font-display text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight">
+            {t.faqs.title}
+          </h2>
+          <p className="text-slate-500 text-sm">
+            {t.faqs.subtitle}
+          </p>
+        </div>
 
           {/* Accordion List */}
           <div className="space-y-4 max-w-3xl mx-auto">
-            {faqsData.map((faq) => {
+            {(faqsData || []).map((faq) => {
               const isOpen = openFaq === faq.id;
               return (
                 <div 
@@ -1024,7 +1035,7 @@ export default function App() {
 
           {/* Blogs Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {blogsData.map((blog) => (
+            {(blogsData || []).map((blog) => (
               <div
                 key={blog.id}
                 className="bg-white border border-slate-200/60 rounded-3xl overflow-hidden shadow-sm hover:shadow-md hover:border-gold-300/40 transition-all hover:-translate-y-1 flex flex-col cursor-pointer group"
@@ -1552,5 +1563,13 @@ export default function App() {
       </React.Suspense>
 
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <LanguageProvider>
+      <MainApp />
+    </LanguageProvider>
   );
 }

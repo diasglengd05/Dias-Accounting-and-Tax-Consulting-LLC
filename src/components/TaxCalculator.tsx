@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Calculator, Percent, ArrowRight, CheckCircle2, ShieldAlert, Award } from "lucide-react";
+import { useLanguage } from "../i18n/LanguageContext";
 
 type CalculatorTab = "corporate-tax" | "vat-estimator";
 
 export default function TaxCalculator() {
   const [activeTab, setActiveTab] = useState<CalculatorTab>("corporate-tax");
+  const { t, language, isRTL } = useLanguage();
 
   // Corporate Tax state
   const [taxableProfit, setTaxableProfit] = useState<number>(450000);
@@ -59,7 +61,8 @@ export default function TaxCalculator() {
 
   // Format number to AED
   const formatAED = (val: number) => {
-    return new Intl.NumberFormat("en-AE", {
+    const locale = language === "ar" ? "ar-AE" : "en-AE";
+    return new Intl.NumberFormat(locale, {
       style: "currency",
       currency: "AED",
       maximumFractionDigits: 0,
@@ -72,10 +75,10 @@ export default function TaxCalculator() {
       <div className="bg-gradient-to-r from-navy-800 to-navy-950 px-6 py-4 text-white flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Calculator className="w-5 h-5 text-gold-400" />
-          <span className="font-display font-bold tracking-tight">UAE Tax Planner</span>
+          <span className="font-display font-bold tracking-tight">{t.calculator.headerTitle}</span>
         </div>
         <span className="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-mono border border-emerald-500/30">
-          FY 2026 Ready
+          {t.calculator.headerBadge}
         </span>
       </div>
 
@@ -83,25 +86,25 @@ export default function TaxCalculator() {
       <div className="flex border-b border-slate-100 bg-slate-50">
         <button
           onClick={() => setActiveTab("corporate-tax")}
-          className={`flex-1 py-3 text-center text-sm font-semibold transition-all border-b-2 flex items-center justify-center gap-2 ${
+          className={`flex-1 py-3 text-center text-sm font-semibold transition-all border-b-2 flex items-center justify-center gap-2 cursor-pointer ${
             activeTab === "corporate-tax"
               ? "border-gold-500 text-navy-800 bg-white"
               : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/50"
           }`}
         >
           <Award className="w-4 h-4" />
-          Corporate Tax (9%)
+          {t.calculator.tabCorporateTax}
         </button>
         <button
           onClick={() => setActiveTab("vat-estimator")}
-          className={`flex-1 py-3 text-center text-sm font-semibold transition-all border-b-2 flex items-center justify-center gap-2 ${
+          className={`flex-1 py-3 text-center text-sm font-semibold transition-all border-b-2 flex items-center justify-center gap-2 cursor-pointer ${
             activeTab === "vat-estimator"
               ? "border-gold-500 text-navy-800 bg-white"
               : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/50"
           }`}
         >
           <Percent className="w-4 h-4" />
-          VAT Estimator (5%)
+          {t.calculator.tabVat}
         </button>
       </div>
 
@@ -111,7 +114,7 @@ export default function TaxCalculator() {
           <div className="space-y-5 animate-fadeIn">
             <div>
               <label htmlFor="ct-profit-range" className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 flex justify-between">
-                <span>Annual Taxable Profit (AED)</span>
+                <span>{t.calculator.annualProfitLabel}</span>
                 <span className="text-navy-800 font-mono text-sm">{formatAED(taxableProfit)}</span>
               </label>
               <input
@@ -126,13 +129,13 @@ export default function TaxCalculator() {
                 aria-label="Annual taxable profit slider"
               />
               <div className="flex justify-between text-[10px] text-slate-400 font-semibold mt-1">
-                <span>AED 50k</span>
-                <span>AED 375k (Threshold)</span>
-                <span>AED 1.5M</span>
-                <span>AED 5M+</span>
+                <span>50k</span>
+                <span>375k ({language === "ar" ? "حد الإعفاء" : "Threshold"})</span>
+                <span>1.5M</span>
+                <span>5M+</span>
               </div>
               <div className="mt-3">
-                <label htmlFor="ct-profit-number" className="sr-only">Exact Taxable Profit (AED)</label>
+                <label htmlFor="ct-profit-number" className="sr-only">{t.calculator.annualProfitLabel}</label>
                 <input
                   id="ct-profit-number"
                   type="number"
@@ -147,11 +150,11 @@ export default function TaxCalculator() {
             {/* Results Grid */}
             <div className="grid grid-cols-2 gap-3 pt-2">
               <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                <span className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Tax-Free (0%) Tier</span>
+                <span className="text-[10px] font-bold uppercase text-slate-400 block mb-1">{t.calculator.tier0Label}</span>
                 <span className="font-mono text-sm font-bold text-slate-700">{formatAED(ctResults.tier0)}</span>
               </div>
               <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                <span className="text-[10px] font-bold uppercase text-slate-400 block mb-1">Taxable (9%) Tier</span>
+                <span className="text-[10px] font-bold uppercase text-slate-400 block mb-1">{t.calculator.tier9Label}</span>
                 <span className="font-mono text-sm font-bold text-slate-700">{formatAED(ctResults.tier9)}</span>
               </div>
             </div>
@@ -163,13 +166,13 @@ export default function TaxCalculator() {
               </div>
               <div className="flex justify-between items-start">
                 <div>
-                  <span className="text-xs text-slate-300 font-medium block">Est. Tax Liability</span>
+                  <span className="text-xs text-slate-300 font-medium block">{t.calculator.estTaxLiability}</span>
                   <span className="text-2xl font-bold font-mono tracking-tight text-gold-400">
                     {formatAED(ctResults.liability)}
                   </span>
                 </div>
-                <div className="text-right">
-                  <span className="text-xs text-slate-300 font-medium block">Effective Rate</span>
+                <div className={isRTL ? "text-left" : "text-right"}>
+                  <span className="text-xs text-slate-300 font-medium block">{t.calculator.effectiveRate}</span>
                   <span className="text-lg font-bold font-mono text-emerald-400">{ctResults.effectiveRate}%</span>
                 </div>
               </div>
@@ -180,16 +183,20 @@ export default function TaxCalculator() {
               <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3 flex gap-2.5 items-start text-emerald-900 text-xs">
                 <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-bold block text-emerald-800">Eligible for Small Business Relief!</span>
-                  As your annual gross revenue is under AED 3,000,000, you may qualify for SBR to reduce taxable income to AED 0. Let Dias Accounting file your SBR claim legally.
+                  <span className="font-bold block text-emerald-800">{t.calculator.reliefBannerTitle}</span>
+                  {t.calculator.reliefBannerDesc}
                 </div>
               </div>
             ) : (
               <div className="bg-amber-50 border border-amber-100 rounded-xl p-3 flex gap-2.5 items-start text-amber-900 text-xs">
                 <ShieldAlert className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-bold block text-amber-800">Advanced Structure Required</span>
-                  For profits exceeding AED 375,000, standard 9% corporate tax is mandatory. Proper structuring (such as holding entities or Qualified Free Zones) is critical to optimize liability.
+                  <span className="font-bold block text-amber-800">
+                    {language === "ar" ? "تخطيط ضريبي متقدم مطلوب" : "Advanced Structure Required"}
+                  </span>
+                  {language === "ar"
+                    ? "للأرباح التي تتجاوز 375,000 درهم، تخضع الزيادة لنسبة 9%. يساعد التخطيط الاستراتيجي في تقليل الالتزامات الضريبية قانونياً."
+                    : "For profits exceeding AED 375,000, standard 9% corporate tax is mandatory. Proper structuring is critical to optimize liability."}
                 </div>
               </div>
             )}
@@ -199,7 +206,7 @@ export default function TaxCalculator() {
           <div className="space-y-4 animate-fadeIn">
             <div>
               <label htmlFor="vat-sales-range" className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 flex justify-between">
-                <span>Annual Taxable Sales (AED)</span>
+                <span>{t.calculator.vatSalesLabel}</span>
                 <span className="text-navy-800 font-mono text-sm">{formatAED(salesAmount)}</span>
               </label>
               <input
@@ -213,7 +220,7 @@ export default function TaxCalculator() {
                 className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-gold-500 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:outline-none"
                 aria-label="Annual taxable sales slider"
               />
-              <label htmlFor="vat-sales-number" className="sr-only">Exact Taxable Sales (AED)</label>
+              <label htmlFor="vat-sales-number" className="sr-only">{t.calculator.vatSalesLabel}</label>
               <input
                 id="vat-sales-number"
                 type="number"
@@ -226,7 +233,7 @@ export default function TaxCalculator() {
 
             <div>
               <label htmlFor="vat-expense-range" className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 flex justify-between">
-                <span>Taxable Expenses & Purchases (AED)</span>
+                <span>{t.calculator.vatExpensesLabel}</span>
                 <span className="text-navy-800 font-mono text-sm">{formatAED(expenseAmount)}</span>
               </label>
               <input
@@ -240,7 +247,7 @@ export default function TaxCalculator() {
                 className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-gold-500 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:outline-none"
                 aria-label="Taxable expenses and purchases slider"
               />
-              <label htmlFor="vat-expense-number" className="sr-only">Exact Taxable Expenses (AED)</label>
+              <label htmlFor="vat-expense-number" className="sr-only">{t.calculator.vatExpensesLabel}</label>
               <input
                 id="vat-expense-number"
                 type="number"
@@ -254,11 +261,11 @@ export default function TaxCalculator() {
             {/* Output vs Input VAT Breakdown */}
             <div className="grid grid-cols-2 gap-3 text-xs">
               <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-                <span className="text-slate-400 block font-semibold uppercase text-[9px] mb-0.5">Output VAT (5% on Sales)</span>
+                <span className="text-slate-400 block font-semibold uppercase text-[9px] mb-0.5">{t.calculator.vatOutput}</span>
                 <span className="font-mono text-slate-700 font-bold text-sm">{formatAED(vatResults.outputVat)}</span>
               </div>
               <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-                <span className="text-slate-400 block font-semibold uppercase text-[9px] mb-0.5">Input VAT (5% Recoverable)</span>
+                <span className="text-slate-400 block font-semibold uppercase text-[9px] mb-0.5">{t.calculator.vatInput}</span>
                 <span className="font-mono text-slate-700 font-bold text-sm">{formatAED(vatResults.inputVat)}</span>
               </div>
             </div>
@@ -268,16 +275,16 @@ export default function TaxCalculator() {
               <div className="flex justify-between items-center">
                 <div>
                   <span className="text-xs text-slate-300 font-medium block">
-                    {vatResults.netVat >= 0 ? "Estimated VAT Payable" : "Estimated VAT Refundable"}
+                    {vatResults.netVat >= 0 ? t.calculator.vatNetPayable : t.calculator.vatRefundEligible}
                   </span>
                   <span className="text-xl font-bold font-mono tracking-tight text-gold-400">
                     {formatAED(Math.abs(vatResults.netVat))}
                   </span>
                 </div>
-                <div className="text-xs max-w-[50%] text-right text-slate-300">
+                <div className={`text-xs max-w-[50%] text-slate-300 ${isRTL ? "text-left" : "text-right"}`}>
                   {vatResults.netVat >= 0
-                    ? "Due to FTA within 28 days of your quarter end."
-                    : "Eligible for FTA cash back or credit offset."}
+                    ? (language === "ar" ? "يستحق السداد للهيئة خلال 28 يوماً من نهاية الربع." : "Due to FTA within 28 days of your quarter end.")
+                    : (language === "ar" ? "مؤهل للاسترداد النقدي أو التسوية من الهيئة." : "Eligible for FTA cash back or credit offset.")}
                 </div>
               </div>
             </div>
@@ -287,10 +294,10 @@ export default function TaxCalculator() {
         {/* Call to Action Inside Calculator */}
         <a
           href="#contact"
-          className="mt-5 w-full bg-gold-500 hover:bg-gold-600 text-navy-950 font-display font-bold py-3 px-4 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 text-sm group"
+          className="mt-5 w-full bg-gold-500 hover:bg-gold-600 text-navy-950 font-display font-bold py-3 px-4 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 text-sm group cursor-pointer"
         >
-          Verify with a UAE Tax Expert
-          <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+          {t.calculator.bookStrategySession}
+          <ArrowRight className={`w-4 h-4 transition-transform ${isRTL ? "rotate-180 group-hover:-translate-x-1" : "group-hover:translate-x-1"}`} />
         </a>
       </div>
     </div>

@@ -24,6 +24,7 @@ import {
 import { User } from "firebase/auth";
 import { initAuth, googleSignIn, logout } from "../lib/firebase";
 import { findOrCreateSpreadsheet, appendInquiryRow, InquiryData, submitToGoogleSheetsDirectly } from "../lib/sheetsService";
+import { useLanguage } from "../i18n/LanguageContext";
 
 interface SchedulerProps {
   preselectedService?: string;
@@ -37,6 +38,7 @@ interface InquiryRecord extends InquiryData {
 }
 
 export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
+  const { t, language, isRTL } = useLanguage();
   // Public Form Fields
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -405,6 +407,16 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
   };
 
   const getServiceLabel = (type: string) => {
+    if (language === "ar") {
+      switch (type) {
+        case "corporate-tax": return "استشارات ضريبة الشركات (الامتثال 9%)";
+        case "vat-compliance": return "الامتثال لضريبة القيمة المضافة والإقرارات";
+        case "accounting": return "المحاسبة ومسك الدفاتر المنتظم";
+        case "incorporation": return "تأسيس الشركات وتراخيص المناطق الحرة";
+        case "general": return "استشارة ضريبية ومحاسبية شاملة";
+        default: return type;
+      }
+    }
     switch (type) {
       case "corporate-tax": return "Corporate Tax Advisory";
       case "vat-compliance": return "VAT Compliance & Audits";
@@ -639,7 +651,7 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
                             </tr>
                           </thead>
                           <tbody className="divide-y divide-slate-100">
-                            {portalInquiries.map((lead) => (
+                            {(portalInquiries || []).map((lead) => (
                               <tr key={lead.id} className="hover:bg-slate-50/50 transition-colors">
                                 <td className="px-5 py-3.5 space-y-0.5">
                                   <div className="font-bold text-navy-950">{lead.name}</div>
@@ -697,29 +709,29 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
               <CheckCircle2 className="w-10 h-10" />
             </div>
             <div className="space-y-2">
-              <h4 className="font-display text-2xl font-bold text-navy-950">Inquiry Logged Successfully!</h4>
+              <h4 className="font-display text-2xl font-bold text-navy-950">{t.contact.successTitle}</h4>
               <p className="text-slate-500 text-sm max-w-md mx-auto leading-relaxed">
-                Thank you! Your business consultation request has been received securely. No Google login was required. Our advisors will get back to you within 2 hours.
+                {t.contact.successMessage}
               </p>
             </div>
 
             <div className="max-w-md mx-auto bg-slate-50 border border-slate-100 rounded-2xl p-4 text-left space-y-3">
               <div className="flex items-center justify-between border-b border-slate-200/60 pb-2 text-xs">
-                <span className="text-slate-500 font-medium">Inquiry Status:</span>
+                <span className="text-slate-500 font-medium">{language === "ar" ? "حالة الطلب:" : "Inquiry Status:"}</span>
                 <span className="inline-flex items-center gap-1 bg-emerald-50 text-emerald-700 px-2.5 py-0.5 rounded-full text-[9px] font-bold border border-emerald-100">
-                  <Check className="w-3 h-3" /> Synced to Sheets
+                  <Check className="w-3 h-3" /> {language === "ar" ? "تم التسجيل بنجاح" : "Synced to Sheets"}
                 </span>
               </div>
               <div className="flex items-center justify-between border-b border-slate-200/60 pb-2 text-xs">
-                <span className="text-slate-500 font-medium">Full Name:</span>
+                <span className="text-slate-500 font-medium">{t.contact.fullNameLabel}:</span>
                 <span className="font-bold text-navy-950">{name}</span>
               </div>
               <div className="flex items-center justify-between border-b border-slate-200/60 pb-2 text-xs">
-                <span className="text-slate-500 font-medium">Work Email:</span>
+                <span className="text-slate-500 font-medium">{t.contact.emailLabel}:</span>
                 <span className="font-bold text-navy-950">{email}</span>
               </div>
               <div className="flex items-center justify-between text-xs">
-                <span className="text-slate-500 font-medium">Selected Interest:</span>
+                <span className="text-slate-500 font-medium">{t.contact.serviceLabel}:</span>
                 <span className="font-bold text-gold-600">
                   {getServiceLabel(serviceType)}
                 </span>
@@ -731,7 +743,7 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
                 onClick={resetForm}
                 className="text-slate-500 hover:text-navy-900 font-display font-bold text-xs underline cursor-pointer px-4 py-2"
               >
-                Submit another inquiry
+                {language === "ar" ? "إرسال استفسار آخر" : "Submit another inquiry"}
               </button>
             </div>
           </div>
@@ -740,10 +752,10 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
             
             {/* Header Section */}
             <div className="space-y-1.5 border-b border-slate-100 pb-4">
-              <span className="text-[10px] text-gold-600 font-bold uppercase tracking-widest block">Direct Business Inquiry</span>
-              <h4 className="font-display text-xl font-bold text-navy-950">Fill Your Contact Details</h4>
+              <span className="text-[10px] text-gold-600 font-bold uppercase tracking-widest block">{t.contact.badge}</span>
+              <h4 className="font-display text-xl font-bold text-navy-950">{t.contact.formTitle}</h4>
               <p className="text-slate-500 text-xs">
-                Submit your inquiry details below. Our corporate consulting team based in Dubai will contact you within 2 hours.
+                {t.contact.subtitle}
               </p>
             </div>
 
@@ -754,7 +766,7 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
                 <div>
                   <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
                     <LucideUser className="w-3.5 h-3.5 text-slate-400" />
-                    Your Full Name *
+                    {t.contact.fullNameLabel} *
                   </label>
                   <input
                     type="text"
@@ -762,14 +774,14 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     className="w-full px-4 py-2.5 text-xs border border-slate-200 rounded-xl bg-slate-50/50 text-slate-800 focus:bg-white focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none transition-all"
-                    placeholder="e.g. John Doe"
+                    placeholder={t.contact.fullNamePlaceholder}
                   />
                 </div>
 
                 <div>
                   <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
                     <Mail className="w-3.5 h-3.5 text-slate-400" />
-                    Work Email Address *
+                    {t.contact.emailLabel} *
                   </label>
                   <input
                     type="email"
@@ -777,7 +789,7 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full px-4 py-2.5 text-xs border border-slate-200 rounded-xl bg-slate-50/50 text-slate-800 focus:bg-white focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none transition-all"
-                    placeholder="name@company.ae"
+                    placeholder={t.contact.emailPlaceholder}
                   />
                 </div>
               </div>
@@ -787,7 +799,7 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
                 <div>
                   <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
                     <Phone className="w-3.5 h-3.5 text-slate-400" />
-                    Mobile Number (With Country Code) *
+                    {t.contact.phoneLabel} *
                   </label>
                   <input
                     type="tel"
@@ -795,21 +807,21 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     className="w-full px-4 py-2.5 text-xs border border-slate-200 rounded-xl bg-slate-50/50 text-slate-800 focus:bg-white focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none transition-all"
-                    placeholder="e.g. +971 52 922 6958"
+                    placeholder={t.contact.phonePlaceholder}
                   />
                 </div>
 
                 <div>
                   <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
                     <Building className="w-3.5 h-3.5 text-slate-400" />
-                    Company Name
+                    {language === "ar" ? "اسم الشركة" : "Company Name"}
                   </label>
                   <input
                     type="text"
                     value={company}
                     onChange={(e) => setCompany(e.target.value)}
                     className="w-full px-4 py-2.5 text-xs border border-slate-200 rounded-xl bg-slate-50/50 text-slate-800 focus:bg-white focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none transition-all"
-                    placeholder="e.g. My Company FZ-LLC"
+                    placeholder={language === "ar" ? "مثال: شركتي ذ.م.م" : "e.g. My Company FZ-LLC"}
                   />
                 </div>
               </div>
@@ -817,18 +829,18 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
               <div>
                 <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
                   <HelpCircle className="w-3.5 h-3.5 text-slate-400" />
-                  Primary UAE Accounting or Tax Interest *
+                  {t.contact.serviceLabel} *
                 </label>
                 <select
                   value={serviceType}
                   onChange={(e) => setServiceType(e.target.value)}
                   className="w-full px-4 py-2.5 text-xs border border-slate-200 rounded-xl bg-slate-50/50 text-slate-700 focus:bg-white focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none font-medium transition-all"
                 >
-                  <option value="corporate-tax">Corporate Tax Advisory (9% compliance)</option>
-                  <option value="vat-compliance">VAT Compliance, Audits & Filing</option>
-                  <option value="accounting">Accounting, Bookkeeping & Backoffice</option>
-                  <option value="incorporation">Business Setup, Licensing & Freezones</option>
-                  <option value="general">Comprehensive Consultation Package</option>
+                  <option value="corporate-tax">{language === "ar" ? "استشارات ضريبة الشركات (الامتثال بنسبة 9%)" : "Corporate Tax Advisory (9% compliance)"}</option>
+                  <option value="vat-compliance">{language === "ar" ? "الامتثال لضريبة القيمة المضافة والإقرارات" : "VAT Compliance, Audits & Filing"}</option>
+                  <option value="accounting">{language === "ar" ? "المحاسبة ومسك الدفاتر المنتظم" : "Accounting, Bookkeeping & Backoffice"}</option>
+                  <option value="incorporation">{language === "ar" ? "تأسيس الشركات والتراخيص والمناطق الحرة" : "Business Setup, Licensing & Freezones"}</option>
+                  <option value="general">{language === "ar" ? "استشارة ضريبية ومحاسبية شاملة" : "Comprehensive Consultation Package"}</option>
                 </select>
               </div>
             </div>
@@ -852,8 +864,8 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
                   <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                 ) : (
                   <>
-                    Submit Inquiry
-                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    <span>{t.contact.submitBtn}</span>
+                    <ArrowRight className={`w-4 h-4 transition-transform group-hover:translate-x-1 ${isRTL ? "rotate-180 group-hover:-translate-x-1" : ""}`} />
                   </>
                 )}
               </button>

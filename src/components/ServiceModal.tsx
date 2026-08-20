@@ -118,7 +118,7 @@ export default function ServiceModal({ service, isOpen, onClose, onBookCall }: S
               What’s Included in This Service:
             </h4>
             <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-600">
-              {service.inclusions.map((inc, idx) => (
+              {(service.inclusions || []).map((inc, idx) => (
                 <li key={idx} className="flex gap-2 items-start">
                   <Check className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                   <span>{inc}</span>
@@ -133,7 +133,7 @@ export default function ServiceModal({ service, isOpen, onClose, onBookCall }: S
               Strategic Benefits for Your Firm:
             </h4>
             <div className="space-y-2">
-              {service.benefits.map((benefit, idx) => (
+              {(service.benefits || []).map((benefit, idx) => (
                 <div key={idx} className="flex gap-2.5 items-start text-xs text-slate-600">
                   <div className="w-1.5 h-1.5 bg-gold-500 rounded-full shrink-0 mt-1.5" />
                   <p>{benefit}</p>
