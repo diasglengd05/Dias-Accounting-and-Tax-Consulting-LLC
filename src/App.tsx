@@ -59,7 +59,7 @@ function MainApp() {
   const { t, language, isRTL } = useLanguage();
 
   // Navigation states
-  const [activeSection, setActiveSection] = useState("home");
+  const [activeSection, setActiveSection] = useState("contact");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Lead generation modals
@@ -97,18 +97,27 @@ function MainApp() {
   // Target service for scheduler preselection
   const [preselectedServiceTitle, setPreselectedServiceTitle] = useState("");
 
-  // Respect hash anchor navigation if present in URL
+  // Directly scroll visitors to the Contact Us section on initial load
   useEffect(() => {
     const hash = window.location.hash;
-    if (hash && hash !== "#home") {
-      const targetId = hash.replace("#", "");
+    // Unless visitor explicitly requested a different hash like #services or #pricing, jump directly to contact
+    const targetId = (hash && hash !== "#home") ? hash.replace("#", "") : "contact";
+    
+    const scrollToTarget = () => {
       const targetElement = document.getElementById(targetId);
       if (targetElement) {
-        setTimeout(() => {
-          targetElement.scrollIntoView({ behavior: "smooth" });
-        }, 100);
+        targetElement.scrollIntoView({ behavior: "smooth" });
       }
-    }
+    };
+
+    // Quick scroll after initial render + secondary safeguard to ensure full layout ready
+    const timer1 = setTimeout(scrollToTarget, 80);
+    const timer2 = setTimeout(scrollToTarget, 300);
+
+    return () => {
+      clearTimeout(timer1);
+      clearTimeout(timer2);
+    };
   }, []);
 
   // Set up active section observer using a highly performant IntersectionObserver
@@ -1168,7 +1177,7 @@ function MainApp() {
       </section>
 
       {/* 8. Contact Us & Consultation Scheduler */}
-      <section id="contact" className="py-20 bg-slate-50 border-t border-slate-100 cv-auto">
+      <section id="contact" className="py-20 bg-slate-50 border-t border-slate-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           {/* Section Header */}
