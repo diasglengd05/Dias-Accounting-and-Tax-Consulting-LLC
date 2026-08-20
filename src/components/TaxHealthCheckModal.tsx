@@ -122,7 +122,12 @@ I would like my Free 15-Minute FTA Tax Strategy Consultation.`;
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm overflow-y-auto animate-fadeIn">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm overflow-y-auto animate-fadeIn"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="tax-health-modal-title"
+    >
       <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative my-8 overflow-hidden">
         
         {/* Decorative background accent */}
@@ -145,7 +150,7 @@ I would like my Free 15-Minute FTA Tax Strategy Consultation.`;
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>{isAr ? "فاحص الامتثال الضريبي الفوري في 60 ثانية" : "Instant 60-Second FTA Compliance Scanner"}</span>
               </div>
-              <h3 className="font-display text-2xl sm:text-3xl font-bold text-navy-950 tracking-tight">
+              <h3 id="tax-health-modal-title" className="font-display text-2xl sm:text-3xl font-bold text-navy-950 tracking-tight">
                 {isAr ? "فحص مجاني لمخاطر الضرائب والغرامات في الإمارات" : "Free UAE Tax & Penalty Risk Audit"}
               </h3>
               <p className="text-slate-600 text-xs sm:text-sm">

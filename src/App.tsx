@@ -97,16 +97,16 @@ function MainApp() {
   // Target service for scheduler preselection
   const [preselectedServiceTitle, setPreselectedServiceTitle] = useState("");
 
-  // Directly scroll visitors to the Contact Us section on initial load
+  // Respect hash anchor navigation if present in URL
   useEffect(() => {
     const hash = window.location.hash;
-    // Unless visitor explicitly specified a different section like #services or #pricing, jump to #contact
-    if (!hash || hash === "#contact" || hash === "#home") {
-      const contactElement = document.getElementById("contact");
-      if (contactElement) {
+    if (hash && hash !== "#home") {
+      const targetId = hash.replace("#", "");
+      const targetElement = document.getElementById(targetId);
+      if (targetElement) {
         setTimeout(() => {
-          contactElement.scrollIntoView({ behavior: "smooth" });
-        }, 150);
+          targetElement.scrollIntoView({ behavior: "smooth" });
+        }, 100);
       }
     }
   }, []);
@@ -303,7 +303,9 @@ function MainApp() {
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden w-11 h-11 flex items-center justify-center p-2 text-slate-600 hover:text-navy-900 hover:bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-500 cursor-pointer"
-            aria-label="Toggle navigation menu"
+            aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-nav-menu"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
@@ -311,7 +313,10 @@ function MainApp() {
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="md:hidden absolute top-20 left-0 w-full bg-white border-b border-slate-100 shadow-xl z-50 animate-fadeIn">
+          <div
+            id="mobile-nav-menu"
+            className="md:hidden absolute top-20 left-0 w-full bg-white border-b border-slate-100 shadow-xl z-50 animate-fadeIn"
+          >
             <div className="px-4 pt-3 pb-6 space-y-2 font-medium text-slate-600">
               <div className="pb-2 mb-1 border-b border-slate-100">
                 <LanguageToggle variant="mobile" />
@@ -511,7 +516,7 @@ function MainApp() {
       </section>
 
       {/* 4. Core Services Grid Section */}
-      <section id="services" className="py-20 bg-slate-50">
+      <section id="services" className="py-20 bg-slate-50 cv-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           {/* Section Header */}
@@ -681,7 +686,7 @@ function MainApp() {
       </section>
 
       {/* 6. Pricing Plans Section */}
-      <section id="pricing" className="py-20 bg-slate-50 border-t border-slate-100">
+      <section id="pricing" className="py-20 bg-slate-50 border-t border-slate-100 cv-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           {/* Section Header */}
@@ -952,7 +957,7 @@ function MainApp() {
     </React.Suspense>
 
     {/* 6.6 FAQ Section */}
-    <section id="faqs" className="py-20 bg-slate-50 border-t border-slate-100">
+    <section id="faqs" className="py-20 bg-slate-50 border-t border-slate-100 cv-auto">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
         {/* Section Header */}
@@ -1026,7 +1031,7 @@ function MainApp() {
       </section>
 
       {/* 7. Blogs / News Section */}
-      <section id="blogs" className="py-20 bg-white">
+      <section id="blogs" className="py-20 bg-white cv-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           {/* Section Header */}
@@ -1163,7 +1168,7 @@ function MainApp() {
       </section>
 
       {/* 8. Contact Us & Consultation Scheduler */}
-      <section id="contact" className="py-20 bg-slate-50 border-t border-slate-100">
+      <section id="contact" className="py-20 bg-slate-50 border-t border-slate-100 cv-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           {/* Section Header */}

@@ -112,7 +112,12 @@ export default function LeadMagnetDownloadModal({ isOpen, onClose }: LeadMagnetD
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm overflow-y-auto animate-fadeIn">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm overflow-y-auto animate-fadeIn"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="lead-magnet-modal-title"
+    >
       <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-slate-100 relative my-8 overflow-hidden">
         
         {/* Close Button */}
@@ -134,7 +139,7 @@ export default function LeadMagnetDownloadModal({ isOpen, onClose }: LeadMagnetD
                 <span>{isAr ? "دليل تنفيذي مجاني لعام 2026" : "Free 2026 Executive Guide"}</span>
               </div>
               
-              <h3 className="font-display text-2xl sm:text-3xl font-bold text-navy-950 tracking-tight">
+              <h3 id="lead-magnet-modal-title" className="font-display text-2xl sm:text-3xl font-bold text-navy-950 tracking-tight">
                 {isAr ? "دليل الامتثال لضريبة الشركات والقيمة المضافة لعام 2026" : "2026 UAE Corporate Tax & VAT Compliance Playbook"}
               </h3>
               
