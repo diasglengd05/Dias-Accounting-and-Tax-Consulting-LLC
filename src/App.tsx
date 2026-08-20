@@ -39,6 +39,9 @@ import { servicesData, blogsData, pricingTiers, testimonialsData, faqsData, GOOG
 import DiasLogo from "./components/DiasLogo";
 import { GoogleLogo } from "./components/GoogleReviewsSection";
 import { submitToGoogleSheetsDirectly } from "./lib/sheetsService";
+import ComplianceAlertBanner from "./components/ComplianceAlertBanner";
+import StickyMobileLeadBar from "./components/StickyMobileLeadBar";
+import useDynamicSEO from "./hooks/useDynamicSEO";
 
 // Lazy-loaded components for fast mobile JS execution & small initial bundle size
 const TaxCalculator = React.lazy(() => import("./components/TaxCalculator"));
@@ -47,11 +50,17 @@ const WhatsAppWidget = React.lazy(() => import("./components/WhatsAppWidget"));
 const Scheduler = React.lazy(() => import("./components/Scheduler"));
 const PrivacyPolicyModal = React.lazy(() => import("./components/PrivacyPolicyModal"));
 const GoogleReviewsSection = React.lazy(() => import("./components/GoogleReviewsSection"));
+const TaxHealthCheckModal = React.lazy(() => import("./components/TaxHealthCheckModal"));
+const LeadMagnetDownloadModal = React.lazy(() => import("./components/LeadMagnetDownloadModal"));
 
 export default function App() {
   // Navigation states
   const [activeSection, setActiveSection] = useState("contact");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Lead generation modals
+  const [taxHealthModalOpen, setTaxHealthModalOpen] = useState(false);
+  const [leadMagnetModalOpen, setLeadMagnetModalOpen] = useState(false);
 
   // Pricing duration state
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annual">("annual");
@@ -63,6 +72,13 @@ export default function App() {
 
   // FAQ state
   const [openFaq, setOpenFaq] = useState<string | null>(null);
+
+  // Dynamically update document head title and SEO meta tags based on active section & modal states
+  useDynamicSEO({
+    activeSection,
+    selectedService,
+    selectedBlog,
+  });
   
   // Custom states for contact submission
   const [contactSubmitted, setContactSubmitted] = useState(false);
@@ -219,8 +235,11 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-800 antialiased selection:bg-gold-500/30 selection:text-navy-950">
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-800 antialiased selection:bg-gold-500/30 selection:text-navy-950 pb-16 md:pb-0">
       
+      {/* 0. Top FTA Compliance Alert Banner */}
+      <ComplianceAlertBanner onOpenAudit={() => setTaxHealthModalOpen(true)} />
+
       {/* 1. Header / Navigation */}
       <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100 transition-all duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
@@ -366,17 +385,26 @@ export default function App() {
               </p>
 
               {/* Action and trust triggers */}
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 flex-wrap">
                 <a
                   href="#contact"
-                  className="w-full sm:w-auto bg-gradient-to-tr from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-navy-950 font-display font-bold py-4 px-8 rounded-xl shadow-xl hover:shadow-gold-500/25 transition-all text-sm flex items-center justify-center gap-2 group cursor-pointer"
+                  className="w-full sm:w-auto bg-gradient-to-tr from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-navy-950 font-display font-bold py-3.5 px-6 rounded-xl shadow-xl hover:shadow-gold-500/25 transition-all text-sm flex items-center justify-center gap-2 group cursor-pointer"
                 >
-                  Book a Free 15-Min Consultation
+                  <span>Book Free Consultation</span>
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </a>
+
+                <button
+                  onClick={() => setTaxHealthModalOpen(true)}
+                  className="w-full sm:w-auto bg-white/10 hover:bg-white/20 border border-white/20 hover:border-gold-400/60 text-white font-display font-bold py-3.5 px-6 rounded-xl backdrop-blur-md transition-all text-sm flex items-center justify-center gap-2 cursor-pointer group hover:scale-[1.02] active:scale-98"
+                >
+                  <ShieldCheck className="w-4 h-4 text-gold-400 group-hover:scale-110 transition-transform" />
+                  <span>Check 2026 Penalty Risk (Free)</span>
+                </button>
+
                 <a
                   href="#services"
-                  className="w-full sm:w-auto border border-white/20 hover:border-white/40 hover:bg-white/5 text-white font-display font-bold py-4 px-8 rounded-xl transition-all text-sm flex items-center justify-center gap-1.5"
+                  className="w-full sm:w-auto border border-white/10 hover:border-white/30 hover:bg-white/5 text-slate-300 hover:text-white font-display font-semibold py-3.5 px-5 rounded-xl transition-all text-xs flex items-center justify-center gap-1.5"
                 >
                   Explore Services
                 </a>
@@ -834,6 +862,67 @@ export default function App() {
             *Custom enterprise solutions, audit support packages, and historical clean-ups are quoted separately. Pricing excludes standard government VAT.
           </p>
 
+        </div>
+      </section>
+
+      {/* 6.3 High-Value Lead Magnet: 2026 UAE Compliance Playbook Banner */}
+      <section className="bg-gradient-to-br from-navy-950 via-slate-900 to-navy-950 text-white py-14 border-y border-gold-500/20 relative overflow-hidden">
+        {/* Background ambient lighting */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="bg-white/5 border border-white/10 rounded-3xl p-6 sm:p-10 backdrop-blur-md flex flex-col lg:flex-row items-center justify-between gap-8 shadow-2xl">
+            
+            {/* Left Content */}
+            <div className="space-y-4 text-center lg:text-left max-w-2xl">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-400/20 border border-gold-400/30 text-gold-300 text-xs font-bold">
+                <BookOpen className="w-3.5 h-3.5" />
+                <span>Free Executive Compliance Resource</span>
+              </div>
+
+              <h3 className="font-display text-2xl sm:text-3xl font-bold tracking-tight text-white">
+                Download the 2026 UAE Corporate Tax & VAT Playbook
+              </h3>
+
+              <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                A 15-page practitioner handbook prepared by Dias Accounting covering EmaraTax registration deadlines, 0% Free Zone Qualifying Income rules, Small Business Relief thresholds, and 100% input VAT recovery rules.
+              </p>
+
+              {/* Feature Pills */}
+              <div className="flex flex-wrap gap-2 justify-center lg:justify-start pt-1 text-[11px]">
+                <span className="bg-white/10 px-3 py-1 rounded-lg text-slate-200 font-semibold border border-white/10">
+                  ✓ Small Business Relief (AED 3M)
+                </span>
+                <span className="bg-white/10 px-3 py-1 rounded-lg text-slate-200 font-semibold border border-white/10">
+                  ✓ Free Zone 0% QFZP Framework
+                </span>
+                <span className="bg-white/10 px-3 py-1 rounded-lg text-slate-200 font-semibold border border-white/10">
+                  ✓ 10-Point VAT Invoice Checklist
+                </span>
+              </div>
+            </div>
+
+            {/* Right CTAs */}
+            <div className="flex flex-col sm:flex-row lg:flex-col gap-3 w-full lg:w-auto shrink-0">
+              <button
+                onClick={() => setLeadMagnetModalOpen(true)}
+                className="w-full bg-gradient-to-r from-gold-400 via-gold-500 to-gold-600 hover:from-gold-500 hover:to-gold-700 text-navy-950 font-display font-bold py-3.5 px-6 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 text-xs sm:text-sm cursor-pointer hover:scale-105 active:scale-95"
+              >
+                <BookOpen className="w-4 h-4" />
+                <span>Download Free Playbook (PDF)</span>
+              </button>
+
+              <button
+                onClick={() => setTaxHealthModalOpen(true)}
+                className="w-full bg-white/10 hover:bg-white/20 border border-white/20 text-white font-display font-semibold py-3 px-6 rounded-xl transition-all flex items-center justify-center gap-2 text-xs cursor-pointer"
+              >
+                <ShieldCheck className="w-4 h-4 text-gold-400" />
+                <span>Run 60-Sec Penalty Risk Audit</span>
+              </button>
+            </div>
+
+          </div>
         </div>
       </section>
 
@@ -1456,6 +1545,9 @@ export default function App() {
 
       <React.Suspense fallback={null}>
         <WhatsAppWidget />
+        <StickyMobileLeadBar onOpenAudit={() => setTaxHealthModalOpen(true)} />
+        <TaxHealthCheckModal isOpen={taxHealthModalOpen} onClose={() => setTaxHealthModalOpen(false)} />
+        <LeadMagnetDownloadModal isOpen={leadMagnetModalOpen} onClose={() => setLeadMagnetModalOpen(false)} />
         <PrivacyPolicyModal isOpen={privacyOpen} onClose={() => setPrivacyOpen(false)} />
       </React.Suspense>
 

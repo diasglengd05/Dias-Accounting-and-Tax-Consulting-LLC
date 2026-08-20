@@ -1,0 +1,14 @@
+# Robots.txt for Dias Accounting & Tax Consulting LLC (https://diasuae.ae)
+User-agent: *
+Allow: /
+Allow: /#services
+Allow: /#pricing
+Allow: /#testimonials
+Allow: /#faqs
+Allow: /#blogs
+Allow: /#contact
+Allow: /assets/
+
+# Host and Sitemap indexing
+Host: https://diasuae.ae
+Sitemap: https://diasuae.ae/sitemap.xml
