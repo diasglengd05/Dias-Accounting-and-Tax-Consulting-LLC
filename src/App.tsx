@@ -59,7 +59,7 @@ function MainApp() {
   const { t, language, isRTL } = useLanguage();
 
   // Navigation states
-  const [activeSection, setActiveSection] = useState("contact");
+  const [activeSection, setActiveSection] = useState("home");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Lead generation modals
@@ -459,7 +459,7 @@ function MainApp() {
 
             {/* Right Column: UAE Tax Planner Applet Widget */}
             <div className="lg:col-span-5 w-full max-w-md mx-auto lg:max-w-none">
-              <React.Suspense fallback={<div className="bg-white rounded-3xl p-8 shadow-xl border border-slate-100 animate-pulse h-96 flex items-center justify-center text-slate-400 text-xs">Loading Tax Estimator...</div>}>
+              <React.Suspense fallback={<div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-100 shadow-xl min-h-[480px] p-6 flex flex-col justify-center items-center text-slate-400 text-xs animate-pulse">Loading Tax Estimator...</div>}>
                 <TaxCalculator />
               </React.Suspense>
             </div>
@@ -952,7 +952,7 @@ function MainApp() {
       </section>
 
     {/* 6.5 Customer Testimonials / Google Reviews Section */}
-    <React.Suspense fallback={<div className="py-20 text-center text-slate-400 text-sm">Loading Google Reviews...</div>}>
+    <React.Suspense fallback={<div className="py-20 text-center text-slate-400 text-sm min-h-[420px] flex items-center justify-center">Loading Google Reviews...</div>}>
       <GoogleReviewsSection testimonials={testimonialsData} />
     </React.Suspense>
 
@@ -1188,7 +1188,7 @@ function MainApp() {
             
             {/* Left Column: Scheduler Form */}
             <div className="lg:col-span-7">
-              <React.Suspense fallback={<div className="bg-white rounded-3xl p-8 shadow-xl border border-slate-100 animate-pulse h-96 flex items-center justify-center text-slate-400 text-xs">Loading Consultation Scheduler...</div>}>
+              <React.Suspense fallback={<div className="bg-white rounded-3xl p-8 shadow-xl border border-slate-100 min-h-[560px] flex items-center justify-center text-slate-400 text-xs animate-pulse">Loading Consultation Scheduler...</div>}>
                 <Scheduler preselectedService={preselectedServiceTitle} />
               </React.Suspense>
             </div>
