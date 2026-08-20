@@ -8,7 +8,26 @@ Allow: /#faqs
 Allow: /#blogs
 Allow: /#contact
 Allow: /assets/
+Allow: /llms.txt
+Allow: /llms-full.txt
 
-# Host and Sitemap indexing
+# AI & LLM Crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+# Host, Sitemap, and Agentic endpoints
 Host: https://diasuae.ae
 Sitemap: https://diasuae.ae/sitemap.xml
+

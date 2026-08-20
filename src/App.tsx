@@ -241,12 +241,19 @@ function MainApp() {
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800 antialiased selection:bg-gold-500/30 selection:text-navy-950 pb-16 md:pb-0">
+      {/* Skip to Main Content Link for Keyboard Accessibility */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2.5 focus:bg-gold-500 focus:text-navy-950 focus:font-display focus:font-bold focus:rounded-xl focus:shadow-2xl focus:outline-none"
+      >
+        Skip to main content
+      </a>
       
       {/* 0. Top FTA Compliance Alert Banner */}
       <ComplianceAlertBanner onOpenAudit={() => setTaxHealthModalOpen(true)} />
 
       {/* 1. Header / Navigation */}
-      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100 transition-all duration-200">
+      <header role="banner" className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100 transition-all duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           
           {/* Logo */}
@@ -346,8 +353,10 @@ function MainApp() {
         )}
       </header>
 
-      {/* 2. Hero Section */}
-      <section id="home" className="relative overflow-hidden bg-mesh pt-12 pb-20 md:py-24 lg:py-32 text-white">
+      {/* Main Landmark for Accessibility & SEO */}
+      <main id="main-content" role="main">
+        {/* 2. Hero Section */}
+        <section id="home" className="relative overflow-hidden bg-mesh pt-12 pb-20 md:py-24 lg:py-32 text-white">
         {/* Background visual geometric accents */}
         <div className="absolute top-1/4 left-1/10 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute bottom-1/4 right-1/10 w-96 h-96 bg-gold-500/5 rounded-full blur-3xl pointer-events-none" />
@@ -1285,11 +1294,14 @@ function MainApp() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
-                      Full Name
+                    <label htmlFor="contact-full-name" className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                      Full Name *
                     </label>
                     <input
+                      id="contact-full-name"
+                      name="name"
                       type="text"
+                      autoComplete="name"
                       required
                       value={contactName}
                       onChange={(e) => setContactName(e.target.value)}
@@ -1298,11 +1310,14 @@ function MainApp() {
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
-                      Email Address
+                    <label htmlFor="contact-email-addr" className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                      Email Address *
                     </label>
                     <input
+                      id="contact-email-addr"
+                      name="email"
                       type="email"
+                      autoComplete="email"
                       required
                       value={contactEmail}
                       onChange={(e) => setContactEmail(e.target.value)}
@@ -1311,11 +1326,14 @@ function MainApp() {
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
-                      Mobile Number
+                    <label htmlFor="contact-mobile-phone" className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                      Mobile Number *
                     </label>
                     <input
+                      id="contact-mobile-phone"
+                      name="phone"
                       type="tel"
+                      autoComplete="tel"
                       required
                       value={contactPhone}
                       onChange={(e) => setContactPhone(e.target.value)}
@@ -1326,10 +1344,12 @@ function MainApp() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
-                    Your Requirements / Detailed Inquiry
+                  <label htmlFor="contact-detailed-msg" className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">
+                    Your Requirements / Detailed Inquiry *
                   </label>
                   <textarea
+                    id="contact-detailed-msg"
+                    name="message"
                     rows={4}
                     required
                     value={contactMsg}
@@ -1346,12 +1366,13 @@ function MainApp() {
                 )}
 
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <span className="text-[10px] text-slate-400 font-semibold leading-normal max-w-sm">
+                  <span className="text-[10px] text-slate-500 font-semibold leading-normal max-w-sm">
                     By submitting this form, you authorize Dias Accounting to store these corporate credentials for consultations. Your records are protected under UAE personal data protection decrees.
                   </span>
                   <button
                     type="submit"
                     disabled={contactIsSubmitting}
+                    aria-label="Send secure inquiry message"
                     className="w-full sm:w-auto bg-navy-900 hover:bg-navy-950 text-white font-display font-bold py-3 px-8 rounded-xl text-xs transition-all shadow flex items-center justify-center gap-1.5 cursor-pointer self-stretch sm:self-auto disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {contactIsSubmitting ? (
@@ -1370,9 +1391,10 @@ function MainApp() {
 
         </div>
       </section>
+      </main>
 
       {/* 9. Footer */}
-      <footer className="bg-navy-950 text-white border-t border-white/5 pt-16 pb-8">
+      <footer role="contentinfo" className="bg-navy-950 text-white border-t border-white/5 pt-16 pb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8">

@@ -1,0 +1,49 @@
+# Dias Accounting & Tax Consulting LLC - Complete Knowledge & Services Specification
+> Comprehensive Guide to UAE Corporate Tax, VAT, Accounting Services, and Advisory Operations.
+
+## Organization Identity
+- Name: Dias Accounting and Tax Consulting LLC
+- Operating Jurisdictions: Dubai Mainland, Abu Dhabi, Sharjah, and all UAE Free Zones (DMCC, DIFC, DAFZA, Shams, RAKEZ, IFZA, Meydan).
+- Leadership: Glen Dias, Managing Partner & Senior Tax Advisor.
+- FTA Accreditation Status: Fully registered Federal Tax Authority (FTA) tax consultancy and certified bookkeeping firm.
+
+## Detailed Practice Areas
+
+### 1. UAE Corporate Tax (Federal Decree-Law No. 47 of 2022)
+- Rate Structure:
+  - 0% on Taxable Income up to AED 375,000.
+  - 9% on Taxable Income exceeding AED 375,000.
+  - Qualifying Free Zone Person (QFZP): 0% on Qualifying Income satisfying Article 18 conditions.
+- Deadlines:
+  - Registration: Staggered based on commercial trade license issue month (AED 10,000 penalty for non-compliance).
+  - Annual Return & Tax Payment: Strictly within 9 calendar months from the end of the financial year.
+- Small Business Relief (Ministerial Decision No. 73/2023):
+  - Available to resident taxable persons whose revenue does not exceed AED 3,000,000 for relevant tax periods through December 31, 2026.
+  - Taxable income treated as zero with simplified reporting.
+
+### 2. Free Zone Qualifying Income (Cabinet Decision No. 55/2023 & MD No. 139/2023)
+- 5 Statutory Tests for 0% Tax:
+  1. Adequate Economic Substance in the Free Zone.
+  2. Deriving Qualifying Income from transactions with other Free Zone persons or designated qualifying activities.
+  3. De Minimis non-qualifying revenue test: ≤ 5% of total revenue or AED 5,000,000, whichever is lower.
+  4. Full compliance with Transfer Pricing and Arm's Length rules (Article 34 & 55).
+  5. Preparation of IFRS Audited Financial Statements by accredited UAE auditors.
+
+### 3. Value Added Tax (Federal Decree-Law No. 8 of 2017)
+- Standard Rate: 5% on taxable supplies of goods and services.
+- 0% Zero-Rated: Exports of goods and services outside GCC implementing states, international transport, certain education and healthcare.
+- Exempt Supplies: Specified financial services, residential real estate (leases), bare land, local passenger transport.
+- VAT Return: Form VAT201 filed quarterly or monthly within 28 days following the end of the tax period.
+
+### 4. Backlog Accounting & Financial Reconstruction
+- Turnaround time: 5 to 14 business days.
+- Reconstruction of multi-currency ledgers, bank transactions, credit card reconciliations, and VAT adjustment journals.
+- Output: IFRS-compliant Balance Sheets, Profit & Loss statements, and audit-ready trial balances.
+
+## Client Communication & API Endpoints
+- Web Portal: https://diasuae.ae
+- Inquiries API: POST https://diasuae.ae/api/capture-inquiry
+- Lead Magnet Playbook API: POST https://diasuae.ae/api/send-playbook-email
+- Direct WhatsApp: https://wa.me/971502560990
+- Direct Phone: +971 50 256 0990 / +971 52 922 6958
+- Office Address: Al Saada Tower, Business Bay, Dubai, UAE

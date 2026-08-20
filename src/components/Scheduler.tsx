@@ -764,12 +764,15 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
               {/* Name & Email row */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
-                    <LucideUser className="w-3.5 h-3.5 text-slate-400" />
+                  <label htmlFor="scheduler-name-input" className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5 flex items-center gap-1.5">
+                    <LucideUser className="w-3.5 h-3.5 text-slate-500" />
                     {t.contact.fullNameLabel} *
                   </label>
                   <input
+                    id="scheduler-name-input"
+                    name="name"
                     type="text"
+                    autoComplete="name"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -779,12 +782,15 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
-                    <Mail className="w-3.5 h-3.5 text-slate-400" />
+                  <label htmlFor="scheduler-email-input" className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5 flex items-center gap-1.5">
+                    <Mail className="w-3.5 h-3.5 text-slate-500" />
                     {t.contact.emailLabel} *
                   </label>
                   <input
+                    id="scheduler-email-input"
+                    name="email"
                     type="email"
+                    autoComplete="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -797,12 +803,15 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
               {/* Phone & Company row */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
-                    <Phone className="w-3.5 h-3.5 text-slate-400" />
+                  <label htmlFor="scheduler-phone-input" className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5 flex items-center gap-1.5">
+                    <Phone className="w-3.5 h-3.5 text-slate-500" />
                     {t.contact.phoneLabel} *
                   </label>
                   <input
+                    id="scheduler-phone-input"
+                    name="phone"
                     type="tel"
+                    autoComplete="tel"
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
@@ -812,12 +821,15 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
-                    <Building className="w-3.5 h-3.5 text-slate-400" />
+                  <label htmlFor="scheduler-company-input" className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5 flex items-center gap-1.5">
+                    <Building className="w-3.5 h-3.5 text-slate-500" />
                     {language === "ar" ? "اسم الشركة" : "Company Name"}
                   </label>
                   <input
+                    id="scheduler-company-input"
+                    name="organization"
                     type="text"
+                    autoComplete="organization"
                     value={company}
                     onChange={(e) => setCompany(e.target.value)}
                     className="w-full px-4 py-2.5 text-xs border border-slate-200 rounded-xl bg-slate-50/50 text-slate-800 focus:bg-white focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none transition-all"
@@ -827,11 +839,13 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
               </div>
 
               <div>
-                <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5 flex items-center gap-1.5">
-                  <HelpCircle className="w-3.5 h-3.5 text-slate-400" />
+                <label htmlFor="scheduler-service-select" className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5 flex items-center gap-1.5">
+                  <HelpCircle className="w-3.5 h-3.5 text-slate-500" />
                   {t.contact.serviceLabel} *
                 </label>
                 <select
+                  id="scheduler-service-select"
+                  name="serviceType"
                   value={serviceType}
                   onChange={(e) => setServiceType(e.target.value)}
                   className="w-full px-4 py-2.5 text-xs border border-slate-200 rounded-xl bg-slate-50/50 text-slate-700 focus:bg-white focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none font-medium transition-all"

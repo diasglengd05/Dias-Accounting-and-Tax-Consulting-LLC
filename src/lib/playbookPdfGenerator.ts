@@ -1,5 +1,3 @@
-import { jsPDF } from "jspdf";
-
 export interface PlaybookRecipient {
   name: string;
   email: string;
@@ -10,8 +8,10 @@ export interface PlaybookRecipient {
 
 /**
  * Generates the official 2026 UAE Corporate Tax & VAT Compliance Playbook PDF
+ * Dynamically imports jsPDF on demand to keep initial mobile bundle ultra lightweight
  */
-export function generateCompliancePlaybookPdf(recipient: PlaybookRecipient): jsPDF {
+export async function generateCompliancePlaybookPdf(recipient: PlaybookRecipient): Promise<any> {
+  const { jsPDF } = await import("jspdf");
   const doc = new jsPDF({
     orientation: "portrait",
     unit: "mm",
@@ -390,9 +390,9 @@ export function generateCompliancePlaybookPdf(recipient: PlaybookRecipient): jsP
 /**
  * Generates and triggers automatic browser download of the playbook
  */
-export function downloadCompliancePlaybook(recipient: PlaybookRecipient): boolean {
+export async function downloadCompliancePlaybook(recipient: PlaybookRecipient): Promise<boolean> {
   try {
-    const doc = generateCompliancePlaybookPdf(recipient);
+    const doc = await generateCompliancePlaybookPdf(recipient);
     const sanitizedName = (recipient.name || "Executive").replace(/[^a-zA-Z0-9]/g, "_");
     const filename = `Dias_Accounting_2026_UAE_Tax_Compliance_Playbook_${sanitizedName}.pdf`;
     doc.save(filename);

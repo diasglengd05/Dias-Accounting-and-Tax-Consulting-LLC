@@ -338,13 +338,16 @@ I would like my Free 15-Minute FTA Tax Strategy Consultation.`;
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div>
-                  <label className="text-[10px] font-bold text-slate-600 uppercase block mb-1">
+                  <label htmlFor="tax-health-fullname" className="text-[10px] font-bold text-slate-700 uppercase block mb-1">
                     {isAr ? "الاسم الكامل *" : "Your Name *"}
                   </label>
                   <div className="relative">
                     <User className={`w-3.5 h-3.5 text-slate-400 absolute top-3 ${isRTL ? "right-3" : "left-3"}`} />
                     <input
+                      id="tax-health-fullname"
+                      name="name"
                       type="text"
+                      autoComplete="name"
                       required
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
@@ -355,13 +358,16 @@ I would like my Free 15-Minute FTA Tax Strategy Consultation.`;
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-bold text-slate-600 uppercase block mb-1">
+                  <label htmlFor="tax-health-company" className="text-[10px] font-bold text-slate-700 uppercase block mb-1">
                     {isAr ? "اسم الشركة" : "Company Name"}
                   </label>
                   <div className="relative">
                     <Building2 className={`w-3.5 h-3.5 text-slate-400 absolute top-3 ${isRTL ? "right-3" : "left-3"}`} />
                     <input
+                      id="tax-health-company"
+                      name="organization"
                       type="text"
+                      autoComplete="organization"
                       value={companyName}
                       onChange={(e) => setCompanyName(e.target.value)}
                       placeholder={isAr ? "مثال: شركة الصقر للتجارة ذ.م.م" : "e.g. Falcon Trading LLC"}
@@ -373,13 +379,16 @@ I would like my Free 15-Minute FTA Tax Strategy Consultation.`;
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div>
-                  <label className="text-[10px] font-bold text-slate-600 uppercase block mb-1">
+                  <label htmlFor="tax-health-phone" className="text-[10px] font-bold text-slate-700 uppercase block mb-1">
                     {isAr ? "رقم الواتساب / الهاتف *" : "WhatsApp / Phone *"}
                   </label>
                   <div className="relative">
                     <Phone className={`w-3.5 h-3.5 text-slate-400 absolute top-3 ${isRTL ? "right-3" : "left-3"}`} />
                     <input
+                      id="tax-health-phone"
+                      name="phone"
                       type="tel"
+                      autoComplete="tel"
                       required
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
@@ -390,13 +399,16 @@ I would like my Free 15-Minute FTA Tax Strategy Consultation.`;
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-bold text-slate-600 uppercase block mb-1">
+                  <label htmlFor="tax-health-email" className="text-[10px] font-bold text-slate-700 uppercase block mb-1">
                     {isAr ? "البريد الإلكتروني المهني *" : "Email Address *"}
                   </label>
                   <div className="relative">
                     <Mail className={`w-3.5 h-3.5 text-slate-400 absolute top-3 ${isRTL ? "right-3" : "left-3"}`} />
                     <input
+                      id="tax-health-email"
+                      name="email"
                       type="email"
+                      autoComplete="email"
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}

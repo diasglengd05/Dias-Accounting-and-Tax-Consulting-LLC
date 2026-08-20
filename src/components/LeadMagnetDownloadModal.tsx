@@ -24,8 +24,8 @@ export default function LeadMagnetDownloadModal({ isOpen, onClose }: LeadMagnetD
 
   if (!isOpen) return null;
 
-  const triggerDownload = () => {
-    return downloadCompliancePlaybook({
+  const triggerDownload = async () => {
+    return await downloadCompliancePlaybook({
       name: fullName.trim() || (isAr ? "الرئيس التنفيذي" : "Executive"),
       email: email.trim(),
       company: company.trim() || "N/A",
@@ -41,7 +41,7 @@ export default function LeadMagnetDownloadModal({ isOpen, onClose }: LeadMagnetD
     setIsSubmitting(true);
 
     // 1. Immediately trigger the dynamic PDF download to the user's device
-    triggerDownload();
+    await triggerDownload();
 
     // 2. Dispatch email request to backend
     try {
@@ -174,13 +174,16 @@ export default function LeadMagnetDownloadModal({ isOpen, onClose }: LeadMagnetD
             <form onSubmit={handleSubmit} className="space-y-3">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div>
-                  <label className="text-[10px] font-bold text-slate-600 uppercase block mb-1">
+                  <label htmlFor="lead-magnet-fullname" className="text-[10px] font-bold text-slate-700 uppercase block mb-1">
                     {isAr ? "الاسم الكامل *" : "Full Name *"}
                   </label>
                   <div className="relative">
                     <User className={`w-3.5 h-3.5 text-slate-400 absolute top-3 ${isRTL ? "right-3" : "left-3"}`} />
                     <input
+                      id="lead-magnet-fullname"
+                      name="name"
                       type="text"
+                      autoComplete="name"
                       required
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
@@ -191,13 +194,16 @@ export default function LeadMagnetDownloadModal({ isOpen, onClose }: LeadMagnetD
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-bold text-slate-600 uppercase block mb-1">
+                  <label htmlFor="lead-magnet-company" className="text-[10px] font-bold text-slate-700 uppercase block mb-1">
                     {isAr ? "اسم الشركة" : "Company Name"}
                   </label>
                   <div className="relative">
                     <Building2 className={`w-3.5 h-3.5 text-slate-400 absolute top-3 ${isRTL ? "right-3" : "left-3"}`} />
                     <input
+                      id="lead-magnet-company"
+                      name="organization"
                       type="text"
+                      autoComplete="organization"
                       value={company}
                       onChange={(e) => setCompany(e.target.value)}
                       placeholder={isAr ? "شركتي ذ.م.م" : "My Business LLC"}
@@ -209,13 +215,16 @@ export default function LeadMagnetDownloadModal({ isOpen, onClose }: LeadMagnetD
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div>
-                  <label className="text-[10px] font-bold text-slate-600 uppercase block mb-1">
+                  <label htmlFor="lead-magnet-email" className="text-[10px] font-bold text-slate-700 uppercase block mb-1">
                     {isAr ? "البريد الإلكتروني المهني *" : "Work Email *"}
                   </label>
                   <div className="relative">
                     <Mail className={`w-3.5 h-3.5 text-slate-400 absolute top-3 ${isRTL ? "right-3" : "left-3"}`} />
                     <input
+                      id="lead-magnet-email"
+                      name="email"
                       type="email"
+                      autoComplete="email"
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -226,13 +235,16 @@ export default function LeadMagnetDownloadModal({ isOpen, onClose }: LeadMagnetD
                 </div>
 
                 <div>
-                  <label className="text-[10px] font-bold text-slate-600 uppercase block mb-1">
+                  <label htmlFor="lead-magnet-phone" className="text-[10px] font-bold text-slate-700 uppercase block mb-1">
                     {isAr ? "رقم الواتساب / الهاتف *" : "WhatsApp / Mobile *"}
                   </label>
                   <div className="relative">
                     <Phone className={`w-3.5 h-3.5 text-slate-400 absolute top-3 ${isRTL ? "right-3" : "left-3"}`} />
                     <input
+                      id="lead-magnet-phone"
+                      name="phone"
                       type="tel"
+                      autoComplete="tel"
                       required
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
