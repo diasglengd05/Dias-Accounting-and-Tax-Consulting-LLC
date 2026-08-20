@@ -440,6 +440,95 @@ async function runBackgroundSync(accessToken: string, currentSheetId: string | n
 // ==================== API ROUTES ====================
 
 /**
+ * Reusable email notification helper supporting SMTP and Gmail API
+ */
+interface SendEmailOptions {
+  to: string;
+  subject: string;
+  html: string;
+  fromName?: string;
+}
+
+async function sendEmailNotification(options: SendEmailOptions): Promise<{ sent: boolean; method: string; error?: string }> {
+  const { to, subject, html, fromName = "Dias Accounting & Tax Consulting" } = options;
+  const smtpHost = process.env.SMTP_HOST;
+  const smtpUser = process.env.SMTP_USER || process.env.EMAIL_USER;
+  const smtpPass = process.env.SMTP_PASS || process.env.EMAIL_PASS;
+  const senderEmail = process.env.SENDER_EMAIL || smtpUser || "consulting@diasaccounting.ae";
+
+  // 1. Try SMTP if configured
+  if (smtpHost && smtpUser && smtpPass) {
+    try {
+      const transporter = nodemailer.createTransport({
+        host: smtpHost,
+        port: Number(process.env.SMTP_PORT) || 587,
+        secure: Number(process.env.SMTP_PORT) === 465,
+        auth: {
+          user: smtpUser,
+          pass: smtpPass,
+        },
+      });
+
+      await transporter.sendMail({
+        from: `"${fromName}" <${senderEmail}>`,
+        to,
+        subject,
+        html,
+      });
+
+      console.log(`[Email] Dispatched email to ${to} via SMTP.`);
+      return { sent: true, method: "smtp" };
+    } catch (err: any) {
+      console.error(`[Email] SMTP dispatch to ${to} failed:`, err);
+    }
+  }
+
+  // 2. Try Google Workspace Gmail API if OAuth token is present
+  try {
+    const oauthData = await SecureStorageService.getSettings("google_oauth");
+    if (oauthData && oauthData.accessToken && !oauthData.tokenExpired) {
+      const utf8Subject = `=?utf-8?B?${Buffer.from(subject).toString("base64")}?=`;
+      const messageParts = [
+        `From: "${fromName}" <${oauthData.email || senderEmail || "me"}>`,
+        `To: ${to}`,
+        `Subject: ${utf8Subject}`,
+        "MIME-Version: 1.0",
+        "Content-Type: text/html; charset=utf-8",
+        "",
+        html,
+      ];
+      const rawMessage = messageParts.join("\r\n");
+      const encodedMessage = Buffer.from(rawMessage)
+        .toString("base64")
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=+$/, "");
+
+      const gmailRes = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages/send", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${oauthData.accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ raw: encodedMessage }),
+      });
+
+      if (gmailRes.ok) {
+        console.log(`[Email] Dispatched email to ${to} via Google Workspace Gmail API.`);
+        return { sent: true, method: "gmail-oauth" };
+      } else {
+        const gmErr = await gmailRes.json().catch(() => ({}));
+        console.log("[Email] Gmail API response note:", gmErr);
+      }
+    }
+  } catch (gErr) {
+    console.warn("[Email] Gmail OAuth attempt note:", gErr);
+  }
+
+  return { sent: false, method: "none" };
+}
+
+/**
  * Capture Form Submissions (Public Route)
  * Bypasses login entirely, saves securely and immediately attempts automatic server-side Sheets sync
  */
@@ -511,6 +600,87 @@ app.post("/api/inquiries", async (req, res) => {
       }
     }
 
+    // 3. Dispatch internal admin alert email
+    const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || process.env.ADMIN_EMAIL || "diasglen.gd@gmail.com";
+    const cleanPhone = phone.replace(/[^0-9]/g, "");
+    const waLink = cleanPhone ? `https://wa.me/${cleanPhone}` : `https://wa.me/971502560990`;
+    const appUrl = process.env.APP_URL || "https://diasaccounting.ae";
+
+    const adminEmailHtml = `
+      <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #0a1736; line-height: 1.6;">
+        <div style="background: linear-gradient(135deg, #0a1736 0%, #1e293b 100%); color: #ffffff; padding: 24px; border-radius: 12px 12px 0 0;">
+          <div style="display: inline-block; background-color: #c5a059; color: #0a1736; font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 9999px; text-transform: uppercase; margin-bottom: 8px;">
+            🚨 New Client Inquiry / Booking
+          </div>
+          <h2 style="margin: 0; font-size: 20px; font-weight: bold; color: #ffffff;">New Lead: ${name}</h2>
+          <p style="margin: 4px 0 0 0; font-size: 13px; color: #94a3b8;">Service: ${serviceType || "Tax & Accounting Inquiry"}</p>
+        </div>
+        
+        <div style="padding: 24px; background-color: #ffffff; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 12px 12px;">
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px;">
+            <tbody>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 10px 0; color: #64748b; font-weight: bold; width: 35%;">Client Name:</td>
+                <td style="padding: 10px 0; color: #0a1736; font-weight: bold;">${name}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 10px 0; color: #64748b; font-weight: bold;">Email:</td>
+                <td style="padding: 10px 0;"><a href="mailto:${email}" style="color: #0284c7; text-decoration: none; font-weight: 600;">${email}</a></td>
+              </tr>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 10px 0; color: #64748b; font-weight: bold;">Phone / WhatsApp:</td>
+                <td style="padding: 10px 0;"><a href="tel:${phone}" style="color: #0a1736; text-decoration: none; font-weight: 600;">${phone}</a></td>
+              </tr>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 10px 0; color: #64748b; font-weight: bold;">Company / Details:</td>
+                <td style="padding: 10px 0; color: #334155;">${finalCompany}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 10px 0; color: #64748b; font-weight: bold;">Requested Service:</td>
+                <td style="padding: 10px 0; color: #0a1736; font-weight: 600;">${serviceType || "General Consultation"}</td>
+              </tr>
+              <tr style="border-bottom: 1px solid #f1f5f9;">
+                <td style="padding: 10px 0; color: #64748b; font-weight: bold;">Time (UAE):</td>
+                <td style="padding: 10px 0; color: #64748b;">${new Date().toLocaleString("en-AE", { timeZone: "Asia/Dubai" })}</td>
+              </tr>
+              <tr>
+                <td style="padding: 10px 0; color: #64748b; font-weight: bold;">Sheets Sync Status:</td>
+                <td style="padding: 10px 0; color: ${autoSynced ? "#16a34a" : "#ca8a04"}; font-weight: bold;">
+                  ${autoSynced ? "✓ Synced to Google Sheets" : "Queued for Advisor Login Sync"}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 20px; text-align: center;">
+            <p style="margin: 0 0 12px 0; font-size: 12px; color: #64748b; font-weight: bold; text-transform: uppercase;">Quick Actions:</p>
+            <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+              <a href="${waLink}" style="background-color: #25d366; color: #ffffff; padding: 10px 18px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 12px; display: inline-block; margin: 4px;">
+                💬 WhatsApp Prospect
+              </a>
+              <a href="mailto:${email}?subject=Regarding%20your%20consultation%20with%20Dias%20Accounting" style="background-color: #0a1736; color: #ffffff; padding: 10px 18px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 12px; display: inline-block; margin: 4px;">
+                ✉️ Reply via Email
+              </a>
+              <a href="${appUrl}/#admin" style="background-color: #f1f5f9; color: #0a1736; border: 1px solid #cbd5e1; padding: 10px 18px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 12px; display: inline-block; margin: 4px;">
+                📊 View in Admin Portal
+              </a>
+            </div>
+          </div>
+          
+          <p style="font-size: 11px; color: #94a3b8; margin: 0; text-align: center;">
+            Dias Accounting & Tax Consulting Automated Lead System | Ref ID: ${inquiryId}
+          </p>
+        </div>
+      </div>
+    `;
+
+    // Fire admin notification asynchronously
+    sendEmailNotification({
+      to: adminEmail,
+      subject: `🚨 [NEW INQUIRY] ${name} - ${serviceType || "Consultation Request"}`,
+      html: adminEmailHtml,
+    }).catch(err => console.warn("Admin notification dispatch warning:", err));
+
     return res.json({
       success: true,
       inquiryId,
@@ -526,6 +696,7 @@ app.post("/api/inquiries", async (req, res) => {
 
 /**
  * Send Playbook via Email & Record Lead (Public Route)
+ * Triggers both user delivery email AND internal admin alert notification
  */
 app.post("/api/send-playbook-email", async (req, res) => {
   const { name, email, phone, company, language } = req.body;
@@ -537,6 +708,8 @@ app.post("/api/send-playbook-email", async (req, res) => {
   const isArabic = language === "ar";
   const formattedCompany = company || "N/A";
   const appUrl = process.env.APP_URL || "https://diasaccounting.ae";
+  const cleanPhone = phone.replace(/[^0-9]/g, "");
+  const waLink = cleanPhone ? `https://wa.me/${cleanPhone}` : `https://wa.me/971502560990`;
 
   // 1. Record lead to database
   const leadPayload = {
@@ -559,27 +732,25 @@ app.post("/api/send-playbook-email", async (req, res) => {
   }
 
   // 2. Attempt Google Sheets sync
+  let autoSynced = false;
   try {
     const oauthData = await SecureStorageService.getSettings("google_oauth");
     if (oauthData && oauthData.accessToken && !oauthData.tokenExpired) {
       const activeSheetId = await serverFindOrCreateSpreadsheet(oauthData.accessToken, oauthData.spreadsheetId || null);
       await serverAppendInquiryRow(oauthData.accessToken, activeSheetId, leadPayload);
       if (inquiryId) await SecureStorageService.markInquirySynced(inquiryId);
+      autoSynced = true;
     }
   } catch (err) {
     console.warn("Playbook sheets sync deferred:", err);
   }
 
-  // 3. Attempt Email Dispatch
-  let emailSent = false;
-  let emailDeliveryMethod = "instant-download";
-  let emailError = "";
-
-  const emailSubject = isArabic
+  // 3. User confirmation email content
+  const userEmailSubject = isArabic
     ? "دليلك الحصري للامتثال لضريبة الشركات والقيمة المضافة لعام 2026 - دياز للمحاسبة"
     : "Your 2026 UAE Corporate Tax & VAT Compliance Playbook - Dias Accounting";
 
-  const emailHtml = isArabic ? `
+  const userEmailHtml = isArabic ? `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #0a1736; line-height: 1.6; direction: rtl; text-align: right;">
       <div style="background-color: #0a1736; color: #c5a059; padding: 24px; border-radius: 12px 12px 0 0; text-align: center;">
         <h1 style="margin: 0; font-size: 20px; font-weight: bold; color: #ffffff;">دياز للمحاسبة والاستشارات الضريبية</h1>
@@ -626,7 +797,7 @@ app.post("/api/send-playbook-email", async (req, res) => {
         </p>
         
         <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 20px 0;">
-          <h3 style="margin-top: 0; font-size: 14px; color: #0a1736;">Key Compliance Takeaways for ${company && company !== "N/A" ? company : "Your Firm"}:</h3>
+          <h3 style="margin-top: 0; font-size: 14px; color: #0a1736;">Key Compliance Takeaways for ${formattedCompany !== "N/A" ? formattedCompany : "Your Firm"}:</h3>
           <ul style="padding-left: 20px; margin-bottom: 0; font-size: 13px; color: #334155;">
             <li><strong>EmaraTax Deadlines:</strong> Mandatory registration and statutory return timelines under Federal Decree-Law No. 47.</li>
             <li><strong>Free Zone 0% QFZP Matrix:</strong> 5 essential economic substance rules & qualifying revenue thresholds.</li>
@@ -653,93 +824,108 @@ app.post("/api/send-playbook-email", async (req, res) => {
     </div>
   `;
 
-  // Check if SMTP is configured
-  const smtpHost = process.env.SMTP_HOST;
-  const smtpUser = process.env.SMTP_USER || process.env.EMAIL_USER;
-  const smtpPass = process.env.SMTP_PASS || process.env.EMAIL_PASS;
-  const senderEmail = process.env.SENDER_EMAIL || smtpUser || "consulting@diasaccounting.ae";
+  // 4. Internal Admin Notification Email
+  const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || process.env.ADMIN_EMAIL || "diasglen.gd@gmail.com";
+  const adminSubject = `⚡ [LEAD MAGNET] Playbook Downloaded: ${name} (${formattedCompany})`;
 
-  if (smtpHost && smtpUser && smtpPass) {
-    try {
-      const transporter = nodemailer.createTransport({
-        host: smtpHost,
-        port: Number(process.env.SMTP_PORT) || 587,
-        secure: Number(process.env.SMTP_PORT) === 465,
-        auth: {
-          user: smtpUser,
-          pass: smtpPass,
-        },
-      });
+  const adminEmailHtml = `
+    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #0a1736; line-height: 1.6;">
+      <div style="background: linear-gradient(135deg, #0a1736 0%, #1e293b 100%); color: #ffffff; padding: 24px; border-radius: 12px 12px 0 0;">
+        <div style="display: inline-block; background-color: #c5a059; color: #0a1736; font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 9999px; text-transform: uppercase; margin-bottom: 8px;">
+          ⚡ Lead Magnet Download Alert
+        </div>
+        <h2 style="margin: 0; font-size: 20px; font-weight: bold; color: #ffffff;">${name} downloaded the 2026 Playbook</h2>
+        <p style="margin: 4px 0 0 0; font-size: 13px; color: #94a3b8;">Company: ${formattedCompany}</p>
+      </div>
+      
+      <div style="padding: 24px; background-color: #ffffff; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 12px 12px;">
+        <p style="font-size: 14px; color: #334155; margin-top: 0;">
+          A new prospect requested and downloaded the <strong>2026 UAE Corporate Tax & VAT Compliance Playbook</strong>:
+        </p>
 
-      await transporter.sendMail({
-        from: `"Dias Accounting & Tax Consulting" <${senderEmail}>`,
-        to: email,
-        subject: emailSubject,
-        html: emailHtml,
-      });
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 13px;">
+          <tbody>
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+              <td style="padding: 10px 0; color: #64748b; font-weight: bold; width: 35%;">Prospect Name:</td>
+              <td style="padding: 10px 0; color: #0a1736; font-weight: bold;">${name}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+              <td style="padding: 10px 0; color: #64748b; font-weight: bold;">Company Name:</td>
+              <td style="padding: 10px 0; color: #334155;">${formattedCompany}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+              <td style="padding: 10px 0; color: #64748b; font-weight: bold;">Work Email:</td>
+              <td style="padding: 10px 0;"><a href="mailto:${email}" style="color: #0284c7; text-decoration: none; font-weight: 600;">${email}</a></td>
+            </tr>
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+              <td style="padding: 10px 0; color: #64748b; font-weight: bold;">Phone / WhatsApp:</td>
+              <td style="padding: 10px 0;"><a href="tel:${phone}" style="color: #0a1736; text-decoration: none; font-weight: 600;">${phone}</a></td>
+            </tr>
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+              <td style="padding: 10px 0; color: #64748b; font-weight: bold;">Language Choice:</td>
+              <td style="padding: 10px 0; color: #334155;">${isArabic ? "Arabic (العربية)" : "English"}</td>
+            </tr>
+            <tr style="border-bottom: 1px solid #f1f5f9;">
+              <td style="padding: 10px 0; color: #64748b; font-weight: bold;">Timestamp (UAE):</td>
+              <td style="padding: 10px 0; color: #64748b;">${new Date().toLocaleString("en-AE", { timeZone: "Asia/Dubai" })}</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 0; color: #64748b; font-weight: bold;">Database Sync:</td>
+              <td style="padding: 10px 0; color: ${autoSynced ? "#16a34a" : "#ca8a04"}; font-weight: bold;">
+                ${autoSynced ? "✓ Synced to Google Sheets" : "Queued in Local Storage"}
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
-      emailSent = true;
-      emailDeliveryMethod = "smtp";
-      console.log(`Successfully dispatched playbook email to ${email} via SMTP.`);
-    } catch (err: any) {
-      console.error("SMTP dispatch failed:", err);
-      emailError = err.message || "SMTP error";
-    }
-  } else {
-    // Check if Google OAuth token has Gmail capability
-    try {
-      const oauthData = await SecureStorageService.getSettings("google_oauth");
-      if (oauthData && oauthData.accessToken && !oauthData.tokenExpired) {
-        // Construct raw RFC 2822 email message
-        const utf8Subject = `=?utf-8?B?${Buffer.from(emailSubject).toString("base64")}?=`;
-        const messageParts = [
-          `From: "Dias Accounting" <${oauthData.email || "me"}>`,
-          `To: ${email}`,
-          `Subject: ${utf8Subject}`,
-          "MIME-Version: 1.0",
-          "Content-Type: text/html; charset=utf-8",
-          "",
-          emailHtml,
-        ];
-        const rawMessage = messageParts.join("\r\n");
-        const encodedMessage = Buffer.from(rawMessage)
-          .toString("base64")
-          .replace(/\+/g, "-")
-          .replace(/\//g, "_")
-          .replace(/=+$/, "");
+        <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 20px; text-align: center;">
+          <p style="margin: 0 0 12px 0; font-size: 12px; color: #64748b; font-weight: bold; text-transform: uppercase;">Direct Prospect Actions:</p>
+          <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+            <a href="${waLink}" style="background-color: #25d366; color: #ffffff; padding: 10px 18px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 12px; display: inline-block; margin: 4px;">
+              💬 WhatsApp Prospect
+            </a>
+            <a href="mailto:${email}?subject=Following%20up%20on%20your%20UAE%20Corporate%20Tax%20Playbook%20request" style="background-color: #0a1736; color: #ffffff; padding: 10px 18px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 12px; display: inline-block; margin: 4px;">
+              ✉️ Email Lead
+            </a>
+            <a href="${appUrl}/#admin" style="background-color: #f1f5f9; color: #0a1736; border: 1px solid #cbd5e1; padding: 10px 18px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 12px; display: inline-block; margin: 4px;">
+              📊 Advisor Portal
+            </a>
+          </div>
+        </div>
 
-        const gmailRes = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages/send", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${oauthData.accessToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ raw: encodedMessage }),
-        });
+        <p style="font-size: 11px; color: #94a3b8; margin: 0; text-align: center;">
+          Dias Accounting & Tax Consulting Lead Notification System | Lead ID: ${inquiryId || "N/A"}
+        </p>
+      </div>
+    </div>
+  `;
 
-        if (gmailRes.ok) {
-          emailSent = true;
-          emailDeliveryMethod = "gmail-oauth";
-          console.log(`Successfully dispatched playbook email to ${email} via Google Workspace Gmail API.`);
-        } else {
-          const gmErr = await gmailRes.json().catch(() => ({}));
-          console.log("Gmail API dispatch note (scopes may be restricted to Drive/Sheets):", gmErr);
-        }
-      }
-    } catch (gErr) {
-      console.warn("Gmail OAuth dispatch note:", gErr);
-    }
-  }
+  // 5. Send User Confirmation Email
+  const userResult = await sendEmailNotification({
+    to: email,
+    subject: userEmailSubject,
+    html: userEmailHtml,
+  });
+
+  // 6. Send Internal Admin Notification Email
+  const adminResult = await sendEmailNotification({
+    to: adminEmail,
+    subject: adminSubject,
+    html: adminEmailHtml,
+  });
+
+  const emailSent = userResult.sent || adminResult.sent;
+  const deliveryMethod = userResult.method !== "none" ? userResult.method : adminResult.method;
 
   return res.json({
     success: true,
     emailSent,
-    deliveryMethod: emailDeliveryMethod,
+    userEmailSent: userResult.sent,
+    adminNotified: adminResult.sent,
+    deliveryMethod,
     email,
     inquiryId,
-    message: emailSent
-      ? "Playbook successfully sent to your email and ready for instant download!"
-      : "Lead recorded securely. Your playbook is generated and downloading immediately.",
+    message: "Playbook processed, user confirmation dispatched, and internal admin alert triggered.",
   });
 });
 
