@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import fs from "fs";
+import nodemailer from "nodemailer";
 import { createServer as createViteServer } from "vite";
 import { initializeApp } from "firebase/app";
 import { 
@@ -521,6 +522,225 @@ app.post("/api/inquiries", async (req, res) => {
     console.error("Inquiry capture failed:", err);
     return res.status(500).json({ error: "Failed to log inquiry backend." });
   }
+});
+
+/**
+ * Send Playbook via Email & Record Lead (Public Route)
+ */
+app.post("/api/send-playbook-email", async (req, res) => {
+  const { name, email, phone, company, language } = req.body;
+
+  if (!name || !email || !phone) {
+    return res.status(400).json({ error: "Name, email, and phone number are required." });
+  }
+
+  const isArabic = language === "ar";
+  const formattedCompany = company || "N/A";
+  const appUrl = process.env.APP_URL || "https://diasaccounting.ae";
+
+  // 1. Record lead to database
+  const leadPayload = {
+    name,
+    email,
+    phone,
+    company: formattedCompany,
+    serviceType: "Lead Magnet: 2026 UAE Corporate Tax & VAT Compliance Playbook",
+    message: `User requested the 2026 Executive Tax Playbook. Sent to email: ${email}`,
+    createdAt: new Date().toISOString(),
+    synced: false,
+    status: "Lead Magnet - Sent"
+  };
+
+  let inquiryId = "";
+  try {
+    inquiryId = await SecureStorageService.addInquiry(leadPayload);
+  } catch (err) {
+    console.warn("Error saving playbook lead to storage:", err);
+  }
+
+  // 2. Attempt Google Sheets sync
+  try {
+    const oauthData = await SecureStorageService.getSettings("google_oauth");
+    if (oauthData && oauthData.accessToken && !oauthData.tokenExpired) {
+      const activeSheetId = await serverFindOrCreateSpreadsheet(oauthData.accessToken, oauthData.spreadsheetId || null);
+      await serverAppendInquiryRow(oauthData.accessToken, activeSheetId, leadPayload);
+      if (inquiryId) await SecureStorageService.markInquirySynced(inquiryId);
+    }
+  } catch (err) {
+    console.warn("Playbook sheets sync deferred:", err);
+  }
+
+  // 3. Attempt Email Dispatch
+  let emailSent = false;
+  let emailDeliveryMethod = "instant-download";
+  let emailError = "";
+
+  const emailSubject = isArabic
+    ? "دليلك الحصري للامتثال لضريبة الشركات والقيمة المضافة لعام 2026 - دياز للمحاسبة"
+    : "Your 2026 UAE Corporate Tax & VAT Compliance Playbook - Dias Accounting";
+
+  const emailHtml = isArabic ? `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #0a1736; line-height: 1.6; direction: rtl; text-align: right;">
+      <div style="background-color: #0a1736; color: #c5a059; padding: 24px; border-radius: 12px 12px 0 0; text-align: center;">
+        <h1 style="margin: 0; font-size: 20px; font-weight: bold; color: #ffffff;">دياز للمحاسبة والاستشارات الضريبية</h1>
+        <p style="margin: 6px 0 0 0; font-size: 13px; color: #c5a059;">دليل الامتثال التنفيذي لضريبة الشركات والقيمة المضافة لعام 2026</p>
+      </div>
+      <div style="padding: 24px; background-color: #ffffff; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 12px 12px;">
+        <p style="font-size: 15px;">مرحباً <strong>${name}</strong>،</p>
+        <p style="font-size: 14px; color: #475569;">
+          شكراً لطلبك الدليل الشامل للامتثال لضريبة الشركات والقيمة المضافة لعام 2026 المخصص للشركات في دبي والمناطق الحرة.
+        </p>
+        
+        <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 20px 0;">
+          <h3 style="margin-top: 0; font-size: 14px; color: #0a1736;">أبرز محاور الدليل:</h3>
+          <ul style="padding-right: 20px; margin-bottom: 0; font-size: 13px; color: #334155;">
+            <li>الجدول الزمني لإقرارات ضريبة الشركات عبر منصة إمارات تاكس</li>
+            <li>شروط الاستفادة من نسبة 0% للشخص المؤهل في المنطقة الحرة (QFZP)</li>
+            <li>تسهيلات الأعمال الصغيرة (إيرادات حتى 3 ملايين درهم)</li>
+            <li>قائمة التحقق من الفواتير الضريبية واسترداد ضريبة المدخلات بنسبة 100%</li>
+            <li>إعادة بناء السجلات المحاسبية المتراكمة والمتطابقة مع معايير IFRS</li>
+          </ul>
+        </div>
+
+        <div style="text-align: center; margin: 28px 0;">
+          <a href="${appUrl}" style="background-color: #0a1736; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 14px; display: inline-block;">
+            زيارة المنصة وحجز استشارة ضريبية
+          </a>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
+        <p style="font-size: 12px; color: #64748b; margin-bottom: 4px;"><strong>المستشار غلين دياز</strong> | الشريك المؤسس والمدير العام</p>
+        <p style="font-size: 12px; color: #64748b; margin-top: 0;">هاتف / واتساب: +971 50 256 0990 | البريد: contact@diasaccounting.ae</p>
+      </div>
+    </div>
+  ` : `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #0a1736; line-height: 1.6;">
+      <div style="background-color: #0a1736; color: #c5a059; padding: 24px; border-radius: 12px 12px 0 0; text-align: center;">
+        <h1 style="margin: 0; font-size: 20px; font-weight: bold; color: #ffffff;">DIAS ACCOUNTING & TAX CONSULTING</h1>
+        <p style="margin: 6px 0 0 0; font-size: 13px; color: #c5a059;">2026 Executive UAE Corporate Tax & VAT Compliance Playbook</p>
+      </div>
+      <div style="padding: 24px; background-color: #ffffff; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 12px 12px;">
+        <p style="font-size: 15px;">Dear <strong>${name}</strong>,</p>
+        <p style="font-size: 14px; color: #475569;">
+          Thank you for requesting the official <strong>2026 UAE Corporate Tax & VAT Compliance Playbook</strong> for Dubai Mainland and Free Zone enterprises.
+        </p>
+        
+        <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 20px 0;">
+          <h3 style="margin-top: 0; font-size: 14px; color: #0a1736;">Key Compliance Takeaways for ${company && company !== "N/A" ? company : "Your Firm"}:</h3>
+          <ul style="padding-left: 20px; margin-bottom: 0; font-size: 13px; color: #334155;">
+            <li><strong>EmaraTax Deadlines:</strong> Mandatory registration and statutory return timelines under Federal Decree-Law No. 47.</li>
+            <li><strong>Free Zone 0% QFZP Matrix:</strong> 5 essential economic substance rules & qualifying revenue thresholds.</li>
+            <li><strong>Small Business Relief (SBR):</strong> 0% corporate tax benefits for gross revenues up to AED 3,000,000.</li>
+            <li><strong>10-Point VAT Audit:</strong> Avoiding non-compliance penalties & recovering 100% legitimate input tax.</li>
+            <li><strong>Backlog Bookkeeping:</strong> Reconciling past-year ledgers according to IFRS standards before FTA audits.</li>
+          </ul>
+        </div>
+
+        <p style="font-size: 13px; color: #475569;">
+          You can download or review your personalized copy directly anytime, or connect directly with our advisory team below.
+        </p>
+
+        <div style="text-align: center; margin: 28px 0;">
+          <a href="${appUrl}" style="background-color: #0a1736; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 14px; display: inline-block;">
+            Book Complimentary 15-Min Tax Review
+          </a>
+        </div>
+
+        <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 24px 0;" />
+        <p style="font-size: 12px; color: #64748b; margin-bottom: 4px;"><strong>Glen Dias</strong> | Founder & Managing Partner</p>
+        <p style="font-size: 12px; color: #64748b; margin-top: 0;">Phone / WhatsApp: +971 50 256 0990 | Email: contact@diasaccounting.ae | Dubai, UAE</p>
+      </div>
+    </div>
+  `;
+
+  // Check if SMTP is configured
+  const smtpHost = process.env.SMTP_HOST;
+  const smtpUser = process.env.SMTP_USER || process.env.EMAIL_USER;
+  const smtpPass = process.env.SMTP_PASS || process.env.EMAIL_PASS;
+  const senderEmail = process.env.SENDER_EMAIL || smtpUser || "consulting@diasaccounting.ae";
+
+  if (smtpHost && smtpUser && smtpPass) {
+    try {
+      const transporter = nodemailer.createTransport({
+        host: smtpHost,
+        port: Number(process.env.SMTP_PORT) || 587,
+        secure: Number(process.env.SMTP_PORT) === 465,
+        auth: {
+          user: smtpUser,
+          pass: smtpPass,
+        },
+      });
+
+      await transporter.sendMail({
+        from: `"Dias Accounting & Tax Consulting" <${senderEmail}>`,
+        to: email,
+        subject: emailSubject,
+        html: emailHtml,
+      });
+
+      emailSent = true;
+      emailDeliveryMethod = "smtp";
+      console.log(`Successfully dispatched playbook email to ${email} via SMTP.`);
+    } catch (err: any) {
+      console.error("SMTP dispatch failed:", err);
+      emailError = err.message || "SMTP error";
+    }
+  } else {
+    // Check if Google OAuth token has Gmail capability
+    try {
+      const oauthData = await SecureStorageService.getSettings("google_oauth");
+      if (oauthData && oauthData.accessToken && !oauthData.tokenExpired) {
+        // Construct raw RFC 2822 email message
+        const utf8Subject = `=?utf-8?B?${Buffer.from(emailSubject).toString("base64")}?=`;
+        const messageParts = [
+          `From: "Dias Accounting" <${oauthData.email || "me"}>`,
+          `To: ${email}`,
+          `Subject: ${utf8Subject}`,
+          "MIME-Version: 1.0",
+          "Content-Type: text/html; charset=utf-8",
+          "",
+          emailHtml,
+        ];
+        const rawMessage = messageParts.join("\r\n");
+        const encodedMessage = Buffer.from(rawMessage)
+          .toString("base64")
+          .replace(/\+/g, "-")
+          .replace(/\//g, "_")
+          .replace(/=+$/, "");
+
+        const gmailRes = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages/send", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${oauthData.accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ raw: encodedMessage }),
+        });
+
+        if (gmailRes.ok) {
+          emailSent = true;
+          emailDeliveryMethod = "gmail-oauth";
+          console.log(`Successfully dispatched playbook email to ${email} via Google Workspace Gmail API.`);
+        } else {
+          const gmErr = await gmailRes.json().catch(() => ({}));
+          console.log("Gmail API dispatch note (scopes may be restricted to Drive/Sheets):", gmErr);
+        }
+      }
+    } catch (gErr) {
+      console.warn("Gmail OAuth dispatch note:", gErr);
+    }
+  }
+
+  return res.json({
+    success: true,
+    emailSent,
+    deliveryMethod: emailDeliveryMethod,
+    email,
+    inquiryId,
+    message: emailSent
+      ? "Playbook successfully sent to your email and ready for instant download!"
+      : "Lead recorded securely. Your playbook is generated and downloading immediately.",
+  });
 });
 
 /**

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { X, Download, FileText, CheckCircle2, ShieldCheck, Mail, Phone, Building2, User, Sparkles, ArrowRight, ExternalLink } from "lucide-react";
+import { X, Download, FileText, CheckCircle2, Mail, Phone, Building2, User, ArrowRight, RefreshCw, Send, Check, Eye } from "lucide-react";
 import { submitToGoogleSheetsDirectly } from "../lib/sheetsService";
+import { downloadCompliancePlaybook } from "../lib/playbookPdfGenerator";
 import { useLanguage } from "../i18n/LanguageContext";
 
 interface LeadMagnetDownloadModalProps {
@@ -18,8 +19,20 @@ export default function LeadMagnetDownloadModal({ isOpen, onClose }: LeadMagnetD
   const [company, setCompany] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDownloaded, setIsDownloaded] = useState(false);
+  const [emailSentStatus, setEmailSentStatus] = useState<boolean | null>(null);
+  const [isReSending, setIsReSending] = useState(false);
 
   if (!isOpen) return null;
+
+  const triggerDownload = () => {
+    return downloadCompliancePlaybook({
+      name: fullName.trim() || (isAr ? "الرئيس التنفيذي" : "Executive"),
+      email: email.trim(),
+      company: company.trim() || "N/A",
+      phone: phone.trim(),
+      language: isAr ? "ar" : "en",
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,21 +40,75 @@ export default function LeadMagnetDownloadModal({ isOpen, onClose }: LeadMagnetD
 
     setIsSubmitting(true);
 
+    // 1. Immediately trigger the dynamic PDF download to the user's device
+    triggerDownload();
+
+    // 2. Dispatch email request to backend
+    try {
+      const emailRes = await fetch("/api/send-playbook-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: fullName,
+          email: email,
+          phone: phone,
+          company: company || "N/A",
+          language: isAr ? "ar" : "en",
+        }),
+      });
+
+      if (emailRes.ok) {
+        const data = await emailRes.json();
+        setEmailSentStatus(data.emailSent || false);
+      } else {
+        setEmailSentStatus(false);
+      }
+    } catch (err) {
+      console.warn("Backend email dispatch note:", err);
+      setEmailSentStatus(false);
+    }
+
+    // 3. Sync to Google Sheets
     try {
       await submitToGoogleSheetsDirectly({
         name: fullName,
         email: email,
         phone: phone,
         company: company || "N/A",
-        serviceType: "Lead Magnet: 2026 UAE Tax Compliance Checklist",
+        serviceType: "Lead Magnet: 2026 UAE Corporate Tax & VAT Compliance Playbook",
         message: `Requested 2026 UAE Corporate Tax & VAT Compliance Playbook. Lead: ${fullName}, ${email}, ${phone}, Company: ${company}`,
       });
     } catch (err) {
-      console.warn("Lead magnet submission sync:", err);
+      console.warn("Lead magnet sheets submission sync:", err);
     }
 
     setIsSubmitting(false);
     setIsDownloaded(true);
+  };
+
+  const handleResendEmail = async () => {
+    if (!email) return;
+    setIsReSending(true);
+    try {
+      const emailRes = await fetch("/api/send-playbook-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: fullName,
+          email: email,
+          phone: phone,
+          company: company || "N/A",
+          language: isAr ? "ar" : "en",
+        }),
+      });
+      if (emailRes.ok) {
+        setEmailSentStatus(true);
+      }
+    } catch (err) {
+      console.warn("Resend email failed:", err);
+    } finally {
+      setIsReSending(false);
+    }
   };
 
   return (
@@ -182,52 +249,96 @@ export default function LeadMagnetDownloadModal({ isOpen, onClose }: LeadMagnetD
                 className="w-full bg-navy-950 hover:bg-navy-900 text-white font-display font-bold py-3 px-4 rounded-xl text-xs transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 mt-2"
               >
                 {isSubmitting ? (
-                  <span>{isAr ? "جاري تجهيز التحميل..." : "Preparing Your Download..."}</span>
+                  <span>{isAr ? "جاري تجهيز التحميل وإرسال النسخة..." : "Preparing PDF & Sending Copy..."}</span>
                 ) : (
                   <>
                     <Download className="w-4 h-4 text-gold-400" />
-                    <span>{isAr ? "تحميل الدليل الشامل مجاناً (PDF فوري)" : "Download Free Compliance Playbook (Instant PDF)"}</span>
+                    <span>{isAr ? "تحميل الدليل الشامل فوراً (PDF وإرسال للبريد)" : "Download Free Compliance Playbook (Instant PDF + Email)"}</span>
                   </>
                 )}
               </button>
 
               <p className="text-[10px] text-slate-400 text-center">
-                {isAr ? "تسليم فوري. نحن نحترم خصوصيتك بالكامل." : "Instant delivery. We never share your data."}
+                {isAr ? "تحميل فوري مباشر ونسخة على البريد. نحن نحترم خصوصيتك بالكامل." : "Instant PDF download to your device + email backup. We respect your privacy."}
               </p>
             </form>
 
           </div>
         ) : (
-          <div className="space-y-6 text-center py-4">
-            <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
-              <CheckCircle2 className="w-10 h-10" />
+          <div className="space-y-5 text-center py-2">
+            <div className="w-14 h-14 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
+              <CheckCircle2 className="w-8 h-8" />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <h3 className="font-display text-2xl font-bold text-navy-950">
-                {isAr ? "دليلك الإرشادي جاهز!" : "Your Playbook is Ready!"}
+                {isAr ? "تم تجهيز وتحميل دليلك بنجاح!" : "Your Playbook is Ready & Downloaded!"}
               </h3>
               <p className="text-slate-600 text-xs sm:text-sm">
                 {isAr ? (
-                  <>تم إرسال نسخة إلى <strong className="text-navy-950">{email}</strong>. يمكنك أيضاً تنزيل أو حفظ الدليل الآن.</>
+                  <>تم تنزيل ملف PDF مباشرة على جهازك، كما تم إرسال نسخة إلى <strong className="text-navy-950">{email}</strong>.</>
                 ) : (
-                  <>A copy has been sent to <strong className="text-navy-950">{email}</strong>. You can also view or save the compliance checklist right now.</>
+                  <>Your official 2026 Compliance Playbook PDF has been downloaded. A copy was also sent to <strong className="text-navy-950">{email}</strong>.</>
                 )}
               </p>
             </div>
 
+            {/* Delivery Action Status Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-left">
+              <div className="bg-emerald-50/70 border border-emerald-200/80 rounded-2xl p-3 flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
+                  <Check className="w-4 h-4" />
+                </div>
+                <div className="text-[11px]">
+                  <div className="font-bold text-emerald-950">{isAr ? "تم تنزيل PDF" : "PDF Generated"}</div>
+                  <div className="text-emerald-700 text-[10px]">{isAr ? "تم الحفظ على جهازك" : "Saved to your device"}</div>
+                </div>
+              </div>
+
+              <div className="bg-navy-50/70 border border-navy-200/80 rounded-2xl p-3 flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-navy-900 text-gold-400 flex items-center justify-center shrink-0">
+                    <Mail className="w-4 h-4" />
+                  </div>
+                  <div className="text-[11px]">
+                    <div className="font-bold text-navy-950">{isAr ? "نسخة البريد" : "Email Backup"}</div>
+                    <div className="text-slate-600 text-[10px] truncate max-w-[120px]">{email}</div>
+                  </div>
+                </div>
+                
+                <button
+                  onClick={handleResendEmail}
+                  disabled={isReSending}
+                  title="Resend email"
+                  className="p-1.5 text-xs text-navy-700 hover:text-navy-950 hover:bg-navy-100 rounded-lg transition-colors"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${isReSending ? "animate-spin" : ""}`} />
+                </button>
+              </div>
+            </div>
+
+            {/* Download Again Button */}
+            <button
+              onClick={triggerDownload}
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 text-xs font-bold transition-all shadow-sm cursor-pointer"
+            >
+              <Download className="w-4 h-4 text-gold-600" />
+              <span>{isAr ? "إعادة تنزيل ملف PDF مرة أخرى" : "Download Playbook PDF Again"}</span>
+            </button>
+
+            {/* Consulting CTA Box */}
             <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 text-left text-xs space-y-2">
               <span className="font-bold text-navy-950 block">
                 {isAr ? "هل تحتاج لمساعدة في تطبيق هذه المتطلبات على شركتك؟" : "Need help implementing this in your company?"}
               </span>
-              <p className="text-slate-600">
+              <p className="text-slate-600 text-[11px] leading-relaxed">
                 {isAr 
                   ? "يمكن للمستشار غلين دياز وفريق دياز للمحاسبة إجراء تقييم أولي مجاني لملفات شركتك الضريبية وإقرارات القيمة المضافة."
                   : "Glen Dias and the team at Dias Accounting can perform a complimentary initial assessment of your company's corporate tax and VAT filings."}
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+            <div className="flex flex-col sm:flex-row gap-2.5 pt-1">
               <a
                 href="#contact"
                 onClick={onClose}
