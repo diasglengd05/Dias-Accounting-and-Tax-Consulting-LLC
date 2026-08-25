@@ -16,6 +16,7 @@ import {
   ChevronRight,
   ExternalLink,
   ShieldCheck,
+  FileCheck,
   Award,
   BookOpen,
   Users,
@@ -31,6 +32,12 @@ import {
   Star,
   Quote,
   ChevronDown,
+  ArrowUp,
+  Globe,
+  Search,
+  Share2,
+  Copy,
+  Image as ImageIcon,
 } from "lucide-react";
 
 // Imports from our modular files
@@ -40,6 +47,7 @@ import DiasLogo from "./components/DiasLogo";
 import { GoogleLogo } from "./components/GoogleReviewsSection";
 import { submitToGoogleSheetsDirectly } from "./lib/sheetsService";
 import ComplianceAlertBanner from "./components/ComplianceAlertBanner";
+import { getBlogOgImageUrl, getSocialShareUrls } from "./lib/ogImage";
 import StickyMobileLeadBar from "./components/StickyMobileLeadBar";
 import useDynamicSEO from "./hooks/useDynamicSEO";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
@@ -54,17 +62,31 @@ const PrivacyPolicyModal = React.lazy(() => import("./components/PrivacyPolicyMo
 const GoogleReviewsSection = React.lazy(() => import("./components/GoogleReviewsSection"));
 const TaxHealthCheckModal = React.lazy(() => import("./components/TaxHealthCheckModal"));
 const LeadMagnetDownloadModal = React.lazy(() => import("./components/LeadMagnetDownloadModal"));
+const ServiceComparisonTable = React.lazy(() => import("./components/ServiceComparisonTable").then(m => ({ default: m.ServiceComparisonTable })));
+const TaxPlanningSavingsChart = React.lazy(() => import("./components/TaxPlanningSavingsChart").then(m => ({ default: m.TaxPlanningSavingsChart })));
+const StandalonePricingCards = React.lazy(() => import("./components/StandalonePricingCards").then(m => ({ default: m.StandalonePricingCards })));
+const OurAffiliations = React.lazy(() => import("./components/OurAffiliations").then(m => ({ default: m.OurAffiliations })));
+const TaxAiAdvisorModal = React.lazy(() => import("./components/TaxAiAdvisorModal"));
 
 function MainApp() {
   const { t, language, isRTL } = useLanguage();
 
   // Navigation states
-  const [activeSection, setActiveSection] = useState("contact");
+  const [activeSection, setActiveSection] = useState("home");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Lead generation modals
   const [taxHealthModalOpen, setTaxHealthModalOpen] = useState(false);
   const [leadMagnetModalOpen, setLeadMagnetModalOpen] = useState(false);
+  const [taxAiModalOpen, setTaxAiModalOpen] = useState(false);
+  const [taxAiInitialQuery, setTaxAiInitialQuery] = useState("");
+  const [taxAiInitialCategory, setTaxAiInitialCategory] = useState("corporate-tax");
+
+  const handleOpenTaxAi = (query?: string, category?: string) => {
+    if (query !== undefined) setTaxAiInitialQuery(query);
+    if (category !== undefined) setTaxAiInitialCategory(category);
+    setTaxAiModalOpen(true);
+  };
 
   // Pricing duration state
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annual">("annual");
@@ -72,6 +94,8 @@ function MainApp() {
   // Selected details for modals
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedBlog, setSelectedBlog] = useState<BlogPost | null>(null);
+  const [copiedBlogLink, setCopiedBlogLink] = useState(false);
+  const [showOgPreview, setShowOgPreview] = useState(false);
   const [privacyOpen, setPrivacyOpen] = useState(false);
 
   // FAQ state
@@ -97,27 +121,54 @@ function MainApp() {
   // Target service for scheduler preselection
   const [preselectedServiceTitle, setPreselectedServiceTitle] = useState("");
 
-  // Directly scroll visitors to the Contact Us section on initial load
+  // Scroll to Top visibility state (appears after scrolling past hero section)
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
   useEffect(() => {
-    const hash = window.location.hash;
-    // Unless visitor explicitly requested a different hash like #services or #pricing, jump directly to contact
-    const targetId = (hash && hash !== "#home") ? hash.replace("#", "") : "contact";
-    
-    const scrollToTarget = () => {
-      const targetElement = document.getElementById(targetId);
-      if (targetElement) {
-        targetElement.scrollIntoView({ behavior: "smooth" });
+    const handleScroll = () => {
+      const heroSection = document.getElementById("home");
+      const heroHeight = heroSection ? heroSection.offsetHeight : 500;
+      // Triggers as soon as the user scrolls past 70% of the hero section
+      if (window.scrollY > heroHeight * 0.7) {
+        setShowScrollTop(true);
+      } else {
+        setShowScrollTop(false);
       }
     };
 
-    // Quick scroll after initial render + secondary safeguard to ensure full layout ready
-    const timer1 = setTimeout(scrollToTarget, 80);
-    const timer2 = setTimeout(scrollToTarget, 300);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    // Check initial scroll state in case the user arrived via anchor hash or refreshed mid-page
+    handleScroll();
 
     return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
+      window.removeEventListener("scroll", handleScroll);
     };
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  };
+
+  // Open on the Home page by default, or scroll to specific hash if directly targeted in URL
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash && hash !== "#home") {
+      const targetId = hash.replace("#", "");
+      const scrollToTarget = () => {
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+          targetElement.scrollIntoView({ behavior: "smooth" });
+        }
+      };
+      const timer = setTimeout(scrollToTarget, 100);
+      return () => clearTimeout(timer);
+    } else {
+      // Default: ensure viewport starts cleanly at the top on home page
+      window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
+    }
   }, []);
 
   // Set up active section observer using a highly performant IntersectionObserver
@@ -182,6 +233,13 @@ function MainApp() {
         return <Percent className="w-6 h-6 text-gold-500" />;
       case "Building":
         return <Building className="w-6 h-6 text-gold-500" />;
+      case "ShieldCheck":
+        return <ShieldCheck className="w-6 h-6 text-gold-500" />;
+      case "FileCheck":
+        return <FileCheck className="w-6 h-6 text-gold-500" />;
+      case "Clock":
+        return <Clock className="w-6 h-6 text-gold-500" />;
+      case "Briefcase":
       default:
         return <Briefcase className="w-6 h-6 text-gold-500" />;
     }
@@ -296,8 +354,17 @@ function MainApp() {
             ))}
           </nav>
 
-          {/* Header Actions: Language Selector & Booking CTA (Desktop Only) */}
-          <div className="hidden md:flex items-center gap-2.5">
+          {/* Header Actions: Language Selector, AI Search & Booking CTA (Desktop Only) */}
+          <div className="hidden md:flex items-center gap-2 lg:gap-2.5">
+            <button
+              onClick={() => handleOpenTaxAi()}
+              className="bg-navy-950 hover:bg-slate-900 text-gold-400 border border-gold-500/30 hover:border-gold-400/60 font-display font-bold py-2.5 px-3 lg:px-3.5 rounded-xl text-xs tracking-tight transition-all shadow-sm flex items-center gap-1.5 cursor-pointer group"
+              title="Search UAE Tax regulations with live Google Search grounding"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-gold-400 group-hover:scale-110 transition-transform" />
+              <span className="hidden lg:inline">{language === "ar" ? "الذكاء الضريبي (بحث جوجل)" : "AI Tax Search (Live)"}</span>
+              <span className="lg:hidden">{language === "ar" ? "الذكاء الضريبي" : "AI Search"}</span>
+            </button>
             <LanguageToggle variant="desktop" />
             <a
               href="#contact"
@@ -353,7 +420,18 @@ function MainApp() {
                   {link.label}
                 </a>
               ))}
-              <div className="pt-2">
+              <div className="pt-2 space-y-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    handleOpenTaxAi();
+                  }}
+                  className="w-full bg-navy-950 text-gold-400 border border-gold-500/40 font-display font-bold py-3 px-4 rounded-xl text-center text-xs tracking-tight transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Sparkles className="w-4 h-4 text-gold-400" />
+                  <span>{language === "ar" ? "الذكاء الضريبي الإماراتي (بحث جوجل المباشر)" : "AI Tax Search (Live Google Grounded)"}</span>
+                </button>
                 <a
                   href="#contact"
                   onClick={() => setMobileMenuOpen(false)}
@@ -369,113 +447,247 @@ function MainApp() {
 
       {/* Main Landmark for Accessibility & SEO */}
       <main id="main-content" role="main">
-        {/* 2. Hero Section */}
-        <section id="home" className="relative overflow-hidden bg-mesh pt-12 pb-20 md:py-24 lg:py-32 text-white">
-        {/* Background visual geometric accents */}
-        <div className="absolute top-1/4 left-1/10 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/10 w-96 h-96 bg-gold-500/5 rounded-full blur-3xl pointer-events-none" />
+        {/* 2. Hero Section - Dubai Skyline Panoramic Authority Banner */}
+        <section
+          id="home"
+          className="relative overflow-hidden min-h-[620px] lg:min-h-[720px] flex items-center justify-center text-white bg-navy-950"
+          style={{
+            backgroundImage: `linear-gradient(to bottom, rgba(7, 13, 25, 0.78) 0%, rgba(13, 27, 42, 0.72) 40%, rgba(7, 13, 25, 0.92) 100%), linear-gradient(135deg, rgba(88, 28, 135, 0.35) 0%, rgba(15, 23, 42, 0.6) 100%), url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=2400&q=85')`,
+            backgroundSize: "cover",
+            backgroundPosition: "center 38%",
+          }}
+        >
+          {/* Subtle Ambient Radial Lighting Glows */}
+          <div className="absolute inset-0 bg-radial from-gold-500/10 via-transparent to-navy-950/80 pointer-events-none" />
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-64 bg-gradient-to-b from-purple-500/10 to-transparent blur-3xl pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24 relative z-10 text-center space-y-6 sm:space-y-8">
             
-            {/* Left Content Column */}
-            <div className="lg:col-span-7 space-y-6 md:space-y-8 text-center lg:text-left">
-              
-              {/* Trust Badge & Google Rating Badge */}
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5">
-                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/10 backdrop-blur-md text-xs font-semibold text-gold-300">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  {t.hero.badge}
-                </div>
-                <a
-                  href={GOOGLE_BUSINESS_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 border border-white/15 backdrop-blur-md text-xs font-semibold text-white transition-all group"
-                  title="View Dias Accounting on Google Business"
-                >
-                  <GoogleLogo className="w-3.5 h-3.5" />
-                  <span className="text-amber-300">★★★★★</span>
-                  <span className="text-slate-100 font-bold">5.0</span>
-                  <span className="text-slate-300 text-[11px] font-normal hidden sm:inline">{t.hero.googleRatingText}</span>
-                  <ExternalLink className="w-3 h-3 text-slate-300 group-hover:translate-x-0.5 transition-transform" />
-                </a>
+            {/* Trust Pill & Google Rating Badge */}
+            <div className="flex flex-wrap items-center justify-center gap-2.5">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/15 border border-white/20 backdrop-blur-md text-xs font-semibold text-gold-300 shadow-sm transition-all">
+                <Sparkles className="w-3.5 h-3.5 text-gold-400 animate-pulse" />
+                <span>{t.hero.badge}</span>
               </div>
-
-              {/* Main Headline */}
-              <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] text-white">
-                {t.hero.headlinePart1} <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-gold-400 to-emerald-400">
-                  {t.hero.headlineGradient}
-                </span>{" "}
-                {t.hero.headlinePart2}
-              </h1>
-
-              {/* Subheadline */}
-              <p className="text-slate-300 text-base sm:text-lg max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                {t.hero.subheadline}
-              </p>
-
-              {/* Action and trust triggers */}
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 flex-wrap">
-                <a
-                  href="#contact"
-                  className="w-full sm:w-auto bg-gradient-to-tr from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-navy-950 font-display font-bold py-3.5 px-6 rounded-xl shadow-xl hover:shadow-gold-500/25 transition-all text-sm flex items-center justify-center gap-2 group cursor-pointer"
-                >
-                  <span>{t.hero.ctaConsultation}</span>
-                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                </a>
-
-                <button
-                  onClick={() => setTaxHealthModalOpen(true)}
-                  className="w-full sm:w-auto bg-white/10 hover:bg-white/20 border border-white/20 hover:border-gold-400/60 text-white font-display font-bold py-3.5 px-6 rounded-xl backdrop-blur-md transition-all text-sm flex items-center justify-center gap-2 cursor-pointer group hover:scale-[1.02] active:scale-98"
-                >
-                  <ShieldCheck className="w-4 h-4 text-gold-400 group-hover:scale-110 transition-transform" />
-                  <span>{t.hero.ctaRiskAudit}</span>
-                </button>
-
-                <a
-                  href="#services"
-                  className="w-full sm:w-auto border border-white/10 hover:border-white/30 hover:bg-white/5 text-slate-300 hover:text-white font-display font-semibold py-3.5 px-5 rounded-xl transition-all text-xs flex items-center justify-center gap-1.5"
-                >
-                  {t.hero.ctaServices}
-                </a>
-              </div>
-
-              {/* Trust markers */}
-              <div className="grid grid-cols-3 gap-4 pt-4 border-t border-white/10 max-w-md mx-auto lg:mx-0 text-left">
-                <div>
-                  <span className="block text-2xl font-bold font-display text-gold-400">500+</span>
-                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mt-0.5">
-                    {t.hero.stats.smesLabel}
-                  </span>
-                </div>
-                <div>
-                  <span className="block text-2xl font-bold font-display text-gold-400">100%</span>
-                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mt-0.5">
-                    {t.hero.stats.complianceLabel}
-                  </span>
-                </div>
-                <div>
-                  <span className="block text-2xl font-bold font-display text-gold-400">AED 50M+</span>
-                  <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block mt-0.5">
-                    {t.hero.stats.savingsLabel}
-                  </span>
-                </div>
-              </div>
-
+              <a
+                href={GOOGLE_BUSINESS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-navy-900/80 hover:bg-navy-900 border border-gold-500/30 hover:border-gold-400/60 backdrop-blur-md text-xs font-semibold text-white transition-all shadow-sm group"
+                title="View Dias Accounting on Google Business"
+              >
+                <GoogleLogo className="w-3.5 h-3.5" />
+                <span className="text-amber-400 font-bold">★★★★★</span>
+                <span className="text-slate-100 font-bold">5.0</span>
+                <span className="text-slate-300 text-[11px] font-normal hidden sm:inline">{t.hero.googleRatingText}</span>
+                <ExternalLink className="w-3 h-3 text-gold-400 group-hover:translate-x-0.5 transition-transform" />
+              </a>
             </div>
 
-            {/* Right Column: UAE Tax Planner Applet Widget */}
-            <div className="lg:col-span-5 w-full max-w-md mx-auto lg:max-w-none">
-              <React.Suspense fallback={<div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-100 shadow-xl min-h-[480px] p-6 flex flex-col justify-center items-center text-slate-400 text-xs animate-pulse">Loading Tax Estimator...</div>}>
-                <TaxCalculator />
-              </React.Suspense>
+            {/* Prominent Main Brand Title */}
+            <div className="space-y-2">
+              <h1 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-white drop-shadow-md">
+                {t.hero.companyTitle}
+              </h1>
+
+              {/* Sub-headline 1: UAE's leading firm */}
+              <h2 className="text-lg sm:text-2xl md:text-3xl font-bold text-slate-100 tracking-tight max-w-3xl mx-auto leading-snug drop-shadow">
+                {t.hero.subheadline1}
+              </h2>
+
+              {/* Punchy Growth Tagline */}
+              <p className="text-lg sm:text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-gold-400 to-emerald-300 tracking-tight drop-shadow pt-1.5 leading-snug">
+                {t.hero.subheadline2}
+              </p>
+            </div>
+
+            {/* Clear, High-Converting Client Value Statement */}
+            <p className="text-slate-200 text-sm sm:text-base md:text-lg max-w-3xl mx-auto leading-relaxed font-normal drop-shadow-sm px-2">
+              {t.hero.description}
+            </p>
+
+            {/* High-Converting Action Buttons Bar */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 max-w-2xl mx-auto pt-2">
+              <a
+                href="#contact"
+                className="w-full sm:w-auto bg-gradient-to-tr from-gold-400 via-gold-500 to-gold-600 hover:from-gold-500 hover:to-gold-700 text-navy-950 font-display font-black py-4 px-8 rounded-xl shadow-2xl hover:shadow-gold-500/30 transition-all text-sm sm:text-base flex items-center justify-center gap-2 group cursor-pointer hover:scale-[1.02] active:scale-98"
+              >
+                <Calendar className="w-4 h-4 text-navy-950" />
+                <span>{t.hero.ctaConsultation}</span>
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </a>
+
+              <button
+                type="button"
+                onClick={() => setTaxHealthModalOpen(true)}
+                className="w-full sm:w-auto bg-white/15 hover:bg-white/25 border border-white/30 hover:border-gold-400/80 text-white font-display font-bold py-4 px-7 rounded-xl backdrop-blur-md transition-all text-sm sm:text-base flex items-center justify-center gap-2 cursor-pointer group hover:scale-[1.02] active:scale-98 shadow-lg"
+              >
+                <ShieldCheck className="w-4 h-4 text-gold-400 group-hover:scale-110 transition-transform" />
+                <span>{t.hero.ctaRiskAudit}</span>
+              </button>
+
+              <a
+                href="https://wa.me/971529226958?text=Hello%20Glen,%20I%20would%20like%20to%20consult%20about%20accounting%20and%20corporate%20tax%20for%20my%20UAE%20business."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto bg-emerald-600/90 hover:bg-emerald-600 border border-emerald-400/40 text-white font-display font-semibold py-4 px-6 rounded-xl backdrop-blur-md transition-all text-sm flex items-center justify-center gap-2 shadow-lg hover:scale-[1.02] active:scale-98"
+                title="Direct WhatsApp Chat with Senior Partner Glen Dias"
+              >
+                <Phone className="w-4 h-4 text-emerald-200" />
+                <span>{t.hero.ctaWhatsApp}</span>
+              </a>
+            </div>
+
+            {/* Interactive Search Grounded AI Spotlight within Hero */}
+            <div className="bg-navy-950/80 hover:bg-navy-950/90 border border-white/20 hover:border-gold-400/50 rounded-2xl p-4 sm:p-5 backdrop-blur-lg transition-all shadow-2xl space-y-3 max-w-2xl mx-auto text-left rtl:text-right">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-gold-400/20 text-gold-300 flex items-center justify-center border border-gold-500/30">
+                    <Sparkles className="w-4 h-4 animate-pulse text-gold-400" />
+                  </div>
+                  <span className="font-display font-bold text-xs sm:text-sm text-white">
+                    {language === "ar" ? "اسأل الذكاء الضريبي المباشر (Google Search Grounded)" : "Ask UAE Tax AI (Live Google Grounded)"}
+                  </span>
+                </div>
+                <span className="text-[10px] text-emerald-300 font-mono font-bold bg-emerald-500/20 px-2.5 py-0.5 rounded-full border border-emerald-400/30">
+                  FTA 2026 Ready
+                </span>
+              </div>
+              
+              <div className="flex items-center gap-2 bg-slate-900/90 rounded-xl p-1.5 border border-white/15">
+                <Search className="w-4 h-4 text-slate-400 ml-2.5 rtl:mr-2.5 rtl:ml-0 shrink-0" />
+                <button
+                  type="button"
+                  onClick={() => handleOpenTaxAi()}
+                  className="flex-1 text-left rtl:text-right text-xs sm:text-sm text-slate-300 hover:text-white py-1.5 truncate cursor-pointer bg-transparent border-none outline-none"
+                >
+                  {language === "ar" ? "ابحث عن ضريبة الشركات، شروط المنطقة الحرة 0%، أو الإعفاءات..." : "Ask anything: 0% Free Zone rules, Small Business Relief, penalties..."}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleOpenTaxAi()}
+                  className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-bold px-3.5 py-1.5 rounded-lg text-xs transition-all shadow cursor-pointer shrink-0"
+                >
+                  {language === "ar" ? "بحث فوري" : "Ask AI"}
+                </button>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                <span className="text-[10px] text-slate-400 font-semibold">{language === "ar" ? "شائع:" : "Trending Topics:"}</span>
+                {[
+                  { label: language === "ar" ? "المنطقة الحرة 0%" : "Free Zone 0% QFZP", query: "What are the latest Free Zone 0% qualifying income conditions in the UAE?" },
+                  { label: language === "ar" ? "تسهيلات 3 مليون" : "SBR AED 3M Relief", query: "How does UAE Small Business Relief (SBR) up to AED 3,000,000 revenue work?" },
+                  { label: language === "ar" ? "مواعيد الإقرارات" : "FTA Penalties", query: "What are the official UAE Corporate Tax filing deadlines and late penalties?" },
+                ].map((item, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => handleOpenTaxAi(item.query)}
+                    className="text-[10px] bg-white/10 hover:bg-gold-500/20 text-slate-200 hover:text-gold-300 border border-white/10 hover:border-gold-400/40 px-2 py-0.5 rounded-md transition-all cursor-pointer"
+                  >
+                    {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Key Trust & Performance Metrics Banner */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 pt-6 border-t border-white/15 max-w-3xl mx-auto">
+              <div className="text-center">
+                <span className="block text-2xl sm:text-3xl font-extrabold font-display text-gold-400">{t.hero.stats.smes}</span>
+                <span className="text-[11px] text-slate-300 font-medium block mt-0.5">{t.hero.stats.smesLabel}</span>
+              </div>
+              <div className="text-center">
+                <span className="block text-2xl sm:text-3xl font-extrabold font-display text-gold-400">{t.hero.stats.compliance}</span>
+                <span className="text-[11px] text-slate-300 font-medium block mt-0.5">{t.hero.stats.complianceLabel}</span>
+              </div>
+              <div className="text-center">
+                <span className="block text-2xl sm:text-3xl font-extrabold font-display text-gold-400">{t.hero.stats.savings}</span>
+                <span className="text-[11px] text-slate-300 font-medium block mt-0.5">{t.hero.stats.savingsLabel}</span>
+              </div>
+              <div className="text-center">
+                <span className="block text-2xl sm:text-3xl font-extrabold font-display text-gold-400">{t.hero.stats.rating}</span>
+                <span className="text-[11px] text-slate-300 font-medium block mt-0.5">{t.hero.stats.ratingLabel}</span>
+              </div>
             </div>
 
           </div>
-        </div>
-      </section>
+        </section>
+
+        {/* 2.2 Instant Interactive Tax Planning & Health Estimator Section */}
+        <section id="calculator" className="py-12 md:py-16 bg-navy-900 border-b border-slate-800 text-white relative overflow-hidden">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+              
+              {/* Left Explanatory Column */}
+              <div className="lg:col-span-6 space-y-6 text-center lg:text-left rtl:lg:text-right">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-500/10 border border-gold-500/30 text-gold-400 text-xs font-bold uppercase tracking-wider">
+                  <Calculator className="w-3.5 h-3.5" />
+                  <span>{language === "ar" ? "حاسبة ضريبة الشركات التفاعلية" : "Interactive Tax Estimator"}</span>
+                </div>
+                
+                <h2 className="font-display text-3xl sm:text-4xl font-bold text-white tracking-tight leading-tight">
+                  {language === "ar" 
+                    ? "احسب التزامك الضريبي واكتشف فرص الإعفاء القانوني" 
+                    : "Calculate Your UAE Corporate Tax & Discover 0% Relief Options"}
+                </h2>
+                
+                <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+                  {language === "ar"
+                    ? "سواء كانت شركتك مسجلة في البر الرئيسي (Mainland) أو في إحدى المناطق الحرة (Free Zone)، استخدم حاسبتنا المعتمدة لتقدير ضريبة الـ 9%، والتحقق من أهلية تسهيلات الأعمال الصغيرة (SBR) حتى 3 مليون درهم."
+                    : "Whether you operate in UAE Mainland or Free Zones (DMCC, Meydan, RAKEZ, IFZA, Shams), use our compliant estimator to calculate your 9% liability, check Small Business Relief eligibility, and verify 0% Qualifying Free Zone Person conditions."}
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                  <div className="bg-navy-950/70 border border-white/10 rounded-xl p-4 space-y-1 text-left rtl:text-right">
+                    <div className="flex items-center gap-2 text-gold-400 font-bold text-sm">
+                      <CheckCircle2 className="w-4 h-4 shrink-0" />
+                      <span>{language === "ar" ? "تسهيلات حتى 3M درهم" : "Small Business Relief"}</span>
+                    </div>
+                    <p className="text-xs text-slate-400">
+                      {language === "ar" ? "0% ضريبة إذا كانت الإيرادات السنوية أقل من 3,000,000 درهم." : "0% tax for UAE businesses with annual revenues under AED 3,000,000."}
+                    </p>
+                  </div>
+
+                  <div className="bg-navy-950/70 border border-white/10 rounded-xl p-4 space-y-1 text-left rtl:text-right">
+                    <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm">
+                      <CheckCircle2 className="w-4 h-4 shrink-0" />
+                      <span>{language === "ar" ? "المناطق الحرة 0% QFZP" : "0% Free Zone QFZP"}</span>
+                    </div>
+                    <p className="text-xs text-slate-400">
+                      {language === "ar" ? "هيكلة متوافقة للاستفادة من الإعفاء للدخل المؤهل." : "Compliant structuring to maintain 0% corporate tax on qualifying income."}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setTaxHealthModalOpen(true)}
+                    className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold py-3 px-5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition-all shadow cursor-pointer"
+                  >
+                    <ShieldCheck className="w-4 h-4" />
+                    <span>{language === "ar" ? "افحص مخاطر الامتثال (مجاناً)" : "Free 60s Penalty Risk Audit"}</span>
+                  </button>
+                  <a
+                    href="#services"
+                    className="border border-white/20 hover:border-white/40 text-slate-200 hover:text-white font-display font-semibold py-3 px-5 rounded-xl text-xs sm:text-sm transition-all"
+                  >
+                    {language === "ar" ? "عرض جميع الخدمات" : "View All Services"}
+                  </a>
+                </div>
+              </div>
+
+              {/* Right Interactive Tax Calculator */}
+              <div className="lg:col-span-6 w-full max-w-lg mx-auto">
+                <React.Suspense fallback={<div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-100 shadow-xl min-h-[480px] p-6 flex flex-col justify-center items-center text-slate-400 text-xs animate-pulse">Loading Tax Estimator...</div>}>
+                  <TaxCalculator />
+                </React.Suspense>
+              </div>
+
+            </div>
+          </div>
+        </section>
 
       {/* 3. Software Partners Banner */}
       <section className="bg-white border-y border-slate-100 py-10">
@@ -575,6 +787,16 @@ function MainApp() {
             ))}
           </div>
 
+          {/* Service Comparison Matrix (Standard Accounting vs. CFO Advisory) */}
+          <React.Suspense fallback={<div className="py-8 text-center text-xs text-slate-400 animate-pulse">Loading Comparison Matrix...</div>}>
+            <ServiceComparisonTable onSelectTier={handlePreselectedCallBooking} />
+          </React.Suspense>
+
+          {/* Interactive 12-Month Tax Planning Savings Visualizer */}
+          <React.Suspense fallback={<div className="py-8 text-center text-xs text-slate-400 animate-pulse">Loading Tax Savings Analysis...</div>}>
+            <TaxPlanningSavingsChart />
+          </React.Suspense>
+
           {/* Service detail Modal */}
           <React.Suspense fallback={null}>
             <ServiceModal
@@ -587,6 +809,11 @@ function MainApp() {
 
         </div>
       </section>
+
+      {/* Official UAE Free Zone & Mainland Affiliations Section */}
+      <React.Suspense fallback={<div className="py-12 text-center text-xs text-slate-400 animate-pulse">Loading Affiliations...</div>}>
+        <OurAffiliations />
+      </React.Suspense>
 
       {/* 5. "Why Partner With Us" Section */}
       <section id="about" className="py-20 bg-white relative overflow-hidden cv-auto">
@@ -760,18 +987,14 @@ function MainApp() {
               {/* Deadline Alert Banner */}
               <div className="bg-amber-50 border border-amber-200/60 rounded-xl p-3 text-center mb-6">
                 <p className="text-[10px] text-amber-800 font-bold leading-relaxed">
-                  Deadline alert! File by 31st July and dodge those penalties.
+                  {language === "ar"
+                    ? "تنبيه الموعد النهائي! قدم إقرارك قبل 30 سبتمبر وتجنب الغرامات."
+                    : "Deadline alert! File by 30th Sept and dodge those penalties."}
                 </p>
               </div>
 
               {/* Pricing breakdown */}
               <div className="text-center space-y-1 pb-4 border-b border-slate-100 mb-6">
-                <div className="flex items-center justify-center gap-2">
-                  <span className="text-xs text-slate-400 font-semibold line-through">AED 3,000</span>
-                  <span className="bg-rose-100 text-rose-600 text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">
-                    Save AED 500
-                  </span>
-                </div>
                 <div className="flex items-baseline justify-center gap-1.5">
                   <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">AED</span>
                   <span className="text-4xl font-extrabold font-mono text-navy-950 tracking-tight">
@@ -895,6 +1118,13 @@ function MainApp() {
           <p className="text-center text-[10px] text-slate-400 font-medium">
             *Custom enterprise solutions, audit support packages, and historical clean-ups are quoted separately. Pricing excludes standard government VAT.
           </p>
+
+          {/* Standalone Regulatory Services: VAT Return, Corporate Tax SBR & Audit */}
+          <div className="pt-8">
+            <React.Suspense fallback={<div className="py-12 text-center text-xs text-slate-400 animate-pulse">Loading Standalone Services...</div>}>
+              <StandalonePricingCards onSelectService={handlePreselectedCallBooking} />
+            </React.Suspense>
+          </div>
 
         </div>
       </section>
@@ -1036,6 +1266,38 @@ function MainApp() {
             })}
           </div>
 
+          {/* AI Regulatory Search Banner in FAQ */}
+          <div className="bg-gradient-to-r from-navy-950 via-slate-900 to-navy-900 rounded-3xl p-6 sm:p-8 text-white max-w-3xl mx-auto border border-gold-500/20 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4 text-center sm:text-left rtl:sm:text-right">
+              <div className="w-12 h-12 rounded-2xl bg-gold-500/20 border border-gold-500/30 flex items-center justify-center shrink-0 shadow-inner">
+                <Sparkles className="w-6 h-6 text-gold-400 animate-pulse" />
+              </div>
+              <div className="space-y-1">
+                <div className="flex items-center gap-2 justify-center sm:justify-start rtl:sm:justify-end flex-wrap">
+                  <h4 className="font-display font-bold text-base text-white">
+                    {language === "ar" ? "هل لديك سؤال حول قانون ضريبي أو موعد محدد؟" : "Have a specific UAE tax regulation or penalty question?"}
+                  </h4>
+                  <span className="text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-400/30 px-2 py-0.5 rounded-full">
+                    Google Grounded
+                  </span>
+                </div>
+                <p className="text-xs text-slate-300">
+                  {language === "ar"
+                    ? "ابحث فورياً عبر مساعد الذكاء الاصطناعي المدعوم ببيانات بحث Google وقرارات الهيئة الاتحادية للضرائب."
+                    : "Ask our live Search-Grounded AI assistant to retrieve official 2025/2026 Cabinet Decisions & circulars."}
+                </p>
+              </div>
+            </div>
+
+            <button
+              onClick={() => handleOpenTaxAi()}
+              className="bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-navy-950 font-display font-bold py-3 px-5 rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg transition-all hover:scale-105 active:scale-95 cursor-pointer shrink-0 w-full sm:w-auto"
+            >
+              <Globe className="w-4 h-4 text-navy-950" />
+              <span>{language === "ar" ? "فتح البحث الضريبي المباشر" : "Ask Live Tax AI"}</span>
+            </button>
+          </div>
+
         </div>
       </section>
 
@@ -1117,61 +1379,202 @@ function MainApp() {
           </div>
 
           {/* Blog Read Modal Popup */}
-          {selectedBlog && (
-            <div 
-              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm"
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="blog-modal-title"
-            >
-              <div className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] md:max-h-[80vh] animate-scaleUp">
-                {/* Header */}
-                <div className="bg-navy-900 p-6 md:p-8 text-white relative">
-                  <button
-                    onClick={() => setSelectedBlog(null)}
-                    className="absolute top-4 right-4 p-2 text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
-                    aria-label="Close article modal"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                  <span className="text-[9px] bg-gold-400 text-navy-950 font-bold uppercase tracking-widest px-2.5 py-1 rounded-full mb-3 inline-block">
-                    {selectedBlog.tag}
-                  </span>
-                  <h3 id="blog-modal-title" className="font-display text-xl md:text-3xl font-bold tracking-tight mb-2">
-                    {selectedBlog.title}
-                  </h3>
-                  <div className="flex flex-wrap gap-4 text-xs text-slate-400 font-medium">
-                    <span>Published: {selectedBlog.date}</span>
-                    <span>•</span>
-                    <span>Read time: {selectedBlog.readTime}</span>
-                    <span>•</span>
-                    <span>Author: {selectedBlog.author.name} ({selectedBlog.author.role})</span>
-                  </div>
-                </div>
+          {selectedBlog && (() => {
+            const blogUrl = typeof window !== "undefined" 
+              ? `${window.location.origin}${window.location.pathname}#blog-${selectedBlog.id}` 
+              : `https://diasuae.ae/#blog-${selectedBlog.id}`;
+            const dynamicOgUrl = getBlogOgImageUrl({
+              id: selectedBlog.id,
+              title: selectedBlog.title,
+              authorName: selectedBlog.author?.name,
+              authorRole: selectedBlog.author?.role,
+              tag: selectedBlog.tag,
+              date: selectedBlog.date,
+              readTime: selectedBlog.readTime,
+              summary: selectedBlog.summary,
+            });
+            const shareLinks = getSocialShareUrls(blogUrl, selectedBlog.title, selectedBlog.summary);
 
-                {/* Article Content */}
-                <div className="flex-grow overflow-y-auto p-6 md:p-8 bg-white prose prose-slate max-w-none text-slate-700">
-                  <div className="whitespace-pre-line text-sm leading-relaxed space-y-4">
-                    {selectedBlog.content}
-                  </div>
+            const handleCopyLink = () => {
+              if (typeof navigator !== "undefined" && navigator.clipboard) {
+                navigator.clipboard.writeText(blogUrl);
+                setCopiedBlogLink(true);
+                setTimeout(() => setCopiedBlogLink(false), 2500);
+              }
+            };
 
-                  <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5 mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div className="text-center sm:text-left space-y-1">
-                      <span className="font-display font-bold text-navy-950 text-sm">Need regulatory support?</span>
-                      <p className="text-slate-500 text-xs">Our senior team helps companies avoid hefty administrative penalties.</p>
-                    </div>
-                    <a
-                      href="#contact"
-                      onClick={() => setSelectedBlog(null)}
-                      className="bg-navy-900 hover:bg-navy-950 text-white font-display font-bold py-2.5 px-5 rounded-xl text-xs transition-colors"
+            return (
+              <div 
+                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="blog-modal-title"
+              >
+                <div className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] md:max-h-[85vh] animate-scaleUp">
+                  {/* Header */}
+                  <div className="bg-navy-900 p-6 md:p-8 text-white relative">
+                    <button
+                      onClick={() => {
+                        setSelectedBlog(null);
+                        setShowOgPreview(false);
+                      }}
+                      className="absolute top-4 right-4 p-2 text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
+                      aria-label="Close article modal"
                     >
-                      Book Professional Assessment
-                    </a>
+                      <X className="w-5 h-5" />
+                    </button>
+                    <div className="flex flex-wrap items-center gap-2 mb-3">
+                      <span className="text-[9px] bg-gold-400 text-navy-950 font-bold uppercase tracking-widest px-2.5 py-1 rounded-full inline-block">
+                        {selectedBlog.tag}
+                      </span>
+                      <span className="text-[9px] bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 font-semibold px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        Dynamic OG Meta Active
+                      </span>
+                    </div>
+                    <h3 id="blog-modal-title" className="font-display text-xl md:text-3xl font-bold tracking-tight mb-2">
+                      {selectedBlog.title}
+                    </h3>
+                    <div className="flex flex-wrap gap-4 text-xs text-slate-400 font-medium">
+                      <span>Published: {selectedBlog.date}</span>
+                      <span>•</span>
+                      <span>Read time: {selectedBlog.readTime}</span>
+                      <span>•</span>
+                      <span>Author: {selectedBlog.author.name} ({selectedBlog.author.role})</span>
+                    </div>
+                  </div>
+
+                  {/* Dynamic OG Social Share Bar */}
+                  <div className="bg-slate-50 border-b border-slate-200/80 px-6 py-3 flex flex-wrap items-center justify-between gap-3 text-xs">
+                    <div className="flex items-center gap-2 text-slate-600 font-medium">
+                      <Share2 className="w-3.5 h-3.5 text-gold-600" />
+                      <span className="font-semibold text-navy-950">Share with unique OG Card:</span>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2">
+                      {/* WhatsApp */}
+                      <a
+                        href={shareLinks.whatsapp}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium text-[11px] transition-colors"
+                        title="Share on WhatsApp with customized preview"
+                      >
+                        WhatsApp
+                      </a>
+
+                      {/* LinkedIn */}
+                      <a
+                        href={shareLinks.linkedin}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#0077b5] hover:bg-[#006097] text-white rounded-lg font-medium text-[11px] transition-colors"
+                        title="Share to LinkedIn network"
+                      >
+                        LinkedIn
+                      </a>
+
+                      {/* Twitter / X */}
+                      <a
+                        href={shareLinks.twitter}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-black hover:bg-slate-800 text-white rounded-lg font-medium text-[11px] transition-colors"
+                        title="Share to X (Twitter)"
+                      >
+                        X (Twitter)
+                      </a>
+
+                      {/* Copy Link */}
+                      <button
+                        onClick={handleCopyLink}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-lg font-medium text-[11px] transition-colors"
+                      >
+                        {copiedBlogLink ? (
+                          <>
+                            <Check className="w-3.5 h-3.5 text-emerald-600" />
+                            <span className="text-emerald-700 font-bold">Link Copied!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5 text-slate-500" />
+                            <span>Copy Link</span>
+                          </>
+                        )}
+                      </button>
+
+                      {/* Preview Dynamic Social Image Button */}
+                      <button
+                        onClick={() => setShowOgPreview(!showOgPreview)}
+                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium text-[11px] transition-colors ${
+                          showOgPreview 
+                            ? "bg-gold-500 text-navy-950 font-bold" 
+                            : "bg-gold-50 border border-gold-200 text-gold-800 hover:bg-gold-100"
+                        }`}
+                      >
+                        <ImageIcon className="w-3.5 h-3.5" />
+                        <span>{showOgPreview ? "Hide OG Preview" : "Preview OG Image"}</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Optional Dynamic OG Image Preview Drawer */}
+                  {showOgPreview && (
+                    <div className="bg-navy-950 p-4 border-b border-navy-800 animate-fadeIn">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-gold-400">
+                            Dynamic 1200x630 Open Graph Image (Live Render)
+                          </span>
+                          <span className="text-[10px] text-slate-400">
+                            (Generated on the fly based on title &amp; author)
+                          </span>
+                        </div>
+                        <a
+                          href={dynamicOgUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[10px] text-gold-300 hover:text-gold-200 underline flex items-center gap-1"
+                        >
+                          <span>Open SVG Card</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                      <div className="rounded-xl overflow-hidden border border-gold-500/30 bg-navy-900 shadow-inner max-h-56 flex items-center justify-center">
+                        <img
+                          src={dynamicOgUrl}
+                          alt={`Open Graph Card for ${selectedBlog.title}`}
+                          className="w-full h-auto max-h-56 object-contain"
+                          loading="eager"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Article Content */}
+                  <div className="flex-grow overflow-y-auto p-6 md:p-8 bg-white prose prose-slate max-w-none text-slate-700">
+                    <div className="whitespace-pre-line text-sm leading-relaxed space-y-4">
+                      {selectedBlog.content}
+                    </div>
+
+                    <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5 mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+                      <div className="text-center sm:text-left space-y-1">
+                        <span className="font-display font-bold text-navy-950 text-sm">Need regulatory support?</span>
+                        <p className="text-slate-500 text-xs">Our senior team helps companies avoid hefty administrative penalties.</p>
+                      </div>
+                      <a
+                        href="#contact"
+                        onClick={() => setSelectedBlog(null)}
+                        className="bg-navy-900 hover:bg-navy-950 text-white font-display font-bold py-2.5 px-5 rounded-xl text-xs transition-colors"
+                      >
+                        Book Professional Assessment
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
 
         </div>
       </section>
@@ -1590,12 +1993,49 @@ function MainApp() {
         </a>
       </div>
 
+      {/* 11. Floating Scroll-to-Top Button (Appears after scrolling past hero) */}
+      <button
+        type="button"
+        id="btn-scroll-to-top"
+        onClick={scrollToTop}
+        aria-label="Scroll back to top"
+        title="Scroll to top"
+        className={`fixed bottom-20 left-4 sm:left-6 md:bottom-8 md:left-8 z-40 w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-navy-900/95 hover:bg-navy-950 text-gold-400 hover:text-gold-300 border border-gold-500/30 hover:border-gold-400/70 shadow-2xl backdrop-blur-md flex items-center justify-center transition-all duration-300 transform group cursor-pointer focus:outline-none focus:ring-2 focus:ring-gold-400/60 ${
+          showScrollTop
+            ? "opacity-100 scale-100 translate-y-0 pointer-events-auto shadow-[0_8px_20px_rgba(15,23,42,0.35)]"
+            : "opacity-0 scale-75 translate-y-4 pointer-events-none"
+        }`}
+      >
+        <ArrowUp className="w-5 h-5 transition-transform duration-300 group-hover:-translate-y-0.5" />
+        <span className="sr-only">Scroll back to top</span>
+        
+        {/* Desktop Tooltip */}
+        <span className="hidden md:block absolute left-14 bg-navy-950 text-white text-[11px] font-bold py-1.5 px-3 rounded-lg shadow-xl opacity-0 scale-90 group-hover:opacity-100 group-hover:scale-100 transition-all origin-left pointer-events-none whitespace-nowrap border border-white/10">
+          Back to Top ↑
+        </span>
+      </button>
+
       <React.Suspense fallback={null}>
-        <WhatsAppWidget />
+        <WhatsAppWidget
+          activeSection={activeSection}
+          selectedService={selectedService}
+          selectedBlog={selectedBlog}
+          customContext={preselectedServiceTitle ? "cfo-advisory" : undefined}
+        />
         <StickyMobileLeadBar onOpenAudit={() => setTaxHealthModalOpen(true)} />
         <TaxHealthCheckModal isOpen={taxHealthModalOpen} onClose={() => setTaxHealthModalOpen(false)} />
         <LeadMagnetDownloadModal isOpen={leadMagnetModalOpen} onClose={() => setLeadMagnetModalOpen(false)} />
         <PrivacyPolicyModal isOpen={privacyOpen} onClose={() => setPrivacyOpen(false)} />
+        <TaxAiAdvisorModal
+          isOpen={taxAiModalOpen}
+          onClose={() => setTaxAiModalOpen(false)}
+          initialQuery={taxAiInitialQuery}
+          initialCategory={taxAiInitialCategory}
+          onOpenScheduler={() => {
+            const el = document.getElementById("contact");
+            if (el) el.scrollIntoView({ behavior: "smooth" });
+          }}
+        />
       </React.Suspense>
 
     </div>

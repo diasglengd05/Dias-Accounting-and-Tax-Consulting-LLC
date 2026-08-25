@@ -1,17 +1,26 @@
-# Robots.txt for Dias Accounting & Tax Consulting LLC (https://diasuae.ae)
+# Robots.txt for Dias Accounting & Tax Consulting LLC (https://www.diasuae.ae)
 User-agent: *
 Allow: /
 Allow: /#services
+Allow: /#service-comparison
+Allow: /#calculator
 Allow: /#pricing
-Allow: /#testimonials
+Allow: /#reviews
 Allow: /#faqs
 Allow: /#blogs
 Allow: /#contact
 Allow: /assets/
 Allow: /llms.txt
 Allow: /llms-full.txt
+Allow: /sitemap.xml
 
 # AI & LLM Crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
 User-agent: GPTBot
 Allow: /
 
@@ -21,13 +30,9 @@ Allow: /
 User-agent: PerplexityBot
 Allow: /
 
-User-agent: Google-Extended
-Allow: /
-
 User-agent: Applebot
 Allow: /
 
 # Host, Sitemap, and Agentic endpoints
-Host: https://diasuae.ae
-Sitemap: https://diasuae.ae/sitemap.xml
-
+Host: https://www.diasuae.ae
+Sitemap: https://www.diasuae.ae/sitemap.xml

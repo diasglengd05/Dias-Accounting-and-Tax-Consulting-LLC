@@ -4,6 +4,9 @@ import fs from "fs";
 import nodemailer from "nodemailer";
 import { createServer as createViteServer } from "vite";
 import { initializeApp } from "firebase/app";
+import { GoogleGenAI } from "@google/genai";
+import { generateOgSvg } from "./server/ogGenerator.ts";
+import { resolveMetaForRequest, injectMetaIntoHtml, isSocialOrSearchCrawler } from "./server/metaPrerender.ts";
 import { 
   getFirestore, 
   collection, 
@@ -438,6 +441,251 @@ async function runBackgroundSync(accessToken: string, currentSheetId: string | n
 }
 
 // ==================== API ROUTES ====================
+
+/**
+ * Gemini AI Client for Regulatory Search & Grounding
+ * Uses gemini-3.7-flash with Google Search Grounding for live UAE tax regulatory retrieval
+ */
+let geminiClient: GoogleGenAI | null = null;
+function getGeminiClient(): GoogleGenAI | null {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    console.warn("[Gemini API] GEMINI_API_KEY is not defined in environment.");
+    return null;
+  }
+  if (!geminiClient) {
+    geminiClient = new GoogleGenAI({
+      apiKey,
+      httpOptions: {
+        headers: {
+          "User-Agent": "aistudio-build",
+        },
+      },
+    });
+  }
+  return geminiClient;
+}
+
+/**
+ * AI Regulatory Intelligence Search (Google Search Grounded)
+ * Powered by gemini-3.7-flash with live search grounding
+ */
+app.post("/api/gemini/tax-search", async (req, res) => {
+  const { query: userQuery, category, language } = req.body;
+
+  if (!userQuery || typeof userQuery !== "string" || !userQuery.trim()) {
+    return res.status(400).json({ error: "Search query is required." });
+  }
+
+  const isArabic = language === "ar";
+  const client = getGeminiClient();
+
+  const systemInstruction = `
+You are the Senior UAE Regulatory Intelligence Specialist for Dias Accounting & Tax Consulting LLC (Dubai, UAE), founded and led by Glen Dias (FTA Registered Tax Agent & Senior Accounting Advisor).
+Your role is to provide precise, authoritative, up-to-date, and actionable answers on UAE Corporate Tax (Federal Decree-Law No. 47 of 2022 and subsequent Cabinet Decisions through 2025/2026), UAE VAT (Federal Decree-Law No. 8 of 2017), Federal Tax Authority (FTA) public clarifications, Qualifying Free Zone Person (QFZP) rules, Small Business Relief (SBR threshold AED 3,000,000), transfer pricing, and statutory accounting compliance (IFRS).
+
+CRITICAL GROUNDING DIRECTIVES:
+1. Always utilize the Google Search tool to fetch live, up-to-date UAE regulatory announcements, FTA deadlines, official gazette decisions, and Ministry of Finance circulars.
+2. Structure the response clearly with:
+   - **Executive Summary / Direct Answer**
+   - **Key Regulatory Provisions & Legal Articles** (cite specific Decree-Laws or Cabinet Decisions where applicable)
+   - **Practical Compliance Steps for UAE Businesses**
+   - **Dias Accounting Strategic Advisory Recommendation**
+3. Respond in ${isArabic ? "professional formal Arabic (الفصحى المهنية)" : "fluent, professional English"}.
+4. Maintain a reassuring, expert, and authoritative tone.
+`.trim();
+
+  try {
+    if (!client) {
+      // Fallback response if GEMINI_API_KEY is not configured yet
+      const fallbackMsg = isArabic
+        ? `ملخص تنظيمي (الهيئة الاتحادية للضرائب - دولة الإمارات العربية المتحدة):
+
+• **ضريبة الشركات**: تطبق بنسبة 9% على الأرباح الخاضعة للضريبة التي تتجاوز 375,000 درهم إماراتي، وبنسبة 0% لما دون ذلك.
+• **تسهيلات الأعمال الصغيرة (SBR)**: للشركات ذات الإيرادات السنوية التي لا تتجاوز 3,000,000 درهم إماراتي.
+• **شركات المناطق الحرة المؤهلة (QFZP)**: تخضع لنسبة 0% على الدخل المؤهل شريطة استيفاء شروط الوجود الاقتصادي والأنشطة المؤهلة.
+• **ضريبة القيمة المضافة (VAT)**: التسجيل إلزامي عند تجاوز التوريدات الخاضعة للضريبة 375,000 درهم خلال 12 شهراً.
+
+للحصول على استشارة تفصيلية ومخصصة لحالة شركتكم، يرجى التواصل مباشرة مع المستشار غلين دياس.`
+        : `Official UAE Tax Regulatory Guidance Overview:
+
+• **UAE Corporate Tax (Federal Decree-Law No. 47 of 2022)**: 9% standard rate on taxable net profits exceeding AED 375,000 (0% on profits up to AED 375,000).
+• **Small Business Relief (SBR)**: Available for resident businesses with gross revenue not exceeding AED 3,000,000 per tax period.
+• **Qualifying Free Zone Persons (QFZP)**: Eligible for 0% tax on qualifying income from qualifying activities, provided adequate economic substance is maintained and non-qualifying revenue does not breach de minimis thresholds.
+• **VAT Compliance (Federal Decree-Law No. 8 of 2017)**: Mandatory registration threshold of AED 375,000 in taxable supplies and imports.
+
+For a dedicated audit and filing review tailored to your company's corporate structure, schedule a consultation with Glen Dias.`;
+      
+      return res.json({
+        success: true,
+        answer: fallbackMsg,
+        sources: [
+          { title: "UAE Federal Tax Authority (FTA) Portal", uri: "https://tax.gov.ae" },
+          { title: "UAE Ministry of Finance (Corporate Tax)", uri: "https://mof.gov.ae" }
+        ],
+        searchQueries: [userQuery],
+        model: "gemini-3.7-flash",
+        grounded: false,
+      });
+    }
+
+    const prompt = `
+Search and analyze the latest UAE tax regulations, FTA decisions, and official guidelines regarding:
+"${userQuery.trim()}"
+
+Category: ${category || "general"}
+Target Language: ${isArabic ? "Arabic" : "English"}
+
+Please provide a detailed, accurate, and search-grounded explanation with relevant legal references and clear actionable takeaways for UAE business owners, finance managers, and CFOs.
+`.trim();
+
+    const response = await client.models.generateContent({
+      model: "gemini-3.7-flash",
+      contents: prompt,
+      config: {
+        systemInstruction,
+        tools: [{ googleSearch: {} }],
+      },
+    });
+
+    const answer = response.text || "";
+    const candidate = response.candidates?.[0];
+    const groundingMetadata = candidate?.groundingMetadata;
+
+    // Extract search sources
+    const sources: Array<{ title: string; uri: string }> = [];
+    const rawChunks = groundingMetadata?.groundingChunks || [];
+    if (Array.isArray(rawChunks)) {
+      for (const chunk of rawChunks) {
+        if (chunk && (chunk as any).web && (chunk as any).web.uri) {
+          const uri = (chunk as any).web.uri;
+          const title = (chunk as any).web.title || new URL(uri).hostname;
+          // De-duplicate by URI
+          if (!sources.some(s => s.uri === uri)) {
+            sources.push({ title, uri });
+          }
+        }
+      }
+    }
+
+    // Default fallback sources if none returned by search
+    if (sources.length === 0) {
+      sources.push(
+        { title: "UAE Federal Tax Authority (FTA)", uri: "https://tax.gov.ae" },
+        { title: "UAE Ministry of Finance (Corporate Tax)", uri: "https://mof.gov.ae" }
+      );
+    }
+
+    const searchQueries = groundingMetadata?.webSearchQueries || [userQuery];
+
+    return res.json({
+      success: true,
+      answer,
+      sources,
+      searchQueries,
+      model: "gemini-3.7-flash",
+      grounded: true,
+      timestamp: new Date().toISOString(),
+    });
+  } catch (err: any) {
+    console.error("[Gemini Tax Search] Error generating search-grounded response:", err);
+    // If search grounding fails (e.g. search rate limits), return fallback response with valid answer
+    const fallbackAnswer = isArabic
+      ? `التوجيه الضريبي الرسمي من دياس للاستشارات المحاسبية والضريبية:
+
+بشأن استفساركم: "${userQuery.trim()}"
+
+• **الإطار التشريعي**: تخضع المعاملات لقانون ضريبة الشركات (المرسوم بقانون اتحادي رقم 47 لسنة 2022) وقانون ضريبة القيمة المضافة (المرسوم بقانون اتحادي رقم 8 لسنة 2017).
+• **الالتزام والإيداع**: يجب على جميع الشركات المرخصة في دولة الإمارات والمناطق الحرة التسجيل الضريبي لدى الهيئة الاتحادية للضرائب وتقديم الإقرارات في المواعيد المحددة قانونياً لتفادي الغرامات الإدارية.
+• **التوصية المهنية**: يوصى بمراجعة المركز المالي والقوائم المالية المعدة وفق معايير IFRS لضمان الاستفادة القصوى من الإعفاءات وتسهيلات الأعمال الصغيرة.
+
+يرجى التواصل مع الأستاذ غلين دياس (وكيل ضريبي معتمد) للحصول على دراسة تفصيلية لملف شركتكم.`
+      : `Official Regulatory Guidance from Dias Accounting & Tax Consulting:
+
+Regarding your query: "${userQuery.trim()}"
+
+• **Legal Framework**: Subject to UAE Corporate Tax (Federal Decree-Law No. 47 of 2022) and UAE VAT (Federal Decree-Law No. 8 of 2017) along with relevant FTA Public Clarifications.
+• **Compliance & Deadlines**: All UAE mainland and Free Zone entities must obtain a Tax Registration Number (TRN) and file statutory returns within 9 months of the financial year-end to prevent administrative penalties.
+• **Professional Recommendation**: Ensure your books are fully prepared according to IFRS standards to maximize Qualifying Free Zone status (0%) or Small Business Relief (under AED 3,000,000 revenue).
+
+Connect directly with Glen Dias (FTA Registered Tax Agent) for an in-depth audit of your company's tax position.`;
+
+    return res.json({
+      success: true,
+      answer: fallbackAnswer,
+      sources: [
+        { title: "UAE Federal Tax Authority (FTA) Regulations", uri: "https://tax.gov.ae" },
+        { title: "UAE Ministry of Finance Corporate Tax Portal", uri: "https://mof.gov.ae" },
+      ],
+      searchQueries: [userQuery],
+      model: "gemini-3.7-flash",
+      grounded: false,
+      fallbackUsed: true,
+      timestamp: new Date().toISOString(),
+    });
+  }
+});
+
+/**
+ * Dynamic Open Graph (OG) Image Generation Endpoint
+ * Returns high-resolution 1200x630 SVGs customized on the fly for social sharing & click-through rates
+ */
+app.get(["/api/og", "/api/og/image"], (req, res) => {
+  try {
+    const { title, author, role, tag, date, readTime, summary, id } = req.query;
+
+    const svg = generateOgSvg({
+      title: typeof title === "string" ? title : undefined,
+      author: typeof author === "string" ? author : undefined,
+      role: typeof role === "string" ? role : undefined,
+      tag: typeof tag === "string" ? tag : undefined,
+      date: typeof date === "string" ? date : undefined,
+      readTime: typeof readTime === "string" ? readTime : undefined,
+      summary: typeof summary === "string" ? summary : undefined,
+      id: typeof id === "string" ? id : undefined,
+    });
+
+    res.setHeader("Content-Type", "image/svg+xml; charset=utf-8");
+    res.setHeader("Cache-Control", "public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    return res.status(200).send(svg);
+  } catch (err: any) {
+    console.error("[OG Generator] Error generating SVG card:", err);
+    res.setHeader("Content-Type", "image/svg+xml; charset=utf-8");
+    return res.status(200).send(generateOgSvg({}));
+  }
+});
+
+/**
+ * Clean URL alias for individual blog post OG images: /api/og/blog/:id
+ */
+app.get("/api/og/blog/:id", (req, res) => {
+  try {
+    // Strip optional .svg or .png extension from ID parameter
+    const blogId = (req.params.id || "").replace(/\.(svg|png|jpg|jpeg|webp)$/i, "");
+    const { title, author, role, tag, date, readTime, summary } = req.query;
+
+    const svg = generateOgSvg({
+      id: blogId,
+      title: typeof title === "string" ? title : undefined,
+      author: typeof author === "string" ? author : undefined,
+      role: typeof role === "string" ? role : undefined,
+      tag: typeof tag === "string" ? tag : undefined,
+      date: typeof date === "string" ? date : undefined,
+      readTime: typeof readTime === "string" ? readTime : undefined,
+      summary: typeof summary === "string" ? summary : undefined,
+    });
+
+    res.setHeader("Content-Type", "image/svg+xml; charset=utf-8");
+    res.setHeader("Cache-Control", "public, max-age=86400, s-maxage=86400, stale-while-revalidate=604800");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    return res.status(200).send(svg);
+  } catch (err: any) {
+    console.error("[OG Generator Blog ID] Error:", err);
+    res.setHeader("Content-Type", "image/svg+xml; charset=utf-8");
+    return res.status(200).send(generateOgSvg({}));
+  }
+});
 
 /**
  * Reusable email notification helper supporting SMTP and Gmail API
@@ -1133,13 +1381,52 @@ async function bootstrap() {
       server: { middlewareMode: true },
       appType: "spa",
     });
+
+    // Crawler interception middleware in dev mode
+    app.use(async (req, res, next) => {
+      const userAgent = req.headers["user-agent"] || "";
+      const isCrawler = isSocialOrSearchCrawler(userAgent);
+      const isHtmlRequest = req.headers.accept?.includes("text/html");
+
+      if (isCrawler || (isHtmlRequest && !req.url.startsWith("/@") && !req.url.startsWith("/node_modules") && !req.url.startsWith("/src") && !req.url.startsWith("/api"))) {
+        try {
+          const indexPath = path.join(process.cwd(), "index.html");
+          let template = fs.readFileSync(indexPath, "utf-8");
+          template = await vite.transformIndexHtml(req.url, template);
+          
+          const meta = resolveMetaForRequest(req.url, req.headers.host || "diasuae.ae");
+          const finalHtml = injectMetaIntoHtml(template, meta);
+          
+          res.setHeader("Content-Type", "text/html; charset=utf-8");
+          return res.status(200).send(finalHtml);
+        } catch (e) {
+          return next(e);
+        }
+      }
+      return next();
+    });
+
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), "dist");
     app.use(express.static(distPath));
-    // Express v4/v5 SPA wildcard serving
+
+    // Dynamic Meta Prerendering SPA wildcard serving for Production
     app.get("*", (req, res) => {
-      res.sendFile(path.join(distPath, "index.html"));
+      try {
+        const indexPath = path.join(distPath, "index.html");
+        if (fs.existsSync(indexPath)) {
+          const template = fs.readFileSync(indexPath, "utf-8");
+          const meta = resolveMetaForRequest(req.url, req.headers.host || "diasuae.ae");
+          const finalHtml = injectMetaIntoHtml(template, meta);
+          res.setHeader("Content-Type", "text/html; charset=utf-8");
+          return res.status(200).send(finalHtml);
+        }
+        return res.sendFile(indexPath);
+      } catch (err) {
+        console.error("Error prerendering meta:", err);
+        return res.sendFile(path.join(distPath, "index.html"));
+      }
     });
   }
 

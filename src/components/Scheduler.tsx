@@ -410,8 +410,17 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
     if (language === "ar") {
       switch (type) {
         case "corporate-tax": return "استشارات ضريبة الشركات (الامتثال 9%)";
+        case "corporate-tax-sbr":
+        case "Corporate Tax SBR Filing (AED 500)":
+          return "إقرار ضريبة الشركات (تسهيلات الأعمال الصغيرة SBR - 500 د.إ)";
         case "vat-compliance": return "الامتثال لضريبة القيمة المضافة والإقرارات";
+        case "vat-return-filing":
+        case "VAT Return Filing (AED 750/Qtr)":
+          return "تقديم إقرار ضريبة القيمة المضافة (750 د.إ / ربع سنوي)";
         case "accounting": return "المحاسبة ومسك الدفاتر المنتظم";
+        case "audit":
+        case "Financial Audit Preparation & Scoping":
+          return "تدقيق الحسابات والجاهزية المالية (عرض سعر مخصص)";
         case "incorporation": return "تأسيس الشركات وتراخيص المناطق الحرة";
         case "general": return "استشارة ضريبية ومحاسبية شاملة";
         default: return type;
@@ -419,8 +428,17 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
     }
     switch (type) {
       case "corporate-tax": return "Corporate Tax Advisory";
+      case "corporate-tax-sbr":
+      case "Corporate Tax SBR Filing (AED 500)":
+        return "Corporate Tax SBR Filing (AED 500)";
       case "vat-compliance": return "VAT Compliance & Audits";
+      case "vat-return-filing":
+      case "VAT Return Filing (AED 750/Qtr)":
+        return "VAT Return Filing (AED 750/Qtr)";
       case "accounting": return "Accounting & Bookkeeping";
+      case "audit":
+      case "Financial Audit Preparation & Scoping":
+        return "Financial Audit Scoping & Readiness";
       case "incorporation": return "Business Setup & Licensing";
       case "general": return "Comprehensive Package";
       default: return type;
@@ -851,6 +869,9 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
                   className="w-full px-4 py-2.5 text-xs border border-slate-200 rounded-xl bg-slate-50/50 text-slate-700 focus:bg-white focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none font-medium transition-all"
                 >
                   <option value="corporate-tax">{language === "ar" ? "استشارات ضريبة الشركات (الامتثال بنسبة 9%)" : "Corporate Tax Advisory (9% compliance)"}</option>
+                  <option value="Corporate Tax SBR Filing (AED 500)">{language === "ar" ? "إقرار ضريبة الشركات (تسهيلات الأعمال الصغيرة SBR - 500 د.إ)" : "Corporate Tax (SBR) Filing - AED 500"}</option>
+                  <option value="VAT Return Filing (AED 750/Qtr)">{language === "ar" ? "تقديم إقرار ضريبة القيمة المضافة (750 د.إ / ربع سنوي)" : "VAT Return Filing - AED 750 / Quarter"}</option>
+                  <option value="Financial Audit Preparation & Scoping">{language === "ar" ? "تدقيق الحسابات والجاهزية المالية (عرض سعر مخصص)" : "Audit Readiness & Liaison (Custom Quote)"}</option>
                   <option value="vat-compliance">{language === "ar" ? "الامتثال لضريبة القيمة المضافة والإقرارات" : "VAT Compliance, Audits & Filing"}</option>
                   <option value="accounting">{language === "ar" ? "المحاسبة ومسك الدفاتر المنتظم" : "Accounting, Bookkeeping & Backoffice"}</option>
                   <option value="incorporation">{language === "ar" ? "تأسيس الشركات والتراخيص والمناطق الحرة" : "Business Setup, Licensing & Freezones"}</option>

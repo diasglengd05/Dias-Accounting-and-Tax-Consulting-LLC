@@ -5,7 +5,7 @@ export const servicesData: Service[] = [
     id: "accounting-bookkeeping",
     title: "Accounting & Bookkeeping",
     iconName: "Calculator",
-    shortDesc: "Complete financial record keeping, reconciliation, and reporting compliant with IFRS standards.",
+    shortDesc: "Complete financial record keeping, monthly ledger reconciliation, and IFRS-compliant reporting.",
     longDesc: "Dias Accounting provides robust accounting and bookkeeping solutions designed to keep your business's financial health in perfect order. Our expert services ensure full compliance with the UAE's federal regulations and international standard accounting methodologies (IFRS).",
     inclusions: [
       "Dedicated, certified Senior Accountant",
@@ -25,9 +25,9 @@ export const servicesData: Service[] = [
   },
   {
     id: "corporate-tax-advisory",
-    title: "Corporate Tax Advisory",
+    title: "Corporate Tax Advisory & SBR",
     iconName: "TrendingUp",
-    shortDesc: "Comprehensive strategy, registration, compliance, and optimization for the 9% UAE Corporate Tax.",
+    shortDesc: "Comprehensive strategy, EmaraTax registration, 0% Free Zone QFZP structuring, and 9% tax filing.",
     longDesc: "With the introduction of the 9% Federal Corporate Tax on businesses in the UAE, proper tax planning is more critical than ever. Dias Accounting provides expert guidance to structure your transactions, determine corporate tax liabilities, register your business, and submit timely tax returns.",
     inclusions: [
       "Corporate Tax registration with the Federal Tax Authority (FTA) via EmaraTax",
@@ -47,9 +47,9 @@ export const servicesData: Service[] = [
   },
   {
     id: "vat-compliance",
-    title: "VAT Compliance",
+    title: "VAT Compliance & Refunds",
     iconName: "Percent",
-    shortDesc: "Hassle-free VAT registration, quarterly filing, and optimization to ensure absolute FTA compliance.",
+    shortDesc: "Hassle-free VAT registration, quarterly 5% filing, input tax recovery, and FTA audit representation.",
     longDesc: "The UAE's 5% Value Added Tax (VAT) demands precise transaction classification, invoice compliance, and timely tax returns. We manage your end-to-end VAT cycle to guarantee compliance, maximize legal input tax recovery, and avoid severe FTA penalties.",
     inclusions: [
       "End-to-end VAT Registration and Deregistration with the FTA",
@@ -68,18 +68,80 @@ export const servicesData: Service[] = [
     ]
   },
   {
+    id: "auditing-assurance",
+    title: "Auditing & Assurance Services",
+    iconName: "ShieldCheck",
+    shortDesc: "Statutory audits, Free Zone approved audits, internal controls, and IFRS financial verification.",
+    longDesc: "Independent auditing and assurance services for UAE Mainland and Free Zone companies. We verify financial statements according to International Financial Reporting Standards (IFRS) to satisfy bank covenants, licensing authorities, and corporate tax mandates.",
+    inclusions: [
+      "Statutory annual financial statement audits for Mainland and Free Zone authorities",
+      "Approved auditor reporting for DMCC, Meydan, RAKEZ, IFZA, SHAMS, and DED",
+      "Internal audit reviews, fraud risk assessments, and internal controls testing",
+      "Special purpose audits, due diligence reviews, and investor financial verification",
+      "Management letter highlighting key operational and accounting control recommendations"
+    ],
+    regulatoryDeadlines: "Annual audit submission required at commercial license renewal or Free Zone deadline.",
+    benefits: [
+      "100% compliance with Free Zone and Mainland licensing audit requirements",
+      "Strengthen banking relationships and credit facility approvals with verified statements",
+      "Defensible financial standing for FTA Corporate Tax 0% QFZP qualification",
+      "Enhanced governance, investor confidence, and valuation accuracy"
+    ]
+  },
+  {
+    id: "aml-goaml-compliance",
+    title: "AML & goAML Compliance",
+    iconName: "FileCheck",
+    shortDesc: "Anti-Money Laundering framework, KYC policies, goAML registration, and DNFBP audit readiness.",
+    longDesc: "Comprehensive Anti-Money Laundering (AML) and Counter-Terrorism Financing (CFT) compliance services for Designated Non-Financial Businesses and Professions (DNFBPs), including real estate agencies, dealers in precious metals/stones, and corporate service providers.",
+    inclusions: [
+      "Mandatory goAML portal registration and SACM system setup with the UAE FIU",
+      "Enterprise-wide AML/CFT institutional risk assessment policy drafting",
+      "Customer Due Diligence (CDD), Enhanced Due Diligence (EDD), and KYC onboarding workflows",
+      "Suspicious Transaction Report (STR) and Suspicious Activity Report (SAR) filing guidance",
+      "Appointment of qualified Compliance Officer and annual AML compliance reporting"
+    ],
+    regulatoryDeadlines: "Annual AML Risk Assessment and ongoing transaction monitoring under Ministry of Economy rules.",
+    benefits: [
+      "Protect your business against severe Ministry of Economy penalties (AED 50k - AED 5M+)",
+      "Instant compliance readiness for regulatory inspections and banking KYC reviews",
+      "Streamlined onboarding of high-net-worth and international corporate clients",
+      "Full alignment with UAE Federal Decree-Law No. 20 of 2018 on AML/CFT"
+    ]
+  },
+  {
+    id: "backlog-accounting",
+    title: "Backlog Accounting & Cleanup",
+    iconName: "Clock",
+    shortDesc: "Reconstruction of past unrecorded transactions, bank reconciliation, and audit-ready cleanup.",
+    longDesc: "Fast-track financial reconstruction for businesses with months or years of unrecorded financial data. We reconcile missing invoices, bank records, and ledgers to generate clean opening balance sheets required for UAE Corporate Tax registration and filings.",
+    inclusions: [
+      "Historical bank statement extraction and full transaction reconciliation",
+      "Sales, expenses, and asset invoice reconstruction from inception or past tax years",
+      "Identification and correction of unrecorded liabilities, suspense accounts, and VAT mismatches",
+      "Preparation of finalized opening Balance Sheets and Profit & Loss statements",
+      "Migration into modern cloud accounting software (Zoho Books, QuickBooks, Xero, Wafeq)"
+    ],
+    regulatoryDeadlines: "Immediate execution recommended prior to FTA corporate tax return deadlines.",
+    benefits: [
+      "Eliminate anxiety and legal risks of unmaintained financial books under UAE Law",
+      "Produce audit-ready financial statements required for Corporate Tax filing",
+      "Unlock accurate historical profit metrics and cash flow visibility",
+      "Seamlessly transition into cost-effective monthly accounting maintenance"
+    ]
+  },
+  {
     id: "business-incorporation",
-    title: "Business Incorporation",
+    title: "Business Setup & Licensing",
     iconName: "Building",
-    shortDesc: "End-to-end setup of your corporate entity in UAE Mainland, Free Zones, or Offshore.",
+    shortDesc: "End-to-end setup of your corporate entity in UAE Mainland DET, Free Zones, and corporate bank accounts.",
     longDesc: "Launching a business in the UAE offers incredible potential but requires navigating complex legal steps. Dias Accounting streamlines this entire process, handling licensing, documentation, and compliance structures so you start your journey on solid ground.",
     inclusions: [
-      "Mainland, Free Zone, or Offshore jurisdiction feasibility study",
-      "DED Trade Name Reservation and Initial Approvals processing",
-      "Drafting and notarization of Memorandum of Association (MOA)",
-      "Establishment Card processing and corporate visa assistance",
-      "Corporate bank account opening guidance at top UAE banks",
-      "Corporate structure alignment with immediate tax and AML regulations"
+      "Mainland (DED/DET), Free Zone (Meydan, RAKEZ, IFZA, Shams, AFZA, DMCC) feasibility study",
+      "Trade Name Reservation, Initial Approvals, and MOA drafting & notarization",
+      "Establishment Card processing and investor / employee residency visa assistance",
+      "Corporate bank account opening guidance with premier UAE digital and tier-1 banks",
+      "Immediate tax structuring and automated bookkeeping software setup from Day 1"
     ],
     regulatoryDeadlines: "Annual commercial license renewal is required by the specific licensing authority.",
     benefits: [
@@ -87,6 +149,27 @@ export const servicesData: Service[] = [
       "Fast-tracked registrations through our direct government liaisons",
       "Optimized choosing of freezones to maximize corporate tax advantages",
       "Complete transparency with custom pricing and zero hidden registration fees"
+    ]
+  },
+  {
+    id: "cfo-advisory",
+    title: "Outsourced CFO & Advisory",
+    iconName: "Briefcase",
+    shortDesc: "Executive financial leadership, cash flow optimization, budgeting, and investor-ready reporting.",
+    longDesc: "Gain access to high-caliber strategic financial expertise without the overhead of a full-time executive. Our Fractional and Outsourced CFO service empowers business owners to optimize cash flow, raise capital, and scale profitably.",
+    inclusions: [
+      "Monthly executive financial performance review and board-level reporting",
+      "12-month rolling cash flow forecasting and working capital optimization",
+      "Departmental budgeting, cost-reduction analysis, and KPI scorecard tracking",
+      "Financial modeling, valuation analysis, and fundraising deck preparation",
+      "Banking negotiations, credit facility structuring, and merchant pricing reviews"
+    ],
+    regulatoryDeadlines: "Ongoing monthly/quarterly executive board meetings and dynamic forecasts.",
+    benefits: [
+      "Senior financial leadership at a fraction of full-time executive cost",
+      "Data-driven strategic clarity to make confident hiring and expansion decisions",
+      "Maximized gross margins and elimination of redundant corporate expenditures",
+      "Investor-grade financial reporting that accelerates equity and debt financing"
     ]
   }
 ];
@@ -269,7 +352,7 @@ export const pricingTiers: PricingTier[] = [
       "Unlimited transactions per month",
       "Daily bookkeeping and active reconciliation",
       "End-to-end VAT & Corporate Tax filings",
-      "Transfer Pricing documentation",
+      "Comprehensive Corporate Tax documentation & filing",
       "Direct consultation with Managing Director",
       "CFO-level advisory and financial forecasting",
       "Interim audit readiness & auditor coordination",

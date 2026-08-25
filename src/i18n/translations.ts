@@ -32,13 +32,14 @@ export interface Translations {
   hero: {
     badge: string;
     googleRatingText: string;
-    headlinePart1: string;
-    headlineGradient: string;
-    headlinePart2: string;
-    subheadline: string;
+    companyTitle: string;
+    subheadline1: string;
+    subheadline2: string;
+    description: string;
     ctaConsultation: string;
     ctaRiskAudit: string;
     ctaServices: string;
+    ctaWhatsApp: string;
     stats: {
       smes: string;
       smesLabel: string;
@@ -46,6 +47,8 @@ export interface Translations {
       complianceLabel: string;
       savings: string;
       savingsLabel: string;
+      rating: string;
+      ratingLabel: string;
     };
   };
 
@@ -232,31 +235,34 @@ export const translations: Record<Language, Translations> = {
       langName: "English",
     },
     alertBanner: {
-      badge: "FTA Compliance Alert",
-      deadlineNotice: "2026 UAE Corporate Tax Deadlines:",
+      badge: "Deadline Alert!",
+      deadlineNotice: "File by 30th Sept 2026 and dodge those penalties.",
       avoidPenalty: "Avoid mandatory AED 10,000+ late filing penalties.",
       riskAuditBtn: "Free 60s Risk Audit",
       bookCallBtn: "Book Free 15-Min Call",
       dismiss: "Dismiss alert",
     },
     hero: {
-      badge: "Authorized UAE Tax Consultants",
-      googleRatingText: "5.0 (48 Google Reviews)",
-      headlinePart1: "Financial Clarity,",
-      headlineGradient: "Engineered",
-      headlinePart2: "for Your Growth",
-      subheadline:
-        "Expert accounting, VAT, and corporate tax advisory tailored for UAE businesses. We turn complex numbers into actionable strategies.",
+      badge: "UAE Authorized Tax Consultants • Dubai, UAE",
+      googleRatingText: "5.0 ★★★★★ (48 Verified Google Reviews)",
+      companyTitle: "Dias Accounting",
+      subheadline1: "UAE's Leading Accounting & Tax Consulting Firm in Sharjah",
+      subheadline2: "Financial Clarity, Engineered for Your Growth",
+      description:
+        "Dias Accounting helps UAE businesses manage Accounting, VAT, Corporate Tax, Audits, and Regulatory Compliance, keeping you audit-ready, reducing compliance risks, and giving you confidence at every stage of your business.",
       ctaConsultation: "Book Free Consultation",
-      ctaRiskAudit: "Check 2026 Penalty Risk (Free)",
+      ctaRiskAudit: "Free 60s Penalty Risk Audit",
       ctaServices: "Explore Services",
+      ctaWhatsApp: "WhatsApp Tax Advisor",
       stats: {
         smes: "500+",
-        smesLabel: "UAE SMEs Served",
+        smesLabel: "UAE Businesses Managed",
         compliance: "100%",
-        complianceLabel: "Tax Compliance Pass",
+        complianceLabel: "FTA Compliance & Audit Rate",
         savings: "AED 50M+",
-        savingsLabel: "Business Savings",
+        savingsLabel: "Tax Optimized & Saved",
+        rating: "5.0 ★",
+        ratingLabel: "Google Client Rating",
       },
     },
     partners: {
@@ -319,9 +325,9 @@ export const translations: Record<Language, Translations> = {
         },
         {
           id: "vat-compliance",
-          title: "VAT Compliance",
+          title: "VAT Compliance & Refunds",
           iconName: "Percent",
-          shortDesc: "Hassle-free VAT registration, quarterly filing, and optimization to ensure absolute FTA compliance.",
+          shortDesc: "Hassle-free VAT registration, quarterly 5% filing, input tax recovery, and FTA audit representation.",
           longDesc: "The UAE's 5% Value Added Tax (VAT) demands precise transaction classification, invoice compliance, and timely tax returns. We manage your end-to-end VAT cycle to guarantee compliance, maximize legal input tax recovery, and avoid severe FTA penalties.",
           inclusions: [
             "End-to-end VAT Registration and Deregistration with the FTA",
@@ -340,18 +346,80 @@ export const translations: Record<Language, Translations> = {
           ],
         },
         {
+          id: "auditing-assurance",
+          title: "Auditing & Assurance Services",
+          iconName: "ShieldCheck",
+          shortDesc: "Statutory audits, Free Zone approved audits, internal controls, and IFRS financial verification.",
+          longDesc: "Independent auditing and assurance services for UAE Mainland and Free Zone companies. We verify financial statements according to International Financial Reporting Standards (IFRS) to satisfy bank covenants, licensing authorities, and corporate tax mandates.",
+          inclusions: [
+            "Statutory annual financial statement audits for Mainland and Free Zone authorities",
+            "Approved auditor reporting for DMCC, Meydan, RAKEZ, IFZA, SHAMS, and DED",
+            "Internal audit reviews, fraud risk assessments, and internal controls testing",
+            "Special purpose audits, due diligence reviews, and investor financial verification",
+            "Management letter highlighting key operational and accounting control recommendations",
+          ],
+          regulatoryDeadlines: "Annual audit submission required at commercial license renewal or Free Zone deadline.",
+          benefits: [
+            "100% compliance with Free Zone and Mainland licensing audit requirements",
+            "Strengthen banking relationships and credit facility approvals with verified statements",
+            "Defensible financial standing for FTA Corporate Tax 0% QFZP qualification",
+            "Enhanced governance, investor confidence, and valuation accuracy",
+          ],
+        },
+        {
+          id: "aml-goaml-compliance",
+          title: "AML & goAML Compliance",
+          iconName: "FileCheck",
+          shortDesc: "Anti-Money Laundering framework, KYC policies, goAML registration, and DNFBP audit readiness.",
+          longDesc: "Comprehensive Anti-Money Laundering (AML) and Counter-Terrorism Financing (CFT) compliance services for Designated Non-Financial Businesses and Professions (DNFBPs), including real estate agencies, dealers in precious metals/stones, and corporate service providers.",
+          inclusions: [
+            "Mandatory goAML portal registration and SACM system setup with the UAE FIU",
+            "Enterprise-wide AML/CFT institutional risk assessment policy drafting",
+            "Customer Due Diligence (CDD), Enhanced Due Diligence (EDD), and KYC onboarding workflows",
+            "Suspicious Transaction Report (STR) and Suspicious Activity Report (SAR) filing guidance",
+            "Appointment of qualified Compliance Officer and annual AML compliance reporting",
+          ],
+          regulatoryDeadlines: "Annual AML Risk Assessment and ongoing transaction monitoring under Ministry of Economy rules.",
+          benefits: [
+            "Protect your business against severe Ministry of Economy penalties (AED 50k - AED 5M+)",
+            "Instant compliance readiness for regulatory inspections and banking KYC reviews",
+            "Streamlined onboarding of high-net-worth and international corporate clients",
+            "Full alignment with UAE Federal Decree-Law No. 20 of 2018 on AML/CFT",
+          ],
+        },
+        {
+          id: "backlog-accounting",
+          title: "Backlog Accounting & Cleanup",
+          iconName: "Clock",
+          shortDesc: "Reconstruction of past unrecorded transactions, bank reconciliation, and audit-ready cleanup.",
+          longDesc: "Fast-track financial reconstruction for businesses with months or years of unrecorded financial data. We reconcile missing invoices, bank records, and ledgers to generate clean opening balance sheets required for UAE Corporate Tax registration and filings.",
+          inclusions: [
+            "Historical bank statement extraction and full transaction reconciliation",
+            "Sales, expenses, and asset invoice reconstruction from inception or past tax years",
+            "Identification and correction of unrecorded liabilities, suspense accounts, and VAT mismatches",
+            "Preparation of finalized opening Balance Sheets and Profit & Loss statements",
+            "Migration into modern cloud accounting software (Zoho Books, QuickBooks, Xero, Wafeq)",
+          ],
+          regulatoryDeadlines: "Immediate execution recommended prior to FTA corporate tax return deadlines.",
+          benefits: [
+            "Eliminate anxiety and legal risks of unmaintained financial books under UAE Law",
+            "Produce audit-ready financial statements required for Corporate Tax filing",
+            "Unlock accurate historical profit metrics and cash flow visibility",
+            "Seamlessly transition into cost-effective monthly accounting maintenance",
+          ],
+        },
+        {
           id: "business-incorporation",
-          title: "Business Incorporation",
+          title: "Business Setup & Licensing",
           iconName: "Building",
-          shortDesc: "End-to-end setup of your corporate entity in UAE Mainland, Free Zones, or Offshore.",
+          shortDesc: "End-to-end setup of your corporate entity in UAE Mainland DET, Free Zones, and corporate bank accounts.",
           longDesc: "Launching a business in the UAE offers incredible potential but requires navigating complex legal steps. Dias Accounting streamlines this entire process, handling licensing, documentation, and compliance structures so you start your journey on solid ground.",
           inclusions: [
-            "Mainland, Free Zone, or Offshore jurisdiction feasibility study",
-            "DED Trade Name Reservation and Initial Approvals processing",
-            "Drafting and notarization of Memorandum of Association (MOA)",
-            "Establishment Card processing and corporate visa assistance",
-            "Corporate bank account opening guidance at top UAE banks",
-            "Corporate structure alignment with immediate tax and AML regulations",
+            "Mainland (DED/DET), Free Zone (Meydan, RAKEZ, IFZA, Shams, AFZA, DMCC) feasibility study",
+            "Trade Name Reservation, Initial Approvals, and MOA drafting & notarization",
+            "Establishment Card processing and investor / employee residency visa assistance",
+            "Corporate bank account opening guidance with premier UAE digital and tier-1 banks",
+            "Immediate tax structuring and automated bookkeeping software setup from Day 1",
           ],
           regulatoryDeadlines: "Annual commercial license renewal is required by the specific licensing authority.",
           benefits: [
@@ -359,6 +427,27 @@ export const translations: Record<Language, Translations> = {
             "Fast-tracked registrations through our direct government liaisons",
             "Optimized choosing of freezones to maximize corporate tax advantages",
             "Complete transparency with custom pricing and zero hidden registration fees",
+          ],
+        },
+        {
+          id: "cfo-advisory",
+          title: "Outsourced CFO & Advisory",
+          iconName: "Briefcase",
+          shortDesc: "Executive financial leadership, cash flow optimization, budgeting, and investor-ready reporting.",
+          longDesc: "Gain access to high-caliber strategic financial expertise without the overhead of a full-time executive. Our Fractional and Outsourced CFO service empowers business owners to optimize cash flow, raise capital, and scale profitably.",
+          inclusions: [
+            "Monthly executive financial performance review and board-level reporting",
+            "12-month rolling cash flow forecasting and working capital optimization",
+            "Departmental budgeting, cost-reduction analysis, and KPI scorecard tracking",
+            "Financial modeling, valuation analysis, and fundraising deck preparation",
+            "Banking negotiations, credit facility structuring, and merchant pricing reviews",
+          ],
+          regulatoryDeadlines: "Ongoing monthly/quarterly executive board meetings and dynamic forecasts.",
+          benefits: [
+            "Senior financial leadership at a fraction of full-time executive cost",
+            "Data-driven strategic clarity to make confident hiring and expansion decisions",
+            "Maximized gross margins and elimination of redundant corporate expenditures",
+            "Investor-grade financial reporting that accelerates equity and debt financing",
           ],
         },
       ],
@@ -457,7 +546,7 @@ export const translations: Record<Language, Translations> = {
             "Unlimited transactions per month",
             "Daily bookkeeping and active reconciliation",
             "End-to-end VAT & Corporate Tax filings",
-            "Transfer Pricing documentation",
+            "Comprehensive Corporate Tax documentation & filing",
             "Direct consultation with Managing Director",
             "CFO-level advisory and financial forecasting",
             "Interim audit readiness & auditor coordination",
@@ -661,31 +750,34 @@ export const translations: Record<Language, Translations> = {
       langName: "العربية",
     },
     alertBanner: {
-      badge: "تنبيه الامتثال الضريبي (الهيئة الاتحادية)",
-      deadlineNotice: "المواعيد النهائية لضريبة الشركات في الإمارات 2026:",
+      badge: "تنبيه الموعد النهائي!",
+      deadlineNotice: "قدّم إقرارك قبل 30 سبتمبر 2026 وتجنب الغرامات المالية.",
       avoidPenalty: "تجنب غرامات التأخير الإلزامية التي تبدأ من 10,000 درهم.",
       riskAuditBtn: "تدقيق ضريبي مجاني في 60 ثانية",
       bookCallBtn: "احجز مكالمة 15 دقيقة",
       dismiss: "إغلاق التنبيه",
     },
     hero: {
-      badge: "مستشارون ضريبيون معتمدون في الإمارات",
-      googleRatingText: "5.0 (48 تقييم موثق على Google)",
-      headlinePart1: "وضوح مالي واستشارات،",
-      headlineGradient: "مُصممة خصيصاً",
-      headlinePart2: "لنمو أعمالك في الإمارات",
-      subheadline:
-        "خدمات محاسبية متكاملة، واستشارات ضريبة الشركات (9%)، وضريبة القيمة المضافة (5%) للشركات في دبي وكافة إمارات الدولة. نحول الأرقام المعقدة إلى قرارات نمو استراتيجية.",
+      badge: "مستشارون ضريبيون معتمدون في دولة الإمارات • دبي",
+      googleRatingText: "5.0 ★★★★★ (48 تقييم موثق على Google)",
+      companyTitle: "دياز للمحاسبة والاستشارات الضريبية",
+      subheadline1: "الشركة الرائدة في المحاسبة والاستشارات الضريبية في الشارقة والإمارات",
+      subheadline2: "وضوح مالي واستشارات، مُصممة لنمو وازدهار أعمالك",
+      description:
+        "تساعد شركة دياز للمحاسبة الشركات والمؤسسات في الإمارات على إدارة المحاسبة، وضريبة القيمة المضافة، وضريبة الشركات، والتدقيق المالي، والامتثال للوائح، لنبقيك دائماً جاهزاً لأي تدقيق ونمنحك الثقة في كل مراحل نمو شركتك.",
       ctaConsultation: "احجز استشارة مجانية",
-      ctaRiskAudit: "افحص مخاطر الغرامات 2026 (مجانياً)",
+      ctaRiskAudit: "تدقيق مخاطر الغرامات في 60 ثانية",
       ctaServices: "استكشف خدماتنا",
+      ctaWhatsApp: "محادثة واتساب مباشرة",
       stats: {
         smes: "+500",
         smesLabel: "شركة ومؤسسة نخدمها في الإمارات",
         compliance: "100%",
-        complianceLabel: "نسبة الامتثال للوائح الهيئة الاتحادية",
+        complianceLabel: "نسبة الامتثال والجاهزية للتدقيق",
         savings: "+50 مليون د.إ",
         savingsLabel: "وفورات ضريبية قانونية لعملائنا",
+        rating: "5.0 ★",
+        ratingLabel: "تقييم العملاء على Google",
       },
     },
     partners: {
@@ -748,7 +840,7 @@ export const translations: Record<Language, Translations> = {
         },
         {
           id: "vat-compliance",
-          title: "الامتثال لضريبة القيمة المضافة (5%)",
+          title: "الامتثال لضريبة القيمة المضافة واستردادها",
           iconName: "Percent",
           shortDesc: "تسجيل ضريبي فوري، وإعداد الإقرارات ربع السنوية، واسترداد المدخلات الضريبية لتجنب غرامات الهيئة الاتحادية.",
           longDesc: "تتطلب ضريبة القيمة المضافة بنسبة 5% في الإمارات تصنيفاً دقيقاً للمعاملات والامتثال الصارم للفواتير الضريبية. نتولى إدارة دورة ضريبة القيمة المضافة بالكامل لضمان الامتثال، واسترداد أكبر قدر من ضريبة المدخلات، وتجنب الجزاءات الإدارية.",
@@ -766,6 +858,69 @@ export const translations: Record<Language, Translations> = {
             "تحسين التدفق النقدي من خلال استرداد ضريبة المدخلات المؤهلة غير المطالب بها",
             "معالجة دقيقة لآلية الاحتساب العكسي (Reverse Charge) للخدمات المستوردة",
             "تصنيف قانوني دقيق للسلع الخاضعة للنسبة الأساسية والنسبة الصفرية والمعفاة",
+          ],
+        },
+        {
+          id: "auditing-assurance",
+          title: "خدمات التدقيق والضمان المالي",
+          iconName: "ShieldCheck",
+          shortDesc: "تدقيق قانوني معتمد للمناطق الحرة، والرقابة الداخلية، والتحقق المالي وفق معايير IFRS.",
+          longDesc: "خدمات تدقيق حسابات مستقلة ومعتمدة للشركات في البر الرئيسي والمناطق الحرة في الإمارات. نتحقق من القوائم المالية وفق المعايير الدولية لإعداد التقارير المالية (IFRS) لتلبية متطلبات البنوك وسلطات التراخيص وضريبة الشركات.",
+          inclusions: [
+            "التدقيق القانوني السنوي للقوائم المالية لسلطات البر الرئيسي والمناطق الحرة",
+            "تقارير مدقق معتمد لـ DMCC وMeydan وRAKEZ وIFZA وSHAMS واقتصادية دبي",
+            "مراجعة التدقيق الداخلي، وتقييم مخاطر الاحتيال، واختبار أنظمة الرقابة الداخلية",
+            "التدقيق لأغراض خاصة والتحقق المالي للمستثمرين وصفقات الاستحواذ",
+            "خطاب الإدارة الذي يوضح أهم التوصيات لتطوير الضوابط التشغيلية والمحاسبية",
+          ],
+          regulatoryDeadlines: "تقديم تقرير التدقيق السنوي عند تجديد الرخصة أو حسب مواعيد المنطقة الحرة.",
+          benefits: [
+            "امتثال كامل 100% لمتطلبات التدقيق لدى سلطات التراخيص والمناطق الحرة",
+            "تعزيز الثقة المصرفية وتسهيل الحصول على التسهيلات الائتمانية والتمويل",
+            "إثبات الأهلية القانونية للاستفادة من نسبة 0% لضريبة الشركات في المناطق الحرة",
+            "تعزيز الحوكمة وثقة المستثمرين ودقة تقييم الأعمال",
+          ],
+        },
+        {
+          id: "aml-goaml-compliance",
+          title: "الامتثال لمكافحة غسل الأموال (goAML)",
+          iconName: "FileCheck",
+          shortDesc: "أطر مكافحة غسل الأموال، وسياسات اعرف عميلك (KYC)، والتسجيل في نظام goAML للأعمال والمهن غير المالية.",
+          longDesc: "خدمات شاملة للامتثال لتشريعات مكافحة غسل الأموال وتمويل الإرهاب (AML/CFT) المخصصة للمهن والأنشطة غير المالية المحددة (DNFBPs)، بما في ذلك الوسطاء العقاريون، وتجار المعادن الثمينة، ومقدمو خدمات الشركات.",
+          inclusions: [
+            "التسجيل الإلزامي في بوابة goAML ونظام SACM التابع لوحدة المعلومات المالية بالإمارات",
+            "صياغة سياسات التقييم المؤسسي لمخاطر غسل الأموال وتمويل الإرهاب",
+            "إجراءات العناية الواجبة بالعملاء (CDD) والعناية المشددة (EDD) ونماذج KYC",
+            "إرشادات تقديم تقارير المعاملات المشبوهة (STR) والأنشطة المشبوهة (SAR)",
+            "تعيين وتأهيل مسؤول الامتثال وإعداد التقارير السنوية لوزارة الاقتصاد",
+          ],
+          regulatoryDeadlines: "تقييم سنوي للمخاطر ومراقبة مستمرة للمعاملات وفق اشتراطات وزارة الاقتصاد.",
+          benefits: [
+            "حماية شركتك من غرامات وزارة الاقتصاد الباهظة (من 50,000 إلى 5,000,000+ درهم)",
+            "جاهزية فورية لعمليات التفتيش والرقابة الحكومية ومراجعات البنوك",
+            "تسريع وتأمين استقبال العملاء والمستثمرين الدوليين رفيعي المستوى",
+            "التوافق التام مع المرسوم بقانون اتحادي رقم 20 لسنة 2018 ولائحته التنفيذية",
+          ],
+        },
+        {
+          id: "backlog-accounting",
+          title: "تسوية الحسابات المتراكمة والقيود السابقة",
+          iconName: "Clock",
+          shortDesc: "إعادة بناء الحسابات غير المسجلة، ومطابقة الكشوفات البنكية، وتجهيز الدفاتر الجاهزة للتدقيق الضريبي.",
+          longDesc: "إعادة بناء مالي سريع واحترافي للشركات التي لديها فترات غير مسجلة أو حسابات متراكمة لشهور أو سنوات سابقة. نقوم بمطابقة الفواتير المفقودة والكشوفات البنكية وإعداد الميزانيات الافتتاحية المطلوبة لضريبة الشركات.",
+          inclusions: [
+            "استخراج كشوف الحسابات البنكية التاريخية ومطابقة كافة الحركات المالية",
+            "إعادة بناء فواتير المبيعات والمصروفات والأصول من تاريخ التأسيس أو الفترات السابقة",
+            "معالجة وتصحيح الحسابات المعلقة، وفروقات ضريبة القيمة المضافة، والالتزامات غير المسجلة",
+            "إعداد الميزانية العمومية الافتتاحية وقائمة الأرباح والخسائر النهائية المعتمدة",
+            "الترحيل السلس إلى برامج المحاسبة السحابية الحديثة (Zoho Books, QuickBooks, Xero, Wafeq)",
+          ],
+          regulatoryDeadlines: "يُنصح بالتنفيذ الفوري قبل انتهاء المواعيد النهائية لإقرارات ضريبة الشركات.",
+          benefits: [
+            "التخلص من القلق والمخاطر القانونية المترتبة على عدم مسك الدفاتر المحاسبية",
+            "إصدار قوائم مالية معتمدة ومطابقة لمتطلبات تقديم الإقرار الضريبي لـ FTA",
+            "الحصول على صورة مالية دقيقة وواضحة لربحية الشركة والتدفقات النقدية السابقة",
+            "الانتقال السلس إلى خطة اشتراك محاسبي شهري منتظمة وموفرة للتكاليف",
           ],
         },
         {
@@ -788,6 +943,27 @@ export const translations: Record<Language, Translations> = {
             "إنجاز سريع وسلس بفضل علاقاتنا المباشرة مع الجهات والدوائر الحكومية",
             "اختيار استراتيجي للمنطقة الحرة لتعظيم المزايا الضريبية لضريبة الشركات",
             "شفافية مطلقة في الرسوم وبدون أي تكاليف تأسيس خفية",
+          ],
+        },
+        {
+          id: "cfo-advisory",
+          title: "المدير المالي الخارجي والاستشارات الاستراتيجية",
+          iconName: "Briefcase",
+          shortDesc: "قيادة مالية تنفيذية، تحسين التدفقات النقدية، الميزانيات التقديرية، والتقارير الجاهزة للمستثمرين.",
+          longDesc: "احصل على خبرات مالية استراتيجية رفيعة المستوى دون تكلفة توظيف مدير مالي بدوام كامل. تُمكّن خدمة المدير المالي التنفيذي الخارجي أصحاب الشركات من تحسين التدفقات النقدية، وجذب الاستثمارات، والتوسع بأعلى ربحية.",
+          inclusions: [
+            "مراجعة شهرية للأداء المالي التنفيذي وإعداد تقارير مجلس الإدارة",
+            "توقعات التدفقات النقدية المتجددة لمدة 12 شهراً وإدارة رأس المال العامل",
+            "الميزانيات التقديرية للأقسام، وتحليل خفض التكاليف، ومؤشرات الأداء KPI",
+            "النمذجة المالية، وتقييم الشركات، وتجهيز العروض المالية للمستثمرين",
+            "المفاوضات المصرفية، وهيكلة التسهيلات الائتمانية، وتحسين رسوم بوابات الدفع",
+          ],
+          regulatoryDeadlines: "اجتماعات دورية شهرية وربع سنوية مع الإدارة التنفيذية وتحديث التوقعات المالية.",
+          benefits: [
+            "قيادة مالية خبيرة ومحترفة بجزء بسيط من تكلفة التوظيف التنفيذي الكامل",
+            "وضوح استراتيجي مبني على البيانات لاتخاذ قرارات التوظيف والتوسع بثقة",
+            "تعظيم هوامش الربح الإجمالية وإلغاء النفقات التشغيلية غير الضرورية",
+            "تقارير مالية بمعايير استثمارية عالمية تسرّع جولات التمويل والائتمان",
           ],
         },
       ],
@@ -886,7 +1062,7 @@ export const translations: Record<Language, Translations> = {
             "معاملات غير محدودة شهرياً",
             "مسك دفاتر يومي ومطابقة بنكية نشطة ومستمرة",
             "إقرارات ضريبة القيمة المضافة وضريبة الشركات بالكامل",
-            "توثيق سياسات التسعير التحويلي للشركات التابعة",
+            "توثيق وإقرارات ضريبة الشركات الشاملة والامتثال الضريبي",
             "جلسات استشارية مباشرة مع المدير التنفيذي للضرائب",
             "استشارات المدير المالي (CFO) والتنبؤ بالسيولة",
             "التنسيق الكامل والجاهزية لمدققي الحسابات الخارجيين",
