@@ -49,6 +49,7 @@ import { submitToGoogleSheetsDirectly } from "./lib/sheetsService";
 import ComplianceAlertBanner from "./components/ComplianceAlertBanner";
 import { getBlogOgImageUrl, getSocialShareUrls } from "./lib/ogImage";
 import StickyMobileLeadBar from "./components/StickyMobileLeadBar";
+import FloatingSideTabs from "./components/FloatingSideTabs";
 import useDynamicSEO from "./hooks/useDynamicSEO";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 import LanguageToggle from "./components/LanguageToggle";
@@ -2014,6 +2015,22 @@ function MainApp() {
           Back to Top ↑
         </span>
       </button>
+
+      {/* Sticky Side Quick Action Tabs (Book Free Consultation & View Pricing) */}
+      <FloatingSideTabs
+        onBookConsultation={() => {
+          const el = document.getElementById("contact");
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth" });
+          }
+        }}
+        onViewPricing={() => {
+          const el = document.getElementById("pricing");
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth" });
+          }
+        }}
+      />
 
       <React.Suspense fallback={null}>
         <WhatsAppWidget
