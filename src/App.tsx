@@ -50,6 +50,8 @@ import ComplianceAlertBanner from "./components/ComplianceAlertBanner";
 import { getBlogOgImageUrl, getSocialShareUrls } from "./lib/ogImage";
 import StickyMobileLeadBar from "./components/StickyMobileLeadBar";
 import FloatingSideTabs from "./components/FloatingSideTabs";
+import AddToPreferredSources from "./components/AddToPreferredSources";
+import GooglePreferredSourceModal from "./components/GooglePreferredSourceModal";
 import useDynamicSEO from "./hooks/useDynamicSEO";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 import LanguageToggle from "./components/LanguageToggle";
@@ -79,6 +81,7 @@ function MainApp() {
   // Lead generation modals
   const [taxHealthModalOpen, setTaxHealthModalOpen] = useState(false);
   const [leadMagnetModalOpen, setLeadMagnetModalOpen] = useState(false);
+  const [googlePreferredModalOpen, setGooglePreferredModalOpen] = useState(false);
   const [taxAiModalOpen, setTaxAiModalOpen] = useState(false);
   const [taxAiInitialQuery, setTaxAiInitialQuery] = useState("");
   const [taxAiInitialCategory, setTaxAiInitialCategory] = useState("corporate-tax");
@@ -1652,6 +1655,11 @@ function MainApp() {
                       </p>
                     </div>
                   </div>
+
+                  {/* Google Add to Preferred Sources Badge */}
+                  <div className="pt-2 border-t border-slate-100 flex items-center justify-start">
+                    <AddToPreferredSources onClick={() => setGooglePreferredModalOpen(true)} />
+                  </div>
                 </div>
               </div>
 
@@ -1868,6 +1876,11 @@ function MainApp() {
                   <Facebook className="w-4 h-4" />
                 </a>
               </div>
+
+              {/* Add to Preferred Sources Badge */}
+              <div className="pt-2 flex justify-center md:justify-start">
+                <AddToPreferredSources onClick={() => setGooglePreferredModalOpen(true)} />
+              </div>
             </div>
 
             {/* Quick Links Column */}
@@ -2043,6 +2056,11 @@ function MainApp() {
         <TaxHealthCheckModal isOpen={taxHealthModalOpen} onClose={() => setTaxHealthModalOpen(false)} />
         <LeadMagnetDownloadModal isOpen={leadMagnetModalOpen} onClose={() => setLeadMagnetModalOpen(false)} />
         <PrivacyPolicyModal isOpen={privacyOpen} onClose={() => setPrivacyOpen(false)} />
+        <GooglePreferredSourceModal
+          isOpen={googlePreferredModalOpen}
+          onClose={() => setGooglePreferredModalOpen(false)}
+          businessName="Dias Accounting"
+        />
         <TaxAiAdvisorModal
           isOpen={taxAiModalOpen}
           onClose={() => setTaxAiModalOpen(false)}
