@@ -8,6 +8,7 @@ export interface Translations {
     home: string;
     about: string;
     services: string;
+    founders: string;
     pricing: string;
     reviews: string;
     faq: string;
@@ -225,6 +226,7 @@ export const translations: Record<Language, Translations> = {
       home: "Home",
       about: "About Us",
       services: "Services",
+      founders: "Founders & Startups",
       pricing: "Pricing",
       reviews: "Reviews",
       faq: "FAQ",
@@ -740,6 +742,7 @@ export const translations: Record<Language, Translations> = {
       home: "الرئيسية",
       about: "من نحن",
       services: "خدماتنا",
+      founders: "رواد الأعمال والتأسيس",
       pricing: "الأسعار",
       reviews: "آراء العملاء",
       faq: "الأسئلة الشائعة",

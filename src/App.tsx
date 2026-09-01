@@ -70,6 +70,7 @@ const TaxPlanningSavingsChart = React.lazy(() => import("./components/TaxPlannin
 const StandalonePricingCards = React.lazy(() => import("./components/StandalonePricingCards").then(m => ({ default: m.StandalonePricingCards })));
 const OurAffiliations = React.lazy(() => import("./components/OurAffiliations").then(m => ({ default: m.OurAffiliations })));
 const TaxAiAdvisorModal = React.lazy(() => import("./components/TaxAiAdvisorModal"));
+const UAEFounderLaunchpad = React.lazy(() => import("./components/UAEFounderLaunchpad"));
 
 function MainApp() {
   const { t, language, isRTL } = useLanguage();
@@ -177,7 +178,7 @@ function MainApp() {
 
   // Set up active section observer using a highly performant IntersectionObserver
   useEffect(() => {
-    const sections = ["home", "about", "services", "pricing", "testimonials", "faqs", "blogs", "contact"];
+    const sections = ["home", "founder-launchpad", "about", "services", "pricing", "testimonials", "faqs", "blogs", "contact"];
     const observerOptions = {
       root: null,
       rootMargin: "-40% 0px -40% 0px", // Focus on the middle band of the screen
@@ -336,6 +337,7 @@ function MainApp() {
           <nav className="hidden md:flex items-center gap-1 lg:gap-2 font-medium text-sm text-slate-600">
             {[
               { id: "home", label: t.nav.home },
+              { id: "founder-launchpad", label: t.nav.founders, highlight: true },
               { id: "about", label: t.nav.about },
               { id: "services", label: t.nav.services },
               { id: "pricing", label: t.nav.pricing },
@@ -350,6 +352,8 @@ function MainApp() {
                 className={`px-2.5 py-2 rounded-lg transition-all text-xs lg:text-sm ${
                   activeSection === link.id
                     ? "bg-navy-50 text-navy-800 font-bold"
+                    : (link as any).highlight
+                    ? "text-gold-600 font-bold hover:text-gold-700 hover:bg-gold-50/60"
                     : "hover:text-navy-800 hover:bg-slate-50"
                 }`}
               >
@@ -403,6 +407,7 @@ function MainApp() {
               </div>
               {[
                 { id: "home", label: t.nav.home },
+                { id: "founder-launchpad", label: t.nav.founders, highlight: true },
                 { id: "about", label: t.nav.about },
                 { id: "services", label: t.nav.services },
                 { id: "pricing", label: t.nav.pricing },
@@ -418,6 +423,8 @@ function MainApp() {
                   className={`block px-4 py-2.5 rounded-xl transition-all ${
                     activeSection === link.id
                       ? "bg-navy-50 text-navy-800 font-bold"
+                      : (link as any).highlight
+                      ? "bg-gold-50/80 text-gold-700 font-bold"
                       : "hover:text-navy-800 hover:bg-slate-50"
                   }`}
                 >
@@ -469,6 +476,14 @@ function MainApp() {
             
             {/* Trust Pill & Google Rating Badge */}
             <div className="flex flex-wrap items-center justify-center gap-2.5">
+              <a
+                href="#founder-launchpad"
+                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 backdrop-blur-md text-xs font-bold text-emerald-300 shadow-sm transition-all group cursor-pointer"
+              >
+                <span className="text-amber-300 animate-pulse">🚀</span>
+                <span>{language === "ar" ? "رواد الأعمال والرخص الجديدة: خارطة الامتثال الفورية" : "New UAE License? Instant Founder Roadmap"}</span>
+                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform text-emerald-300" />
+              </a>
               <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/15 border border-white/20 backdrop-blur-md text-xs font-semibold text-gold-300 shadow-sm transition-all">
                 <Sparkles className="w-3.5 h-3.5 text-gold-400 animate-pulse" />
                 <span>{t.hero.badge}</span>
@@ -692,6 +707,14 @@ function MainApp() {
             </div>
           </div>
         </section>
+
+      {/* 2.5 UAE Founder & New Business Launchpad (Interactive Compliance Wizard & High-Intent Conversion) */}
+      <React.Suspense fallback={<div className="py-16 text-center text-xs text-slate-400 animate-pulse">Loading UAE Founder Roadmap...</div>}>
+        <UAEFounderLaunchpad
+          onBookCall={handlePreselectedCallBooking}
+          onOpenAudit={() => setTaxHealthModalOpen(true)}
+        />
+      </React.Suspense>
 
       {/* 3. Software Partners Banner */}
       <section className="bg-white border-y border-slate-100 py-10">
