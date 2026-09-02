@@ -52,6 +52,7 @@ import StickyMobileLeadBar from "./components/StickyMobileLeadBar";
 import FloatingSideTabs from "./components/FloatingSideTabs";
 import AddToPreferredSources from "./components/AddToPreferredSources";
 import GooglePreferredSourceModal from "./components/GooglePreferredSourceModal";
+import { AnimatePresence, motion } from "motion/react";
 import useDynamicSEO from "./hooks/useDynamicSEO";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 import LanguageToggle from "./components/LanguageToggle";
@@ -69,6 +70,8 @@ const ServiceComparisonTable = React.lazy(() => import("./components/ServiceComp
 const TaxPlanningSavingsChart = React.lazy(() => import("./components/TaxPlanningSavingsChart").then(m => ({ default: m.TaxPlanningSavingsChart })));
 const StandalonePricingCards = React.lazy(() => import("./components/StandalonePricingCards").then(m => ({ default: m.StandalonePricingCards })));
 const OurAffiliations = React.lazy(() => import("./components/OurAffiliations").then(m => ({ default: m.OurAffiliations })));
+const UAEJurisdictionsSEO = React.lazy(() => import("./components/UAEJurisdictionsSEO").then(m => ({ default: m.UAEJurisdictionsSEO })));
+const ClientCaseStudies = React.lazy(() => import("./components/ClientCaseStudies").then(m => ({ default: m.ClientCaseStudies })));
 const TaxAiAdvisorModal = React.lazy(() => import("./components/TaxAiAdvisorModal"));
 const UAEFounderLaunchpad = React.lazy(() => import("./components/UAEFounderLaunchpad"));
 
@@ -395,65 +398,91 @@ function MainApp() {
           </button>
         </div>
 
-        {/* Mobile Navigation Drawer */}
-        {mobileMenuOpen && (
-          <div
-            id="mobile-nav-menu"
-            className="md:hidden absolute top-20 left-0 w-full bg-white border-b border-slate-100 shadow-xl z-50 animate-fadeIn"
-          >
-            <div className="px-4 pt-3 pb-6 space-y-2 font-medium text-slate-600">
-              <div className="pb-2 mb-1 border-b border-slate-100">
-                <LanguageToggle variant="mobile" />
+        {/* Mobile Navigation Drawer with Smooth Animation & Sticky Footer CTA */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              id="mobile-nav-menu"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+              className="md:hidden absolute top-20 left-0 w-full bg-white border-b border-slate-200 shadow-2xl z-50 overflow-hidden flex flex-col max-h-[calc(100vh-5rem)]"
+            >
+              {/* Scrollable Nav Links Content */}
+              <div className="px-4 pt-3 pb-4 space-y-1.5 font-medium text-slate-600 overflow-y-auto flex-1">
+                <div className="pb-2.5 mb-2 border-b border-slate-100 flex items-center justify-between">
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                    {language === "ar" ? "اللغة والتفضيلات" : "Language & Region"}
+                  </span>
+                  <LanguageToggle variant="mobile" />
+                </div>
+
+                <div className="space-y-1">
+                  {[
+                    { id: "home", label: t.nav.home },
+                    { id: "founder-launchpad", label: t.nav.founders, highlight: true },
+                    { id: "jurisdictions", label: language === "ar" ? "المناطق الحرة والضريبية" : "UAE Jurisdictions (0% QFZP)", badge: "0% QFZP" },
+                    { id: "about", label: t.nav.about },
+                    { id: "services", label: t.nav.services },
+                    { id: "case-studies", label: language === "ar" ? "دراسات حالة العملاء" : "Client Case Studies" },
+                    { id: "pricing", label: t.nav.pricing },
+                    { id: "testimonials", label: t.nav.reviews },
+                    { id: "faqs", label: t.nav.faq },
+                    { id: "blogs", label: t.nav.blogs },
+                  ].map((link) => (
+                    <a
+                      key={link.id}
+                      href={`#${link.id}`}
+                      onClick={() => setMobileMenuOpen(false)}
+                      className={`flex items-center justify-between px-4 py-2.5 rounded-xl text-sm transition-all ${
+                        activeSection === link.id
+                          ? "bg-navy-900 text-white font-bold shadow-sm"
+                          : (link as any).highlight
+                          ? "bg-gold-50/90 text-gold-800 font-bold border border-gold-200/60"
+                          : "text-slate-700 hover:text-navy-900 hover:bg-slate-50"
+                      }`}
+                    >
+                      <span>{link.label}</span>
+                      {(link as any).badge && (
+                        <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-700 border border-emerald-500/20">
+                          {(link as any).badge}
+                        </span>
+                      )}
+                    </a>
+                  ))}
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      handleOpenTaxAi();
+                    }}
+                    className="w-full bg-navy-950 hover:bg-slate-900 text-gold-400 border border-gold-500/40 font-display font-bold py-2.5 px-4 rounded-xl text-center text-xs tracking-tight transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+                  >
+                    <Sparkles className="w-4 h-4 text-gold-400" />
+                    <span>{language === "ar" ? "الذكاء الضريبي الإماراتي (بحث جوجل المباشر)" : "AI Tax Search (Live Google Grounded)"}</span>
+                  </button>
+                </div>
               </div>
-              {[
-                { id: "home", label: t.nav.home },
-                { id: "founder-launchpad", label: t.nav.founders, highlight: true },
-                { id: "about", label: t.nav.about },
-                { id: "services", label: t.nav.services },
-                { id: "pricing", label: t.nav.pricing },
-                { id: "testimonials", label: t.nav.reviews },
-                { id: "faqs", label: t.nav.faq },
-                { id: "blogs", label: t.nav.blogs },
-                { id: "contact", label: t.nav.contact },
-              ].map((link) => (
-                <a
-                  key={link.id}
-                  href={`#${link.id}`}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`block px-4 py-2.5 rounded-xl transition-all ${
-                    activeSection === link.id
-                      ? "bg-navy-50 text-navy-800 font-bold"
-                      : (link as any).highlight
-                      ? "bg-gold-50/80 text-gold-700 font-bold"
-                      : "hover:text-navy-800 hover:bg-slate-50"
-                  }`}
-                >
-                  {link.label}
-                </a>
-              ))}
-              <div className="pt-2 space-y-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMobileMenuOpen(false);
-                    handleOpenTaxAi();
-                  }}
-                  className="w-full bg-navy-950 text-gold-400 border border-gold-500/40 font-display font-bold py-3 px-4 rounded-xl text-center text-xs tracking-tight transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
-                >
-                  <Sparkles className="w-4 h-4 text-gold-400" />
-                  <span>{language === "ar" ? "الذكاء الضريبي الإماراتي (بحث جوجل المباشر)" : "AI Tax Search (Live Google Grounded)"}</span>
-                </button>
+
+              {/* Persistent Sticky Footer CTA within Mobile Menu Drawer */}
+              <div className="sticky bottom-0 left-0 right-0 p-3.5 bg-slate-50/95 backdrop-blur-md border-t border-slate-200 shadow-lg z-10">
                 <a
                   href="#contact"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full bg-navy-900 hover:bg-navy-950 text-white font-display font-bold py-3 px-4 rounded-xl text-center text-xs tracking-tight transition-all shadow-md block"
+                  className="w-full bg-gradient-to-r from-navy-900 to-navy-950 hover:from-navy-950 hover:to-black text-white font-display font-bold py-3 px-4 rounded-xl text-center text-xs sm:text-sm tracking-tight transition-all shadow-md flex items-center justify-center gap-2 active:scale-[0.99] cursor-pointer"
                 >
-                  {t.nav.bookConsultation}
+                  <Calendar className="w-4 h-4 text-gold-400 shrink-0" />
+                  <span>{t.nav.bookConsultation}</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-gold-400 shrink-0 rtl:rotate-180" />
                 </a>
               </div>
-            </div>
-          </div>
-        )}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       {/* Main Landmark for Accessibility & SEO */}
@@ -842,6 +871,11 @@ function MainApp() {
         <OurAffiliations />
       </React.Suspense>
 
+      {/* 4.5 Local Jurisdictions & Free Zones Authority Hub (UAE Local SEO Powerhouse) */}
+      <React.Suspense fallback={<div className="py-16 text-center text-xs text-slate-400 animate-pulse">Loading UAE Jurisdictions Hub...</div>}>
+        <UAEJurisdictionsSEO />
+      </React.Suspense>
+
       {/* 5. "Why Partner With Us" Section */}
       <section id="about" className="py-20 bg-white relative overflow-hidden cv-auto">
         {/* Subtle decorative grid background */}
@@ -947,6 +981,11 @@ function MainApp() {
           </div>
         </div>
       </section>
+
+      {/* 5.5 Proven Client Case Studies & E-E-A-T Track Record */}
+      <React.Suspense fallback={<div className="py-16 text-center text-xs text-slate-400 animate-pulse">Loading Client Case Studies...</div>}>
+        <ClientCaseStudies />
+      </React.Suspense>
 
       {/* 6. Pricing Plans Section */}
       <section id="pricing" className="py-20 bg-slate-50 border-t border-slate-100 cv-auto">

@@ -42,6 +42,20 @@ export const SECTION_SEO_MAP_EN: Record<string, SEOConfig> = {
     hash: "#pricing",
     ogImage: "/api/og?title=Fixed-Fee+UAE+Accounting+%26+Corporate+Tax+Packages&author=Dias+Tax+Team&role=Affordable+SME+Packages&tag=From+AED+500%2Fmo&readTime=Transparent+Pricing",
   },
+  jurisdictions: {
+    title: "Dubai & UAE Free Zone Tax Compliance | SHAMS, DMCC, IFZA, DED | Dias LLC",
+    description: "Specialized tax advisory and bookkeeping across Dubai Mainland (DET), SHAMS Sharjah, DMCC JLT, IFZA, Meydan, and DIFC. Ensure 0% QFZP tax and IFRS audit compliance.",
+    keywords: "tax consultant business bay dubai, accounting firm dmcc jlt, shams free zone tax agent sharjah, ifza corporate tax filing, meydan accounting services, free zone 0% qfzp dubai",
+    hash: "#jurisdictions",
+    ogImage: "/api/og?title=UAE+Jurisdictions+%26+Free+Zone+Tax+Authority&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=All+7+Emirates&readTime=Local+Compliance",
+  },
+  caseStudies: {
+    title: "Client Case Studies & Proven Tax Savings | Dias Accounting Dubai",
+    description: "Discover how Dias Accounting helps UAE companies save over AED 180,000 in corporate tax and waive penalties through FTA-certified voluntary disclosures and IFRS bookkeeping.",
+    keywords: "uae corporate tax case study, vat penalty waiver dubai, fta voluntary disclosure result, client reviews accounting dubai",
+    hash: "#case-studies",
+    ogImage: "/api/og?title=Proven+UAE+Tax+Savings+%26+Client+Case+Studies&author=Dias+Tax+Team&role=E-E-A-T+Verified&tag=AED+180k%2B+Saved&readTime=Case+Studies",
+  },
   calculator: {
     title: "UAE Corporate Tax Calculator 2026 | Free 9% Tax & Small Business Relief Tool",
     description: "Calculate your UAE Corporate Tax liability instantly. Accurately estimate 9% tax above AED 375,000 threshold and verify Small Business Relief (AED 3M) eligibility.",
@@ -108,6 +122,20 @@ export const SECTION_SEO_MAP_AR: Record<string, SEOConfig> = {
     keywords: "تكلفة المحاسبة في دبي, رسوم إقرار ضريبة الشركات الإمارات, باقات مسك الدفاتر الشهرية دبي, أسعار الوكيل الضريبي دبي, محاسب شركات بأسعار مناسبة دبي",
     hash: "#pricing",
     ogImage: "/api/og?title=Fixed-Fee+UAE+Accounting+%26+Corporate+Tax+Packages&author=Dias+Tax+Team&role=Affordable+SME+Packages&tag=From+AED+500%2Fmo&readTime=Transparent+Pricing",
+  },
+  jurisdictions: {
+    title: "الامتثال لضريبة الشركات في دبي والمناطق الحرة | شمس، DMCC، إفزا | دياز",
+    description: "استشارات ضريبية ومحاسبية متخصصة في دبي البر الرئيسي، مدينة الشارقة للإعلام شمس، ومركز دبي للسلع المتعددة. ضمان نسبة 0% للشخص المؤهل والتدقيق المالي.",
+    keywords: "مستشار ضريبي الخليج التجاري دبي, مكتب محاسبة DMCC JLT, وكيل ضريبي مدينة الشارقة للإعلام شمس, ضريبة شركات إفزا, محاسبة ميدان",
+    hash: "#jurisdictions",
+    ogImage: "/api/og?title=UAE+Jurisdictions+%26+Free+Zone+Tax+Authority&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=All+7+Emirates&readTime=Local+Compliance",
+  },
+  caseStudies: {
+    title: "دراسات حالة موثقة ووفورات ضريبية للعملاء | دياز للمحاسبة دبي",
+    description: "اكتشف كيف ساعدت دياز للمحاسبة شركات الإمارات في توفير أكثر من 180,000 درهم في ضريبة الشركات وإسقاط الغرامات عبر الإفصاح الطوعي المعتمد لدى الهيئة.",
+    keywords: "دراسة حالة ضريبة الشركات الإمارات, إسقاط غرامات القيمة المضافة دبي, إفصاح طوعي الهيئة الاتحادية للضرائب, تقييمات عملاء دياز",
+    hash: "#case-studies",
+    ogImage: "/api/og?title=Proven+UAE+Tax+Savings+%26+Client+Case+Studies&author=Dias+Tax+Team&role=E-E-A-T+Verified&tag=AED+180k%2B+Saved&readTime=Case+Studies",
   },
   calculator: {
     title: "حاسبة ضريبة الشركات الإماراتية 2026 | أداة حساب ضريبة 9% وتسهيلات المشاريع الصغيرة",
@@ -280,6 +308,19 @@ export function useDynamicSEO({
     setMetaTag("property", "og:site_name", "Dias Accounting & Tax Consulting LLC");
     setMetaTag("property", "og:locale", isAr ? "ar_AE" : "en_US");
     setMetaTag("property", "og:locale:alternate", isAr ? "en_US" : "ar_AE");
+
+    // Local Business Geographic Meta Tags (Targeting Dubai & UAE authority)
+    setMetaTag("property", "business:contact_data:street_address", "Sharjah Media City (SHAMS) & Business Bay");
+    setMetaTag("property", "business:contact_data:locality", "Dubai");
+    setMetaTag("property", "business:contact_data:region", "Dubai");
+    setMetaTag("property", "business:contact_data:postal_code", "00000");
+    setMetaTag("property", "business:contact_data:country_name", "United Arab Emirates");
+    setMetaTag("property", "place:location:latitude", "25.2048");
+    setMetaTag("property", "place:location:longitude", "55.2708");
+    setMetaTag("name", "geo.region", "AE-DU");
+    setMetaTag("name", "geo.placename", "Dubai");
+    setMetaTag("name", "geo.position", "25.2048;55.2708");
+    setMetaTag("name", "ICBM", "25.2048, 55.2708");
 
     const resolvedOgImage = seoConfig.ogImage
       ? (seoConfig.ogImage.startsWith("http") ? seoConfig.ogImage : `${baseUrl}${seoConfig.ogImage}`)

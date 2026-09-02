@@ -5,6 +5,8 @@ Allow: /#services
 Allow: /#service-comparison
 Allow: /#calculator
 Allow: /#pricing
+Allow: /#jurisdictions
+Allow: /#case-studies
 Allow: /#reviews
 Allow: /#faqs
 Allow: /#blogs
