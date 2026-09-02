@@ -227,31 +227,33 @@ export function useDynamicSEO({
   useEffect(() => {
     if (typeof document === "undefined") return;
 
-    const baseUrl = "https://diasuae.ae";
-    const isAr = language === "ar";
-    const sectionMap = isAr ? SECTION_SEO_MAP_AR : SECTION_SEO_MAP_EN;
-    let seoConfig: SEOConfig;
+    try {
+      const baseUrl = "https://diasuae.ae";
+      const isAr = language === "ar";
+      const sectionMap = isAr ? SECTION_SEO_MAP_AR : SECTION_SEO_MAP_EN;
+      let seoConfig: SEOConfig;
 
-    // Case 1: Specific Service Modal is open
-    if (selectedService) {
-      if (isAr) {
-        seoConfig = {
-          title: `${selectedService.title} في دبي، الإمارات | دياز للمحاسبة والاستشارات الضريبية`,
-          description: `${selectedService.shortDesc} مستشارون معتمدون لدى الهيئة الاتحادية للضرائب في الخليج التجاري دبي لتقديم خدمات ${selectedService.title} وتجنب الغرامات.`,
-          keywords: `${selectedService.title} دبي, ${selectedService.title} الإمارات, وكيل ضريبي معتمد, دياز للمحاسبة, ${selectedService.inclusions.slice(0, 3).join(", ")}`,
-          hash: `#services-${selectedService.id}`,
-          ogType: "article",
-        };
-      } else {
-        seoConfig = {
-          title: `${selectedService.title} in Dubai, UAE | Dias Accounting & Tax Consulting`,
-          description: `${selectedService.shortDesc} Certified FTA tax advisors in Business Bay Dubai providing full ${selectedService.title.toLowerCase()} support. Avoid penalties with zero-error compliance.`,
-          keywords: `${selectedService.title.toLowerCase()} Dubai, ${selectedService.title.toLowerCase()} UAE, FTA tax agent, Dias Accounting, ${selectedService.inclusions.slice(0, 3).join(", ").toLowerCase()}`,
-          hash: `#services-${selectedService.id}`,
-          ogType: "article",
-        };
+      // Case 1: Specific Service Modal is open
+      if (selectedService) {
+        const inclusions = Array.isArray(selectedService.inclusions) ? selectedService.inclusions : [];
+        if (isAr) {
+          seoConfig = {
+            title: `${selectedService.title} في دبي، الإمارات | دياز للمحاسبة والاستشارات الضريبية`,
+            description: `${selectedService.shortDesc || ""} مستشارون معتمدون لدى الهيئة الاتحادية للضرائب في الخليج التجاري دبي لتقديم خدمات ${selectedService.title} وتجنب الغرامات.`,
+            keywords: `${selectedService.title} دبي, ${selectedService.title} الإمارات, وكيل ضريبي معتمد, دياز للمحاسبة, ${inclusions.slice(0, 3).join(", ")}`,
+            hash: `#services-${selectedService.id}`,
+            ogType: "article",
+          };
+        } else {
+          seoConfig = {
+            title: `${selectedService.title} in Dubai, UAE | Dias Accounting & Tax Consulting`,
+            description: `${selectedService.shortDesc || ""} Certified FTA tax advisors in Business Bay Dubai providing full ${(selectedService.title || "").toLowerCase()} support. Avoid penalties with zero-error compliance.`,
+            keywords: `${(selectedService.title || "").toLowerCase()} Dubai, ${(selectedService.title || "").toLowerCase()} UAE, FTA tax agent, Dias Accounting, ${inclusions.slice(0, 3).join(", ").toLowerCase()}`,
+            hash: `#services-${selectedService.id}`,
+            ogType: "article",
+          };
+        }
       }
-    }
     // Case 2: Specific Blog Post Reader is open (Uses on-the-fly generated dynamic OG image)
     else if (selectedBlog) {
       const dynamicBlogOg = getBlogOgImageUrl({
@@ -428,7 +430,7 @@ export function useDynamicSEO({
           "hasOfferCatalog": {
             "@type": "OfferCatalog",
             "name": selectedService.title,
-            "itemListElement": selectedService.inclusions.map((inc) => ({
+            "itemListElement": (Array.isArray(selectedService.inclusions) ? selectedService.inclusions : []).map((inc) => ({
               "@type": "Offer",
               "itemOffered": {
                 "@type": "Service",
@@ -469,6 +471,9 @@ export function useDynamicSEO({
         window.history.replaceState(null, "", newUrl);
       }
     }
+  } catch (err) {
+    console.warn("useDynamicSEO safe bypass:", err);
+  }
   }, [activeSection, selectedService, selectedBlog, language, updateUrlHash]);
 }
 

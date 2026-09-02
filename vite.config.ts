@@ -16,27 +16,10 @@ export default defineConfig(() => {
       minify: 'esbuild' as const,
       cssCodeSplit: true,
       sourcemap: false,
-      chunkSizeWarningLimit: 600,
-      rollupOptions: {
-        output: {
-          manualChunks(id) {
-            if (id.includes('node_modules')) {
-              if (id.includes('react') || id.includes('react-dom')) {
-                return 'vendor-react';
-              }
-              if (id.includes('lucide-react')) {
-                return 'vendor-icons';
-              }
-              if (id.includes('motion')) {
-                return 'vendor-motion';
-              }
-            }
-          },
-        },
-      },
+      chunkSizeWarningLimit: 1000,
     },
     esbuild: {
-      legalComments: 'none',
+      legalComments: 'none' as const,
       treeShaking: true,
     },
     server: {

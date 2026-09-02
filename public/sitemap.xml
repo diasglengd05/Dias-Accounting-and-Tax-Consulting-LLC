@@ -38,20 +38,6 @@
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
-  <!-- UAE Free Zones & Jurisdictions Tax Authority (Dubai, SHAMS, DMCC, IFZA, DIFC) -->
-  <url>
-    <loc>https://www.diasuae.ae/#jurisdictions</loc>
-    <lastmod>2026-09-02</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.92</priority>
-  </url>
-  <!-- Proven Client Case Studies & Tax Savings ROI Track Record -->
-  <url>
-    <loc>https://www.diasuae.ae/#case-studies</loc>
-    <lastmod>2026-09-02</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.88</priority>
-  </url>
   <!-- Verified 5.0 Google Business Reviews & Client Testimonials -->
   <url>
     <loc>https://www.diasuae.ae/#reviews</loc>

@@ -2,9 +2,18 @@ import { initializeApp } from "firebase/app";
 import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged, User } from "firebase/auth";
 import firebaseConfig from "../../firebase-applet-config.json";
 
-// Initialize Firebase App
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+// Initialize Firebase App safely
+let app: any = null;
+let auth: any = null;
+
+try {
+  if (firebaseConfig && firebaseConfig.apiKey) {
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+  }
+} catch (err) {
+  console.warn("Firebase client initialization note:", err);
+}
 
 const db = null; // Decoupled client-side from live Firestore to prevent stream connection errors
 
@@ -23,6 +32,10 @@ export const initAuth = (
   onAuthSuccess?: (user: User, token: string) => void,
   onAuthFailure?: () => void
 ) => {
+  if (!auth) {
+    if (onAuthFailure) onAuthFailure();
+    return () => {};
+  }
   return onAuthStateChanged(auth, async (user: User | null) => {
     if (user) {
       if (cachedAccessToken) {
@@ -40,6 +53,9 @@ export const initAuth = (
 
 // Must be called from a button click or user interaction
 export const googleSignIn = async (): Promise<{ user: User; accessToken: string } | null> => {
+  if (!auth) {
+    throw new Error("Firebase Auth is not initialized.");
+  }
   try {
     isSigningIn = true;
     const result = await signInWithPopup(auth, provider);
@@ -67,7 +83,9 @@ export const setCachedAccessToken = (token: string | null) => {
 };
 
 export const logout = async () => {
-  await auth.signOut();
+  if (auth) {
+    await auth.signOut();
+  }
   cachedAccessToken = null;
 };
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { GoogleLogo } from "./GoogleReviewsSection";
+import { GoogleLogo } from "./GoogleLogo";
 import { Check } from "lucide-react";
 import { useLanguage } from "../i18n/LanguageContext";
 

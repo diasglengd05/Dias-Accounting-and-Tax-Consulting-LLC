@@ -44,7 +44,7 @@ import {
 import { Service, BlogPost, PricingTier, Testimonial, FAQItem } from "./types";
 import { servicesData, blogsData, pricingTiers, testimonialsData, faqsData, GOOGLE_BUSINESS_URL, GOOGLE_RATING_STATS } from "./data/staticData";
 import DiasLogo from "./components/DiasLogo";
-import { GoogleLogo } from "./components/GoogleReviewsSection";
+import { GoogleLogo } from "./components/GoogleLogo";
 import { submitToGoogleSheetsDirectly } from "./lib/sheetsService";
 import ComplianceAlertBanner from "./components/ComplianceAlertBanner";
 import { getBlogOgImageUrl, getSocialShareUrls } from "./lib/ogImage";

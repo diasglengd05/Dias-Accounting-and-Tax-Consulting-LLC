@@ -17,14 +17,22 @@ const LANGUAGE_STORAGE_KEY = "dias_accounting_language";
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = useState<Language>(() => {
     if (typeof window !== "undefined") {
-      const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY) as Language | null;
-      if (stored === "en" || stored === "ar") {
-        return stored;
+      try {
+        const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY) as Language | null;
+        if (stored === "en" || stored === "ar") {
+          return stored;
+        }
+      } catch {
+        // Fallback if localStorage access is denied
       }
       // Check browser language preferences
-      const browserLang = navigator.language || (navigator as { userLanguage?: string }).userLanguage || "";
-      if (browserLang.startsWith("ar")) {
-        return "ar";
+      try {
+        const browserLang = navigator.language || (navigator as { userLanguage?: string }).userLanguage || "";
+        if (browserLang.startsWith("ar")) {
+          return "ar";
+        }
+      } catch {
+        // Safe fallback
       }
     }
     return "en";
@@ -33,7 +41,11 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     if (typeof window !== "undefined") {
-      localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
+      try {
+        localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
+      } catch {
+        // Safe fallback
+      }
     }
   };
 
