@@ -25,7 +25,7 @@ import {
 } from "firebase/firestore";
 import firebaseConfig from "./firebase-applet-config.json" with { type: "json" };
 
-// Silence internal Firestore SDK logs (prevents gRPC connection/stream warn/error dumps)
+// Silence internal Firestore SDK logs
 setLogLevel("silent");
 
 // Initialize Firebase App on Server
@@ -35,20 +35,15 @@ let isFirestoreAvailable = false;
 
 async function checkFirestore() {
   try {
-    // Perform a fast server-side read check of the Firestore database
     const testRef = doc(db, "settings", "connection_test");
     await getDoc(testRef);
     isFirestoreAvailable = true;
-    console.log("Firestore database detected. Enabling cloud persistence layer.");
-  } catch (err: any) {
-    const errMsg = err?.message || String(err);
-    console.warn("Firestore database is not provisioned or not found (Code 5 NOT_FOUND). Using local fallback database.");
-    console.warn("Disabling Firestore network to silence all gRPC background stream errors.");
+  } catch {
     isFirestoreAvailable = false;
     try {
       await disableNetwork(db);
-    } catch (netErr) {
-      console.warn("Failed to call disableNetwork:", netErr);
+    } catch {
+      // Safe fallback
     }
   }
 }
@@ -234,6 +229,11 @@ const app = express();
 const PORT = 3000;
 
 app.use(express.json());
+
+// API health endpoint
+app.get("/api/health", (_req, res) => {
+  res.json({ status: "ok", timestamp: new Date().toISOString() });
+});
 
 /**
  * Maps serviceType to professional display name
