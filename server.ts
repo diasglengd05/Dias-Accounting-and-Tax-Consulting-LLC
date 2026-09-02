@@ -1382,13 +1382,12 @@ async function bootstrap() {
       appType: "spa",
     });
 
-    // Crawler interception middleware in dev mode
+    // Crawler interception middleware in dev mode (for social crawlers/search bots)
     app.use(async (req, res, next) => {
       const userAgent = req.headers["user-agent"] || "";
       const isCrawler = isSocialOrSearchCrawler(userAgent);
-      const isHtmlRequest = req.headers.accept?.includes("text/html");
 
-      if (isCrawler || (isHtmlRequest && !req.url.startsWith("/@") && !req.url.startsWith("/node_modules") && !req.url.startsWith("/src") && !req.url.startsWith("/api"))) {
+      if (isCrawler) {
         try {
           const indexPath = path.join(process.cwd(), "index.html");
           let template = fs.readFileSync(indexPath, "utf-8");
