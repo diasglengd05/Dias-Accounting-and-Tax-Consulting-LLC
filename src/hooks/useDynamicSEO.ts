@@ -15,11 +15,11 @@ export interface SEOConfig {
 // Master English SEO Metadata Dictionary
 export const SECTION_SEO_MAP_EN: Record<string, SEOConfig> = {
   home: {
-    title: "Dias Accounting & Tax Consulting | Corporate Tax, VAT & Bookkeeping Experts Dubai UAE",
-    description: "Premier FTA-certified tax consultants in Dubai & UAE. Expert UAE Corporate Tax registration (9%), VAT compliance, backlog bookkeeping, and CFO advisory.",
+    title: "Expert Tax Consulting & Accounting in Dubai | Dias LLC",
+    description: "Dias Accounting and Tax Consulting LLC provides expert UAE corporate tax registration, VAT compliance, bookkeeping, and SHAMS Free Zone setup in Dubai.",
     keywords: "Dubai accounting firm, UAE corporate tax consultant, VAT filing Dubai, Free Zone bookkeeping DMCC, FTA tax agent Dubai, Corporate tax registration EmaraTax, backlog accounting Dubai, Glen Dias accounting, business setup UAE",
     hash: "#home",
-    ogImage: "/api/og?title=Corporate+Tax%2C+VAT+%26+Bookkeeping+Experts+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=UAE+Tax+Compliance&readTime=FTA+Certified",
+    ogImage: "/api/og?title=Expert+Tax+Consulting+%26+Accounting+in+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=UAE+Tax+Compliance&readTime=FTA+Certified",
   },
   services: {
     title: "Corporate Tax, VAT Compliance & Bookkeeping Services | Dias Accounting Dubai",
