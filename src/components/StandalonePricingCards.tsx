@@ -13,6 +13,8 @@ interface StandaloneServiceCard {
   isCustomQuote?: boolean;
   unitEn: string;
   unitAr: string;
+  badgeEn?: string;
+  badgeAr?: string;
   whoIsThisForEn: string;
   whoIsThisForAr: string;
   inclusionsEn: string[];
@@ -24,89 +26,121 @@ interface StandaloneServiceCard {
 
 const STANDALONE_SERVICES: StandaloneServiceCard[] = [
   {
-    id: "vat-return-filing",
-    titleEn: "VAT RETURN FILING",
-    titleAr: "تقديم إقرار ضريبة القيمة المضافة",
-    subtitleEn: "Stay compliant with accurate, on-time quarterly VAT filing",
-    subtitleAr: "حافظ على امتثالك التام مع تقديم دقيق وفي الموعد لإقرارات VAT ربع السنوية",
-    priceEn: "750",
-    priceAr: "750",
-    unitEn: "Per Quarter",
-    unitAr: "لكل ربع سنوي",
-    whoIsThisForEn: "One job, done right, your VAT sorted every quarter!",
-    whoIsThisForAr: "مهمة واحدة، ننجزها باحترافية، ونتولى إقراراتك الضريبية كل ربع سنة!",
-    inclusionsEn: [
-      "Quarterly VAT Computation",
-      "Quarterly VAT Return Submission",
-      "Advisory on VAT Matters",
-      "FTA-Compliant Documentation",
-    ],
-    inclusionsAr: [
-      "احتساب ضريبة القيمة المضافة ربع السنوية بدقة",
-      "تقديم الإقرار الضريبي عبر منصة إماراتاكس (FTA)",
-      "استشارات فورية حول معالجات ضريبة القيمة المضافة",
-      "توثيق وسجلات متوافقة مع متطلبات الهيئة الاتحادية",
-    ],
-    serviceBookingName: "VAT Return Filing (AED 750/Qtr)",
-    whatsappMessageEn:
-      "Hi Dias Accounting, I would like to get started with your VAT Return Filing service (AED 750 / Quarter). Please assist me with the onboarding details.",
-    whatsappMessageAr:
-      "مرحباً دياس للمحاسبة، أود البدء في خدمة تقديم إقرار ضريبة القيمة المضافة (750 درهم / ربع سنوي). يرجى تزويدي بالخطوات وتفاصيل البدء.",
-  },
-  {
-    id: "corporate-tax-sbr",
-    titleEn: "CORPORATE TAX (SBR)",
-    titleAr: "إقرار ضريبة الشركات (تسهيلات الأعمال الصغيرة SBR)",
-    subtitleEn: "Detailed Corporate Tax return filing under Small Business Relief",
-    subtitleAr: "إعداد وتقديم إقرار ضريبة الشركات السنوي تحت مظلة تسهيلات الأعمال الصغيرة",
+    id: "microbiz-ct-assist",
+    titleEn: "BUSINESS STARTER (MICROBIZ CT)",
+    titleAr: "باقة بداية الأعمال (MicroBiz CT)",
+    subtitleEn: "Small Business Relief (SBR up to AED 3M) & FTA Corporate Tax filing",
+    subtitleAr: "تقديم إقرار ضريبة الشركات وتسهيلات الأعمال الصغيرة SBR حتى 3 مليون درهم",
     priceEn: "500",
     priceAr: "500",
-    unitEn: "One-time / Annual Filing",
-    unitAr: "إقرار سنوي لمرة واحدة",
-    whoIsThisForEn: "Your books, our filing, teamwork that just works!",
-    whoIsThisForAr: "دفاترك جاهزة، وعلينا التقديم القانوني المتقن والآمن!",
+    badgeEn: "★ Business Starter - Flat AED 500",
+    badgeAr: "★ باقة بداية الأعمال - رسم ثابت 500 درهم",
+    unitEn: "One-time / Annual Filing (Zero Sticker Shock)",
+    unitAr: "إقرار سنوي لمرة واحدة (بدون رسوم خفية)",
+    whoIsThisForEn: "SMEs & Startups earning under AED 3M seeking 0% tax & zero penalties!",
+    whoIsThisForAr: "الشركات الناشئة والصغيرة ذات الإيرادات دون 3 مليون درهم للاستفادة من ضريبة 0%!",
     inclusionsEn: [
-      "Small Business Relief Eligibility Check",
-      "Detailed Corporate Tax Return Preparation",
-      "Corporate Tax Return Filing with FTA",
-      "Advisory on SBR Conditions & Compliance",
+      "Small Business Relief (SBR) Eligibility Check",
+      "EmaraTax Corporate Tax Return Preparation",
+      "0% Tax Election Submission with FTA",
+      "100% Late Registration Penalty Protection",
     ],
     inclusionsAr: [
       "التحقق من أهلية تسهيلات الأعمال الصغيرة (حتى 3 مليون د.إ)",
       "إعداد وتدقيق الإقرار السنوي لضريبة الشركات بالتفصيل",
-      "تقديم الإقرار النهائي لدى الهيئة الاتحادية للضرائب (EmaraTax)",
-      "استشارات حول شروط الامتثال واستمرارية الإعفاء",
+      "تقديم الإقرار النهائي واختيار نسبة 0% لدى الهيئة (EmaraTax)",
+      "حماية كاملة وتجنب غرامة التأخير البالغة 10,000 درهم",
     ],
-    serviceBookingName: "Corporate Tax SBR Filing (AED 500)",
+    serviceBookingName: "MicroBiz CT Assist (AED 500)",
     whatsappMessageEn:
-      "Hi Dias Accounting, I would like to get started with your Corporate Tax Small Business Relief (SBR) filing service (AED 500). Please guide me on submitting our documents.",
+      "Hi Dias Accounting, I would like to get started with the MicroBiz CT Assist package (AED 500 flat fee for SBR Corporate Tax filing). Please guide me on required documents.",
     whatsappMessageAr:
-      "مرحباً دياس للمحاسبة، أود البدء في خدمة إعداد وتقديم إقرار ضريبة الشركات لتسهيلات الأعمال الصغيرة SBR (500 درهم). يرجى إرشادي حول تقديم المستندات.",
+      "مرحباً دياس للمحاسبة، أود البدء في باقة MicroBiz CT Assist (500 درهم لإقرار ضريبة الشركات وتسهيلات الأعمال الصغيرة). يرجى إرشادي بالخطوات والمستندات المطلوبة.",
+  },
+  {
+    id: "qfzp-shield-pro",
+    titleEn: "QFZP SHIELD PRO",
+    titleAr: "باقة حماية الشخص المؤهل QFZP Shield",
+    subtitleEn: "0% Free Zone Corporate Tax structuring, de minimis test & substance audit",
+    subtitleAr: "هيكلة نسبة 0% للمناطق الحرة، فحص دي مينيميس والجوهر الاقتصادي والامتثال",
+    priceEn: "1,499",
+    priceAr: "1,499",
+    unitEn: "Annual Review & Structuring",
+    unitAr: "هيكلة ومراجعة سنوية شاملة",
+    whoIsThisForEn: "Free Zone companies (DMCC, IFZA, Meydan, SHAMS, DAFZA) targeting 0% tax.",
+    whoIsThisForAr: "شركات المناطق الحرة الساعية لتطبيق نسبة 0% لضريبة الشركات مع حماية كاملة.",
+    inclusionsEn: [
+      "Qualifying vs Non-Qualifying Income Classification",
+      "De Minimis Rule Calculation (5% / AED 5M Test)",
+      "Adequate Substance & Physical Office Verification",
+      "Transfer Pricing (TP) Disclosure Form Alignment",
+    ],
+    inclusionsAr: [
+      "تصنيف الإيرادات المؤهلة وغير المؤهلة بدقة تشريعية",
+      "اختبار قاعدة الحد الأدنى De Minimis (أقل من 5% أو 5 مليون)",
+      "التحقق من الجوهر الاقتصادي ووجود العمليات المؤهلة",
+      "مواءمة متطلبات الإفصاح عن تسعير المعاملات (TP)",
+    ],
+    serviceBookingName: "QFZP Shield Pro (AED 1,499)",
+    whatsappMessageEn:
+      "Hi Dias Accounting, I would like to book the QFZP Shield Pro package (AED 1,499) for our Free Zone 0% Corporate Tax structuring and compliance. Please connect me with a senior advisor.",
+    whatsappMessageAr:
+      "مرحباً دياس للمحاسبة، أود الاستفادة من باقة QFZP Shield Pro (1,499 درهم) لهيكلة ضريبة الشركات بنسبة 0% لشركتنا في المنطقة الحرة. يرجى التواصل للبدء.",
+  },
+  {
+    id: "outsource-accounting-bookkeeping",
+    titleEn: "OUTSOURCE ACCOUNTING",
+    titleAr: "الاستعانة بالمحاسبة ومسك الدفاتر",
+    subtitleEn: "Dedicated CA, monthly IFRS ledgers, and quarterly VAT return filing",
+    subtitleAr: "محاسب قانوني مخصص، دفاتر شهرية وفق IFRS، وإقرارات القيمة المضافة",
+    priceEn: "750",
+    priceAr: "750",
+    unitEn: "Per Month (Retainer)",
+    unitAr: "شهرياً (اشتراك مرن)",
+    whoIsThisForEn: "Businesses needing hands-off, monthly IFRS books and quarterly VAT filed.",
+    whoIsThisForAr: "للشركات التي تبحث عن راحة البال التامة ودفاتر محاسبية شهرية مدققة.",
+    inclusionsEn: [
+      "Monthly Ledger & Bank Account Reconciliation",
+      "Quarterly VAT Return Computation & Filing",
+      "Monthly Profit & Loss and Balance Sheet Reports",
+      "Dedicated Senior Chartered Accountant (CA)",
+    ],
+    inclusionsAr: [
+      "تسوية حسابات البنوك والقيود المحاسبية الشهرية",
+      "احتساب وتقديم إقرارات ضريبة القيمة المضافة ربع السنوية",
+      "تقارير شهرية للأرباح والخسائر والميزانية العمومية",
+      "محاسب قانوني أول مخصص لمتابعة أعمالك واستشاراتك",
+    ],
+    serviceBookingName: "Outsource Accounting Retainer (AED 750/mo)",
+    whatsappMessageEn:
+      "Hi Dias Accounting, I would like to discuss your Outsource Accounting & Bookkeeping retainer (AED 750/month). Please share the onboarding process.",
+    whatsappMessageAr:
+      "مرحباً دياس للمحاسبة، أود الاستفسار والبدء في باقة الاستعانة بمصادر خارجية للمحاسبة ومسك الدفاتر (750 درهم / شهر). يرجى مشاركة تفاصيل الانضمام.",
   },
   {
     id: "audit-readiness",
-    titleEn: "AUDIT",
+    titleEn: "AUDIT READINESS & SCOPING",
     titleAr: "تدقيق الحسابات والجاهزية المالية",
     subtitleEn: "Audit-ready financials, backed by a team that knows what auditors expect",
-    subtitleAr: "قوائم مالية جاهزة للتدقيق معتمدين على فريق يدرك تماماً متطلبات المدققين الخارجيين",
+    subtitleAr: "قوائم مالية جاهزة للتدقيق بالتنسيق مع مدققين معتمدين في كافة إمارات الدولة",
     priceEn: "Custom Quote",
     priceAr: "عرض سعر مخصص",
     isCustomQuote: true,
-    unitEn: "Scoped to your business & audit requirements",
-    unitAr: "يتم تسعيره وفق حجم أعمالك ومتطلبات التدقيق القانوني",
-    whoIsThisForEn: "Every business is different, so is every audit. Let's scope it together.",
-    whoIsThisForAr: "كل شركة لها طبيعتها الخاصة وكل تدقيق له متطلباته. دعنا نحدد النطاق معاً.",
+    unitEn: "Scoped to your business & licensing requirements",
+    unitAr: "يتم تسعيره وفق حجم أعمالك وجهة الترخيص",
+    whoIsThisForEn: "Mainland & Free Zone companies needing certified statutory financial audits.",
+    whoIsThisForAr: "لشركات البر الرئيسي والمناطق الحرة المطالبة بتقديم تقرير تدقيق قانوني معتمد.",
     inclusionsEn: [
-      "Audit readiness assessment",
-      "Liaison with external auditors",
-      "Audit findings remediation",
-      "Financial statement preparation for audit",
+      "Pre-Audit Ledger Scrub & IFRS Compliance Review",
+      "Direct Liaison with Approved UAE External Auditors",
+      "Audit Findings Remediation & Adjusting Entries",
+      "Verified, Signed Financial Statements for Renewal",
     ],
     inclusionsAr: [
-      "تقييم شامل للجاهزية للتدقيق الخارجي والامتثال",
-      "التنسيق المباشر والتعاون مع مدققي الحسابات القانونيين",
-      "معالجة وتسوية الملاحظات ومخرجات التدقيق",
-      "إعداد وتجهيز القوائم المالية الكاملة متوافقة مع معايير IFRS",
+      "مراجعة وتنقية القيود ومطابقتها لمعايير IFRS الدولية",
+      "التنسيق المباشر والتعاون مع مدققي الحسابات المعتمدين في الدولة",
+      "معالجة وتسوية الملاحظات وقيود التسوية الناتجة عن التدقيق",
+      "تجهيز القوائم المالية النهائية الموقعة لتجديد الرخصة",
     ],
     serviceBookingName: "Financial Audit Preparation & Scoping",
     whatsappMessageEn:
@@ -158,8 +192,8 @@ export const StandalonePricingCards: React.FC<StandalonePricingCardsProps> = () 
           </p>
         </div>
 
-        {/* 3-Card Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch relative z-10">
+        {/* 4-Card Grid for Transparent Institutional Packages */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6 items-stretch relative z-10">
           {STANDALONE_SERVICES.map((card) => {
             const title = isAr ? card.titleAr : card.titleEn;
             const subtitle = isAr ? card.subtitleAr : card.subtitleEn;
@@ -168,6 +202,8 @@ export const StandalonePricingCards: React.FC<StandalonePricingCardsProps> = () 
             const whoIsThisFor = isAr ? card.whoIsThisForAr : card.whoIsThisForEn;
             const inclusions = isAr ? card.inclusionsAr : card.inclusionsEn;
 
+            const badge = isAr ? card.badgeAr : card.badgeEn;
+
             return (
               <div
                 key={card.id}
@@ -175,6 +211,11 @@ export const StandalonePricingCards: React.FC<StandalonePricingCardsProps> = () 
               >
                 {/* Top Info */}
                 <div className="space-y-4">
+                  {badge && (
+                    <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-300 text-emerald-800 text-[11px] font-black tracking-wide shadow-xs mb-1">
+                      {badge}
+                    </div>
+                  )}
                   {/* Title & Subtitle */}
                   <div className="space-y-1.5 min-h-[64px]">
                     <h4 className="font-display text-base sm:text-lg font-extrabold text-navy-950 uppercase tracking-tight">

@@ -38,6 +38,7 @@ export interface Translations {
     subheadline2: string;
     description: string;
     ctaConsultation: string;
+    ctaConsultationSubtext: string;
     ctaRiskAudit: string;
     ctaServices: string;
     ctaWhatsApp: string;
@@ -240,7 +241,7 @@ export const translations: Record<Language, Translations> = {
       badge: "Deadline Alert!",
       deadlineNotice: "File by 30th Sept 2026 and dodge those penalties.",
       avoidPenalty: "Avoid mandatory AED 10,000+ late filing penalties.",
-      riskAuditBtn: "Free 60s Risk Audit",
+      riskAuditBtn: "Free 60s Penalty Risk Audit",
       bookCallBtn: "Book Free 15-Min Call",
       dismiss: "Dismiss alert",
     },
@@ -252,7 +253,8 @@ export const translations: Record<Language, Translations> = {
       subheadline2: "Financial Clarity, Engineered for Your Growth",
       description:
         "Dias Accounting helps UAE businesses manage Accounting, VAT, Corporate Tax, Audits, and Regulatory Compliance, keeping you audit-ready, reducing compliance risks, and giving you confidence at every stage of your business.",
-      ctaConsultation: "Book Free Consultation",
+      ctaConsultation: "Calculate Your UAE Corporate Tax & Discover 0% Relief Options",
+      ctaConsultationSubtext: "Verify Small Business Relief (< AED 3M) & 0% Free Zone Exemption",
       ctaRiskAudit: "Free 60s Penalty Risk Audit",
       ctaServices: "Explore Services",
       ctaWhatsApp: "WhatsApp Tax Advisor",
@@ -756,7 +758,7 @@ export const translations: Record<Language, Translations> = {
       badge: "تنبيه الموعد النهائي!",
       deadlineNotice: "قدّم إقرارك قبل 30 سبتمبر 2026 وتجنب الغرامات المالية.",
       avoidPenalty: "تجنب غرامات التأخير الإلزامية التي تبدأ من 10,000 درهم.",
-      riskAuditBtn: "تدقيق ضريبي مجاني في 60 ثانية",
+      riskAuditBtn: "تدقيق مخاطر الغرامات في 60 ثانية",
       bookCallBtn: "احجز مكالمة 15 دقيقة",
       dismiss: "إغلاق التنبيه",
     },
@@ -768,7 +770,8 @@ export const translations: Record<Language, Translations> = {
       subheadline2: "وضوح مالي واستشارات، مُصممة لنمو وازدهار أعمالك",
       description:
         "تساعد شركة دياز للمحاسبة الشركات والمؤسسات في الإمارات على إدارة المحاسبة، وضريبة القيمة المضافة، وضريبة الشركات، والتدقيق المالي، والامتثال للوائح، لنبقيك دائماً جاهزاً لأي تدقيق ونمنحك الثقة في كل مراحل نمو شركتك.",
-      ctaConsultation: "احجز استشارة مجانية",
+      ctaConsultation: "احسب ضريبة الشركات واكتشف خيارات الإعفاء 0%",
+      ctaConsultationSubtext: "فحص أهلية تسهيلات الأعمال الصغيرة (< 3 مليون د.إ) ونسبة 0% للمناطق الحرة",
       ctaRiskAudit: "تدقيق مخاطر الغرامات في 60 ثانية",
       ctaServices: "استكشف خدماتنا",
       ctaWhatsApp: "محادثة واتساب مباشرة",

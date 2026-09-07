@@ -131,24 +131,47 @@ export const servicesData: Service[] = [
     ]
   },
   {
-    id: "business-incorporation",
-    title: "Business Setup & Licensing",
-    iconName: "Building",
-    shortDesc: "End-to-end setup of your corporate entity in UAE Mainland DET, Free Zones, and corporate bank accounts.",
-    longDesc: "Launching a business in the UAE offers incredible potential but requires navigating complex legal steps. Dias Accounting streamlines this entire process, handling licensing, documentation, and compliance structures so you start your journey on solid ground.",
+    id: "transfer-pricing",
+    title: "Transfer Pricing Services & Documentation (Dubai & UAE)",
+    iconName: "FileCheck",
+    shortDesc: "Transfer Pricing Local File, Master File, EmaraTax TP Disclosure Form, and Connected Persons & KMP benchmarking.",
+    longDesc: "Dias Accounting provides comprehensive Transfer Pricing Services in Dubai and across the UAE in strict compliance with UAE Corporate Tax Law and FTA Ministerial Decision No. 97 of 2023. We assist multinational and domestic groups in structuring arm's length transactions, preparing Transfer Pricing Study Reports (Local File & Master File), and filing mandatory TP Disclosure Forms on the EmaraTax portal.",
     inclusions: [
-      "Mainland (DED/DET), Free Zone (Meydan, RAKEZ, IFZA, Shams, AFZA, DMCC) feasibility study",
-      "Trade Name Reservation, Initial Approvals, and MOA drafting & notarization",
+      "Transfer Pricing Local File preparation compliant with FTA Ministerial Decision No. 97 of 2023",
+      "Master File Documentation for multinational groups meeting statutory global revenue thresholds",
+      "TP Disclosure Form preparation, validation, and timely submission on the EmaraTax portal",
+      "Connected Persons and Key Management Personnel (KMP) remuneration market benchmarking",
+      "Arm's Length Principle economic analysis, intercompany agreements, and transfer pricing policy design",
+      "Transfer Pricing audit representation and dispute defense before the Federal Tax Authority (FTA)"
+    ],
+    regulatoryDeadlines: "TP Disclosure Form submitted with annual Corporate Tax return (within 9 months of period close). Local File/Master File submitted within 30 days upon FTA request.",
+    benefits: [
+      "100% adherence to OECD transfer pricing guidelines and UAE Federal Tax Authority rules",
+      "Elimination of severe non-compliance penalties and non-arm's length profit adjustments",
+      "Defensible economic documentation for related party transactions and management fee allocations",
+      "Seamless integration with statutory audit and 0% Qualifying Free Zone Person (QFZP) substantiation"
+    ]
+  },
+  {
+    id: "business-incorporation",
+    title: "Business Setup & Licensing (Commercial & Professional)",
+    iconName: "Building",
+    shortDesc: "Commercial License, Professional License, Trade Name Reservation, and 100% Foreign Ownership in Dubai & UAE Mainland & Free Zones.",
+    longDesc: "Launching a business in Dubai and the UAE requires seamless administrative execution. Dias Accounting provides turnkey corporate formation services across Mainland (DET) and top Free Zones (SHAMS, DMCC, IFZA, Meydan, RAKEZ). We manage Trade Name Reservation, Commercial and Professional Licenses with 100% foreign ownership, and fast-track corporate bank accounts.",
+    inclusions: [
+      "Commercial License and Professional License advisory with 100% Foreign Ownership in Dubai Mainland (DET)",
+      "Instant Trade Name Reservation and pre-approval clearance with licensing authorities",
+      "Memorandum of Association (MOA) / Articles of Association drafting and electronic notarization",
       "Establishment Card processing and investor / employee residency visa assistance",
       "Corporate bank account opening guidance with premier UAE digital and tier-1 banks",
-      "Immediate tax structuring and automated bookkeeping software setup from Day 1"
+      "Immediate tax structuring, corporate tax registration, and automated cloud bookkeeping setup"
     ],
     regulatoryDeadlines: "Annual commercial license renewal is required by the specific licensing authority.",
     benefits: [
-      "100% compliant company structure from day one, ready for audits",
-      "Fast-tracked registrations through our direct government liaisons",
-      "Optimized choosing of freezones to maximize corporate tax advantages",
-      "Complete transparency with custom pricing and zero hidden registration fees"
+      "100% compliant company structure from day one, ready for corporate tax exemptions and audits",
+      "Fast-tracked registrations (24 to 48 hours) through our direct government liaisons",
+      "Zero hidden fees with clear fixed-price licensing packages and comprehensive PRO support",
+      "Structured from inception to benefit from Small Business Relief or 0% Free Zone tax status"
     ]
   },
   {
@@ -301,6 +324,78 @@ With the UAE's new Corporate Tax regulations now in effect, this decision has di
       name: "Michael Chen",
       role: "Corporate Services Director",
       avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=120"
+    }
+  },
+  {
+    id: "uae-transfer-pricing-compliance-guide",
+    title: "UAE Transfer Pricing Compliance Guide: Local File, Master File & TP Disclosure Form",
+    summary: "Master UAE Transfer Pricing rules under Corporate Tax: Local File & Master File statutory thresholds, Connected Persons and KMP benchmarking, and filing the EmaraTax TP Disclosure Form.",
+    content: `With the enforcement of the UAE Corporate Tax Law (Federal Decree-Law No. 47 of 2022) and FTA Ministerial Decision No. 97 of 2023, Transfer Pricing (TP) has become one of the most rigorously audited areas of UAE corporate taxation. 
+
+Whether operating as a local group, a Free Zone entity, or a cross-border multinational enterprise (MNE), all businesses must prove that transactions with Related Parties and Connected Persons adhere to the **Arm's Length Principle**.
+
+---
+
+### 1. What is the Arm's Length Principle?
+Article 34 of the Corporate Tax Law dictates that transactions between related parties must produce commercial results identical to transactions between independent third parties negotiating under market conditions. If the FTA determines that pricing departs from the arm's length standard, it has the statutory power to adjust taxable profits and impose substantial penalties.
+
+Accepted OECD and FTA Transfer Pricing Methods include:
+1.  **Comparable Uncontrolled Price (CUP) Method**
+2.  **Resale Price Method (RPM)**
+3.  **Cost Plus Method (CPM)**
+4.  **Transactional Net Margin Method (TNMM)**
+5.  **Transactional Profit Split Method (PSM)**
+
+---
+
+### 2. Statutory Thresholds: Who Must Maintain a Local File and Master File?
+Under Ministerial Decision No. 97 of 2023, a Taxable Person must maintain a formal **Local File** and **Master File** if they meet either of the following conditions in a tax period:
+*   **Threshold A:** The Taxable Person has total annual revenues of **AED 200 Million or more**; OR
+*   **Threshold B:** The Taxable Person is part of an MNE Group with total consolidated group revenues of **AED 3.15 Billion or more** in the relevant fiscal year.
+
+> **Crucial Rule:** Even if your business falls below the AED 200M documentation threshold, your transactions must still be on an arm's length basis, and you must maintain baseline supporting records to defend intercompany pricing upon audit.
+
+---
+
+### 3. The EmaraTax TP Disclosure Form
+All taxable persons engaging in transactions with Related Parties and Connected Persons must complete and submit a **Transfer Pricing Disclosure Form** electronically via the EmaraTax portal alongside their annual Corporate Tax return (due within 9 months following the close of the financial tax period).
+
+The Disclosure Form captures:
+*   Names, jurisdictions, and TRNs of all counterparties.
+*   Nature and monetary volume of goods, services, loans, and intellectual property exchanged.
+*   The specific transfer pricing method applied to substantiate the transaction.
+*   Confirmation of whether a Local File and Master File have been drafted and maintained.
+
+---
+
+### 4. Connected Persons & KMP Remuneration Benchmarking
+One of the most immediate tax risks for UAE SMEs and owner-managed businesses involves **Connected Persons** (shareholders, directors, officers, and family relatives up to the fourth degree of kinship).
+
+Under Article 36, salaries, director fees, management bonuses, and interest on shareholder loans paid to Connected Persons are **only tax-deductible up to the fair market value** of their services. 
+*   Paying an owner-director an inflated salary (e.g., AED 2,000,000) to wipe out corporate profit above the AED 375,000 threshold will be disallowed by the FTA unless backed by an independent market remuneration benchmarking study.
+*   Dias Accounting conducts empirical compensation benchmarking studies to defend executive compensation against FTA disallowances.
+
+---
+
+### 5. The 30-Day FTA Submission Rule
+Unlike the disclosure form, you do not proactively upload the thick Local File or Master File upon filing your tax return. However, **you must have them ready before filing**. If the FTA requests your Transfer Pricing Documentation, you must submit both files within **30 days** of receiving the notice. Attempting to draft a Local File and benchmarking study within 30 days during an audit is near impossible and triggers immediate exposure.
+
+---
+
+### Transfer Pricing Compliance Checklist:
+1.  **Map All Related Party Relationships:** Identify all parent, subsidiary, sister companies, and Connected Persons.
+2.  **Draft Intercompany Agreements:** Ensure written legal contracts exist for all management services, royalties, shared overheads, and cross-company loans.
+3.  **Perform Economic Benchmarking:** Utilize commercial TP databases to benchmark profit margins and interest rates.
+4.  **Complete the TP Disclosure Form:** Validate data with financial statements before submitting your Corporate Tax return.
+
+*Dias Accounting's certified tax team provides comprehensive Transfer Pricing Study Reports, Local File & Master File documentation, and EmaraTax TP Disclosure filings.*`,
+    date: "August 12, 2026",
+    readTime: "7 min read",
+    tag: "Transfer Pricing",
+    author: {
+      name: "Glen Dias",
+      role: "Senior Tax Consultant & FTA Registered Agent",
+      avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=120"
     }
   }
 ];

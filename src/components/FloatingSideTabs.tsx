@@ -37,14 +37,14 @@ export const FloatingSideTabs: React.FC<FloatingSideTabsProps> = ({
         </span>
       </button>
 
-      {/* 2. View Pricing Tab (Prestigious Gold Accent) */}
+      {/* 2. View Pricing Tab (Prestigious Gold Accent - Zero Sticker Shock Reassurance) */}
       <button
         type="button"
         id="btn-floating-view-pricing"
         onClick={onViewPricing}
         className="group relative flex items-center justify-center bg-gradient-to-b from-[#dec18c] via-[#c5a059] to-[#a7833f] hover:from-[#f6f0e2] hover:to-[#c5a059] text-navy-950 py-3.5 px-2 sm:py-4 sm:px-2.5 shadow-[0_4px_20px_rgba(197,160,89,0.4)] hover:shadow-[0_6px_24px_rgba(197,160,89,0.6)] transition-all duration-200 cursor-pointer border border-gold-300/80 border-l-0 rounded-r-xl hover:translate-x-1 active:scale-95"
-        title={language === "ar" ? "عرض الأسعار" : "View Pricing"}
-        aria-label={language === "ar" ? "عرض الأسعار" : "View Pricing"}
+        title={language === "ar" ? "عرض الأسعار (تبدأ من 500 درهم)" : "View Pricing (From AED 500)"}
+        aria-label={language === "ar" ? "عرض الأسعار (تبدأ من 500 درهم)" : "View Pricing (From AED 500)"}
       >
         <span
           className="text-[10px] sm:text-[11px] font-black uppercase tracking-wider text-navy-950 select-none whitespace-nowrap"
@@ -53,7 +53,7 @@ export const FloatingSideTabs: React.FC<FloatingSideTabsProps> = ({
             textOrientation: "mixed",
           }}
         >
-          {language === "ar" ? "عرض الأسعار" : "VIEW PRICING"}
+          {language === "ar" ? "الأسعار (من 500 د.إ)" : "PRICING (FROM AED 500)"}
         </span>
       </button>
     </div>

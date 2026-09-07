@@ -17,6 +17,7 @@ import {
   HelpCircle,
   Award,
   ChevronRight,
+  ArrowRight,
 } from "lucide-react";
 import { useLanguage } from "../i18n/LanguageContext";
 
@@ -413,34 +414,65 @@ export const TaxPlanningSavingsChart: React.FC = () => {
           </div>
         </div>
 
+        {/* Business Starter & Zero Sticker Shock Reassurance Banner */}
+        <div className="bg-gradient-to-r from-emerald-950/90 via-navy-900/90 to-navy-950 border border-emerald-500/40 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xl">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-400/30 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs sm:text-sm font-bold text-white">
+                  {isAr ? "باقة بداية الأعمال (Business Starter) — رسم ثابت 500 درهم فقط" : "Business Starter Package — From Just AED 500 Flat Fee"}
+                </span>
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-400/30 uppercase tracking-wider">
+                  {isAr ? "لا رسوم خفية" : "Zero Sticker Shock Guarantee"}
+                </span>
+              </div>
+              <p className="text-xs text-slate-300 leading-relaxed max-w-2xl">
+                {isAr
+                  ? "الأرقام المعروضة أدناه توضح العائد المالي التراكمي للوفورات واسترداد ضريبة المدخلات على مدار 12 شهراً لعملك وليست تكلفة أتعاب! تبدأ خدماتنا من باقة بسيطة وميسرة برسوم ثابتة تبدأ من 500 درهم لإقرار ضريبة الشركات أو 750 درهم/شهرياً لمسك الدفاتر."
+                  : "The figures modeled below illustrate 12-month cumulative tax retention & VAT refunds for your business—not our fee! Affordable compliance starts with our fixed-fee Business Starter (MicroBiz CT Assist) at just AED 500 or AED 750/mo retainer."}
+              </p>
+            </div>
+          </div>
+          <a
+            href="#standalone-packages"
+            className="shrink-0 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-display font-black text-xs py-2.5 px-4 rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer self-stretch sm:self-auto justify-center hover:scale-105"
+          >
+            <span>{isAr ? "عرض باقة 500 درهم" : "View Business Starter (AED 500)"}</span>
+            <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
+          </a>
+        </div>
+
         {/* Dynamic Key Stat Highlights */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-2">
           <div className="bg-white/5 border border-white/10 rounded-2xl p-3.5 space-y-1">
             <div className="text-[11px] text-slate-400 font-semibold flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-slate-400" />
-              {isAr ? "المحاسبة والامتثال القياسي" : "Standard Compliance Savings"}
+              {isAr ? "الوفورات التراكمية (الامتثال الأساسي - 12 شهر)" : "12-Mo Cumulative Tax Retained (Standard)"}
             </div>
             <div className="text-xl font-display font-bold text-slate-200">
               AED {totalStandard.toLocaleString()}
             </div>
             <div className="text-[10px] text-slate-400 leading-tight">
               {isAr
-                ? "استرداد VAT روتيني وتوثيق القيود الدفترية الأساسية"
-                : "Basic VAT deduction & routine statutory return filing"}
+                ? "استرداد VAT روتيني وتوثيق القيود الدفترية • باقة البداية من 500 درهم"
+                : "Basic VAT deduction & statutory filing • Starter from AED 500 flat"}
             </div>
           </div>
 
           <div className="bg-gold-500/10 border border-gold-500/30 rounded-2xl p-3.5 space-y-1">
             <div className="text-[11px] text-gold-300 font-semibold flex items-center gap-1.5">
               <Sparkles className="w-3 h-3 text-gold-400" />
-              {isAr ? "التخطيط الضريبي المتقدم (CFO)" : "Premium Strategy Savings"}
+              {isAr ? "الوفورات التراكمية (التخطيط الاستراتيجي - 12 شهر)" : "12-Mo Cumulative Tax Saved (Strategic)"}
             </div>
             <div className="text-xl font-display font-bold text-gold-400">
               AED {totalPremium.toLocaleString()}
             </div>
             <div className="text-[10px] text-slate-300 leading-tight">
               {isAr
-                ? "إعفاء 0% للمنطقة الحرة، SBR 3 مليون، وتدقيق استباقي"
+                ? "إعفاء 0% للمنطقة الحرة، SBR 3 مليون، وتدقيق استباقي شامل"
                 : "0% QFZP tax structuring, SBR claim & active audit shield"}
             </div>
           </div>
@@ -455,8 +487,8 @@ export const TaxPlanningSavingsChart: React.FC = () => {
             </div>
             <div className="text-[10px] text-slate-300 leading-tight">
               {isAr
-                ? `عائد استثماري يبلغ ${roiMultiplier} أضعاف التكلفة`
-                : `${roiMultiplier}x higher cash retention across 12 fiscal months`}
+                ? `عائد استثماري يبلغ ${roiMultiplier} أضعاف التكلفة مقابل رسوم رمزية`
+                : `${roiMultiplier}x higher cash retention vs. low flat-rate retainers`}
             </div>
           </div>
         </div>

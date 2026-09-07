@@ -554,36 +554,44 @@ function MainApp() {
               {t.hero.description}
             </p>
 
-            {/* High-Converting Action Buttons Bar */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4 max-w-2xl mx-auto pt-2">
-              <a
-                href="#contact"
-                className="w-full sm:w-auto bg-gradient-to-tr from-gold-400 via-gold-500 to-gold-600 hover:from-gold-500 hover:to-gold-700 text-navy-950 font-display font-black py-4 px-8 rounded-xl shadow-2xl hover:shadow-gold-500/30 transition-all text-sm sm:text-base flex items-center justify-center gap-2 group cursor-pointer hover:scale-[1.02] active:scale-98"
-              >
-                <Calendar className="w-4 h-4 text-navy-950" />
-                <span>{t.hero.ctaConsultation}</span>
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </a>
+            {/* High-Converting Action Buttons Bar with Immediate 0% Relief & Small Business Incentive */}
+            <div className="flex flex-col items-center justify-center gap-3.5 max-w-3xl mx-auto pt-2">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3.5 w-full">
+                <a
+                  href="#calculator"
+                  className="flex-1 bg-gradient-to-tr from-gold-400 via-gold-500 to-gold-600 hover:from-gold-500 hover:to-gold-700 text-navy-950 font-display font-black py-3.5 px-6 rounded-2xl shadow-2xl hover:shadow-gold-500/30 transition-all flex flex-col items-center justify-center group cursor-pointer hover:scale-[1.02] active:scale-98 text-center"
+                  title="Calculate UAE Corporate Tax & Discover 0% Relief Options"
+                >
+                  <div className="flex items-center justify-center gap-2 text-sm sm:text-base font-extrabold">
+                    <Calculator className="w-4 h-4 text-navy-950 shrink-0" />
+                    <span>{t.hero.ctaConsultation}</span>
+                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1 shrink-0 rtl:rotate-180" />
+                  </div>
+                  <span className="text-[11px] font-bold text-navy-950/85 mt-0.5 tracking-tight">
+                    {t.hero.ctaConsultationSubtext}
+                  </span>
+                </a>
 
-              <button
-                type="button"
-                onClick={() => setTaxHealthModalOpen(true)}
-                className="w-full sm:w-auto bg-white/15 hover:bg-white/25 border border-white/30 hover:border-gold-400/80 text-white font-display font-bold py-4 px-7 rounded-xl backdrop-blur-md transition-all text-sm sm:text-base flex items-center justify-center gap-2 cursor-pointer group hover:scale-[1.02] active:scale-98 shadow-lg"
-              >
-                <ShieldCheck className="w-4 h-4 text-gold-400 group-hover:scale-110 transition-transform" />
-                <span>{t.hero.ctaRiskAudit}</span>
-              </button>
+                <button
+                  type="button"
+                  onClick={() => setTaxHealthModalOpen(true)}
+                  className="sm:w-auto bg-white/15 hover:bg-white/25 border border-white/30 hover:border-gold-400/80 text-white font-display font-bold py-3.5 px-6 rounded-2xl backdrop-blur-md transition-all text-sm sm:text-base flex items-center justify-center gap-2 cursor-pointer group hover:scale-[1.02] active:scale-98 shadow-lg shrink-0"
+                >
+                  <ShieldCheck className="w-4 h-4 text-gold-400 group-hover:scale-110 transition-transform shrink-0" />
+                  <span>{t.hero.ctaRiskAudit}</span>
+                </button>
 
-              <a
-                href="https://wa.me/971529226958?text=Hello%20Glen,%20I%20would%20like%20to%20consult%20about%20accounting%20and%20corporate%20tax%20for%20my%20UAE%20business."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto bg-emerald-600/90 hover:bg-emerald-600 border border-emerald-400/40 text-white font-display font-semibold py-4 px-6 rounded-xl backdrop-blur-md transition-all text-sm flex items-center justify-center gap-2 shadow-lg hover:scale-[1.02] active:scale-98"
-                title="Direct WhatsApp Chat with Senior Partner Glen Dias"
-              >
-                <Phone className="w-4 h-4 text-emerald-200" />
-                <span>{t.hero.ctaWhatsApp}</span>
-              </a>
+                <a
+                  href="https://wa.me/971529226958?text=Hello%20Glen,%20I%20would%20like%20to%20consult%20about%20verifying%20our%200%25%20Corporate%20Tax%20relief%20and%20accounting%20for%20our%20UAE%20business."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="sm:w-auto bg-emerald-600/90 hover:bg-emerald-600 border border-emerald-400/40 text-white font-display font-semibold py-3.5 px-5 rounded-2xl backdrop-blur-md transition-all text-sm flex items-center justify-center gap-2 shadow-lg hover:scale-[1.02] active:scale-98 shrink-0"
+                  title="Direct WhatsApp Chat with Senior Partner Glen Dias"
+                >
+                  <Phone className="w-4 h-4 text-emerald-200 shrink-0" />
+                  <span>{t.hero.ctaWhatsApp}</span>
+                </a>
+              </div>
             </div>
 
             {/* Interactive Search Grounded AI Spotlight within Hero */}

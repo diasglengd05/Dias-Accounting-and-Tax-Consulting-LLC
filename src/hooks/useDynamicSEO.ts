@@ -15,11 +15,11 @@ export interface SEOConfig {
 // Master English SEO Metadata Dictionary
 export const SECTION_SEO_MAP_EN: Record<string, SEOConfig> = {
   home: {
-    title: "Expert Tax Consulting & Accounting in Dubai | Dias LLC",
-    description: "Dias Accounting and Tax Consulting LLC provides expert UAE corporate tax registration, VAT compliance, bookkeeping, and SHAMS Free Zone setup in Dubai.",
-    keywords: "Dubai accounting firm, UAE corporate tax consultant, VAT filing Dubai, Free Zone bookkeeping DMCC, FTA tax agent Dubai, Corporate tax registration EmaraTax, backlog accounting Dubai, Glen Dias accounting, business setup UAE",
+    title: "Best Accounting firm in UAE | Free 60s Penalty Risk Audit | Dias LLC",
+    description: "Dias Accounting and Tax Consulting LLC is the best accounting firm in UAE. Instant Free 60s Penalty Risk Audit & FTA Audit Representation & Defense. Calculate your UAE Corporate Tax & discover 0% relief options. Outsource bookkeeping, VAT, and corporate tax across Dubai & all 7 Emirates.",
+    keywords: "Best Accounting firm in UAE, Free 60s Penalty Risk Audit, FTA Audit Representation & Defense, Calculate UAE Corporate Tax 0% Relief Options, Small Business Relief AED 3M, Best Accounting Firms in Dubai UAE, Top CA Firms in Dubai, Outsource Accounting & Bookkeeping, UAE corporate tax consultant, VAT filing Dubai, Free Zone bookkeeping DMCC, FTA tax agent Dubai, Corporate tax registration EmaraTax, transfer pricing services dubai, business setup UAE",
     hash: "#home",
-    ogImage: "/api/og?title=Expert+Tax+Consulting+%26+Accounting+in+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=UAE+Tax+Compliance&readTime=FTA+Certified",
+    ogImage: "/api/og?title=Best+Accounting+firm+in+UAE&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=UAE+Tax+Compliance&readTime=FTA+Certified",
   },
   services: {
     title: "Corporate Tax, VAT Compliance & Bookkeeping Services | Dias Accounting Dubai",
@@ -96,11 +96,11 @@ export const SECTION_SEO_MAP_EN: Record<string, SEOConfig> = {
 // Master Arabic SEO Metadata Dictionary
 export const SECTION_SEO_MAP_AR: Record<string, SEOConfig> = {
   home: {
-    title: "دياز للمحاسبة والاستشارات الضريبية | خبراء ضريبة الشركات وضريبة القيمة المضافة ومسك الدفاتر في دبي الإمارات",
-    description: "مستشارون ضريبيون معتمدون لدى الهيئة الاتحادية للضرائب في دبي والإمارات. تسجيل ضريبة الشركات (9%)، إقرارات ضريبة القيمة المضافة، مسك الدفاتر، واستشارات المدير المالي.",
-    keywords: "محاسب قانوني دبي, استشارات ضريبية الإمارات, ضريبة الشركات دبي 9%, تسجيل ضريبة القيمة المضافة, وكيل ضريبي معتمد دبي, محاسبة الشركات في دبي, غلين دياز للمحاسبة, تأسيس شركات الإمارات",
+    title: "أفضل مكتب محاسبة في الإمارات | تدقيق مخاطر الغرامات في 60 ثانية | دياز للمحاسبة",
+    description: "أفضل مكتب محاسبة في الإمارات. تدقيق مخاطر الغرامات في 60 ثانية وتمثيل دفاعي أمام الهيئة الاتحادية للضرائب. احسب ضريبة الشركات واكتشف خيارات الإعفاء 0% في دبي وكافة الإمارات.",
+    keywords: "أفضل مكتب محاسبة في الإمارات, تدقيق مخاطر الغرامات 60 ثانية, تمثيل دفاعي الهيئة الاتحادية للضرائب, خيارات إعفاء ضريبة الشركات 0%, تسهيلات الأعمال الصغيرة 3 مليون, أفضل شركات المحاسبة في دبي, كبرى مكاتب المحاسبين القانونيين في دبي, الاستعانة بمصادر خارجية للمحاسبة ومسك الدفاتر, مستشار ضريبي معتمد, ضريبة الشركات دبي 9%, تسجيل ضريبة القيمة المضافة, وكيل ضريبي معتمد دبي, محاسبة الشركات في دبي, تسعير المعاملات الإمارات, تأسيس شركات الإمارات",
     hash: "#home",
-    ogImage: "/api/og?title=Corporate+Tax%2C+VAT+%26+Bookkeeping+Experts+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=UAE+Tax+Compliance&readTime=FTA+Certified",
+    ogImage: "/api/og?title=Best+Accounting+firm+in+UAE&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=UAE+Tax+Compliance&readTime=FTA+Certified",
   },
   services: {
     title: "خدمات ضريبة الشركات والقيمة المضافة ومسك الدفاتر | دياز للمحاسبة دبي",

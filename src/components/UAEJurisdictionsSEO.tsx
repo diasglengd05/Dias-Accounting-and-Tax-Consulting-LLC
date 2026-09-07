@@ -18,7 +18,7 @@ interface JurisdictionInfo {
   id: string;
   name: string;
   nameAr: string;
-  category: "Dubai Mainland" | "Sharjah & Northern" | "Dubai Free Zones" | "Financial Centers";
+  category: "Dubai Mainland" | "Abu Dhabi" | "Sharjah & Northern" | "Dubai Free Zones" | "Financial Centers";
   categoryAr: string;
   taxRate: string;
   auditRequirement: string;
@@ -47,6 +47,22 @@ const JURISDICTIONS: JurisdictionInfo[] = [
     description: "Dias Accounting handles end-to-end accounting, quarterly VAT returns (5%), and EmaraTax corporate tax filings for businesses licensed under Dubai Department of Economy and Tourism (DET).",
     descriptionAr: "تقدم دياس للاستشارات المحاسبية خدمات مسك الدفاتر الشاملة، وإقرارات ضريبة القيمة المضافة، والتسجيل في ضريبة الشركات عبر منصة إمارات تاكس للشركات المرخصة في دبي.",
     coverageAreas: ["Business Bay", "Downtown Dubai", "Deira", "Bur Dubai", "Al Quoz", "Jumeirah", "Dubai Marina", "Al Barsha"]
+  },
+  {
+    id: "abu-dhabi-mainland",
+    name: "Abu Dhabi Mainland (ADDED) & KEZAD",
+    nameAr: "أبوظبي البر الرئيسي (دائرة التنمية الاقتصادية) وكيزاد",
+    category: "Abu Dhabi",
+    categoryAr: "أبوظبي",
+    taxRate: "0% up to AED 375k | 9% Standard | SBR 0% up to AED 3M",
+    auditRequirement: "Required for commercial license renewal and government procurement (ICV)",
+    auditRequirementAr: "مطلوب لتجديد الرخصة والمناقصات الحكومية وتصديق برنامج القيمة المحلية المضافة (ICV)",
+    qfzpEligible: false,
+    keyHighlight: "Federal capital hub with extensive infrastructure, energy, defense, and government procurement ecosystems.",
+    keyHighlightAr: "عاصمة الدولة ومركز المشاريع الحكومية، الطاقة، والبنية التحتية مع متطلبات برنامج ICV.",
+    description: "Full-service accounting, VAT returns, Corporate Tax filings, and In-Country Value (ICV) accounting audit preparation for enterprises licensed under the Abu Dhabi Department of Economic Development (ADDED) and Khalifa Economic Zones (KEZAD).",
+    descriptionAr: "خدمات محاسبية متكاملة، إقرارات القيمة المضافة، التسجيل والتقديم لضريبة الشركات، وتجهيز الدفاتر لبرنامج القيمة المحلية المضافة (ICV) في إمارة أبوظبي.",
+    coverageAreas: ["Abu Dhabi Island", "Al Ain", "Al Dhafra", "KEZAD", "Masdar City", "Mussafah Industrial Area"]
   },
   {
     id: "shams-sharjah",
@@ -114,19 +130,19 @@ const JURISDICTIONS: JurisdictionInfo[] = [
   },
   {
     id: "rakez-northern",
-    name: "RAKEZ (Ras Al Khaimah) & Northern Emirates",
-    nameAr: "راكز (رأس الخيمة) والمناطق الحرة الأخرى",
+    name: "RAKEZ, Ajman (AFZA), UAQ & Fujairah",
+    nameAr: "راكز (رأس الخيمة)، عجمان (AFZA)، أم القيوين، والفجيرة",
     category: "Sharjah & Northern",
     categoryAr: "الشارقة والمناطق الشمالية",
-    taxRate: "0% QFZP on Industrial / Export Trade | 9% Standard",
+    taxRate: "0% QFZP on Industrial / Export Trade | 9% Standard | SBR 0%",
     auditRequirement: "Mandatory at annual license renewal & FTA audits",
     auditRequirementAr: "إلزامي عند تجديد الرخصة والتدقيق الضريبي",
     qfzpEligible: true,
-    keyHighlight: "Industrial and cost-effective trading hub with favorable economic substance frameworks.",
-    keyHighlightAr: "مركز صناعي وتجاري تنافسي مع بنية قوية لاشتراطات الأنشطة المؤهلة.",
-    description: "End-to-end accounting, VAT refund claims, and corporate tax structuring for manufacturers, traders, and service providers across RAKEZ, Ajman Free Zone (AFZA), and UAQ FTZ.",
-    descriptionAr: "خدمات استرداد ضريبة القيمة المضافة، الهيكلة الضريبية، ومسك الدفاتر للمصانع والشركات في رأس الخيمة وعجمان وأم القيوين.",
-    coverageAreas: ["RAKEZ Business Zones", "Al Hamra Industrial", "Ajman Free Zone", "UAQ Free Trade Zone"]
+    keyHighlight: "Cost-effective manufacturing, trading, and maritime export hubs across the Northern Emirates.",
+    keyHighlightAr: "مراكز صناعية ولوجستية وتجارية عالية الكفاءة التكلفية تغطي كافة الإمارات الشمالية.",
+    description: "End-to-end accounting, VAT refund claims, corporate tax filings, and Transfer Pricing compliance for manufacturers, maritime logistics, and service companies across Ras Al Khaimah (RAKEZ), Ajman Free Zone (AFZA), Umm Al Quwain (UAQ FTZ), and Fujairah Creative City.",
+    descriptionAr: "خدمات استرداد ضريبة القيمة المضافة، الهيكلة الضريبية، ومسك الدفاتر للمصانع والشركات في رأس الخيمة، عجمان، أم القيوين، والفجيرة.",
+    coverageAreas: ["RAKEZ Business Zones", "Al Hamra Industrial", "Ajman Free Zone (AFZA)", "UAQ Free Trade Zone", "Fujairah Creative City"]
   }
 ];
 
@@ -136,10 +152,11 @@ export function UAEJurisdictionsSEO() {
   const [activeJurisdiction, setActiveJurisdiction] = useState<JurisdictionInfo>(JURISDICTIONS[0]);
 
   const categories = [
-    { id: "All", name: language === "ar" ? "جميع المناطق" : "All Jurisdictions" },
+    { id: "All", name: language === "ar" ? "جميع المناطق (7 إمارات)" : "All 7 Emirates" },
     { id: "Dubai Mainland", name: language === "ar" ? "دبي البر الرئيسي" : "Dubai Mainland (DET)" },
+    { id: "Abu Dhabi", name: language === "ar" ? "أبوظبي" : "Abu Dhabi (ADDED/KEZAD)" },
     { id: "Dubai Free Zones", name: language === "ar" ? "المناطق الحرة في دبي" : "Dubai Free Zones (DMCC/IFZA)" },
-    { id: "Sharjah & Northern", name: language === "ar" ? "الشارقة والمناطق الشمالية" : "Sharjah & SHAMS" },
+    { id: "Sharjah & Northern", name: language === "ar" ? "الشارقة والإمارات الشمالية" : "Sharjah & Northern Emirates" },
     { id: "Financial Centers", name: language === "ar" ? "المراكز المالية" : "DIFC & ADGM" },
   ];
 
@@ -158,25 +175,25 @@ export function UAEJurisdictionsSEO() {
         <div className="text-center space-y-4 max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gold-500/15 border border-gold-500/30 text-gold-400 text-xs font-bold uppercase tracking-wider">
             <Building2 className="w-3.5 h-3.5" />
-            <span>{language === "ar" ? "تغطية شاملة لجميع مناطق وإمارات الدولة" : "UAE Jurisdiction & Free Zone Tax Authority"}</span>
+            <span>{language === "ar" ? "تغطية شاملة لجميع إمارات الدولة الـ 7 والمناطق الحرة" : "UAE Nationwide Jurisdiction & Free Zone Authority"}</span>
           </div>
 
           <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight leading-tight">
             {language === "ar" ? (
               <>
-                خبرة ضريبية ومحاسبية متخصصة في <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-gold-400 to-emerald-300">دبي، الشارقة، وجميع المناطق الحرة</span>
+                خبرة ضريبية ومحاسبية متخصصة في <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-gold-400 to-emerald-300">كافة إمارات الدولة الـ 7 وأكثر من 40 منطقة حرة</span>
               </>
             ) : (
               <>
-                Tailored Tax & Accounting Compliance Across <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-gold-400 to-emerald-300">Dubai, Sharjah & UAE Free Zones</span>
+                Tailored Tax & Accounting Compliance Across <span className="text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-gold-400 to-emerald-300">All 7 Emirates & 40+ UAE Free Zones</span>
               </>
             )}
           </h2>
 
           <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
             {language === "ar"
-              ? "سواء كانت شركتك مرخصة في البر الرئيسي لدبي (DET)، أو مدينة الشارقة للإعلام (SHAMS)، أو مركز دبي للسلع المتعددة (DMCC)، نضمن لك الاستفادة القصوى من الإعفاءات القانونية وتجنب غرامات الهيئة الاتحادية للضرائب."
-              : "Whether your entity operates in Dubai Mainland (DET), Sharjah Media City (SHAMS), or DMCC/IFZA Free Zones, we architect bulletproof bookkeeping, 0% Corporate Tax structuring, and statutory audit compliance."}
+              ? "سواء كانت شركتك مرخصة في البر الرئيسي لدبي (DET)، أو أبوظبي (ADDED)، أو الشارقة (SHAMS)، أو رأس الخيمة (RAKEZ)، أو مركز دبي للسلع المتعددة (DMCC)، نضمن لك الاستفادة القصوى من الإعفاءات القانونية وتجنب غرامات الهيئة الاتحادية للضرائب."
+              : "Whether your entity operates in Dubai Mainland (DET), Abu Dhabi (ADDED), Sharjah (SHAMS), Ras Al Khaimah (RAKEZ), or DMCC/IFZA Free Zones, we architect bulletproof bookkeeping, 0% Corporate Tax structuring, and statutory audit compliance."}
           </p>
         </div>
 
