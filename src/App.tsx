@@ -47,17 +47,16 @@ import DiasLogo from "./components/DiasLogo";
 import { GoogleLogo } from "./components/GoogleLogo";
 import { submitToGoogleSheetsDirectly } from "./lib/sheetsService";
 import ComplianceAlertBanner from "./components/ComplianceAlertBanner";
-import { getBlogOgImageUrl, getSocialShareUrls } from "./lib/ogImage";
 import StickyMobileLeadBar from "./components/StickyMobileLeadBar";
 import FloatingSideTabs from "./components/FloatingSideTabs";
 import AddToPreferredSources from "./components/AddToPreferredSources";
-import GooglePreferredSourceModal from "./components/GooglePreferredSourceModal";
-import { AnimatePresence, motion } from "motion/react";
 import useDynamicSEO from "./hooks/useDynamicSEO";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 import LanguageToggle from "./components/LanguageToggle";
 
 // Lazy-loaded components for fast mobile JS execution & small initial bundle size
+const GooglePreferredSourceModal = React.lazy(() => import("./components/GooglePreferredSourceModal"));
+const BlogModal = React.lazy(() => import("./components/BlogModal"));
 const TaxCalculator = React.lazy(() => import("./components/TaxCalculator"));
 const ServiceModal = React.lazy(() => import("./components/ServiceModal"));
 const WhatsAppWidget = React.lazy(() => import("./components/WhatsAppWidget"));
@@ -398,91 +397,88 @@ function MainApp() {
           </button>
         </div>
 
-        {/* Mobile Navigation Drawer with Smooth Animation & Sticky Footer CTA */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div
-              id="mobile-nav-menu"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-              className="md:hidden absolute top-20 left-0 w-full bg-white border-b border-slate-200 shadow-2xl z-50 overflow-hidden flex flex-col max-h-[calc(100vh-5rem)]"
-            >
-              {/* Scrollable Nav Links Content */}
-              <div className="px-4 pt-3 pb-4 space-y-1.5 font-medium text-slate-600 overflow-y-auto flex-1">
-                <div className="pb-2.5 mb-2 border-b border-slate-100 flex items-center justify-between">
-                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                    {language === "ar" ? "اللغة والتفضيلات" : "Language & Region"}
-                  </span>
-                  <LanguageToggle variant="mobile" />
-                </div>
+        {/* Mobile Navigation Drawer with Pure CSS Smooth Animation & Sticky Footer CTA */}
+        <div
+          id="mobile-nav-menu"
+          className={`md:hidden absolute top-20 left-0 w-full bg-white border-b border-slate-200 shadow-2xl z-50 overflow-hidden flex flex-col transition-all duration-300 ease-out origin-top ${
+            mobileMenuOpen
+              ? "opacity-100 max-h-[calc(100vh-5rem)] pointer-events-auto visible"
+              : "opacity-0 max-h-0 pointer-events-none invisible"
+          }`}
+          aria-hidden={!mobileMenuOpen}
+        >
+          {/* Scrollable Nav Links Content */}
+          <div className="px-4 pt-3 pb-4 space-y-1.5 font-medium text-slate-600 overflow-y-auto flex-1">
+            <div className="pb-2.5 mb-2 border-b border-slate-100 flex items-center justify-between">
+              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                {language === "ar" ? "اللغة والتفضيلات" : "Language & Region"}
+              </span>
+              <LanguageToggle variant="mobile" />
+            </div>
 
-                <div className="space-y-1">
-                  {[
-                    { id: "home", label: t.nav.home },
-                    { id: "founder-launchpad", label: t.nav.founders, highlight: true },
-                    { id: "jurisdictions", label: language === "ar" ? "المناطق الحرة والضريبية" : "UAE Jurisdictions (0% QFZP)", badge: "0% QFZP" },
-                    { id: "about", label: t.nav.about },
-                    { id: "services", label: t.nav.services },
-                    { id: "case-studies", label: language === "ar" ? "دراسات حالة العملاء" : "Client Case Studies" },
-                    { id: "pricing", label: t.nav.pricing },
-                    { id: "testimonials", label: t.nav.reviews },
-                    { id: "faqs", label: t.nav.faq },
-                    { id: "blogs", label: t.nav.blogs },
-                  ].map((link) => (
-                    <a
-                      key={link.id}
-                      href={`#${link.id}`}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className={`flex items-center justify-between px-4 py-2.5 rounded-xl text-sm transition-all ${
-                        activeSection === link.id
-                          ? "bg-navy-900 text-white font-bold shadow-sm"
-                          : (link as any).highlight
-                          ? "bg-gold-50/90 text-gold-800 font-bold border border-gold-200/60"
-                          : "text-slate-700 hover:text-navy-900 hover:bg-slate-50"
-                      }`}
-                    >
-                      <span>{link.label}</span>
-                      {(link as any).badge && (
-                        <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-700 border border-emerald-500/20">
-                          {(link as any).badge}
-                        </span>
-                      )}
-                    </a>
-                  ))}
-                </div>
-
-                <div className="pt-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      handleOpenTaxAi();
-                    }}
-                    className="w-full bg-navy-950 hover:bg-slate-900 text-gold-400 border border-gold-500/40 font-display font-bold py-2.5 px-4 rounded-xl text-center text-xs tracking-tight transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <Sparkles className="w-4 h-4 text-gold-400" />
-                    <span>{language === "ar" ? "الذكاء الضريبي الإماراتي (بحث جوجل المباشر)" : "AI Tax Search (Live Google Grounded)"}</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Persistent Sticky Footer CTA within Mobile Menu Drawer */}
-              <div className="sticky bottom-0 left-0 right-0 p-3.5 bg-slate-50/95 backdrop-blur-md border-t border-slate-200 shadow-lg z-10">
+            <div className="space-y-1">
+              {[
+                { id: "home", label: t.nav.home },
+                { id: "founder-launchpad", label: t.nav.founders, highlight: true },
+                { id: "jurisdictions", label: language === "ar" ? "المناطق الحرة والضريبية" : "UAE Jurisdictions (0% QFZP)", badge: "0% QFZP" },
+                { id: "about", label: t.nav.about },
+                { id: "services", label: t.nav.services },
+                { id: "case-studies", label: language === "ar" ? "دراسات حالة العملاء" : "Client Case Studies" },
+                { id: "pricing", label: t.nav.pricing },
+                { id: "testimonials", label: t.nav.reviews },
+                { id: "faqs", label: t.nav.faq },
+                { id: "blogs", label: t.nav.blogs },
+              ].map((link) => (
                 <a
-                  href="#contact"
+                  key={link.id}
+                  href={`#${link.id}`}
                   onClick={() => setMobileMenuOpen(false)}
-                  className="w-full bg-gradient-to-r from-navy-900 to-navy-950 hover:from-navy-950 hover:to-black text-white font-display font-bold py-3 px-4 rounded-xl text-center text-xs sm:text-sm tracking-tight transition-all shadow-md flex items-center justify-center gap-2 active:scale-[0.99] cursor-pointer"
+                  className={`flex items-center justify-between px-4 py-2.5 rounded-xl text-sm transition-all ${
+                    activeSection === link.id
+                      ? "bg-navy-900 text-white font-bold shadow-sm"
+                      : (link as any).highlight
+                      ? "bg-gold-50/90 text-gold-800 font-bold border border-gold-200/60"
+                      : "text-slate-700 hover:text-navy-900 hover:bg-slate-50"
+                  }`}
                 >
-                  <Calendar className="w-4 h-4 text-gold-400 shrink-0" />
-                  <span>{t.nav.bookConsultation}</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-gold-400 shrink-0 rtl:rotate-180" />
+                  <span>{link.label}</span>
+                  {(link as any).badge && (
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-700 border border-emerald-500/20">
+                      {(link as any).badge}
+                    </span>
+                  )}
                 </a>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              ))}
+            </div>
+
+            <div className="pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  handleOpenTaxAi();
+                }}
+                className="w-full bg-navy-950 hover:bg-slate-900 text-gold-400 border border-gold-500/40 font-display font-bold py-2.5 px-4 rounded-xl text-center text-xs tracking-tight transition-all shadow-sm flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Sparkles className="w-4 h-4 text-gold-400" />
+                <span>{language === "ar" ? "الذكاء الضريبي الإماراتي (بحث جوجل المباشر)" : "AI Tax Search (Live Google Grounded)"}</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Persistent Sticky Footer CTA within Mobile Menu Drawer */}
+          <div className="sticky bottom-0 left-0 right-0 p-3.5 bg-slate-50/95 backdrop-blur-md border-t border-slate-200 shadow-lg z-10">
+            <a
+              href="#contact"
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-full bg-gradient-to-r from-navy-900 to-navy-950 hover:from-navy-950 hover:to-black text-white font-display font-bold py-3 px-4 rounded-xl text-center text-xs sm:text-sm tracking-tight transition-all shadow-md flex items-center justify-center gap-2 active:scale-[0.99] cursor-pointer"
+            >
+              <Calendar className="w-4 h-4 text-gold-400 shrink-0" />
+              <span>{t.nav.bookConsultation}</span>
+              <ArrowRight className="w-3.5 h-3.5 text-gold-400 shrink-0 rtl:rotate-180" />
+            </a>
+          </div>
+        </div>
       </header>
 
       {/* Main Landmark for Accessibility & SEO */}
@@ -490,14 +486,25 @@ function MainApp() {
         {/* 2. Hero Section - Dubai Skyline Panoramic Authority Banner */}
         <section
           id="home"
-          className="relative overflow-hidden min-h-[620px] lg:min-h-[720px] flex items-center justify-center text-white bg-navy-950"
-          style={{
-            backgroundImage: `linear-gradient(to bottom, rgba(7, 13, 25, 0.78) 0%, rgba(13, 27, 42, 0.72) 40%, rgba(7, 13, 25, 0.92) 100%), linear-gradient(135deg, rgba(88, 28, 135, 0.35) 0%, rgba(15, 23, 42, 0.6) 100%), url('https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=2400&q=85')`,
-            backgroundSize: "cover",
-            backgroundPosition: "center 38%",
-          }}
+          className="relative overflow-hidden min-h-[600px] sm:min-h-[620px] lg:min-h-[720px] flex items-center justify-center text-white bg-navy-950"
         >
-          {/* Subtle Ambient Radial Lighting Glows */}
+          {/* Responsive LCP Hero Image - Discovered instantly by browser scanner & optimized for mobile screen payloads */}
+          <img
+            src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1200&q=75"
+            srcSet="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=640&q=70 640w, https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1080&q=75 1080w, https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1920&q=80 1920w"
+            sizes="100vw"
+            alt="Dubai Financial District Skyline - Dias Accounting & Tax Advisory"
+            width={1920}
+            height={1080}
+            fetchPriority="high"
+            loading="eager"
+            decoding="async"
+            className="absolute inset-0 w-full h-full object-cover object-[center_38%] pointer-events-none select-none"
+          />
+
+          {/* Precision Gradient & Vignette Overlays for Maximum Text Legibility & Brand Contrast */}
+          <div className="absolute inset-0 bg-gradient-to-b from-[#070d19]/85 via-[#0d1b2a]/75 to-[#070d19]/95 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-purple-950/30 via-transparent to-[#070d19]/70 pointer-events-none" />
           <div className="absolute inset-0 bg-radial from-gold-500/10 via-transparent to-navy-950/80 pointer-events-none" />
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-64 bg-gradient-to-b from-purple-500/10 to-transparent blur-3xl pointer-events-none" />
 
@@ -1452,203 +1459,15 @@ function MainApp() {
             ))}
           </div>
 
-          {/* Blog Read Modal Popup */}
-          {selectedBlog && (() => {
-            const blogUrl = typeof window !== "undefined" 
-              ? `${window.location.origin}${window.location.pathname}#blog-${selectedBlog.id}` 
-              : `https://diasuae.ae/#blog-${selectedBlog.id}`;
-            const dynamicOgUrl = getBlogOgImageUrl({
-              id: selectedBlog.id,
-              title: selectedBlog.title,
-              authorName: selectedBlog.author?.name,
-              authorRole: selectedBlog.author?.role,
-              tag: selectedBlog.tag,
-              date: selectedBlog.date,
-              readTime: selectedBlog.readTime,
-              summary: selectedBlog.summary,
-            });
-            const shareLinks = getSocialShareUrls(blogUrl, selectedBlog.title, selectedBlog.summary);
-
-            const handleCopyLink = () => {
-              if (typeof navigator !== "undefined" && navigator.clipboard) {
-                navigator.clipboard.writeText(blogUrl);
-                setCopiedBlogLink(true);
-                setTimeout(() => setCopiedBlogLink(false), 2500);
-              }
-            };
-
-            return (
-              <div 
-                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm"
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="blog-modal-title"
-              >
-                <div className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] md:max-h-[85vh] animate-scaleUp">
-                  {/* Header */}
-                  <div className="bg-navy-900 p-6 md:p-8 text-white relative">
-                    <button
-                      onClick={() => {
-                        setSelectedBlog(null);
-                        setShowOgPreview(false);
-                      }}
-                      className="absolute top-4 right-4 p-2 text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500"
-                      aria-label="Close article modal"
-                    >
-                      <X className="w-5 h-5" />
-                    </button>
-                    <div className="flex flex-wrap items-center gap-2 mb-3">
-                      <span className="text-[9px] bg-gold-400 text-navy-950 font-bold uppercase tracking-widest px-2.5 py-1 rounded-full inline-block">
-                        {selectedBlog.tag}
-                      </span>
-                      <span className="text-[9px] bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 font-semibold px-2 py-0.5 rounded-full inline-flex items-center gap-1">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        Dynamic OG Meta Active
-                      </span>
-                    </div>
-                    <h3 id="blog-modal-title" className="font-display text-xl md:text-3xl font-bold tracking-tight mb-2">
-                      {selectedBlog.title}
-                    </h3>
-                    <div className="flex flex-wrap gap-4 text-xs text-slate-400 font-medium">
-                      <span>Published: {selectedBlog.date}</span>
-                      <span>•</span>
-                      <span>Read time: {selectedBlog.readTime}</span>
-                      <span>•</span>
-                      <span>Author: {selectedBlog.author.name} ({selectedBlog.author.role})</span>
-                    </div>
-                  </div>
-
-                  {/* Dynamic OG Social Share Bar */}
-                  <div className="bg-slate-50 border-b border-slate-200/80 px-6 py-3 flex flex-wrap items-center justify-between gap-3 text-xs">
-                    <div className="flex items-center gap-2 text-slate-600 font-medium">
-                      <Share2 className="w-3.5 h-3.5 text-gold-600" />
-                      <span className="font-semibold text-navy-950">Share with unique OG Card:</span>
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-2">
-                      {/* WhatsApp */}
-                      <a
-                        href={shareLinks.whatsapp}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium text-[11px] transition-colors"
-                        title="Share on WhatsApp with customized preview"
-                      >
-                        WhatsApp
-                      </a>
-
-                      {/* LinkedIn */}
-                      <a
-                        href={shareLinks.linkedin}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#0077b5] hover:bg-[#006097] text-white rounded-lg font-medium text-[11px] transition-colors"
-                        title="Share to LinkedIn network"
-                      >
-                        LinkedIn
-                      </a>
-
-                      {/* Twitter / X */}
-                      <a
-                        href={shareLinks.twitter}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-black hover:bg-slate-800 text-white rounded-lg font-medium text-[11px] transition-colors"
-                        title="Share to X (Twitter)"
-                      >
-                        X (Twitter)
-                      </a>
-
-                      {/* Copy Link */}
-                      <button
-                        onClick={handleCopyLink}
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 rounded-lg font-medium text-[11px] transition-colors"
-                      >
-                        {copiedBlogLink ? (
-                          <>
-                            <Check className="w-3.5 h-3.5 text-emerald-600" />
-                            <span className="text-emerald-700 font-bold">Link Copied!</span>
-                          </>
-                        ) : (
-                          <>
-                            <Copy className="w-3.5 h-3.5 text-slate-500" />
-                            <span>Copy Link</span>
-                          </>
-                        )}
-                      </button>
-
-                      {/* Preview Dynamic Social Image Button */}
-                      <button
-                        onClick={() => setShowOgPreview(!showOgPreview)}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-medium text-[11px] transition-colors ${
-                          showOgPreview 
-                            ? "bg-gold-500 text-navy-950 font-bold" 
-                            : "bg-gold-50 border border-gold-200 text-gold-800 hover:bg-gold-100"
-                        }`}
-                      >
-                        <ImageIcon className="w-3.5 h-3.5" />
-                        <span>{showOgPreview ? "Hide OG Preview" : "Preview OG Image"}</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Optional Dynamic OG Image Preview Drawer */}
-                  {showOgPreview && (
-                    <div className="bg-navy-950 p-4 border-b border-navy-800 animate-fadeIn">
-                      <div className="flex items-center justify-between mb-2">
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-gold-400">
-                            Dynamic 1200x630 Open Graph Image (Live Render)
-                          </span>
-                          <span className="text-[10px] text-slate-400">
-                            (Generated on the fly based on title &amp; author)
-                          </span>
-                        </div>
-                        <a
-                          href={dynamicOgUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[10px] text-gold-300 hover:text-gold-200 underline flex items-center gap-1"
-                        >
-                          <span>Open SVG Card</span>
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
-                      </div>
-                      <div className="rounded-xl overflow-hidden border border-gold-500/30 bg-navy-900 shadow-inner max-h-56 flex items-center justify-center">
-                        <img
-                          src={dynamicOgUrl}
-                          alt={`Open Graph Card for ${selectedBlog.title}`}
-                          className="w-full h-auto max-h-56 object-contain"
-                          loading="eager"
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Article Content */}
-                  <div className="flex-grow overflow-y-auto p-6 md:p-8 bg-white prose prose-slate max-w-none text-slate-700">
-                    <div className="whitespace-pre-line text-sm leading-relaxed space-y-4">
-                      {selectedBlog.content}
-                    </div>
-
-                    <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5 mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-                      <div className="text-center sm:text-left space-y-1">
-                        <span className="font-display font-bold text-navy-950 text-sm">Need regulatory support?</span>
-                        <p className="text-slate-500 text-xs">Our senior team helps companies avoid hefty administrative penalties.</p>
-                      </div>
-                      <a
-                        href="#contact"
-                        onClick={() => setSelectedBlog(null)}
-                        className="bg-navy-900 hover:bg-navy-950 text-white font-display font-bold py-2.5 px-5 rounded-xl text-xs transition-colors"
-                      >
-                        Book Professional Assessment
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })()}
+          {/* Blog Read Modal Popup (Lazy-Loaded to reduce main mobile JS bundle) */}
+          <React.Suspense fallback={null}>
+            {selectedBlog && (
+              <BlogModal
+                blog={selectedBlog}
+                onClose={() => setSelectedBlog(null)}
+              />
+            )}
+          </React.Suspense>
 
         </div>
       </section>

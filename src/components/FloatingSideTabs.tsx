@@ -14,7 +14,7 @@ export const FloatingSideTabs: React.FC<FloatingSideTabsProps> = ({
 
   return (
     <div
-      className="fixed top-1/2 -translate-y-1/2 left-0 z-40 flex flex-col gap-2.5 pointer-events-auto transition-all duration-300"
+      className="hidden md:flex fixed top-1/2 -translate-y-1/2 left-0 z-40 flex-col gap-2.5 pointer-events-auto transition-all duration-300"
       aria-label="Quick Actions Navigation"
     >
       {/* 1. Book Free Consultation Tab (Luxury Navy & Gold) */}

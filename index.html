@@ -89,8 +89,20 @@
     <!-- Google Fonts Preconnect & Zero-Blocking Async Load for 100/100 Mobile Speed -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://images.unsplash.com" />
     <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
     <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <link rel="dns-prefetch" href="https://images.unsplash.com" />
+
+    <!-- LCP Hero Image Preload for Ultra-Fast Mobile First Contentful Paint -->
+    <link
+      rel="preload"
+      as="image"
+      href="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=640&q=70"
+      imagesrcset="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=640&q=70 640w, https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1080&q=75 1080w"
+      imagesizes="100vw"
+      fetchpriority="high"
+    />
     <link
       rel="preload"
       as="style"
