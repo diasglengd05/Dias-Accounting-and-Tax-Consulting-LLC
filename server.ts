@@ -842,7 +842,7 @@ app.post("/api/inquiries", async (req, res) => {
       syncError = err.message || "Failed to sync";
       
       // If we got a 401 Unauthorized, flag the token as expired
-      if (syncError.includes("401") || syncError.toLowerCase().includes("unauthorized") || syncError.toLowerCase().includes("invalid credentials")) {
+      if (syncError?.includes("401") || syncError?.toLowerCase().includes("unauthorized") || syncError?.toLowerCase().includes("invalid credentials")) {
         await SecureStorageService.saveSettings("google_oauth", { tokenExpired: true });
         console.log("Flagged advisor Google OAuth token as expired in settings.");
       }
@@ -1431,6 +1431,7 @@ return res.sendFile(path.join(distPath, "index.html"));
   app.listen(port, '0.0.0.0', () => {
     console.log(`Server listening on port ${port}`);
   });
+}
 }
 
 bootstrap();
