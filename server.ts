@@ -1423,14 +1423,13 @@ async function bootstrap() {
         }
         return res.sendFile(indexPath);
       } catch (err) {
-        console.error("Error prerendering meta:", err);
-        return res.sendFile(path.join(distPath, "index.html"));
-      }
-    });
-  }
+return res.sendFile(path.join(distPath, "index.html"));
+    }
+  });
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Full-Stack Express Server listening on http://localhost:${PORT}`);
+  const port = parseInt(process.env.PORT || '8080');
+  app.listen(port, '0.0.0.0', () => {
+    console.log(`Server listening on port ${port}`);
   });
 }
 
