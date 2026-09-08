@@ -65,14 +65,14 @@ const PrivacyPolicyModal = React.lazy(() => import("./components/PrivacyPolicyMo
 const GoogleReviewsSection = React.lazy(() => import("./components/GoogleReviewsSection"));
 const TaxHealthCheckModal = React.lazy(() => import("./components/TaxHealthCheckModal"));
 const LeadMagnetDownloadModal = React.lazy(() => import("./components/LeadMagnetDownloadModal"));
-const ServiceComparisonTable = React.lazy(() => import("./components/ServiceComparisonTable").then(m => ({ default: m.ServiceComparisonTable })));
-const TaxPlanningSavingsChart = React.lazy(() => import("./components/TaxPlanningSavingsChart").then(m => ({ default: m.TaxPlanningSavingsChart })));
-const StandalonePricingCards = React.lazy(() => import("./components/StandalonePricingCards").then(m => ({ default: m.StandalonePricingCards })));
-const OurAffiliations = React.lazy(() => import("./components/OurAffiliations").then(m => ({ default: m.OurAffiliations })));
-const UAEJurisdictionsSEO = React.lazy(() => import("./components/UAEJurisdictionsSEO").then(m => ({ default: m.UAEJurisdictionsSEO })));
-const ClientCaseStudies = React.lazy(() => import("./components/ClientCaseStudies").then(m => ({ default: m.ClientCaseStudies })));
-const TaxAiAdvisorModal = React.lazy(() => import("./components/TaxAiAdvisorModal"));
-const UAEFounderLaunchpad = React.lazy(() => import("./components/UAEFounderLaunchpad"));
+const ServiceComparisonTable = React.lazy<React.ComponentType<any>>(() => import("./components/ServiceComparisonTable").then(m => ({ default: (m as any).default || (m as any).ServiceComparisonTable })));
+const TaxPlanningSavingsChart = React.lazy<React.ComponentType<any>>(() => import("./components/TaxPlanningSavingsChart").then(m => ({ default: (m as any).default || (m as any).TaxPlanningSavingsChart })));
+const StandalonePricingCards = React.lazy<React.ComponentType<any>>(() => import("./components/StandalonePricingCards").then(m => ({ default: (m as any).default || (m as any).StandalonePricingCards })));
+const OurAffiliations = React.lazy<React.ComponentType<any>>(() => import("./components/OurAffiliations").then(m => ({ default: (m as any).default || (m as any).OurAffiliations })));
+const UAEJurisdictionsSEO = React.lazy<React.ComponentType<any>>(() => import("./components/UAEJurisdictionsSEO").then(m => ({ default: (m as any).default || (m as any).UAEJurisdictionsSEO })));
+const ClientCaseStudies = React.lazy<React.ComponentType<any>>(() => import("./components/ClientCaseStudies").then(m => ({ default: (m as any).default || (m as any).ClientCaseStudies })));
+const TaxAiAdvisorModal = React.lazy<React.ComponentType<any>>(() => import("./components/TaxAiAdvisorModal"));
+const UAEFounderLaunchpad = React.lazy<React.ComponentType<any>>(() => import("./components/UAEFounderLaunchpad").then(m => ({ default: (m as any).default || (m as any).UAEFounderLaunchpad })));
 
 function MainApp() {
   const { t, language, isRTL } = useLanguage();
@@ -314,7 +314,7 @@ function MainApp() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-800 antialiased selection:bg-gold-500/30 selection:text-navy-950 pb-16 md:pb-0">
+    <div className="mobile-container min-h-screen bg-slate-50 font-sans text-slate-800 antialiased selection:bg-gold-500/30 selection:text-navy-950 pb-24 md:pb-0">
       {/* Skip to Main Content Link for Keyboard Accessibility */}
       <a
         href="#main-content"
@@ -486,7 +486,7 @@ function MainApp() {
         {/* 2. Hero Section - Dubai Skyline Panoramic Authority Banner */}
         <section
           id="home"
-          className="relative overflow-hidden min-h-[600px] sm:min-h-[620px] lg:min-h-[720px] flex items-center justify-center text-white bg-navy-950"
+          className="relative overflow-hidden min-h-0 sm:min-h-[620px] lg:min-h-[720px] flex items-center justify-center text-white bg-navy-950 scroll-mt-20 sm:scroll-mt-24"
         >
           {/* Responsive LCP Hero Image - Discovered instantly by browser scanner & optimized for mobile screen payloads */}
           <img
@@ -508,19 +508,19 @@ function MainApp() {
           <div className="absolute inset-0 bg-radial from-gold-500/10 via-transparent to-navy-950/80 pointer-events-none" />
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-64 bg-gradient-to-b from-purple-500/10 to-transparent blur-3xl pointer-events-none" />
 
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24 relative z-10 text-center space-y-6 sm:space-y-8">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-20 lg:py-24 relative z-10 text-center space-y-5 sm:space-y-8">
             
             {/* Trust Pill & Google Rating Badge */}
-            <div className="flex flex-wrap items-center justify-center gap-2.5">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
               <a
                 href="#founder-launchpad"
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 backdrop-blur-md text-xs font-bold text-emerald-300 shadow-sm transition-all group cursor-pointer"
+                className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 backdrop-blur-md text-[11px] sm:text-xs font-bold text-emerald-300 shadow-sm transition-all group cursor-pointer"
               >
                 <span className="text-amber-300 animate-pulse">🚀</span>
                 <span>{language === "ar" ? "رواد الأعمال والرخص الجديدة: خارطة الامتثال الفورية" : "New UAE License? Instant Founder Roadmap"}</span>
                 <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform text-emerald-300" />
               </a>
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/15 border border-white/20 backdrop-blur-md text-xs font-semibold text-gold-300 shadow-sm transition-all">
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/15 border border-white/20 backdrop-blur-md text-[11px] sm:text-xs font-semibold text-gold-300 shadow-sm transition-all">
                 <Sparkles className="w-3.5 h-3.5 text-gold-400 animate-pulse" />
                 <span>{t.hero.badge}</span>
               </div>
@@ -528,7 +528,7 @@ function MainApp() {
                 href={GOOGLE_BUSINESS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-navy-900/80 hover:bg-navy-900 border border-gold-500/30 hover:border-gold-400/60 backdrop-blur-md text-xs font-semibold text-white transition-all shadow-sm group"
+                className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-full bg-navy-900/80 hover:bg-navy-900 border border-gold-500/30 hover:border-gold-400/60 backdrop-blur-md text-[11px] sm:text-xs font-semibold text-white transition-all shadow-sm group"
                 title="View Dias Accounting on Google Business"
               >
                 <GoogleLogo className="w-3.5 h-3.5" />
@@ -541,32 +541,32 @@ function MainApp() {
 
             {/* Prominent Main Brand Title */}
             <div className="space-y-2">
-              <h1 className="font-display text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-white drop-shadow-md">
+              <h1 className="font-display text-3xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-white drop-shadow-md">
                 {t.hero.companyTitle}
               </h1>
 
               {/* Sub-headline 1: UAE's leading firm */}
-              <h2 className="text-lg sm:text-2xl md:text-3xl font-bold text-slate-100 tracking-tight max-w-3xl mx-auto leading-snug drop-shadow">
+              <h2 className="text-base sm:text-2xl md:text-3xl font-bold text-slate-100 tracking-tight max-w-3xl mx-auto leading-snug drop-shadow">
                 {t.hero.subheadline1}
               </h2>
 
               {/* Punchy Growth Tagline */}
-              <p className="text-lg sm:text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-gold-400 to-emerald-300 tracking-tight drop-shadow pt-1.5 leading-snug">
+              <p className="text-base sm:text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-gold-400 to-emerald-300 tracking-tight drop-shadow pt-1 leading-snug">
                 {t.hero.subheadline2}
               </p>
             </div>
 
             {/* Clear, High-Converting Client Value Statement */}
-            <p className="text-slate-200 text-sm sm:text-base md:text-lg max-w-3xl mx-auto leading-relaxed font-normal drop-shadow-sm px-2">
+            <p className="text-slate-200 text-xs sm:text-base md:text-lg max-w-3xl mx-auto leading-relaxed font-normal drop-shadow-sm px-1">
               {t.hero.description}
             </p>
 
             {/* High-Converting Action Buttons Bar with Immediate 0% Relief & Small Business Incentive */}
-            <div className="flex flex-col items-center justify-center gap-3.5 max-w-3xl mx-auto pt-2">
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3.5 w-full">
+            <div className="flex flex-col items-center justify-center gap-2.5 sm:gap-3.5 max-w-3xl mx-auto pt-1 sm:pt-2 w-full">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 sm:gap-3.5 w-full">
                 <a
                   href="#calculator"
-                  className="flex-1 bg-gradient-to-tr from-gold-400 via-gold-500 to-gold-600 hover:from-gold-500 hover:to-gold-700 text-navy-950 font-display font-black py-3.5 px-6 rounded-2xl shadow-2xl hover:shadow-gold-500/30 transition-all flex flex-col items-center justify-center group cursor-pointer hover:scale-[1.02] active:scale-98 text-center"
+                  className="flex-1 bg-gradient-to-tr from-gold-400 via-gold-500 to-gold-600 hover:from-gold-500 hover:to-gold-700 text-navy-950 font-display font-black py-3 sm:py-3.5 px-4 sm:px-6 rounded-2xl shadow-2xl hover:shadow-gold-500/30 transition-all flex flex-col items-center justify-center group cursor-pointer hover:scale-[1.02] active:scale-98 text-center"
                   title="Calculate UAE Corporate Tax & Discover 0% Relief Options"
                 >
                   <div className="flex items-center justify-center gap-2 text-sm sm:text-base font-extrabold">
@@ -582,7 +582,7 @@ function MainApp() {
                 <button
                   type="button"
                   onClick={() => setTaxHealthModalOpen(true)}
-                  className="sm:w-auto bg-white/15 hover:bg-white/25 border border-white/30 hover:border-gold-400/80 text-white font-display font-bold py-3.5 px-6 rounded-2xl backdrop-blur-md transition-all text-sm sm:text-base flex items-center justify-center gap-2 cursor-pointer group hover:scale-[1.02] active:scale-98 shadow-lg shrink-0"
+                  className="sm:w-auto bg-white/15 hover:bg-white/25 border border-white/30 hover:border-gold-400/80 text-white font-display font-bold py-3 sm:py-3.5 px-4 sm:px-6 rounded-2xl backdrop-blur-md transition-all text-xs sm:text-base flex items-center justify-center gap-2 cursor-pointer group hover:scale-[1.02] active:scale-98 shadow-lg shrink-0"
                 >
                   <ShieldCheck className="w-4 h-4 text-gold-400 group-hover:scale-110 transition-transform shrink-0" />
                   <span>{t.hero.ctaRiskAudit}</span>
@@ -592,7 +592,7 @@ function MainApp() {
                   href="https://wa.me/971529226958?text=Hello%20Glen,%20I%20would%20like%20to%20consult%20about%20verifying%20our%200%25%20Corporate%20Tax%20relief%20and%20accounting%20for%20our%20UAE%20business."
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="sm:w-auto bg-emerald-600/90 hover:bg-emerald-600 border border-emerald-400/40 text-white font-display font-semibold py-3.5 px-5 rounded-2xl backdrop-blur-md transition-all text-sm flex items-center justify-center gap-2 shadow-lg hover:scale-[1.02] active:scale-98 shrink-0"
+                  className="sm:w-auto bg-emerald-600/90 hover:bg-emerald-600 border border-emerald-400/40 text-white font-display font-semibold py-3 sm:py-3.5 px-4 sm:px-5 rounded-2xl backdrop-blur-md transition-all text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg hover:scale-[1.02] active:scale-98 shrink-0"
                   title="Direct WhatsApp Chat with Senior Partner Glen Dias"
                 >
                   <Phone className="w-4 h-4 text-emerald-200 shrink-0" />
@@ -602,7 +602,7 @@ function MainApp() {
             </div>
 
             {/* Interactive Search Grounded AI Spotlight within Hero */}
-            <div className="bg-navy-950/80 hover:bg-navy-950/90 border border-white/20 hover:border-gold-400/50 rounded-2xl p-4 sm:p-5 backdrop-blur-lg transition-all shadow-2xl space-y-3 max-w-2xl mx-auto text-left rtl:text-right">
+            <div className="bg-navy-950/80 hover:bg-navy-950/90 border border-white/20 hover:border-gold-400/50 rounded-2xl p-3.5 sm:p-5 backdrop-blur-lg transition-all shadow-2xl space-y-3 max-w-2xl mx-auto text-left rtl:text-right">
               <div className="flex items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
                   <div className="w-7 h-7 rounded-lg bg-gold-400/20 text-gold-300 flex items-center justify-center border border-gold-500/30">
@@ -655,7 +655,7 @@ function MainApp() {
             </div>
 
             {/* Key Trust & Performance Metrics Banner */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 pt-6 border-t border-white/15 max-w-3xl mx-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 pt-4 sm:pt-6 border-t border-white/15 max-w-3xl mx-auto">
               <div className="text-center">
                 <span className="block text-2xl sm:text-3xl font-extrabold font-display text-gold-400">{t.hero.stats.smes}</span>
                 <span className="text-[11px] text-slate-300 font-medium block mt-0.5">{t.hero.stats.smesLabel}</span>
@@ -678,7 +678,7 @@ function MainApp() {
         </section>
 
         {/* 2.2 Instant Interactive Tax Planning & Health Estimator Section */}
-        <section id="calculator" className="py-12 md:py-16 bg-navy-900 border-b border-slate-800 text-white relative overflow-hidden">
+        <section id="calculator" className="py-12 md:py-16 bg-navy-900 border-b border-slate-800 text-white relative overflow-hidden scroll-mt-20 sm:scroll-mt-24">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
               
@@ -808,7 +808,7 @@ function MainApp() {
       </section>
 
       {/* 4. Core Services Grid Section */}
-      <section id="services" className="py-20 bg-slate-50 cv-auto">
+      <section id="services" className="py-20 bg-slate-50 scroll-mt-20 sm:scroll-mt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           {/* Section Header */}
@@ -892,7 +892,7 @@ function MainApp() {
       </React.Suspense>
 
       {/* 5. "Why Partner With Us" Section */}
-      <section id="about" className="py-20 bg-white relative overflow-hidden cv-auto">
+      <section id="about" className="py-20 bg-white relative overflow-hidden scroll-mt-20 sm:scroll-mt-24">
         {/* Subtle decorative grid background */}
         <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: "radial-gradient(#0f172a 1.5px, transparent 1.5px)", backgroundSize: "24px 24px" }} />
 
@@ -1003,7 +1003,7 @@ function MainApp() {
       </React.Suspense>
 
       {/* 6. Pricing Plans Section */}
-      <section id="pricing" className="py-20 bg-slate-50 border-t border-slate-100 cv-auto">
+      <section id="pricing" className="py-20 bg-slate-50 border-t border-slate-100 scroll-mt-20 sm:scroll-mt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           {/* Section Header */}
@@ -1277,7 +1277,7 @@ function MainApp() {
     </React.Suspense>
 
     {/* 6.6 FAQ Section */}
-    <section id="faqs" className="py-20 bg-slate-50 border-t border-slate-100 cv-auto">
+    <section id="faqs" className="py-20 bg-slate-50 border-t border-slate-100 scroll-mt-20 sm:scroll-mt-24">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
         {/* Section Header */}
@@ -1383,7 +1383,7 @@ function MainApp() {
       </section>
 
       {/* 7. Blogs / News Section */}
-      <section id="blogs" className="py-20 bg-white cv-auto">
+      <section id="blogs" className="py-20 bg-white scroll-mt-20 sm:scroll-mt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           {/* Section Header */}
@@ -1473,7 +1473,7 @@ function MainApp() {
       </section>
 
       {/* 8. Contact Us & Consultation Scheduler */}
-      <section id="contact" className="py-20 bg-slate-50 border-t border-slate-100">
+      <section id="contact" className="py-20 bg-slate-50 border-t border-slate-100 scroll-mt-20 sm:scroll-mt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           {/* Section Header */}
@@ -1948,7 +1948,7 @@ function MainApp() {
         <GooglePreferredSourceModal
           isOpen={googlePreferredModalOpen}
           onClose={() => setGooglePreferredModalOpen(false)}
-          businessName="Dias Accounting"
+          businessName="Best Accounting firm in UAE | Dias LLC"
         />
         <TaxAiAdvisorModal
           isOpen={taxAiModalOpen}

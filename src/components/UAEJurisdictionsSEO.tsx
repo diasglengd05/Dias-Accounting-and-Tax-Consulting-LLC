@@ -165,7 +165,7 @@ export function UAEJurisdictionsSEO() {
     : JURISDICTIONS.filter(j => j.category === selectedCategory);
 
   return (
-    <section id="jurisdictions" className="py-16 md:py-24 bg-gradient-to-b from-navy-950 via-slate-900 to-navy-950 text-white border-t border-b border-white/10 relative overflow-hidden">
+    <section id="jurisdictions" className="py-16 md:py-24 bg-gradient-to-b from-navy-950 via-slate-900 to-navy-950 text-white border-t border-b border-white/10 relative overflow-hidden scroll-mt-20 sm:scroll-mt-24">
       {/* Background Decorative Glow */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />

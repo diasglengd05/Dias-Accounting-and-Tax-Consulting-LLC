@@ -65,7 +65,7 @@ export const GooglePreferredSourceModal: React.FC<GooglePreferredSourceModalProp
 
   const handleOpenGoogleSearch = () => {
     const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(
-      `${businessName} UAE Corporate Tax Accounting Sharjah`
+      "Best Accounting firm in UAE | Free 60s Penalty Risk Audit | Dias LLC"
     )}`;
     window.open(searchUrl, "_blank", "noopener,noreferrer");
   };

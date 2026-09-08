@@ -121,7 +121,7 @@ export const UAEFounderLaunchpad: React.FC<UAEFounderLaunchpadProps> = ({
   return (
     <section
       id="founder-launchpad"
-      className="py-16 sm:py-20 bg-gradient-to-b from-navy-950 via-slate-900 to-navy-950 text-white relative overflow-hidden"
+      className="py-16 sm:py-20 bg-gradient-to-b from-navy-950 via-slate-900 to-navy-950 text-white relative overflow-hidden scroll-mt-20 sm:scroll-mt-24"
     >
       {/* Decorative ambient glows */}
       <div className="absolute top-0 right-1/4 w-96 h-96 bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />

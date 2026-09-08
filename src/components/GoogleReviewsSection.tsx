@@ -49,7 +49,7 @@ export default function GoogleReviewsSection({ testimonials = [] }: GoogleReview
   };
 
   return (
-    <section id="testimonials" className="py-20 bg-gradient-to-b from-slate-50 via-white to-slate-50 border-t border-slate-100 relative overflow-hidden">
+    <section id="testimonials" className="py-20 bg-gradient-to-b from-slate-50 via-white to-slate-50 border-t border-slate-100 relative overflow-hidden scroll-mt-20 sm:scroll-mt-24">
       {/* Decorative background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-gold-500/5 rounded-full blur-3xl pointer-events-none" />
 

@@ -353,7 +353,7 @@ export default function WhatsAppWidget({
   };
 
   return (
-    <div className={`fixed bottom-6 ${isRTL ? "left-6" : "right-6"} z-40 flex flex-col ${isRTL ? "items-start" : "items-end"}`}>
+    <div className={`hidden md:flex fixed bottom-6 ${isRTL ? "left-6" : "right-6"} z-40 flex-col ${isRTL ? "items-start" : "items-end"}`}>
       {/* Chat Window Popup */}
       {isOpen && (
         <div 

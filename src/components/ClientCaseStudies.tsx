@@ -80,7 +80,7 @@ export function ClientCaseStudies() {
   const { language } = useLanguage();
 
   return (
-    <section id="case-studies" className="py-16 md:py-24 bg-navy-900 border-b border-slate-800 text-white relative overflow-hidden">
+    <section id="case-studies" className="py-16 md:py-24 bg-navy-900 border-b border-slate-800 text-white relative overflow-hidden scroll-mt-20 sm:scroll-mt-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-12">
         
         {/* Section Header */}
