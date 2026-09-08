@@ -174,13 +174,13 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
   // 5. Default Fallback
   return {
     title: isArabic
-      ? "دياز للمحاسبة والاستشارات الضريبية | خبراء ضريبة الشركات وضريبة القيمة المضافة ومسك الدفاتر في دبي الإمارات"
-      : "Dias Accounting & Tax Consulting | Corporate Tax, VAT & Bookkeeping Experts Dubai UAE",
+      ? "أفضل مكتب محاسبة في الإمارات | تدقيق مخاطر الغرامات في 60 ثانية | دياز للمحاسبة"
+      : "Best Accounting firm in UAE | Free 60s Penalty Risk Audit | Dias LLC",
     description: isArabic
-      ? "مستشارون ضريبيون معتمدون لدى الهيئة الاتحادية للضرائب في دبي والإمارات. تسجيل ضريبة الشركات (9%)، إقرارات ضريبة القيمة المضافة، مسك الدفاتر، واستشارات المدير المالي."
-      : "Premier FTA-certified tax consultants in Dubai & UAE. Expert UAE Corporate Tax registration (9%), VAT compliance, backlog bookkeeping, and CFO advisory.",
+      ? "أفضل مكتب محاسبة في الإمارات. تدقيق مخاطر الغرامات في 60 ثانية وتمثيل دفاعي أمام الهيئة الاتحادية للضرائب. احسب ضريبة الشركات واكتشف خيارات الإعفاء 0% في دبي وكافة الإمارات."
+      : "Best Accounting firm in UAE. Instant Free 60s Penalty Risk Audit & FTA Audit Representation & Defense. Calculate your UAE Corporate Tax & discover 0% relief options. Outsource bookkeeping, VAT, and corporate tax across Dubai & all 7 Emirates.",
     url: `${baseUrl}/`,
-    ogImage: `${baseUrl}/api/og?title=Corporate+Tax%2C+VAT+%26+Bookkeeping+Experts+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=UAE+Tax+Compliance`,
+    ogImage: `${baseUrl}/api/og?title=Best+Accounting+firm+in+UAE&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=UAE+Tax+Compliance&readTime=FTA+Certified`,
     ogType: "business.business",
     isArabic,
   };

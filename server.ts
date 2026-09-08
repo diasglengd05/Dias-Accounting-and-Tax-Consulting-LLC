@@ -1423,15 +1423,15 @@ async function bootstrap() {
         }
         return res.sendFile(indexPath);
       } catch (err) {
-return res.sendFile(path.join(distPath, "index.html"));
-    }
-  });
+        return res.sendFile(path.join(distPath, "index.html"));
+      }
+    });
+  }
 
-  const port = parseInt(process.env.PORT || '8080');
-  app.listen(port, '0.0.0.0', () => {
+  const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+  app.listen(port, "0.0.0.0", () => {
     console.log(`Server listening on port ${port}`);
   });
-}
 }
 
 bootstrap();
