@@ -174,13 +174,13 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
   // 5. Default Fallback
   return {
     title: isArabic
-      ? "أفضل مكتب محاسبة في الإمارات | تدقيق مخاطر الغرامات في 60 ثانية | دياز للمحاسبة"
-      : "Best Accounting firm in UAE | Free 60s Penalty Risk Audit | Dias LLC",
+      ? "أفضل مكتب محاسبة في الإمارات ودبي | تدقيق مخاطر الغرامات في 60 ثانية | دياز للمحاسبة"
+      : "Best Accounting Firm in Dubai | Free 60s Penalty Risk Audit | Dias LLC",
     description: isArabic
-      ? "أفضل مكتب محاسبة في الإمارات. تدقيق مخاطر الغرامات في 60 ثانية وتمثيل دفاعي أمام الهيئة الاتحادية للضرائب. احسب ضريبة الشركات واكتشف خيارات الإعفاء 0% في دبي وكافة الإمارات."
-      : "Best Accounting firm in UAE. Instant Free 60s Penalty Risk Audit & FTA Audit Representation & Defense. Calculate your UAE Corporate Tax & discover 0% relief options. Outsource bookkeeping, VAT, and corporate tax across Dubai & all 7 Emirates.",
+      ? "أفضل مكتب محاسبة في الإمارات ودبي. تدقيق مخاطر الغرامات في 60 ثانية وتمثيل دفاعي أمام الهيئة الاتحادية للضرائب. احسب ضريبة الشركات واكتشف خيارات الإعفاء 0% في دبي وكافة الإمارات."
+      : "Best Accounting Firm in Dubai & UAE. Instant Free 60s Penalty Risk Audit & FTA Audit Representation & Defense. Calculate your UAE Corporate Tax & discover 0% relief options. Outsource bookkeeping, VAT, and corporate tax across Dubai & all 7 Emirates.",
     url: `${baseUrl}/`,
-    ogImage: `${baseUrl}/api/og?title=Best+Accounting+firm+in+UAE&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=UAE+Tax+Compliance&readTime=FTA+Certified`,
+    ogImage: `${baseUrl}/api/og?title=Best+Accounting+Firm+in+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=UAE+Tax+Compliance&readTime=FTA+Certified`,
     ogType: "business.business",
     isArabic,
   };
