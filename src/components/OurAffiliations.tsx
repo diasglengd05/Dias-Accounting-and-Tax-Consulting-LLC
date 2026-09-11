@@ -365,21 +365,21 @@ export const OurAffiliations: React.FC = () => {
   };
 
   return (
-    <section id="affiliations" className="py-16 sm:py-24 bg-slate-900 text-white relative overflow-hidden">
+    <section id="affiliations" className="py-10 sm:py-14 bg-slate-900 text-white relative overflow-hidden">
       {/* Background Architectural Glow and Grid */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#1e293b,transparent_70%)] pointer-events-none" />
-      <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[900px] h-[350px] bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[250px] bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-12 sm:space-y-14">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-6 sm:space-y-8">
         {/* Section Header */}
-        <div className="text-center space-y-3 max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-gold-500/15 border border-gold-500/30 text-gold-400 text-xs font-bold uppercase tracking-widest font-mono">
-            <Award className="w-3.5 h-3.5 text-gold-400" />
+        <div className="text-center space-y-2 max-w-2xl mx-auto">
+          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-gold-500/15 border border-gold-500/30 text-gold-400 text-[11px] font-bold uppercase tracking-widest font-mono">
+            <Award className="w-3 h-3 text-gold-400" />
             <span>{isAr ? "شراكات واعتمادات رسمية" : "Official UAE Jurisdictions"}</span>
           </div>
 
-          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">
+          <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             {isAr ? (
               <>
                 شراكاتنا <span className="text-gold-400">واعتماداتنا</span>
@@ -391,90 +391,55 @@ export const OurAffiliations: React.FC = () => {
             )}
           </h2>
 
-          <p className="text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed max-w-2xl mx-auto">
+          <p className="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-xl mx-auto">
             {isAr
               ? "معتمدون لدى كبرى الهيئات والمناطق الحرة في دولة الإمارات لتأسيس الشركات، مسك الدفاتر المؤهل، والامتثال لضريبة الشركات وضريبة القيمة المضافة."
               : "Officially registered and authorized partner for company setup, compliant accounting, FTA tax filings, and 0% Free Zone tax eligibility across the UAE."}
           </p>
         </div>
 
-        {/* Creative Connected Wave Ribbon Layout (Desktop: 6-Card Dual-Row Serpentine) */}
+        {/* Crisp Unified 6-Card Strip Layout (Desktop: 6 Columns) */}
         <div className="hidden xl:block relative max-w-6xl mx-auto">
-          {/* Continuous Navy-950 Canvas Container with Gold Accent Border */}
-          <div className="bg-navy-950/90 border border-slate-700/70 rounded-[38px] p-6 shadow-2xl backdrop-blur-md relative overflow-hidden">
-            {/* Ambient inner glow */}
-            <div className="absolute top-0 right-1/4 w-80 h-80 bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
-
-            {/* 6-Column Alternating Layout */}
-            <div className="grid grid-cols-6 gap-3.5 relative z-10">
-              {affiliations.map((aff, idx) => {
-                const isEven = idx % 2 === 0;
+          <div className="bg-navy-950/90 border border-slate-700/70 rounded-3xl p-4 shadow-xl backdrop-blur-md relative overflow-hidden">
+            <div className="grid grid-cols-6 gap-3 relative z-10">
+              {affiliations.map((aff) => {
                 const name = isAr ? aff.nameAr : aff.nameEn;
                 const category = isAr ? aff.categoryAr : aff.categoryEn;
 
                 return (
-                  <div key={aff.id} className="flex flex-col gap-3.5">
-                    {isEven ? (
-                      <>
-                        {/* Top: Crisp White Logo Tile */}
-                        <div className="h-44 bg-white rounded-3xl p-3 flex flex-col items-center justify-center shadow-lg border border-slate-200 transition-all duration-300 hover:scale-[1.03] group relative overflow-hidden">
-                          <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full bg-slate-100 text-[8px] font-extrabold uppercase tracking-wider text-slate-600">
-                            {aff.accentBadge}
-                          </span>
-                          {aff.logoComponent}
-                        </div>
+                  <div
+                    key={aff.id}
+                    className="bg-navy-900 border border-slate-700/80 hover:border-gold-500/60 rounded-2xl overflow-hidden shadow-md flex flex-col justify-between transition-all duration-300 hover:-translate-y-0.5 group"
+                  >
+                    {/* Top: Crisp White Logo Tile */}
+                    <div className="h-28 bg-white p-2.5 flex flex-col items-center justify-center relative overflow-hidden">
+                      <span className="absolute top-2 right-2 px-1.5 py-0.5 rounded-full bg-slate-100 text-[7.5px] font-extrabold uppercase tracking-wider text-slate-600">
+                        {aff.accentBadge}
+                      </span>
+                      <div className="transform scale-90">
+                        {aff.logoComponent}
+                      </div>
+                    </div>
 
-                        {/* Bottom: Solid Navy/Gold Action Card */}
-                        <div className="h-44 bg-navy-900 border border-gold-500/20 rounded-3xl p-4 flex flex-col items-center justify-between text-center text-white transition-all duration-300 hover:border-gold-500/60 hover:bg-navy-850 group">
-                          <div className="space-y-1">
-                            <span className="text-[9px] uppercase tracking-wider text-gold-400 font-mono block">
-                              {category}
-                            </span>
-                            <h3 className="font-display text-sm font-bold tracking-tight text-white line-clamp-2">
-                              {name}
-                            </h3>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => setSelectedAffiliation(aff)}
-                            className="w-full py-2 rounded-full border border-gold-400/80 text-gold-400 hover:bg-gold-500 hover:text-navy-950 text-[11px] font-extrabold uppercase tracking-wider transition-all cursor-pointer shadow-sm active:scale-95 flex items-center justify-center gap-1.5"
-                          >
-                            <span>{isAr ? "اكتشف المزيد" : "KNOW MORE"}</span>
-                            <ChevronRight className={`w-3.5 h-3.5 ${isRTL ? "rotate-180" : ""}`} />
-                          </button>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        {/* Top: Solid Navy/Gold Action Card */}
-                        <div className="h-44 bg-navy-900 border border-gold-500/20 rounded-3xl p-4 flex flex-col items-center justify-between text-center text-white transition-all duration-300 hover:border-gold-500/60 hover:bg-navy-850 group">
-                          <div className="space-y-1">
-                            <span className="text-[9px] uppercase tracking-wider text-gold-400 font-mono block">
-                              {category}
-                            </span>
-                            <h3 className="font-display text-sm font-bold tracking-tight text-white line-clamp-2">
-                              {name}
-                            </h3>
-                          </div>
-                          <button
-                            type="button"
-                            onClick={() => setSelectedAffiliation(aff)}
-                            className="w-full py-2 rounded-full border border-gold-400/80 text-gold-400 hover:bg-gold-500 hover:text-navy-950 text-[11px] font-extrabold uppercase tracking-wider transition-all cursor-pointer shadow-sm active:scale-95 flex items-center justify-center gap-1.5"
-                          >
-                            <span>{isAr ? "اكتشف المزيد" : "KNOW MORE"}</span>
-                            <ChevronRight className={`w-3.5 h-3.5 ${isRTL ? "rotate-180" : ""}`} />
-                          </button>
-                        </div>
-
-                        {/* Bottom: Crisp White Logo Tile */}
-                        <div className="h-44 bg-white rounded-3xl p-3 flex flex-col items-center justify-center shadow-lg border border-slate-200 transition-all duration-300 hover:scale-[1.03] group relative overflow-hidden">
-                          <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full bg-slate-100 text-[8px] font-extrabold uppercase tracking-wider text-slate-600">
-                            {aff.accentBadge}
-                          </span>
-                          {aff.logoComponent}
-                        </div>
-                      </>
-                    )}
+                    {/* Bottom: Compact Solid Navy/Gold Action Block */}
+                    <div className="p-3 flex flex-col justify-between gap-2.5 text-center text-white flex-1 border-t border-slate-800">
+                      <div className="space-y-0.5">
+                        <span className="text-[8.5px] uppercase tracking-wider text-gold-400 font-mono block truncate">
+                          {category}
+                        </span>
+                        <h3 className="font-display text-xs font-bold tracking-tight text-white line-clamp-1">
+                          {name}
+                        </h3>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedAffiliation(aff)}
+                        className="w-full py-1.5 rounded-lg border border-gold-400/80 text-gold-400 hover:bg-gold-500 hover:text-navy-950 text-[10px] font-extrabold uppercase tracking-wider transition-all cursor-pointer shadow-xs active:scale-95 flex items-center justify-center gap-1"
+                      >
+                        <span>{isAr ? "اكتشف المزيد" : "KNOW MORE"}</span>
+                        <ChevronRight className={`w-3 h-3 ${isRTL ? "rotate-180" : ""}`} />
+                      </button>
+                    </div>
                   </div>
                 );
               })}
@@ -483,7 +448,7 @@ export const OurAffiliations: React.FC = () => {
         </div>
 
         {/* Medium Screens (Tablets / Laptops): 3x2 Bento Grid */}
-        <div className="hidden sm:grid xl:hidden grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto">
+        <div className="hidden sm:grid xl:hidden grid-cols-2 lg:grid-cols-3 gap-3.5 max-w-4xl mx-auto">
           {affiliations.map((aff) => {
             const name = isAr ? aff.nameAr : aff.nameEn;
             const category = isAr ? aff.categoryAr : aff.categoryEn;
@@ -491,60 +456,20 @@ export const OurAffiliations: React.FC = () => {
             return (
               <div
                 key={aff.id}
-                className="bg-navy-950 border border-slate-800 rounded-3xl overflow-hidden shadow-lg flex flex-col justify-between transition-all duration-300 hover:border-gold-500/50 group"
+                className="bg-navy-950 border border-slate-800 rounded-2xl overflow-hidden shadow-md flex flex-col justify-between transition-all duration-300 hover:border-gold-500/50 group"
               >
                 {/* White Logo Banner */}
-                <div className="p-5 bg-white border-b border-slate-200 flex items-center justify-center min-h-[140px] relative">
-                  <span className="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-slate-100 text-[8px] font-extrabold uppercase tracking-wider text-slate-700">
+                <div className="p-3 bg-white border-b border-slate-200 flex items-center justify-center min-h-[95px] relative">
+                  <span className="absolute top-2 right-2 px-1.5 py-0.5 rounded-full bg-slate-100 text-[8px] font-extrabold uppercase tracking-wider text-slate-700">
                     {aff.accentBadge}
                   </span>
-                  {aff.logoComponent}
+                  <div className="transform scale-90">
+                    {aff.logoComponent}
+                  </div>
                 </div>
 
                 {/* Dark Action Block */}
-                <div className="p-5 space-y-4 flex flex-col justify-between flex-grow">
-                  <div className="space-y-1">
-                    <span className="text-[10px] uppercase font-mono tracking-wider text-gold-400 block">
-                      {category}
-                    </span>
-                    <h3 className="font-display text-base font-bold text-white">
-                      {name}
-                    </h3>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => setSelectedAffiliation(aff)}
-                    className="w-full py-2.5 rounded-xl border border-gold-400 text-gold-400 hover:bg-gold-500 hover:text-navy-950 text-xs font-extrabold uppercase tracking-wider transition-all cursor-pointer shadow-xs active:scale-98 text-center flex items-center justify-center gap-1.5"
-                  >
-                    <span>{isAr ? "اكتشف المزيد" : "KNOW MORE"}</span>
-                    <ChevronRight className={`w-3.5 h-3.5 ${isRTL ? "rotate-180" : ""}`} />
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Mobile Screens: Sleek Modern Interactive Cards */}
-        <div className="grid grid-cols-1 sm:hidden gap-4">
-          {affiliations.map((aff) => {
-            const name = isAr ? aff.nameAr : aff.nameEn;
-            const category = isAr ? aff.categoryAr : aff.categoryEn;
-
-            return (
-              <div
-                key={aff.id}
-                className="bg-navy-950 border border-slate-800 rounded-3xl overflow-hidden shadow-md flex flex-col"
-              >
-                <div className="p-5 bg-white flex items-center justify-center min-h-[130px] relative">
-                  <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full bg-slate-100 text-[8px] font-extrabold uppercase tracking-wider text-slate-700">
-                    {aff.accentBadge}
-                  </span>
-                  {aff.logoComponent}
-                </div>
-
-                <div className="p-4 bg-navy-900 flex items-center justify-between gap-3">
+                <div className="p-3 space-y-2.5 flex flex-col justify-between flex-grow">
                   <div className="space-y-0.5">
                     <span className="text-[9px] uppercase font-mono tracking-wider text-gold-400 block">
                       {category}
@@ -557,7 +482,51 @@ export const OurAffiliations: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => setSelectedAffiliation(aff)}
-                    className="px-4 py-2 rounded-xl bg-gold-500 hover:bg-gold-400 text-navy-950 text-xs font-extrabold uppercase tracking-wider transition-all cursor-pointer shrink-0"
+                    className="w-full py-1.5 rounded-lg border border-gold-400 text-gold-400 hover:bg-gold-500 hover:text-navy-950 text-[11px] font-extrabold uppercase tracking-wider transition-all cursor-pointer shadow-xs active:scale-98 text-center flex items-center justify-center gap-1"
+                  >
+                    <span>{isAr ? "اكتشف المزيد" : "KNOW MORE"}</span>
+                    <ChevronRight className={`w-3 h-3 ${isRTL ? "rotate-180" : ""}`} />
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Mobile Screens: Compact 2-column Cards */}
+        <div className="grid grid-cols-2 gap-2.5 sm:hidden">
+          {affiliations.map((aff) => {
+            const name = isAr ? aff.nameAr : aff.nameEn;
+            const category = isAr ? aff.categoryAr : aff.categoryEn;
+
+            return (
+              <div
+                key={aff.id}
+                className="bg-navy-950 border border-slate-800 rounded-xl overflow-hidden shadow-sm flex flex-col justify-between"
+              >
+                <div className="p-2.5 bg-white flex items-center justify-center min-h-[85px] relative">
+                  <span className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded-full bg-slate-100 text-[7px] font-extrabold uppercase tracking-wider text-slate-700">
+                    {aff.accentBadge}
+                  </span>
+                  <div className="transform scale-80">
+                    {aff.logoComponent}
+                  </div>
+                </div>
+
+                <div className="p-2.5 bg-navy-900 flex flex-col justify-between gap-2 flex-1">
+                  <div className="space-y-0.5">
+                    <span className="text-[8px] uppercase font-mono tracking-wider text-gold-400 block truncate">
+                      {category}
+                    </span>
+                    <h3 className="font-display text-xs font-bold text-white line-clamp-1">
+                      {name}
+                    </h3>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedAffiliation(aff)}
+                    className="w-full py-1.5 rounded-md bg-gold-500 hover:bg-gold-400 text-navy-950 text-[10px] font-extrabold uppercase tracking-wider transition-all cursor-pointer text-center"
                   >
                     {isAr ? "تفاصيل" : "KNOW MORE"}
                   </button>
@@ -568,17 +537,17 @@ export const OurAffiliations: React.FC = () => {
         </div>
 
         {/* Bottom Fast CTA Strip */}
-        <div className="bg-navy-950/80 border border-slate-800 rounded-2xl p-4 sm:p-6 max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-          <div className="space-y-1">
-            <h4 className="font-display text-sm sm:text-base font-bold text-white flex items-center justify-center sm:justify-start gap-2">
-              <Globe2 className="w-4 h-4 text-gold-400" />
+        <div className="bg-navy-950/80 border border-slate-800 rounded-xl p-3 sm:p-4 max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+          <div className="space-y-0.5">
+            <h4 className="font-display text-xs sm:text-sm font-bold text-white flex items-center justify-center sm:justify-start gap-1.5">
+              <Globe2 className="w-3.5 h-3.5 text-gold-400" />
               <span>
                 {isAr ? "هل تبحث عن ترخيص أو استشارة لمنطقة أخرى؟" : "Looking for Setup or Tax Filing in Another Jurisdiction?"}
               </span>
             </h4>
-            <p className="text-xs text-slate-400">
+            <p className="text-[11px] text-slate-400">
               {isAr
-                ? "نوفر الدعم والمحاسبة القانونية عبر كافة المناطق الحرة والتراخيص التجارية في دبي، أبوظبي والإمارات الشمالية."
+                ? "نوفر الدعم والمحاسبة القانونية عبر كافة المناطق الحرة والتراخيص التجارية في دبي والإمارات."
                 : "We support formation, bookkeeping, and tax compliance across all UAE Free Zones and Mainland authorities."}
             </p>
           </div>
@@ -587,9 +556,9 @@ export const OurAffiliations: React.FC = () => {
             href="https://wa.me/971529226958"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-5 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-md shrink-0 transition-all active:scale-95"
+            className="px-4 py-2 rounded-lg bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-sm shrink-0 transition-all active:scale-95"
           >
-            <MessageCircle className="w-4 h-4 text-navy-950" />
+            <MessageCircle className="w-3.5 h-3.5 text-navy-950" />
             <span>{isAr ? "تحدث مع مستشارنا" : "Talk to an Advisor"}</span>
           </a>
         </div>

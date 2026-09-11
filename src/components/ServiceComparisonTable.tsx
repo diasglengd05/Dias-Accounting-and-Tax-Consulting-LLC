@@ -8,10 +8,9 @@ import {
   FileText, 
   ShieldCheck, 
   BarChart3, 
-  PieChart, 
-  Clock, 
   ArrowRight,
-  HelpCircle,
+  ChevronDown,
+  ChevronUp,
   Award
 } from "lucide-react";
 import { useLanguage } from "../i18n/LanguageContext";
@@ -19,6 +18,7 @@ import { useLanguage } from "../i18n/LanguageContext";
 interface FeatureRow {
   name: string;
   tooltip?: string;
+  isKeyHighlight?: boolean;
   standard: {
     included: boolean | "basic" | "addon";
     text: string;
@@ -43,208 +43,220 @@ interface ServiceComparisonTableProps {
 export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({ onSelectTier }) => {
   const { language, isRTL } = useLanguage();
   const [mobileActiveTab, setMobileActiveTab] = useState<"standard" | "cfo">("cfo");
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   const comparisonData: CategoryGroup[] = [
     {
       id: "bookkeeping",
-      title: language === "ar" ? "مسك الدفاتر والامتثال المالي الأساسي" : "Bookkeeping & Core Financial Records",
-      icon: <FileText className="w-4 h-4 text-gold-500" />,
+      title: language === "ar" ? "مسك الدفاتر والامتثال المالي" : "Bookkeeping & Financial Records",
+      icon: <FileText className="w-3.5 h-3.5 text-gold-500" />,
       features: [
         {
-          name: language === "ar" ? "مسك الدفاتر وتوثيق المعاملات" : "Ledger Maintenance & Bookkeeping",
-          tooltip: language === "ar" ? "تسجيل وتسوية قيود اليومية والفواتير شهرياً" : "Monthly entry recording, invoice validation, and bank reconciliation",
+          name: language === "ar" ? "مسك الدفاتر وتسجيل المعاملات" : "Ledger Maintenance & Bookkeeping",
+          isKeyHighlight: true,
           standard: {
             included: true,
-            text: language === "ar" ? "شهري / ربع سنوي (حتى 100 معاملة)" : "Monthly / Quarterly (Up to 100 txns)",
+            text: language === "ar" ? "شهري / ربع سنوي" : "Monthly / Quarterly",
           },
           cfo: {
             included: true,
-            text: language === "ar" ? "مستمر وفي الوقت الفعلي مع تسوية يومية/أسبوعية" : "Continuous & Real-time multi-currency reconciliations",
+            text: language === "ar" ? "تسوية مستمرة وفورية" : "Continuous & Real-time",
           },
         },
         {
-          name: language === "ar" ? "تسوية الحسابات البنكية وبوابات الدفع" : "Bank & Payment Gateway Reconciliation",
+          name: language === "ar" ? "تسوية الحسابات وبوابات الدفع" : "Bank & Gateway Reconciliations",
+          isKeyHighlight: true,
           standard: {
             included: true,
-            text: language === "ar" ? "تسوية الحسابات البنكية الرئيسية" : "Primary bank accounts monthly",
+            text: language === "ar" ? "البنوك الرئيسية" : "Primary bank accounts",
           },
           cfo: {
             included: true,
-            text: language === "ar" ? "تسوية متعددة البنوك والعملات وبوابات Stripe/Checkout" : "Multi-bank, multi-currency & e-commerce payment gateways",
+            text: language === "ar" ? "متعددة العملات وبوابات الدفع" : "Multi-bank, multi-currency & gateways",
           },
         },
         {
-          name: language === "ar" ? "القوائم المالية المتوافقة مع IFRS" : "IFRS Compliant Financial Statements",
-          tooltip: language === "ar" ? "ميزانية عمومية، أرباح وخسائر، وتدفقات نقدية" : "Balance Sheet, Income Statement, and Cash Flow Statements",
+          name: language === "ar" ? "القوائم المالية (IFRS)" : "IFRS Financial Statements",
+          isKeyHighlight: true,
           standard: {
             included: true,
-            text: language === "ar" ? "بيانات ربع سنوية وسنوية قياسية" : "Standard Quarterly & Annual reports",
+            text: language === "ar" ? "بيانات ربع سنوية وسنوية" : "Quarterly & Annual reports",
           },
           cfo: {
             included: true,
-            text: language === "ar" ? "حزمة تقارير تنفيذية شهرية شاملة ومفصلة" : "Detailed Monthly Executive Board reporting package",
+            text: language === "ar" ? "حزمة تقارير مجلس الإدارة الشهرية" : "Monthly Executive Board package",
           },
         },
       ],
     },
     {
       id: "tax",
-      title: language === "ar" ? "الضرائب الإماراتية والامتثال للهيئة الاتحادية (FTA)" : "UAE Tax Compliance & FTA Regulatory Defense",
-      icon: <ShieldCheck className="w-4 h-4 text-emerald-500" />,
+      title: language === "ar" ? "الضرائب الإماراتية وهيئة الضرائب (FTA)" : "UAE Tax & FTA Regulatory Defense",
+      icon: <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />,
       features: [
         {
-          name: language === "ar" ? "إقرارات ضريبة القيمة المضافة (VAT)" : "UAE VAT Filing & Return Preparation",
+          name: language === "ar" ? "إقرارات ضريبة القيمة المضافة (VAT)" : "UAE VAT Filing on EmaraTax",
+          isKeyHighlight: true,
           standard: {
             included: true,
-            text: language === "ar" ? "إعداد وتقديم الإقرارات الربع سنوية" : "Quarterly VAT return filing on EmaraTax",
+            text: language === "ar" ? "تقديم ربع سنوي قياسي" : "Standard quarterly filing",
           },
           cfo: {
             included: true,
-            text: language === "ar" ? "إعداد ومراجعة متقدمة مع تدقيق استرداد ضريبة المدخلات" : "Advanced review, input VAT optimization & audit trail validation",
+            text: language === "ar" ? "تدقيق متقدم واسترداد الضريبة" : "Advanced input VAT optimization",
           },
         },
         {
-          name: language === "ar" ? "ضريبة الشركات بنسبة 9% وEmaraTax" : "9% Corporate Tax Compliance & Filing",
+          name: language === "ar" ? "ضريبة الشركات 9% و0% للمناطق الحرة" : "Corporate Tax (9% & 0% Free Zone)",
+          isKeyHighlight: true,
           standard: {
             included: true,
-            text: language === "ar" ? "التسجيل وتقديم الإقرار السنوي الأساسي" : "Annual Corporate Tax return filing",
+            text: language === "ar" ? "تقديم الإقرار السنوي" : "Annual return filing",
           },
           cfo: {
             included: true,
-            text: language === "ar" ? "هيكلة الدخل المؤهل للمناطق الحرة (0%) وتخطيط استراتيجي" : "Qualifying Free Zone Person (0%) structuring & proactive tax planning",
+            text: language === "ar" ? "هيكلة الدخل المؤهل 0% وتخطيط استراتيجي" : "0% QFZP structuring & strategic tax planning",
           },
         },
         {
-          name: language === "ar" ? "الدفاع والتمثيل أثناء التدقيق الضريبي" : "FTA Audit Representation & Defense",
-          tooltip: language === "ar" ? "الاستجابة لطلبات الهيئة الاتحادية للضرائب وتجنب الغرامات" : "Audit file preparation and defense against FTA penalty notices",
+          name: language === "ar" ? "الدفاع والتمثيل أثناء التدقيق الضريبي" : "FTA Audit Defense & Representation",
+          isKeyHighlight: false,
           standard: {
             included: "addon",
-            text: language === "ar" ? "خدمة إضافية عند الطلب" : "Available as on-demand add-on",
+            text: language === "ar" ? "إضافي عند الطلب" : "On-demand add-on",
           },
           cfo: {
             included: true,
-            text: language === "ar" ? "تمثيل شامل ودفاع استباقي مشمول ضمن الباقة" : "Full audit-readiness protocol & FTA defense included",
+            text: language === "ar" ? "مشمول بالكامل" : "Fully included with zero-penalty protocol",
           },
         },
       ],
     },
     {
       id: "intelligence",
-      title: language === "ar" ? "التقارير الذكية وتتبع مؤشرات الأداء" : "Financial Intelligence & Executive KPI Tracking",
-      icon: <BarChart3 className="w-4 h-4 text-blue-500" />,
+      title: language === "ar" ? "التقارير المالية والتحليلات" : "Financial Intelligence & KPIs",
+      icon: <BarChart3 className="w-3.5 h-3.5 text-blue-500" />,
       features: [
         {
-          name: language === "ar" ? "لوحة مؤشرات الأداء والتحليلات البيانية" : "Executive Performance Dashboard",
+          name: language === "ar" ? "لوحة مؤشرات الأداء والتحليلات" : "Executive KPI Dashboard",
+          isKeyHighlight: false,
           standard: {
             included: "basic",
-            text: language === "ar" ? "تقارير أرباح وخسائر بصيغة PDF" : "Standard static PDF summary",
+            text: language === "ar" ? "ملخص PDF ثابت" : "Static PDF summary",
           },
           cfo: {
             included: true,
-            text: language === "ar" ? "لوحة سحابية تفاعلية مباشرة مع مقاييس الهوامش والربحية" : "Live interactive cloud dashboard with gross margin & burn rate metrics",
+            text: language === "ar" ? "لوحة سحابية تفاعلية مباشرة" : "Live interactive cloud dashboard",
           },
         },
         {
           name: language === "ar" ? "تحليل انحراف الميزانية (Budget vs Actual)" : "Budget vs. Actual Variance Analysis",
+          isKeyHighlight: true,
           standard: {
             included: false,
             text: language === "ar" ? "غير مشمول" : "Not included",
           },
           cfo: {
             included: true,
-            text: language === "ar" ? "تحليل شهري مفصل لانحراف المصروفات والإيرادات" : "Monthly deep-dive into revenue & cost drivers vs targets",
+            text: language === "ar" ? "تحليل شهري مفصل للمصروفات" : "Monthly deep-dive into revenue & cost drivers",
           },
         },
         {
-          name: language === "ar" ? "تحليل تكلفة وحدة المنتج / الخدمة والربحية" : "Unit Economics & SKU/Project Profitability",
+          name: language === "ar" ? "تحليل ربحية المنتجات والخدمات" : "Unit Economics & SKU Profitability",
+          isKeyHighlight: false,
           standard: {
             included: false,
             text: language === "ar" ? "غير مشمول" : "Not included",
           },
           cfo: {
             included: true,
-            text: language === "ar" ? "تحليل مساهمة المشاريع وخطوط الإنتاج في الأرباح" : "Granular project/service line margin & contribution modeling",
+            text: language === "ar" ? "نمذجة هوامش المشاريع" : "Granular margin & contribution modeling",
           },
         },
       ],
     },
     {
       id: "cashflow",
-      title: language === "ar" ? "إدارة السيولة والتخطيط المالي التطلعي" : "Cash Flow Forecasting & Capital Strategy",
-      icon: <TrendingUp className="w-4 h-4 text-gold-600" />,
+      title: language === "ar" ? "إدارة السيولة والتنبؤ المالي" : "Cash Flow Forecasting & Runway",
+      icon: <TrendingUp className="w-3.5 h-3.5 text-gold-600" />,
       features: [
         {
-          name: language === "ar" ? "توقعات التدفقات النقدية المتجددة لـ 13 أسبوعاً" : "13-Week Rolling Cash Flow Forecast",
-          tooltip: language === "ar" ? "رؤية استباقية للسيولة لتجنب نقص السيولة وتأمين التزامات الرواتب والموردين" : "Predictive cash runway model to prevent cash crunches & manage payroll",
+          name: language === "ar" ? "توقعات التدفقات النقدية لـ 13 أسبوعاً" : "13-Week Rolling Cash Flow Forecast",
+          isKeyHighlight: true,
           standard: {
             included: false,
-            text: language === "ar" ? "بيانات التدفق النقدي التاريخية فقط" : "Historical cash flows only",
+            text: language === "ar" ? "بيانات تاريخية فقط" : "Historical cash flows only",
           },
           cfo: {
             included: true,
-            text: language === "ar" ? "نموذج توقعات أسبوعي متجدد وديناميكي" : "Dynamic predictive model updated weekly/monthly",
+            text: language === "ar" ? "نموذج توقعات أسبوعي متجدد" : "Dynamic weekly predictive model",
           },
         },
         {
           name: language === "ar" ? "إدارة رأس المال العامل وتحصيل الذمم" : "Working Capital & AR/AP Optimization",
+          isKeyHighlight: false,
           standard: {
             included: "basic",
-            text: language === "ar" ? "تقرير أعمار الديون والمستحقات" : "Basic Accounts Aging reports",
+            text: language === "ar" ? "تقرير أعمار الديون" : "Basic aging reports",
           },
           cfo: {
             included: true,
-            text: language === "ar" ? "استراتيجيات تسريع التحصيل والتفاوض على شروط الدفع" : "Active DSO reduction strategies & vendor payment terms negotiation",
+            text: language === "ar" ? "تسريع التحصيل والتفاوض" : "Active DSO reduction & vendor terms",
           },
         },
         {
-          name: language === "ar" ? "تسهيلات البنوك ونمذجة التمويل / الاستثمار" : "Banking Credit Facilities & Fundraising Decks",
+          name: language === "ar" ? "تسهيلات البنوك ونمذجة التمويل" : "Bank Credit Facilities & Pitch Decks",
+          isKeyHighlight: false,
           standard: {
             included: false,
-            text: language === "ar" ? "استخراج الكشوف البنكية فقط" : "Statement exports only",
+            text: language === "ar" ? "كشوفات فقط" : "Statement exports only",
           },
           cfo: {
             included: true,
-            text: language === "ar" ? "إعداد ملفات التمويل البنكي ونماذج التقييم للمستثمرين" : "Bank loan application packages & investor pitch financial models",
+            text: language === "ar" ? "ملفات التمويل ونماذج المستثمرين" : "Loan application packages & investor models",
           },
         },
       ],
     },
     {
       id: "advisory",
-      title: language === "ar" ? "المرافقة الاستراتيجية ومستوى الخدمة (SLA)" : "Strategic Advisory & Dedicated Leadership",
-      icon: <Award className="w-4 h-4 text-navy-600" />,
+      title: language === "ar" ? "القيادة ومستوى الدعم (SLA)" : "Strategic Leadership & SLA",
+      icon: <Award className="w-3.5 h-3.5 text-navy-600" />,
       features: [
         {
-          name: language === "ar" ? "مستوى الخبير المالي المسؤول" : "Assigned Financial Lead",
+          name: language === "ar" ? "الخبير المالي المسؤول" : "Assigned Financial Lead",
+          isKeyHighlight: true,
           standard: {
             included: true,
-            text: language === "ar" ? "محاسب أول معتمد (Senior Accountant)" : "Certified Senior Accountant",
+            text: language === "ar" ? "محاسب أول معتمد" : "Senior Certified Accountant",
           },
           cfo: {
             included: true,
-            text: language === "ar" ? "مدير مالي تنفيذي معتمد ومستشار ضرائب شريك" : "Fractional CFO (Chartered Director / Big 4 background)",
+            text: language === "ar" ? "مدير مالي تنفيذي ومستشار شريك" : "Fractional CFO & Partner Director",
           },
         },
         {
-          name: language === "ar" ? "جلسات التوجيه المالي واجتماعات الإدارة" : "Monthly Executive Strategy Sessions",
+          name: language === "ar" ? "جلسات التوجيه المالي" : "Executive Strategy Sessions",
+          isKeyHighlight: false,
           standard: {
             included: false,
-            text: language === "ar" ? "تواصل كتابي واستفسارات قياسية" : "Written email Q&A",
+            text: language === "ar" ? "تواصل كتابي" : "Written email Q&A",
           },
           cfo: {
             included: true,
-            text: language === "ar" ? "جلسة استراتيجية شهرية (1:1) مع حضور اجتماعات مجلس الإدارة" : "Monthly 1-on-1 Board/Executive sessions & leadership reviews",
+            text: language === "ar" ? "جلسة استراتيجية شهرية (1:1)" : "Monthly 1-on-1 Board sessions",
           },
         },
         {
-          name: language === "ar" ? "قنوات الدعم وسرعة الاستجابة" : "Support Channels & Priority SLA",
+          name: language === "ar" ? "قنوات وسرعة الاستجابة" : "Support Channels & Priority SLA",
+          isKeyHighlight: false,
           standard: {
             included: true,
-            text: language === "ar" ? "البريد الإلكتروني وتذاكر الدعم (خلال 24-48 ساعة)" : "Email & Helpdesk (24-48h response)",
+            text: language === "ar" ? "بريد إلكتروني (24-48 ساعة)" : "Email & Portal (24-48h)",
           },
           cfo: {
             included: true,
-            text: language === "ar" ? "واتساب مباشر وقناة مخصصة للرؤساء التنفيذيين (استجابة فورية)" : "Direct WhatsApp line, priority phone access (<4h SLA)",
+            text: language === "ar" ? "واتساب مخصص وهاتف (<4 ساعات)" : "Direct WhatsApp & Phone (<4h)",
           },
         },
       ],
@@ -261,189 +273,169 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({ 
     }
   };
 
+  // Filter categories and features if not expanded
+  const displayedCategories = isExpanded 
+    ? comparisonData 
+    : comparisonData.map(cat => ({
+        ...cat,
+        features: cat.features.filter(f => f.isKeyHighlight)
+      })).filter(cat => cat.features.length > 0);
+
+  const totalFeaturesCount = comparisonData.reduce((acc, cat) => acc + cat.features.length, 0);
+  const compactFeaturesCount = comparisonData.reduce((acc, cat) => acc + cat.features.filter(f => f.isKeyHighlight).length, 0);
+
   return (
-    <div className="mt-16 pt-12 border-t border-slate-200/80 space-y-10" id="service-comparison">
-      {/* Section Header */}
-      <div className="text-center space-y-3 max-w-3xl mx-auto px-4">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-navy-900/5 border border-navy-900/10 text-navy-900 text-xs font-bold uppercase tracking-wider">
-          <Sparkles className="w-3.5 h-3.5 text-gold-500" />
-          <span>{language === "ar" ? "مصفوفة مقارنة الخدمات" : "Tier Comparison Matrix"}</span>
+    <div className="mt-8 pt-6 border-t border-slate-200/80 space-y-4" id="service-comparison">
+      {/* Compact Section Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 max-w-5xl mx-auto px-4">
+        <div>
+          <div className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-gold-600 mb-0.5">
+            <Sparkles className="w-3 h-3" />
+            <span>{language === "ar" ? "مقارنة المستويات" : "Tier Comparison"}</span>
+          </div>
+          <h3 className="font-display text-lg sm:text-xl font-bold text-navy-950">
+            {language === "ar"
+              ? "المحاسبة القياسية مقابل الإدارة المالية التنفيذية (CFO)"
+              : "Standard Accounting vs. Premium CFO Advisory"}
+          </h3>
+          <p className="text-xs text-slate-500 mt-0.5">
+            {language === "ar"
+              ? "قارن بين الامتثال المحاسبي اليومي والاستشارات المالية التوجيهية لاختيار الباقة الأنسب."
+              : "Compare core compliance with strategic Fractional CFO steering to choose the right fit."}
+          </p>
         </div>
-        <h3 className="font-display text-2xl sm:text-3xl font-bold text-navy-950 tracking-tight">
-          {language === "ar"
-            ? "الخدمات المحاسبية القياسية مقابل الإدارة المالية التنفيذية (CFO)"
-            : "Standard Accounting vs. Premium CFO Advisory"}
-        </h3>
-        <p className="text-slate-600 text-sm max-w-2xl mx-auto leading-relaxed">
-          {language === "ar"
-            ? "اكتشف الفروقات الجوهرية بين الامتثال المحاسبي اليومي والاستشارات المالية التوجيهية لاختيار المستوى الأمثل لنمو أعمالك في دولة الإمارات."
-            : "Compare our core accounting compliance with strategic Fractional CFO stewardship to choose the exact level of support your UAE business requires."}
-        </p>
+
+        {/* Expand / Collapse Quick Toggle */}
+        <button
+          type="button"
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="self-start sm:self-center inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-xs transition-colors cursor-pointer shrink-0"
+        >
+          <span>
+            {isExpanded
+              ? (language === "ar" ? "عرض مختصر" : "Compact View")
+              : (language === "ar" ? `عرض كل التفاصيل (${totalFeaturesCount})` : `Show All (${totalFeaturesCount})`)}
+          </span>
+          {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+        </button>
       </div>
 
-      {/* Tier Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto px-4">
-        {/* Tier 1: Standard Accounting */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between relative overflow-hidden group">
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700">
-                <Briefcase className="w-5 h-5" />
-              </div>
-              <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">
-                {language === "ar" ? "الامتثال الأساسي" : "Essential Compliance"}
-              </span>
+      {/* Slim Two-Tier Header Strip (Replaces massive duplicate cards to save space) */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-5xl mx-auto px-4">
+        {/* Tier 1: Standard Accounting Compact Bar */}
+        <div className="bg-white border border-slate-200/90 rounded-xl p-3 shadow-xs flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-700 shrink-0">
+              <Briefcase className="w-4 h-4" />
             </div>
-
-            <div>
-              <h4 className="font-display text-xl font-bold text-navy-950">
-                {language === "ar" ? "المحاسبة والضرائب القياسية" : "Standard Accounting & Tax"}
-              </h4>
-              <p className="text-xs text-slate-500 mt-1 leading-relaxed">
-                {language === "ar"
-                  ? "مثالية للشركات الناشئة والمنشآت الصغيرة التي تبحث عن امتثال كامل بنسبة 100% لمتطلبات هيئة الضرائب ودفاتر منظمة بأقل تكلفة."
-                  : "Ideal for startups and growing SMEs needing 100% FTA tax compliance, clean books, and regular financial statements without full-time headcount."}
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5">
+                <h4 className="font-display text-xs font-bold text-navy-950 truncate">
+                  {language === "ar" ? "المحاسبة والضرائب القياسية" : "Standard Accounting"}
+                </h4>
+                <span className="text-[9px] font-bold text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">
+                  {language === "ar" ? "امتثال" : "Essential"}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 truncate">
+                {language === "ar" ? "مسك الدفاتر وامتثال الضرائب" : "Clean books & FTA tax compliance"}
               </p>
             </div>
-
-            <div className="pt-2 border-t border-slate-100 space-y-2">
-              <div className="text-xs text-slate-600 flex items-center gap-2">
-                <Clock className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                <span>
-                  <strong>{language === "ar" ? "التركيز الرئيسي:" : "Core Focus:"}</strong>{" "}
-                  {language === "ar" ? "تسجيل المعاملات التاريخية والامتثال للضريبة" : "Historical compliance & tax filings"}
-                </span>
-              </div>
-              <div className="text-xs text-slate-600 flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                <span>
-                  <strong>{language === "ar" ? "مستوى التسليم:" : "Delivery:"}</strong>{" "}
-                  {language === "ar" ? "شهري / ربع سنوي" : "Monthly / Quarterly cycle"}
-                </span>
-              </div>
-            </div>
           </div>
-
-          <div className="mt-6 pt-4 border-t border-slate-100">
-            <button
-              onClick={() => handleAction("Standard Accounting")}
-              className="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-navy-950 text-xs font-display font-bold transition-all flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <span>{language === "ar" ? "استشارة الباقة القياسية" : "Select Standard Tier"}</span>
-              <ArrowRight className={`w-3.5 h-3.5 ${isRTL ? "rotate-180" : ""}`} />
-            </button>
-          </div>
+          <button
+            onClick={() => handleAction("Standard Accounting")}
+            className="shrink-0 py-1.5 px-3 rounded-lg bg-slate-100 hover:bg-slate-200 text-navy-950 text-xs font-bold transition-colors cursor-pointer"
+          >
+            {language === "ar" ? "اختيار" : "Select"}
+          </button>
         </div>
 
-        {/* Tier 2: Fractional CFO Advisory */}
-        <div className="bg-gradient-to-br from-navy-950 via-slate-900 to-navy-950 border-2 border-gold-500/60 rounded-2xl p-6 shadow-xl text-white flex flex-col justify-between relative overflow-hidden group">
-          {/* Ambient Glow */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-gold-500/10 rounded-full blur-2xl pointer-events-none" />
-
-          <div className="space-y-4 relative z-10">
-            <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-xl bg-gold-500/20 border border-gold-500/30 flex items-center justify-center text-gold-400">
-                <Sparkles className="w-5 h-5" />
-              </div>
-              <span className="text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-gold-500 text-navy-950 shadow-sm flex items-center gap-1">
-                <Award className="w-3 h-3" />
-                {language === "ar" ? "الأكثر شمولاً واستراتيجية" : "Strategic & High-Impact"}
-              </span>
+        {/* Tier 2: CFO Advisory Compact Bar */}
+        <div className="bg-gradient-to-r from-navy-950 to-slate-900 border border-gold-500/50 rounded-xl p-3 shadow-xs text-white flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="w-8 h-8 rounded-lg bg-gold-500/20 border border-gold-500/30 flex items-center justify-center text-gold-400 shrink-0">
+              <Sparkles className="w-4 h-4" />
             </div>
-
-            <div>
-              <h4 className="font-display text-xl font-bold text-white flex items-center gap-2">
-                {language === "ar" ? "الإدارة المالية التنفيذية (CFO)" : "Fractional CFO & Advisory"}
-              </h4>
-              <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                {language === "ar"
-                  ? "للشركات المتوسعة، المجموعات التجارية، والشركات التي تستعد لجولات استثمارية أو تطلب قيادة مالية استراتيجية لتحسين السيولة والربحية."
-                  : "Designed for high-growth firms and multi-entity groups needing proactive cash runway modeling, board advisory, and strategic financial leadership."}
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5">
+                <h4 className="font-display text-xs font-bold text-white truncate">
+                  {language === "ar" ? "الإدارة المالية التنفيذية (CFO)" : "Fractional CFO Advisory"}
+                </h4>
+                <span className="text-[9px] font-bold text-navy-950 bg-gold-400 px-1.5 py-0.5 rounded">
+                  {language === "ar" ? "استراتيجي" : "Strategic"}
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-300 truncate">
+                {language === "ar" ? "توقعات السيولة وجلسات الإدارة" : "Cash forecasting & board advisory"}
               </p>
             </div>
-
-            <div className="pt-2 border-t border-white/10 space-y-2">
-              <div className="text-xs text-slate-200 flex items-center gap-2">
-                <TrendingUp className="w-3.5 h-3.5 text-gold-400 shrink-0" />
-                <span>
-                  <strong>{language === "ar" ? "التركيز الرئيسي:" : "Core Focus:"}</strong>{" "}
-                  {language === "ar" ? "التوسع، تعظيم الأرباح، وإدارة السيولة المستقبلية" : "Profit growth, cash forecasting & strategy"}
-                </span>
-              </div>
-              <div className="text-xs text-slate-200 flex items-center gap-2">
-                <Check className="w-3.5 h-3.5 text-gold-400 shrink-0" />
-                <span>
-                  <strong>{language === "ar" ? "مستوى التسليم:" : "Delivery:"}</strong>{" "}
-                  {language === "ar" ? "أسبوعي ومباشر مع مستشار شريك" : "Active continuous steering & monthly 1:1 board sessions"}
-                </span>
-              </div>
-            </div>
           </div>
-
-          <div className="mt-6 pt-4 border-t border-white/10 relative z-10">
-            <button
-              onClick={() => handleAction("Fractional CFO Advisory")}
-              className="w-full py-2.5 px-4 rounded-xl bg-gold-500 hover:bg-gold-400 text-navy-950 text-xs font-display font-bold transition-all shadow-md shadow-gold-500/20 flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <span>{language === "ar" ? "حجز جلسة استراتيجية مع CFO" : "Book CFO Strategy Session"}</span>
-              <ArrowRight className={`w-3.5 h-3.5 ${isRTL ? "rotate-180" : ""}`} />
-            </button>
-          </div>
+          <button
+            onClick={() => handleAction("Fractional CFO Advisory")}
+            className="shrink-0 py-1.5 px-3 rounded-lg bg-gold-500 hover:bg-gold-400 text-navy-950 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1"
+          >
+            <span>{language === "ar" ? "استشارة CFO" : "Book CFO"}</span>
+            <ArrowRight className={`w-3 h-3 ${isRTL ? "rotate-180" : ""}`} />
+          </button>
         </div>
       </div>
 
-      {/* Mobile Tab Switcher (Visible on small screens) */}
+      {/* Mobile Tab Switcher */}
       <div className="block md:hidden max-w-md mx-auto px-4">
         <div className="bg-slate-200/70 p-1 rounded-xl flex items-center gap-1 text-xs font-bold">
           <button
             onClick={() => setMobileActiveTab("standard")}
-            className={`flex-1 py-2 rounded-lg transition-all text-center ${
+            className={`flex-1 py-1.5 rounded-lg transition-all text-center ${
               mobileActiveTab === "standard"
-                ? "bg-white text-navy-950 shadow-sm"
+                ? "bg-white text-navy-950 shadow-xs"
                 : "text-slate-600 hover:text-navy-950"
             }`}
           >
-            {language === "ar" ? "المحاسبة القياسية" : "Standard Accounting"}
+            {language === "ar" ? "المحاسبة القياسية" : "Standard Plan"}
           </button>
           <button
             onClick={() => setMobileActiveTab("cfo")}
-            className={`flex-1 py-2 rounded-lg transition-all text-center flex items-center justify-center gap-1.5 ${
+            className={`flex-1 py-1.5 rounded-lg transition-all text-center flex items-center justify-center gap-1 ${
               mobileActiveTab === "cfo"
-                ? "bg-navy-950 text-gold-400 shadow-sm"
+                ? "bg-navy-950 text-gold-400 shadow-xs"
                 : "text-slate-600 hover:text-navy-950"
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5 text-gold-400" />
+            <Sparkles className="w-3 h-3 text-gold-400" />
             <span>{language === "ar" ? "استشارات CFO" : "CFO Advisory"}</span>
           </button>
         </div>
       </div>
 
-      {/* Comparison Matrix Table (Desktop & Tablet) */}
+      {/* Streamlined Comparison Matrix Table */}
       <div className="max-w-5xl mx-auto px-4">
-        <div className="bg-white border border-slate-200/90 rounded-2xl shadow-sm overflow-hidden">
+        <div className="bg-white border border-slate-200/90 rounded-xl shadow-xs overflow-hidden">
           
           {/* Table Header (Desktop) */}
-          <div className="hidden md:grid grid-cols-12 bg-slate-50 border-b border-slate-200 text-xs font-display font-bold text-navy-950 py-4 px-6 sticky top-0 z-20 backdrop-blur-md">
-            <div className="col-span-6 flex items-center gap-2">
-              <PieChart className="w-4 h-4 text-slate-400" />
-              <span>{language === "ar" ? "الميزات والقدرات التفصيلية" : "Capability & Scope of Deliverables"}</span>
+          <div className="hidden md:grid grid-cols-12 bg-slate-50 border-b border-slate-200 text-xs font-display font-bold text-navy-950 py-2.5 px-4">
+            <div className="col-span-6 flex items-center gap-1.5">
+              <span>{language === "ar" ? "نطاق الميزات والخدمات" : "Scope & Key Deliverables"}</span>
+              {!isExpanded && (
+                <span className="text-[10px] text-slate-400 font-normal">
+                  ({compactFeaturesCount} {language === "ar" ? "أبرز الفروقات" : "highlights"})
+                </span>
+              )}
             </div>
             <div className="col-span-3 text-center border-x border-slate-200/80 px-2 text-slate-700">
               <span>{language === "ar" ? "المحاسبة القياسية" : "Standard Accounting"}</span>
             </div>
-            <div className="col-span-3 text-center px-2 text-navy-950 font-extrabold flex items-center justify-center gap-1 text-gold-700">
-              <Sparkles className="w-3.5 h-3.5 text-gold-500" />
+            <div className="col-span-3 text-center px-2 text-gold-700 font-extrabold flex items-center justify-center gap-1">
+              <Sparkles className="w-3 h-3 text-gold-500" />
               <span>{language === "ar" ? "استشارات CFO التنفيذية" : "Premium CFO Advisory"}</span>
             </div>
           </div>
 
           {/* Table Body */}
-          <div className="divide-y divide-slate-100">
-            {comparisonData.map((category) => (
+          <div className="divide-y divide-slate-100 text-xs">
+            {displayedCategories.map((category) => (
               <div key={category.id} className="divide-y divide-slate-50">
-                {/* Category Header Row */}
-                <div className="bg-slate-100/60 px-6 py-2.5 flex items-center gap-2 font-display font-bold text-xs text-navy-900 uppercase tracking-wider">
+                {/* Category Subhead */}
+                <div className="bg-slate-50/70 px-4 py-1.5 flex items-center gap-1.5 font-display font-bold text-[11px] text-navy-900 uppercase tracking-wider">
                   {category.icon}
                   <span>{category.title}</span>
                 </div>
@@ -451,96 +443,80 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({ 
                 {/* Feature Rows */}
                 {category.features.map((feature, idx) => (
                   <div key={idx}>
-                    {/* Desktop View Row */}
-                    <div className="hidden md:grid grid-cols-12 px-6 py-3.5 hover:bg-slate-50/70 transition-colors items-center text-xs">
-                      {/* Feature Name & Tooltip */}
-                      <div className="col-span-6 pr-4 space-y-0.5">
-                        <div className="font-semibold text-slate-800 flex items-center gap-1.5">
-                          <span>{feature.name}</span>
-                          {feature.tooltip && (
-                            <span 
-                              title={feature.tooltip}
-                              className="text-slate-400 hover:text-slate-600 cursor-help"
-                            >
-                              <HelpCircle className="w-3 h-3" />
-                            </span>
-                          )}
-                        </div>
-                        {feature.tooltip && (
-                          <div className="text-[11px] text-slate-400 leading-tight">
-                            {feature.tooltip}
-                          </div>
-                        )}
+                    {/* Desktop Row */}
+                    <div className="hidden md:grid grid-cols-12 px-4 py-2 hover:bg-slate-50/60 transition-colors items-center">
+                      <div className="col-span-6 pr-3">
+                        <span className="font-semibold text-slate-800 text-xs">{feature.name}</span>
                       </div>
 
                       {/* Standard Value */}
-                      <div className="col-span-3 text-center border-x border-slate-100 px-3 py-1 flex flex-col items-center justify-center text-slate-600">
+                      <div className="col-span-3 text-center border-x border-slate-100 px-2 py-0.5 flex items-center justify-center gap-1.5 text-slate-600">
                         {feature.standard.included === true && (
-                          <Check className="w-4 h-4 text-emerald-600 mb-1" />
+                          <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                         )}
                         {feature.standard.included === "basic" && (
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-2 py-0.5 rounded mb-1">
+                          <span className="text-[9px] font-bold uppercase text-amber-700 bg-amber-50 px-1 py-0.5 rounded shrink-0">
                             {language === "ar" ? "أساسي" : "Basic"}
                           </span>
                         )}
                         {feature.standard.included === "addon" && (
-                          <span className="text-[10px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2 py-0.5 rounded mb-1">
+                          <span className="text-[9px] font-bold uppercase text-blue-700 bg-blue-50 px-1 py-0.5 rounded shrink-0">
                             {language === "ar" ? "إضافي" : "Add-on"}
                           </span>
                         )}
                         {feature.standard.included === false && (
-                          <Minus className="w-4 h-4 text-slate-300 mb-1" />
+                          <Minus className="w-3.5 h-3.5 text-slate-300 shrink-0" />
                         )}
-                        <span className="text-[11px] text-slate-500 text-center leading-snug">
+                        <span className="text-[11px] text-slate-600 truncate">
                           {feature.standard.text}
                         </span>
                       </div>
 
                       {/* CFO Value */}
-                      <div className="col-span-3 text-center px-3 py-1 flex flex-col items-center justify-center font-medium bg-gold-50/30 rounded-lg">
+                      <div className="col-span-3 text-center px-2 py-0.5 flex items-center justify-center gap-1.5 font-medium bg-gold-50/20 rounded">
                         {feature.cfo.included === true && (
-                          <div className="w-4 h-4 rounded-full bg-gold-500 text-navy-950 flex items-center justify-center mb-1">
-                            <Check className="w-3 h-3 stroke-[3]" />
+                          <div className="w-3.5 h-3.5 rounded-full bg-gold-500 text-navy-950 flex items-center justify-center shrink-0">
+                            <Check className="w-2.5 h-2.5 stroke-[3]" />
                           </div>
                         )}
-                        <span className="text-[11px] text-navy-950 font-semibold text-center leading-snug">
+                        <span className="text-[11px] text-navy-950 font-semibold truncate">
                           {feature.cfo.text}
                         </span>
                       </div>
                     </div>
 
-                    {/* Mobile View Card (Toggled by active mobile tab) */}
-                    <div className="block md:hidden p-4 space-y-2 bg-white">
+                    {/* Mobile Row */}
+                    <div className="block md:hidden p-2.5 bg-white border-b border-slate-50 space-y-1">
                       <div className="font-semibold text-xs text-navy-950">
                         {feature.name}
                       </div>
 
                       {mobileActiveTab === "standard" ? (
-                        <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100 flex items-start gap-2 text-xs">
+                        <div className="bg-slate-50 p-2 rounded-lg border border-slate-100 flex items-center gap-2 text-xs">
                           {feature.standard.included === true && (
-                            <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                            <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                           )}
                           {feature.standard.included === "basic" && (
-                            <span className="text-[10px] font-bold uppercase text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded shrink-0">
+                            <span className="text-[9px] font-bold text-amber-700 bg-amber-50 px-1 py-0.5 rounded shrink-0">
                               {language === "ar" ? "أساسي" : "Basic"}
                             </span>
                           )}
                           {feature.standard.included === "addon" && (
-                            <span className="text-[10px] font-bold uppercase text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded shrink-0">
+                            <span className="text-[9px] font-bold text-blue-700 bg-blue-50 px-1 py-0.5 rounded shrink-0">
                               {language === "ar" ? "إضافي" : "Add-on"}
                             </span>
                           )}
                           {feature.standard.included === false && (
-                            <Minus className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
+                            <Minus className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                           )}
                           <span className="text-slate-600 text-[11px]">
                             {feature.standard.text}
                           </span>
                         </div>
                       ) : (
-                        <div className="bg-gold-50/60 p-2.5 rounded-xl border border-gold-200 flex items-start gap-2 text-xs">
-                          <div className="w-4 h-4 rounded-full bg-gold-500 text-navy-950 flex items-center justify-center shrink-0 mt-0.5">
-                            <Check className="w-3 h-3 stroke-[3]" />
+                        <div className="bg-gold-50/50 p-2 rounded-lg border border-gold-200/60 flex items-center gap-2 text-xs">
+                          <div className="w-3.5 h-3.5 rounded-full bg-gold-500 text-navy-950 flex items-center justify-center shrink-0">
+                            <Check className="w-2.5 h-2.5 stroke-[3]" />
                           </div>
                           <span className="text-navy-950 font-semibold text-[11px]">
                             {feature.cfo.text}
@@ -554,35 +530,25 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({ 
             ))}
           </div>
 
-          {/* Table Footer Actions */}
-          <div className="hidden md:grid grid-cols-12 bg-slate-50/90 border-t border-slate-200 p-6 items-center">
-            <div className="col-span-6 text-xs text-slate-500">
-              <span className="font-semibold text-slate-700 block">
-                {language === "ar" ? "هل تحتاج إلى استشارة مخصصة؟" : "Not sure which tier fits your current stage?"}
-              </span>
+          {/* Slim Bottom Bar with Show All toggle */}
+          <div className="bg-slate-50/80 border-t border-slate-200 px-4 py-2.5 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs">
+            <span className="text-slate-500 text-[11px]">
+              {language === "ar"
+                ? "جميع الباقات تتضمن مسك الدفاتر واستشارات ضريبية مرخصة من الهيئة."
+                : "All tiers include FTA-compliant bookkeeping and licensed advisory."}
+            </span>
+            <button
+              type="button"
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="text-gold-700 hover:text-gold-800 font-bold text-xs inline-flex items-center gap-1 cursor-pointer"
+            >
               <span>
-                {language === "ar"
-                  ? "احجز مكالمة استكشافية مجانية مدتها 30 دقيقة لتقييم حجم أعمالك وتحديد الباقة الأنسب."
-                  : "Book a complimentary 30-minute discovery session with Glen Dias to assess your transaction volume."}
+                {isExpanded
+                  ? (language === "ar" ? "طي المصفوفة (عرض مختصر)" : "Collapse matrix (compact view)")
+                  : (language === "ar" ? `عرض جميع الميزات الـ ${totalFeaturesCount}` : `Show all ${totalFeaturesCount} deliverables & SLA details`)}
               </span>
-            </div>
-            <div className="col-span-3 text-center px-2">
-              <button
-                onClick={() => handleAction("Standard Accounting")}
-                className="py-2.5 px-4 rounded-xl bg-white hover:bg-slate-100 text-navy-900 border border-slate-200 font-display font-bold text-xs transition-all shadow-sm cursor-pointer"
-              >
-                {language === "ar" ? "طلب المحاسبة القياسية" : "Get Standard Plan"}
-              </button>
-            </div>
-            <div className="col-span-3 text-center px-2">
-              <button
-                onClick={() => handleAction("Fractional CFO Advisory")}
-                className="py-2.5 px-4 rounded-xl bg-navy-900 hover:bg-navy-950 text-gold-400 border border-gold-500/30 font-display font-bold text-xs transition-all shadow-md cursor-pointer flex items-center justify-center gap-1.5 mx-auto"
-              >
-                <Sparkles className="w-3.5 h-3.5 text-gold-400" />
-                <span>{language === "ar" ? "طلب استشارات CFO" : "Get CFO Advisory"}</span>
-              </button>
-            </div>
+              {isExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+            </button>
           </div>
 
         </div>
@@ -590,3 +556,4 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({ 
     </div>
   );
 };
+

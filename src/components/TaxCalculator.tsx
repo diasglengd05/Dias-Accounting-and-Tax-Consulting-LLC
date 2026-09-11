@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Calculator, Percent, ArrowRight, CheckCircle2, ShieldAlert, Award } from "lucide-react";
+import { Calculator, Percent, ArrowRight, CheckCircle2, ShieldAlert, Award, Briefcase } from "lucide-react";
 import { useLanguage } from "../i18n/LanguageContext";
 
-type CalculatorTab = "corporate-tax" | "vat-estimator";
+type CalculatorTab = "corporate-tax" | "vat-estimator" | "gratuity-calculator";
 
 export default function TaxCalculator() {
   const [activeTab, setActiveTab] = useState<CalculatorTab>("corporate-tax");
@@ -14,6 +14,11 @@ export default function TaxCalculator() {
   // VAT state
   const [salesAmount, setSalesAmount] = useState<number>(300000);
   const [expenseAmount, setExpenseAmount] = useState<number>(120000);
+
+  // Gratuity / End of Service State
+  const [basicSalary, setBasicSalary] = useState<number>(12000);
+  const [serviceYears, setServiceYears] = useState<number>(3);
+  const [contractType, setContractType] = useState<"limited" | "unlimited">("limited");
 
   // Corporate Tax Calculations
   const calcCorporateTax = (profit: number) => {
@@ -59,6 +64,34 @@ export default function TaxCalculator() {
 
   const vatResults = calcVAT(salesAmount, expenseAmount);
 
+  // UAE End of Service Gratuity Calculation (UAE Federal Decree-Law No. 33 of 2021)
+  const calcGratuity = (salary: number, years: number) => {
+    const dailyWage = salary / 30;
+    let gratuity = 0;
+    if (years < 1) {
+      gratuity = 0;
+    } else if (years <= 5) {
+      // 21 days for each year of the first 5 years
+      gratuity = years * 21 * dailyWage;
+    } else {
+      // 21 days for first 5 years + 30 days for each year beyond 5
+      const first5Years = 5 * 21 * dailyWage;
+      const additionalYears = (years - 5) * 30 * dailyWage;
+      gratuity = first5Years + additionalYears;
+    }
+    // Cap at 2 years' basic salary
+    const maxCap = salary * 24;
+    const finalGratuity = Math.min(gratuity, maxCap);
+
+    return {
+      total: Math.round(finalGratuity),
+      dailyWage: Math.round(dailyWage),
+      isCapped: gratuity > maxCap,
+    };
+  };
+
+  const gratuityResults = calcGratuity(basicSalary, serviceYears);
+
   // Format number to AED
   const formatAED = (val: number) => {
     const locale = language === "ar" ? "ar-AE" : "en-AE";
@@ -86,25 +119,36 @@ export default function TaxCalculator() {
       <div className="flex border-b border-slate-100 bg-slate-50">
         <button
           onClick={() => setActiveTab("corporate-tax")}
-          className={`flex-1 py-3 text-center text-sm font-semibold transition-all border-b-2 flex items-center justify-center gap-2 cursor-pointer ${
+          className={`flex-1 py-3 text-center text-xs sm:text-sm font-semibold transition-all border-b-2 flex items-center justify-center gap-1.5 cursor-pointer ${
             activeTab === "corporate-tax"
               ? "border-gold-500 text-navy-800 bg-white"
               : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/50"
           }`}
         >
-          <Award className="w-4 h-4" />
-          {t.calculator.tabCorporateTax}
+          <Award className="w-3.5 h-3.5 shrink-0" />
+          <span>{t.calculator.tabCorporateTax}</span>
         </button>
         <button
           onClick={() => setActiveTab("vat-estimator")}
-          className={`flex-1 py-3 text-center text-sm font-semibold transition-all border-b-2 flex items-center justify-center gap-2 cursor-pointer ${
+          className={`flex-1 py-3 text-center text-xs sm:text-sm font-semibold transition-all border-b-2 flex items-center justify-center gap-1.5 cursor-pointer ${
             activeTab === "vat-estimator"
               ? "border-gold-500 text-navy-800 bg-white"
               : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/50"
           }`}
         >
-          <Percent className="w-4 h-4" />
-          {t.calculator.tabVat}
+          <Percent className="w-3.5 h-3.5 shrink-0" />
+          <span>{t.calculator.tabVat}</span>
+        </button>
+        <button
+          onClick={() => setActiveTab("gratuity-calculator")}
+          className={`flex-1 py-3 text-center text-xs sm:text-sm font-semibold transition-all border-b-2 flex items-center justify-center gap-1.5 cursor-pointer ${
+            activeTab === "gratuity-calculator"
+              ? "border-gold-500 text-navy-800 bg-white"
+              : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/50"
+          }`}
+        >
+          <Briefcase className="w-3.5 h-3.5 shrink-0 text-gold-600" />
+          <span>{language === "ar" ? "مكافأة نهاية الخدمة" : "UAE Gratuity"}</span>
         </button>
       </div>
 
@@ -201,7 +245,7 @@ export default function TaxCalculator() {
               </div>
             )}
           </div>
-        ) : (
+        ) : activeTab === "vat-estimator" ? (
           /* VAT Estimator Panel */
           <div className="space-y-4 animate-fadeIn">
             <div>
@@ -285,6 +329,91 @@ export default function TaxCalculator() {
                   {vatResults.netVat >= 0
                     ? (language === "ar" ? "يستحق السداد للهيئة خلال 28 يوماً من نهاية الربع." : "Due to FTA within 28 days of your quarter end.")
                     : (language === "ar" ? "مؤهل للاسترداد النقدي أو التسوية من الهيئة." : "Eligible for FTA cash back or credit offset.")}
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* UAE Gratuity / End of Service Panel */
+          <div className="space-y-4 animate-fadeIn">
+            <div>
+              <label htmlFor="gratuity-salary-range" className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 flex justify-between">
+                <span>{language === "ar" ? "الراتب الأساسي الشهري" : "Monthly Basic Salary"}</span>
+                <span className="text-navy-800 font-mono text-sm">{formatAED(basicSalary)}</span>
+              </label>
+              <input
+                id="gratuity-salary-range"
+                type="range"
+                min="2000"
+                max="100000"
+                step="1000"
+                value={basicSalary}
+                onChange={(e) => setBasicSalary(Number(e.target.value))}
+                className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-gold-500 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:outline-none"
+                aria-label="Monthly Basic Salary slider"
+              />
+              <label htmlFor="gratuity-salary-number" className="sr-only">Monthly Basic Salary</label>
+              <input
+                id="gratuity-salary-number"
+                type="number"
+                value={basicSalary}
+                onChange={(e) => setBasicSalary(Math.max(0, Number(e.target.value)))}
+                className="w-full mt-2 px-4 py-1.5 border border-slate-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none font-mono"
+                placeholder="Basic Salary"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="gratuity-years-range" className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 flex justify-between">
+                <span>{language === "ar" ? "سنوات الخدمة المكتملة" : "Completed Years of Service"}</span>
+                <span className="text-navy-800 font-mono text-sm">{serviceYears} {language === "ar" ? "سنوات" : "Years"}</span>
+              </label>
+              <input
+                id="gratuity-years-range"
+                type="range"
+                min="1"
+                max="25"
+                step="1"
+                value={serviceYears}
+                onChange={(e) => setServiceYears(Number(e.target.value))}
+                className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-gold-500 focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:outline-none"
+                aria-label="Completed Years of Service slider"
+              />
+            </div>
+
+            {/* Statutory Legal Breakdown */}
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                <span className="text-slate-400 block font-semibold uppercase text-[9px] mb-0.5">
+                  {language === "ar" ? "الأجر اليومي المحسوب" : "Calculated Daily Wage"}
+                </span>
+                <span className="font-mono text-slate-700 font-bold text-sm">{formatAED(gratuityResults.dailyWage)}</span>
+              </div>
+              <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                <span className="text-slate-400 block font-semibold uppercase text-[9px] mb-0.5">
+                  {language === "ar" ? "الأساس القانوني (قانون العمل)" : "Statutory Formula"}
+                </span>
+                <span className="text-slate-700 font-bold text-[10px]">
+                  {serviceYears <= 5 ? "21 days / yr (1-5 yrs)" : "21d (1-5y) + 30d (>5y)"}
+                </span>
+              </div>
+            </div>
+
+            {/* Gratuity Total Summary Block */}
+            <div className="rounded-xl p-4 bg-navy-950 text-white border border-gold-500/30">
+              <div className="flex justify-between items-center">
+                <div>
+                  <span className="text-xs text-slate-300 font-medium block">
+                    {language === "ar" ? "إجمالي مكافأة نهاية الخدمة المستحقة" : "Total End of Service Gratuity"}
+                  </span>
+                  <span className="text-xl font-bold font-mono tracking-tight text-gold-400">
+                    {formatAED(gratuityResults.total)}
+                  </span>
+                </div>
+                <div className={`text-[10px] max-w-[45%] text-slate-300 ${isRTL ? "text-left" : "text-right"}`}>
+                  {gratuityResults.isCapped
+                    ? (language === "ar" ? "تم تطبيق الحد الأقصى القانوني (راتب سنتين)." : "Capped at statutory 2 years' salary limit.")
+                    : (language === "ar" ? "وفقاً للمرسوم بقانون اتحادي رقم 33 لسنة 2021." : "Compliant with UAE Labour Law Decree No. 33/2021.")}
                 </div>
               </div>
             </div>
