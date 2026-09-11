@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import fs from "fs";
 import nodemailer from "nodemailer";
+import compression from "compression";
 import { createServer as createViteServer } from "vite";
 import { initializeApp } from "firebase/app";
 import { GoogleGenAI } from "@google/genai";
@@ -227,6 +228,19 @@ const SecureStorageService = {
 
 const app = express();
 const PORT = 3000;
+
+// Enable gzip/deflate compression for all text-based assets & responses
+app.use(
+  compression({
+    threshold: 1024,
+    filter: (req, res) => {
+      if (req.headers["x-no-compression"]) {
+        return false;
+      }
+      return compression.filter(req, res);
+    },
+  })
+);
 
 app.use(express.json());
 
@@ -1408,7 +1422,24 @@ async function bootstrap() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), "dist");
-    app.use(express.static(distPath));
+    
+    // Serve static assets with long-term immutable caching for hashed bundles & static files
+    app.use(
+      express.static(distPath, {
+        maxAge: "1y",
+        etag: true,
+        lastModified: true,
+        setHeaders: (res, filePath) => {
+          if (filePath.endsWith(".html")) {
+            // HTML must revalidate so clients get updates immediately
+            res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
+          } else if (filePath.match(/\.(js|css|webp|png|jpg|jpeg|gif|svg|woff2?|ttf|eot)$/)) {
+            // Vite hashed assets are immutable and safe to cache for 1 year
+            res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+          }
+        },
+      })
+    );
 
     // Dynamic Meta Prerendering SPA wildcard serving for Production
     app.get("*", (req, res) => {
@@ -1419,10 +1450,13 @@ async function bootstrap() {
           const meta = resolveMetaForRequest(req.url, req.headers.host || "diasuae.ae");
           const finalHtml = injectMetaIntoHtml(template, meta);
           res.setHeader("Content-Type", "text/html; charset=utf-8");
+          res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
           return res.status(200).send(finalHtml);
         }
+        res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
         return res.sendFile(indexPath);
       } catch (err) {
+        res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
         return res.sendFile(path.join(distPath, "index.html"));
       }
     });

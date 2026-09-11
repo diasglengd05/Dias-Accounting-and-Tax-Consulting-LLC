@@ -21,14 +21,33 @@ export default defineConfig(() => {
         output: {
           manualChunks(id) {
             if (
-              id.includes('node_modules/react') ||
-              id.includes('node_modules/react-dom') ||
-              id.includes('node_modules/scheduler')
+              id.includes('/node_modules/react/') ||
+              id.includes('/node_modules/react-dom/') ||
+              id.includes('/node_modules/scheduler/')
             ) {
               return 'vendor-react';
             }
-            if (id.includes('node_modules/lucide-react')) {
+            if (id.includes('/node_modules/lucide-react/')) {
               return 'vendor-lucide';
+            }
+            if (
+              id.includes('/node_modules/motion/') ||
+              id.includes('/node_modules/framer-motion/')
+            ) {
+              return 'vendor-motion';
+            }
+            if (
+              id.includes('/node_modules/recharts/') ||
+              id.includes('/node_modules/d3-') ||
+              id.includes('/node_modules/victory-vendor/')
+            ) {
+              return 'vendor-charts';
+            }
+            if (
+              id.includes('/node_modules/jspdf/') ||
+              id.includes('/node_modules/html2canvas/')
+            ) {
+              return 'vendor-pdf';
             }
           },
         },

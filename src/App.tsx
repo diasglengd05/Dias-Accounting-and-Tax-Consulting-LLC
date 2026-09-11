@@ -53,6 +53,7 @@ import AddToPreferredSources from "./components/AddToPreferredSources";
 import useDynamicSEO from "./hooks/useDynamicSEO";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 import LanguageToggle from "./components/LanguageToggle";
+import LazyMount from "./components/LazyMount";
 
 // Lazy-loaded components for fast mobile JS execution & small initial bundle size
 const GooglePreferredSourceModal = React.lazy(() => import("./components/GooglePreferredSourceModal"));
@@ -107,6 +108,15 @@ function MainApp() {
 
   // FAQ state
   const [openFaq, setOpenFaq] = useState<string | null>(null);
+
+  // Defer non-critical floating elements (WhatsApp widget, bottom overlays) to unblock first paint
+  const [mountFloatingWidgets, setMountFloatingWidgets] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setMountFloatingWidgets(true);
+    }, 600);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Dynamically update document head title and SEO meta tags based on active section & modal states
   useDynamicSEO({
@@ -743,9 +753,11 @@ function MainApp() {
 
               {/* Right Interactive Tax Calculator */}
               <div className="lg:col-span-6 w-full max-w-lg mx-auto">
-                <React.Suspense fallback={<div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-100 shadow-xl min-h-[480px] p-6 flex flex-col justify-center items-center text-slate-400 text-xs animate-pulse">Loading Tax Estimator...</div>}>
-                  <TaxCalculator />
-                </React.Suspense>
+                <LazyMount minHeight={480} sectionId="calculator">
+                  <React.Suspense fallback={<div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-100 shadow-xl min-h-[480px] p-6 flex flex-col justify-center items-center text-slate-400 text-xs animate-pulse">Loading Tax Estimator...</div>}>
+                    <TaxCalculator />
+                  </React.Suspense>
+                </LazyMount>
               </div>
 
             </div>
@@ -753,12 +765,14 @@ function MainApp() {
         </section>
 
       {/* 2.5 UAE Founder & New Business Launchpad (Interactive Compliance Wizard & High-Intent Conversion) */}
-      <React.Suspense fallback={<div className="py-16 text-center text-xs text-slate-400 animate-pulse">Loading UAE Founder Roadmap...</div>}>
-        <UAEFounderLaunchpad
-          onBookCall={handlePreselectedCallBooking}
-          onOpenAudit={() => setTaxHealthModalOpen(true)}
-        />
-      </React.Suspense>
+      <LazyMount minHeight={380} sectionId="founder-launchpad">
+        <React.Suspense fallback={<div className="py-16 text-center text-xs text-slate-400 animate-pulse">Loading UAE Founder Roadmap...</div>}>
+          <UAEFounderLaunchpad
+            onBookCall={handlePreselectedCallBooking}
+            onOpenAudit={() => setTaxHealthModalOpen(true)}
+          />
+        </React.Suspense>
+      </LazyMount>
 
       {/* 3. Software Partners Banner */}
       <section className="bg-white border-y border-slate-100 py-10">
@@ -859,37 +873,47 @@ function MainApp() {
           </div>
 
           {/* Service Comparison Matrix (Standard Accounting vs. CFO Advisory) */}
-          <React.Suspense fallback={<div className="py-8 text-center text-xs text-slate-400 animate-pulse">Loading Comparison Matrix...</div>}>
-            <ServiceComparisonTable onSelectTier={handlePreselectedCallBooking} />
-          </React.Suspense>
+          <LazyMount minHeight={300}>
+            <React.Suspense fallback={<div className="py-8 text-center text-xs text-slate-400 animate-pulse">Loading Comparison Matrix...</div>}>
+              <ServiceComparisonTable onSelectTier={handlePreselectedCallBooking} />
+            </React.Suspense>
+          </LazyMount>
 
           {/* Interactive 12-Month Tax Planning Savings Visualizer */}
-          <React.Suspense fallback={<div className="py-8 text-center text-xs text-slate-400 animate-pulse">Loading Tax Savings Analysis...</div>}>
-            <TaxPlanningSavingsChart />
-          </React.Suspense>
+          <LazyMount minHeight={350}>
+            <React.Suspense fallback={<div className="py-8 text-center text-xs text-slate-400 animate-pulse">Loading Tax Savings Analysis...</div>}>
+              <TaxPlanningSavingsChart />
+            </React.Suspense>
+          </LazyMount>
 
           {/* Service detail Modal */}
-          <React.Suspense fallback={null}>
-            <ServiceModal
-              isOpen={selectedService !== null}
-              service={selectedService}
-              onClose={() => setSelectedService(null)}
-              onBookCall={handlePreselectedCallBooking}
-            />
-          </React.Suspense>
+          {selectedService && (
+            <React.Suspense fallback={null}>
+              <ServiceModal
+                isOpen={selectedService !== null}
+                service={selectedService}
+                onClose={() => setSelectedService(null)}
+                onBookCall={handlePreselectedCallBooking}
+              />
+            </React.Suspense>
+          )}
 
         </div>
       </section>
 
       {/* Official UAE Free Zone & Mainland Affiliations Section */}
-      <React.Suspense fallback={<div className="py-12 text-center text-xs text-slate-400 animate-pulse">Loading Affiliations...</div>}>
-        <OurAffiliations />
-      </React.Suspense>
+      <LazyMount minHeight={160}>
+        <React.Suspense fallback={<div className="py-12 text-center text-xs text-slate-400 animate-pulse">Loading Affiliations...</div>}>
+          <OurAffiliations />
+        </React.Suspense>
+      </LazyMount>
 
       {/* 4.5 Local Jurisdictions & Free Zones Authority Hub (UAE Local SEO Powerhouse) */}
-      <React.Suspense fallback={<div className="py-16 text-center text-xs text-slate-400 animate-pulse">Loading UAE Jurisdictions Hub...</div>}>
-        <UAEJurisdictionsSEO />
-      </React.Suspense>
+      <LazyMount minHeight={360}>
+        <React.Suspense fallback={<div className="py-16 text-center text-xs text-slate-400 animate-pulse">Loading UAE Jurisdictions Hub...</div>}>
+          <UAEJurisdictionsSEO />
+        </React.Suspense>
+      </LazyMount>
 
       {/* 5. "Why Partner With Us" Section */}
       <section id="about" className="py-20 bg-white relative overflow-hidden scroll-mt-20 sm:scroll-mt-24">
@@ -998,9 +1022,11 @@ function MainApp() {
       </section>
 
       {/* 5.5 Proven Client Case Studies & E-E-A-T Track Record */}
-      <React.Suspense fallback={<div className="py-16 text-center text-xs text-slate-400 animate-pulse">Loading Client Case Studies...</div>}>
-        <ClientCaseStudies />
-      </React.Suspense>
+      <LazyMount minHeight={380}>
+        <React.Suspense fallback={<div className="py-16 text-center text-xs text-slate-400 animate-pulse">Loading Client Case Studies...</div>}>
+          <ClientCaseStudies />
+        </React.Suspense>
+      </LazyMount>
 
       {/* 6. Pricing Plans Section */}
       <section id="pricing" className="py-20 bg-slate-50 border-t border-slate-100 scroll-mt-20 sm:scroll-mt-24">
@@ -1202,9 +1228,11 @@ function MainApp() {
 
           {/* Standalone Regulatory Services: VAT Return, Corporate Tax SBR & Audit */}
           <div className="pt-8">
-            <React.Suspense fallback={<div className="py-12 text-center text-xs text-slate-400 animate-pulse">Loading Standalone Services...</div>}>
-              <StandalonePricingCards onSelectService={handlePreselectedCallBooking} />
-            </React.Suspense>
+            <LazyMount minHeight={280}>
+              <React.Suspense fallback={<div className="py-12 text-center text-xs text-slate-400 animate-pulse">Loading Standalone Services...</div>}>
+                <StandalonePricingCards onSelectService={handlePreselectedCallBooking} />
+              </React.Suspense>
+            </LazyMount>
           </div>
 
         </div>
@@ -1272,9 +1300,11 @@ function MainApp() {
       </section>
 
     {/* 6.5 Customer Testimonials / Google Reviews Section */}
-    <React.Suspense fallback={<div className="py-20 text-center text-slate-400 text-sm min-h-[420px] flex items-center justify-center">Loading Google Reviews...</div>}>
-      <GoogleReviewsSection testimonials={testimonialsData} />
-    </React.Suspense>
+    <LazyMount minHeight={380} sectionId="testimonials">
+      <React.Suspense fallback={<div className="py-20 text-center text-slate-400 text-sm min-h-[420px] flex items-center justify-center">Loading Google Reviews...</div>}>
+        <GoogleReviewsSection testimonials={testimonialsData} />
+      </React.Suspense>
+    </LazyMount>
 
     {/* 6.6 FAQ Section */}
     <section id="faqs" className="py-20 bg-slate-50 border-t border-slate-100 scroll-mt-20 sm:scroll-mt-24">
@@ -1493,9 +1523,11 @@ function MainApp() {
             
             {/* Left Column: Scheduler Form */}
             <div className="lg:col-span-7">
-              <React.Suspense fallback={<div className="bg-white rounded-3xl p-8 shadow-xl border border-slate-100 min-h-[560px] flex items-center justify-center text-slate-400 text-xs animate-pulse">Loading Consultation Scheduler...</div>}>
-                <Scheduler preselectedService={preselectedServiceTitle} />
-              </React.Suspense>
+              <LazyMount minHeight={560} sectionId="contact">
+                <React.Suspense fallback={<div className="bg-white rounded-3xl p-8 shadow-xl border border-slate-100 min-h-[560px] flex items-center justify-center text-slate-400 text-xs animate-pulse">Loading Consultation Scheduler...</div>}>
+                  <Scheduler preselectedService={preselectedServiceTitle} />
+                </React.Suspense>
+              </LazyMount>
             </div>
 
             {/* Right Column: Traditional contact + Map Mockup */}
@@ -1935,31 +1967,45 @@ function MainApp() {
       />
 
       <React.Suspense fallback={null}>
-        <WhatsAppWidget
-          activeSection={activeSection}
-          selectedService={selectedService}
-          selectedBlog={selectedBlog}
-          customContext={preselectedServiceTitle ? "cfo-advisory" : undefined}
-        />
-        <StickyMobileLeadBar onOpenAudit={() => setTaxHealthModalOpen(true)} />
-        <TaxHealthCheckModal isOpen={taxHealthModalOpen} onClose={() => setTaxHealthModalOpen(false)} />
-        <LeadMagnetDownloadModal isOpen={leadMagnetModalOpen} onClose={() => setLeadMagnetModalOpen(false)} />
-        <PrivacyPolicyModal isOpen={privacyOpen} onClose={() => setPrivacyOpen(false)} />
-        <GooglePreferredSourceModal
-          isOpen={googlePreferredModalOpen}
-          onClose={() => setGooglePreferredModalOpen(false)}
-          businessName="Best Accounting firm in UAE | Dias LLC"
-        />
-        <TaxAiAdvisorModal
-          isOpen={taxAiModalOpen}
-          onClose={() => setTaxAiModalOpen(false)}
-          initialQuery={taxAiInitialQuery}
-          initialCategory={taxAiInitialCategory}
-          onOpenScheduler={() => {
-            const el = document.getElementById("contact");
-            if (el) el.scrollIntoView({ behavior: "smooth" });
-          }}
-        />
+        {mountFloatingWidgets && (
+          <>
+            <WhatsAppWidget
+              activeSection={activeSection}
+              selectedService={selectedService}
+              selectedBlog={selectedBlog}
+              customContext={preselectedServiceTitle ? "cfo-advisory" : undefined}
+            />
+            <StickyMobileLeadBar onOpenAudit={() => setTaxHealthModalOpen(true)} />
+          </>
+        )}
+        {taxHealthModalOpen && (
+          <TaxHealthCheckModal isOpen={taxHealthModalOpen} onClose={() => setTaxHealthModalOpen(false)} />
+        )}
+        {leadMagnetModalOpen && (
+          <LeadMagnetDownloadModal isOpen={leadMagnetModalOpen} onClose={() => setLeadMagnetModalOpen(false)} />
+        )}
+        {privacyOpen && (
+          <PrivacyPolicyModal isOpen={privacyOpen} onClose={() => setPrivacyOpen(false)} />
+        )}
+        {googlePreferredModalOpen && (
+          <GooglePreferredSourceModal
+            isOpen={googlePreferredModalOpen}
+            onClose={() => setGooglePreferredModalOpen(false)}
+            businessName="Best Accounting firm in UAE | Dias LLC"
+          />
+        )}
+        {taxAiModalOpen && (
+          <TaxAiAdvisorModal
+            isOpen={taxAiModalOpen}
+            onClose={() => setTaxAiModalOpen(false)}
+            initialQuery={taxAiInitialQuery}
+            initialCategory={taxAiInitialCategory}
+            onOpenScheduler={() => {
+              const el = document.getElementById("contact");
+              if (el) el.scrollIntoView({ behavior: "smooth" });
+            }}
+          />
+        )}
       </React.Suspense>
 
     </div>
