@@ -553,6 +553,7 @@ function MainApp() {
             <div className="space-y-2">
               <h1 className="font-display text-3xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-white drop-shadow-md">
                 {t.hero.companyTitle}
+                <span className="sr-only"> - Best Accounting Firm in Dubai & UAE</span>
               </h1>
 
               {/* Sub-headline 1: UAE's leading firm */}

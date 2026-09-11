@@ -229,6 +229,41 @@ const SecureStorageService = {
 const app = express();
 const PORT = 3000;
 
+// Security: Disable X-Powered-By header to prevent fingerprinting
+app.disable("x-powered-by");
+
+// Enterprise Security Headers Middleware (Addresses CSP, XSS, Clickjacking, MIME sniffing, and framing)
+app.use((req, res, next) => {
+  res.removeHeader("X-Powered-By");
+
+  // Content-Security-Policy
+  res.setHeader(
+    "Content-Security-Policy",
+    [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://*.firebaseapp.com https://*.googleapis.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "font-src 'self' https://fonts.gstatic.com data:",
+      "img-src 'self' data: blob: https://images.unsplash.com https://*.googleusercontent.com https://*.google.com https://www.google.com",
+      "connect-src 'self' https://* wss://*",
+      "frame-src 'self' https://*.google.com https://*.firebaseapp.com",
+      "frame-ancestors 'self' https://*.google.com https://*.run.app https://ai.studio https://*.aistudio.google.com",
+      "object-src 'none'",
+      "base-uri 'self'",
+      "form-action 'self'",
+    ].join("; ")
+  );
+
+  // Modern HTTP Security Headers
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains; preload");
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=()");
+
+  next();
+});
+
 // Enable gzip/deflate compression for all text-based assets & responses
 app.use(
   compression({
@@ -1441,12 +1476,23 @@ async function bootstrap() {
       })
     );
 
+    // In-memory cache for index.html template to avoid repeated disk reads and achieve ultra-low TTFB
+    let cachedIndexHtml: string | null = null;
+    const getCachedIndexTemplate = () => {
+      if (!cachedIndexHtml) {
+        const indexPath = path.join(distPath, "index.html");
+        if (fs.existsSync(indexPath)) {
+          cachedIndexHtml = fs.readFileSync(indexPath, "utf-8");
+        }
+      }
+      return cachedIndexHtml;
+    };
+
     // Dynamic Meta Prerendering SPA wildcard serving for Production
     app.get("*", (req, res) => {
       try {
-        const indexPath = path.join(distPath, "index.html");
-        if (fs.existsSync(indexPath)) {
-          const template = fs.readFileSync(indexPath, "utf-8");
+        const template = getCachedIndexTemplate();
+        if (template) {
           const meta = resolveMetaForRequest(req.url, req.headers.host || "diasuae.ae");
           const finalHtml = injectMetaIntoHtml(template, meta);
           res.setHeader("Content-Type", "text/html; charset=utf-8");
@@ -1454,7 +1500,7 @@ async function bootstrap() {
           return res.status(200).send(finalHtml);
         }
         res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
-        return res.sendFile(indexPath);
+        return res.sendFile(path.join(distPath, "index.html"));
       } catch (err) {
         res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
         return res.sendFile(path.join(distPath, "index.html"));
