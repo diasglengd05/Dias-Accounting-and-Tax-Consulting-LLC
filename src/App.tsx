@@ -55,6 +55,7 @@ import useDynamicSEO from "./hooks/useDynamicSEO";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 import LanguageToggle from "./components/LanguageToggle";
 import LazyMount from "./components/LazyMount";
+import AnimatedSection from "./components/AnimatedSection";
 
 // Lazy-loaded components for fast mobile JS execution & small initial bundle size
 const GooglePreferredSourceModal = React.lazy(() => import("./components/GooglePreferredSourceModal"));
@@ -448,7 +449,7 @@ function MainApp() {
           <div className="absolute inset-0 bg-radial from-gold-500/10 via-transparent to-navy-950/80 pointer-events-none" />
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-64 bg-gradient-to-b from-purple-500/10 to-transparent blur-3xl pointer-events-none" />
 
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-20 lg:py-24 relative z-10 text-center space-y-5 sm:space-y-8">
+          <AnimatedSection className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-20 lg:py-24 relative z-10 text-center space-y-5 sm:space-y-8">
             
             {/* Trust Pill & Google Rating Badge */}
             <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
@@ -592,12 +593,12 @@ function MainApp() {
               </div>
             </div>
 
-          </div>
+          </AnimatedSection>
         </section>
 
         {/* 2.2 Instant Interactive Tax Planning & Health Estimator Section */}
         <section id="calculator" className="py-12 md:py-16 bg-navy-900 border-b border-slate-800 text-white relative overflow-hidden scroll-mt-20 sm:scroll-mt-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <AnimatedSection className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
               
               {/* Left Explanatory Column */}
@@ -669,12 +670,12 @@ function MainApp() {
               </div>
 
             </div>
-          </div>
+          </AnimatedSection>
         </section>
 
       {/* 3. Software Partners Banner - BCL.ae "We use the world's best softwares" */}
       <section className="bg-white border-y border-slate-100 py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+        <AnimatedSection className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
           <div className="space-y-1">
             <span className="text-xs text-gold-600 font-bold uppercase tracking-widest block">
               {language === "ar" ? "شراكات التكنولوجيا المحاسبية العالمية" : "Cloud Accounting Software Partners"}
@@ -766,12 +767,12 @@ function MainApp() {
             </div>
 
           </div>
-        </div>
+        </AnimatedSection>
       </section>
 
       {/* 4. Core Services Grid Section */}
       <section id="services" className="py-20 bg-slate-50 scroll-mt-20 sm:scroll-mt-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <AnimatedSection className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           {/* Section Header */}
           <div className="text-center space-y-3 max-w-2xl mx-auto">
@@ -832,37 +833,45 @@ function MainApp() {
             </React.Suspense>
           )}
 
-        </div>
+        </AnimatedSection>
       </section>
 
       {/* Official UAE Free Zone & Mainland Affiliations Section */}
-      <LazyMount minHeight={160}>
-        <React.Suspense fallback={<div className="py-12 text-center text-xs text-slate-400 animate-pulse">Loading Affiliations...</div>}>
-          <OurAffiliations />
-        </React.Suspense>
-      </LazyMount>
+      <AnimatedSection>
+        <LazyMount minHeight={160}>
+          <React.Suspense fallback={<div className="py-12 text-center text-xs text-slate-400 animate-pulse">Loading Affiliations...</div>}>
+            <OurAffiliations />
+          </React.Suspense>
+        </LazyMount>
+      </AnimatedSection>
 
       {/* 4.5 Local Jurisdictions & Free Zones Authority Hub (UAE Local SEO Powerhouse) */}
-      <LazyMount minHeight={360}>
-        <React.Suspense fallback={<div className="py-16 text-center text-xs text-slate-400 animate-pulse">Loading UAE Jurisdictions Hub...</div>}>
-          <UAEJurisdictionsSEO />
-        </React.Suspense>
-      </LazyMount>
+      <AnimatedSection>
+        <LazyMount minHeight={360}>
+          <React.Suspense fallback={<div className="py-16 text-center text-xs text-slate-400 animate-pulse">Loading UAE Jurisdictions Hub...</div>}>
+            <UAEJurisdictionsSEO />
+          </React.Suspense>
+        </LazyMount>
+      </AnimatedSection>
 
       {/* 4.6 BCL-Style "Want to set up Company in Dubai?" Hub */}
-      <LazyMount minHeight={480} sectionId="company-setup">
-        <React.Suspense fallback={<div className="py-16 text-center text-xs text-slate-400 animate-pulse">Loading Company Setup Hub...</div>}>
-          <CompanySetupHub onBookCall={handlePreselectedCallBooking} />
-        </React.Suspense>
-      </LazyMount>
+      <AnimatedSection>
+        <LazyMount minHeight={480} sectionId="company-setup">
+          <React.Suspense fallback={<div className="py-16 text-center text-xs text-slate-400 animate-pulse">Loading Company Setup Hub...</div>}>
+            <CompanySetupHub onBookCall={handlePreselectedCallBooking} />
+          </React.Suspense>
+        </LazyMount>
+      </AnimatedSection>
 
       {/* 4.7 BCL-Style 6 Pillars of Excellence: "Why Choose Dias Accounting?" */}
       <div id="why-choose-us" className="scroll-mt-20 sm:scroll-mt-24">
-        <LazyMount minHeight={480}>
-          <React.Suspense fallback={<div className="py-16 text-center text-xs text-slate-400 animate-pulse">Loading Why Choose Us...</div>}>
-            <WhyChooseUsGrid onBookCall={handlePreselectedCallBooking} />
-          </React.Suspense>
-        </LazyMount>
+        <AnimatedSection>
+          <LazyMount minHeight={480}>
+            <React.Suspense fallback={<div className="py-16 text-center text-xs text-slate-400 animate-pulse">Loading Why Choose Us...</div>}>
+              <WhyChooseUsGrid onBookCall={handlePreselectedCallBooking} />
+            </React.Suspense>
+          </LazyMount>
+        </AnimatedSection>
       </div>
 
       {/* 5. "Why Partner With Us" Section */}
@@ -870,7 +879,7 @@ function MainApp() {
         {/* Subtle decorative grid background */}
         <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: "radial-gradient(#0f172a 1.5px, transparent 1.5px)", backgroundSize: "24px 24px" }} />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <AnimatedSection className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             
             {/* Left Content Column */}
@@ -968,19 +977,21 @@ function MainApp() {
             </div>
 
           </div>
-        </div>
+        </AnimatedSection>
       </section>
 
       {/* 5.5 Proven Client Case Studies & E-E-A-T Track Record */}
-      <LazyMount minHeight={380}>
-        <React.Suspense fallback={<div className="py-16 text-center text-xs text-slate-400 animate-pulse">Loading Client Case Studies...</div>}>
-          <ClientCaseStudies />
-        </React.Suspense>
-      </LazyMount>
+      <AnimatedSection>
+        <LazyMount minHeight={380}>
+          <React.Suspense fallback={<div className="py-16 text-center text-xs text-slate-400 animate-pulse">Loading Client Case Studies...</div>}>
+            <ClientCaseStudies />
+          </React.Suspense>
+        </LazyMount>
+      </AnimatedSection>
 
       {/* 6. Pricing Plans Section - BCL.ae Dual Pathway ("Staying ahead going forward" vs "Catching up on the past") */}
       <section id="pricing" className="py-20 bg-slate-50 border-t border-slate-100 scroll-mt-20 sm:scroll-mt-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+        <AnimatedSection className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
           
           {/* Section Header */}
           <div className="text-center space-y-3 max-w-3xl mx-auto">
@@ -1402,12 +1413,12 @@ function MainApp() {
             </LazyMount>
           </div>
 
-        </div>
+        </AnimatedSection>
       </section>
 
       {/* 6.3 High-Value Lead Magnet: 2026 UAE Compliance Playbook Banner */}
       <section id="lead-magnet" className="bg-gradient-to-r from-navy-950 via-slate-900 to-navy-950 text-white py-6 sm:py-8 border-y border-gold-500/20 relative overflow-hidden">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <AnimatedSection className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-5 backdrop-blur-md flex flex-col md:flex-row items-center justify-between gap-4 shadow-lg">
             
             {/* Content Left */}
@@ -1458,19 +1469,21 @@ function MainApp() {
             </div>
 
           </div>
-        </div>
+        </AnimatedSection>
       </section>
 
     {/* 6.5 Customer Testimonials / Google Reviews Section */}
-    <LazyMount minHeight={380} sectionId="testimonials">
-      <React.Suspense fallback={<div className="py-20 text-center text-slate-400 text-sm min-h-[420px] flex items-center justify-center">Loading Google Reviews...</div>}>
-        <GoogleReviewsSection testimonials={testimonialsData} />
-      </React.Suspense>
-    </LazyMount>
+    <AnimatedSection>
+      <LazyMount minHeight={380} sectionId="testimonials">
+        <React.Suspense fallback={<div className="py-20 text-center text-slate-400 text-sm min-h-[420px] flex items-center justify-center">Loading Google Reviews...</div>}>
+          <GoogleReviewsSection testimonials={testimonialsData} />
+        </React.Suspense>
+      </LazyMount>
+    </AnimatedSection>
 
     {/* 6.6 FAQ Section */}
     <section id="faqs" className="py-20 bg-slate-50 border-t border-slate-100 scroll-mt-20 sm:scroll-mt-24">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <AnimatedSection className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
         {/* Section Header */}
         <div className="text-center space-y-3 max-w-2xl mx-auto">
@@ -1571,12 +1584,12 @@ function MainApp() {
             </button>
           </div>
 
-        </div>
+        </AnimatedSection>
       </section>
 
       {/* 7. Blogs / News Section */}
       <section id="blogs" className="py-20 bg-white scroll-mt-20 sm:scroll-mt-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <AnimatedSection className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           {/* Section Header */}
           <div className="text-center space-y-3 max-w-2xl mx-auto">
@@ -1661,12 +1674,12 @@ function MainApp() {
             )}
           </React.Suspense>
 
-        </div>
+        </AnimatedSection>
       </section>
 
       {/* 8. Contact Us & Consultation Scheduler */}
       <section id="contact" className="py-20 bg-slate-50 border-t border-slate-100 scroll-mt-20 sm:scroll-mt-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <AnimatedSection className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           {/* Section Header */}
           <div className="text-center space-y-3 max-w-2xl mx-auto">
@@ -1753,13 +1766,13 @@ function MainApp() {
 
           </div>
 
-        </div>
+        </AnimatedSection>
       </section>
       </main>
 
       {/* 9. Footer */}
       <footer role="contentinfo" className="bg-navy-950 text-white border-t border-white/5 pt-16 pb-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <AnimatedSection className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
             
@@ -1889,7 +1902,7 @@ function MainApp() {
             </div>
           </div>
 
-        </div>
+        </AnimatedSection>
       </footer>
 
       {/* 10. Global WhatsApp & Google Reviews Floating Widget */}
