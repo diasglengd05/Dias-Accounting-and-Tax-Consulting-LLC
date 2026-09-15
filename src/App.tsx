@@ -75,6 +75,7 @@ const ClientCaseStudies = React.lazy<React.ComponentType<any>>(() => import("./c
 const TaxAiAdvisorModal = React.lazy<React.ComponentType<any>>(() => import("./components/TaxAiAdvisorModal"));
 const CompanySetupHub = React.lazy<React.ComponentType<any>>(() => import("./components/CompanySetupHub").then(m => ({ default: (m as any).default || (m as any).CompanySetupHub })));
 const WhyChooseUsGrid = React.lazy<React.ComponentType<any>>(() => import("./components/WhyChooseUsGrid").then(m => ({ default: (m as any).default || (m as any).WhyChooseUsGrid })));
+const SeoEngineDashboardModal = React.lazy(() => import("./components/SeoEngineDashboardModal"));
 
 function MainApp() {
   const { t, language, isRTL } = useLanguage();
@@ -104,6 +105,8 @@ function MainApp() {
   // Selected details for modals
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedBlog, setSelectedBlog] = useState<BlogPost | null>(null);
+  const [allBlogs, setAllBlogs] = useState<BlogPost[]>(blogsData);
+  const [seoDashboardOpen, setSeoDashboardOpen] = useState(false);
   const [copiedBlogLink, setCopiedBlogLink] = useState(false);
   const [showOgPreview, setShowOgPreview] = useState(false);
   const [privacyOpen, setPrivacyOpen] = useState(false);
@@ -231,6 +234,38 @@ function MainApp() {
       };
     }
   }, [selectedBlog]);
+
+  // Deep-linking support for SEO Blog articles (#blog-[id]) & SEO Engine (#seo-engine)
+  useEffect(() => {
+    // Fetch latest dynamic blog posts from 24-hour Cloud Function trigger
+    fetch("/api/blogs")
+      .then((r) => r.json())
+      .then((data) => {
+        if (data && data.success && Array.isArray(data.blogs) && data.blogs.length > 0) {
+          setAllBlogs(data.blogs);
+        }
+      })
+      .catch((err) => {
+        console.warn("Failed to fetch dynamic blogs, using static fallback:", err);
+      });
+
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if (hash && hash.startsWith("#blog-")) {
+        const blogId = hash.replace("#blog-", "");
+        const found = allBlogs.find((b) => b.id === blogId) || blogsData.find((b) => b.id === blogId);
+        if (found) {
+          setSelectedBlog(found);
+        }
+      } else if (hash === "#seo-engine" || hash === "#cloud-function") {
+        setSeoDashboardOpen(true);
+      }
+    };
+
+    handleHashChange();
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
+  }, [allBlogs.length]);
 
   // Helper to resolve Service icons dynamically
   const getServiceIcon = (iconName: string) => {
@@ -1593,9 +1628,19 @@ function MainApp() {
           
           {/* Section Header */}
           <div className="text-center space-y-3 max-w-2xl mx-auto">
-            <span className="text-xs text-gold-600 font-bold uppercase tracking-widest block">
-              UAE Financial Intelligence
-            </span>
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <span className="text-xs text-gold-600 font-bold uppercase tracking-widest block">
+                UAE Financial Intelligence
+              </span>
+              <button
+                onClick={() => setSeoDashboardOpen(true)}
+                className="inline-flex items-center gap-1.5 px-3 py-1 bg-navy-900 text-gold-300 hover:text-gold-200 hover:bg-navy-950 rounded-full text-[11px] font-bold shadow-sm transition-all cursor-pointer"
+                title="Open SEO Content Engine & Cloud Function Monitor"
+              >
+                <Sparkles className="w-3 h-3 text-gold-400 animate-pulse" />
+                <span>SEO Content Engine &amp; 24h Cloud Function</span>
+              </button>
+            </div>
             <h2 className="font-display text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight">
               Regulatory Insights & Advisories
             </h2>
@@ -1605,11 +1650,11 @@ function MainApp() {
           </div>
 
           {/* Blogs Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {(blogsData || []).map((blog) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {(allBlogs || []).map((blog, idx) => (
               <div
                 key={blog.id}
-                className="bg-white border border-slate-200/60 rounded-3xl overflow-hidden shadow-sm hover:shadow-md hover:border-gold-300/40 transition-all hover:-translate-y-1 flex flex-col cursor-pointer group"
+                className={`bg-white border ${idx === 0 ? "border-gold-400/80 shadow-md ring-1 ring-gold-400/20" : "border-slate-200/60 shadow-sm"} rounded-3xl overflow-hidden hover:shadow-lg hover:border-gold-400 transition-all hover:-translate-y-1 flex flex-col cursor-pointer group`}
                 onClick={() => setSelectedBlog(blog)}
               >
                 {/* Visual Header */}
@@ -1617,9 +1662,21 @@ function MainApp() {
                   <div className="absolute right-0 bottom-0 opacity-10">
                     <BookOpen className="w-40 h-40 transform translate-x-12 translate-y-12" />
                   </div>
-                  <span className="text-[10px] bg-white/15 text-gold-300 font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border border-white/5 self-start backdrop-blur-md">
-                    {blog.tag}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] bg-white/15 text-gold-300 font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border border-white/5 self-start backdrop-blur-md">
+                      {blog.tag}
+                    </span>
+                    {blog.isAiGenerated ? (
+                      <span className="text-[10px] bg-gradient-to-r from-emerald-500 to-teal-400 text-white font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full shadow-sm flex items-center gap-1">
+                        <Sparkles className="w-2.5 h-2.5" />
+                        24h AI Grounded
+                      </span>
+                    ) : idx === 0 ? (
+                      <span className="text-[10px] bg-gradient-to-r from-amber-400 to-gold-400 text-navy-950 font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full shadow-sm">
+                        Daily Briefing
+                      </span>
+                    ) : null}
+                  </div>
                   <div className="text-xs text-slate-400 font-medium flex justify-between">
                     <span>{blog.date}</span>
                     <span>{blog.readTime}</span>
@@ -2033,6 +2090,15 @@ function MainApp() {
             onOpenScheduler={() => {
               const el = document.getElementById("contact");
               if (el) el.scrollIntoView({ behavior: "smooth" });
+            }}
+          />
+        )}
+        {seoDashboardOpen && (
+          <SeoEngineDashboardModal
+            isOpen={seoDashboardOpen}
+            onClose={() => setSeoDashboardOpen(false)}
+            onPostPublished={(newPost) => {
+              setAllBlogs((prev) => [newPost, ...prev.filter((b) => b.id !== newPost.id)]);
             }}
           />
         )}

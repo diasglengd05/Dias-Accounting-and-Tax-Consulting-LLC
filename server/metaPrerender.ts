@@ -4,6 +4,9 @@
  * before serving to social media crawlers (Meta/Facebook, WhatsApp, LinkedIn, X/Twitter, Telegram, Slack).
  */
 
+import fs from "fs";
+import path from "path";
+
 export interface MetaOverride {
   title?: string;
   description?: string;
@@ -15,6 +18,7 @@ export interface MetaOverride {
   publishedTime?: string;
   section?: string;
   isArabic?: boolean;
+  schemaMarkup?: string;
 }
 
 const KNOWN_BLOGS: Record<string, { title: string; summary: string; author: string; role: string; tag: string; date: string }> = {
@@ -107,21 +111,51 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     blogId = searchParams.get("blog") || "";
   }
 
-  if (blogId && KNOWN_BLOGS[blogId]) {
-    const blog = KNOWN_BLOGS[blogId];
-    const ogImg = `${baseUrl}/api/og/blog/${blogId}`;
-    return {
-      title: `${blog.title} | Dias Accounting Dubai`,
-      description: blog.summary,
-      keywords: `UAE tax guide, ${blog.tag}, corporate tax Dubai, FTA compliance, ${blog.title.toLowerCase()}`,
-      url: `${baseUrl}/#blog-${blogId}`,
-      ogImage: ogImg,
-      ogType: "article",
-      author: blog.author,
-      publishedTime: `${blog.date}T09:00:00+04:00`,
-      section: blog.tag,
-      isArabic,
-    };
+  if (blogId) {
+    let blog = KNOWN_BLOGS[blogId];
+    let dynamicSchema: string | undefined = undefined;
+
+    if (!blog) {
+      try {
+        const dbFile = path.join(process.cwd(), "db_fallback.json");
+        if (fs.existsSync(dbFile)) {
+          const dbData = JSON.parse(fs.readFileSync(dbFile, "utf-8"));
+          if (Array.isArray(dbData.blogs)) {
+            const found = dbData.blogs.find((b: any) => b.id === blogId);
+            if (found) {
+              blog = {
+                title: found.title,
+                summary: found.summary,
+                author: found.author?.name || "Glen Dias",
+                role: found.author?.role || "Managing Director & FTA Registered Tax Agent",
+                tag: found.tag || "Corporate Tax",
+                date: found.date,
+              };
+              dynamicSchema = found.schemaMarkup;
+            }
+          }
+        }
+      } catch (err) {
+        // silent fallback
+      }
+    }
+
+    if (blog) {
+      const ogImg = `${baseUrl}/api/og/blog/${blogId}`;
+      return {
+        title: `${blog.title} | Dias Accounting Dubai`,
+        description: blog.summary,
+        keywords: `UAE tax guide, ${blog.tag}, corporate tax Dubai, FTA compliance, ${blog.title.toLowerCase()}`,
+        url: `${baseUrl}/#blog-${blogId}`,
+        ogImage: ogImg,
+        ogType: "article",
+        author: blog.author,
+        publishedTime: `${blog.date}T09:00:00+04:00`,
+        section: blog.tag,
+        isArabic,
+        schemaMarkup: dynamicSchema,
+      };
+    }
   }
 
   // 2. Direct Service match (/services/:id or ?service=:id)
@@ -243,6 +277,11 @@ export function injectMetaIntoHtml(html: string, meta: MetaOverride): string {
     <meta property="article:publisher" content="https://www.linkedin.com/company/dias-accounting-and-tax-consulting" />
     `;
     modified = modified.replace("</head>", `${articleTags}\n  </head>`);
+  }
+
+  if (meta.schemaMarkup) {
+    const jsonLd = `\n  <script type="application/ld+json">\n${meta.schemaMarkup}\n  </script>\n`;
+    modified = modified.replace("</head>", `${jsonLd}</head>`);
   }
 
   return modified;

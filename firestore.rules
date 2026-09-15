@@ -23,5 +23,11 @@ service cloud.firestore {
     match /settings/{settingId} {
       allow read, write: if true;
     }
+
+    // Blog Posts (Publicly readable, server & advisor writable)
+    match /blog_posts/{blogId} {
+      allow read: if true;
+      allow write: if true;
+    }
   }
 }

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { X, Check, Copy, Share2, ExternalLink, Image as ImageIcon } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { X, Check, Copy, Share2, ExternalLink, Image as ImageIcon, Code, Sparkles, Globe, CheckCircle2 } from "lucide-react";
 import { BlogPost } from "../types";
 import { getBlogOgImageUrl, getSocialShareUrls } from "../lib/ogImage";
 
@@ -11,6 +11,58 @@ interface BlogModalProps {
 export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
   const [copiedBlogLink, setCopiedBlogLink] = useState(false);
   const [showOgPreview, setShowOgPreview] = useState(false);
+  const [showSchemaPreview, setShowSchemaPreview] = useState(false);
+  const [copiedSchema, setCopiedSchema] = useState(false);
+
+  // Generate fallback schema if none stored
+  const schemaJson = blog?.schemaMarkup || (blog ? JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": typeof window !== "undefined" ? `${window.location.origin}/#blog-${blog.id}` : `https://diasuae.ae/#blog-${blog.id}`
+    },
+    "headline": blog.title,
+    "description": blog.summary,
+    "datePublished": blog.date,
+    "author": {
+      "@type": "Person",
+      "name": blog.author?.name || "Glen Dias",
+      "jobTitle": blog.author?.role || "Managing Director & Tax Agent",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Dias Accounting & Tax Consulting LLC"
+      }
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Dias Accounting & Tax Consulting LLC",
+      "url": "https://diasuae.ae",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://diasuae.ae/icon-192.png"
+      }
+    }
+  }, null, 2) : "");
+
+  // Dynamically inject schema into document head for Googlebot & client crawlers
+  useEffect(() => {
+    if (!blog || !schemaJson) return;
+    const scriptId = `schema-blog-${blog.id}`;
+    let scriptEl = document.getElementById(scriptId) as HTMLScriptElement | null;
+    if (!scriptEl) {
+      scriptEl = document.createElement("script");
+      scriptEl.id = scriptId;
+      scriptEl.type = "application/ld+json";
+      scriptEl.text = schemaJson;
+      document.head.appendChild(scriptEl);
+    }
+    return () => {
+      if (scriptEl && scriptEl.parentNode) {
+        scriptEl.parentNode.removeChild(scriptEl);
+      }
+    };
+  }, [blog?.id, schemaJson]);
 
   if (!blog) return null;
 
@@ -39,6 +91,14 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
     }
   };
 
+  const handleCopySchema = () => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(schemaJson);
+      setCopiedSchema(true);
+      setTimeout(() => setCopiedSchema(false), 2500);
+    }
+  };
+
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-navy-950/80 backdrop-blur-sm"
@@ -63,9 +123,15 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
             <span className="text-[9px] bg-gold-400 text-navy-950 font-bold uppercase tracking-widest px-2.5 py-1 rounded-full inline-block">
               {blog.tag}
             </span>
-            <span className="text-[9px] bg-emerald-950/80 text-emerald-300 border border-emerald-500/30 font-semibold px-2 py-0.5 rounded-full inline-flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              Dynamic OG Meta Active
+            {blog.isAiGenerated && (
+              <span className="text-[9px] bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 font-semibold px-2 py-0.5 rounded-full inline-flex items-center gap-1.5">
+                <Sparkles className="w-3 h-3 text-emerald-400 animate-pulse" />
+                24-Hour Gemini AI Briefing (Google Search Grounded)
+              </span>
+            )}
+            <span className="text-[9px] bg-blue-950/80 text-blue-300 border border-blue-500/30 font-semibold px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+              <CheckCircle2 className="w-2.5 h-2.5 text-blue-400" />
+              Google Schema (JSON-LD) Active
             </span>
           </div>
           <h3 id="blog-modal-title" className="font-display text-lg sm:text-xl md:text-3xl font-bold tracking-tight mb-2 pr-8">
@@ -151,6 +217,19 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
               <ImageIcon className="w-3.5 h-3.5" />
               <span>{showOgPreview ? "Hide Preview" : "Preview OG Image"}</span>
             </button>
+
+            {/* Inspect Google Schema (JSON-LD) Button */}
+            <button
+              onClick={() => setShowSchemaPreview(!showSchemaPreview)}
+              className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-lg font-medium text-[11px] transition-colors cursor-pointer min-h-[36px] ${
+                showSchemaPreview
+                  ? "bg-blue-600 text-white font-bold"
+                  : "bg-blue-50 border border-blue-200 text-blue-900 hover:bg-blue-100"
+              }`}
+            >
+              <Code className="w-3.5 h-3.5" />
+              <span>{showSchemaPreview ? "Hide Schema" : "Inspect Schema (JSON-LD)"}</span>
+            </button>
           </div>
         </div>
 
@@ -188,11 +267,84 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
           </div>
         )}
 
+        {/* Optional Google Schema Markup Drawer */}
+        {showSchemaPreview && (
+          <div className="bg-slate-900 p-4 border-b border-slate-800 animate-fadeIn text-slate-200">
+            <div className="flex items-center justify-between mb-2 flex-wrap gap-2">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400 flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-400" />
+                  Google Search Schema (JSON-LD) • Schema.org/BlogPosting
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <a
+                  href="https://search.google.com/test/rich-results"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[10px] text-slate-300 hover:text-white underline flex items-center gap-1"
+                >
+                  <span>Google Rich Results Test</span>
+                  <ExternalLink className="w-2.5 h-2.5" />
+                </a>
+                <button
+                  onClick={handleCopySchema}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-[10px] font-semibold cursor-pointer transition-colors"
+                >
+                  {copiedSchema ? (
+                    <>
+                      <Check className="w-3 h-3 text-white" />
+                      <span>Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3 h-3 text-white" />
+                      <span>Copy JSON-LD</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+            <pre className="text-[11px] font-mono bg-slate-950 p-3 rounded-lg border border-slate-800 overflow-x-auto text-emerald-300 max-h-48 leading-relaxed">
+              {schemaJson}
+            </pre>
+          </div>
+        )}
+
         {/* Article Content */}
         <div className="flex-grow overflow-y-auto p-5 sm:p-6 md:p-8 bg-white prose prose-slate max-w-none text-slate-700">
+          {/* Grounded Trends Banner if AI Generated */}
+          {blog.sourceTrends && blog.sourceTrends.length > 0 && (
+            <div className="mb-6 bg-slate-50 border border-slate-200/80 rounded-xl p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Globe className="w-4 h-4 text-emerald-600" />
+                <span className="text-xs font-bold uppercase tracking-wider text-navy-950">
+                  Current UAE Regulatory Trends Grounded via Google Search:
+                </span>
+              </div>
+              <ul className="list-disc list-inside space-y-1 text-xs text-slate-600">
+                {blog.sourceTrends.map((trend, idx) => (
+                  <li key={idx} className="leading-normal">{trend}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           <div className="whitespace-pre-line text-sm sm:text-base leading-relaxed space-y-4">
             {blog.content}
           </div>
+
+          {/* Keywords Pill List */}
+          {blog.keywords && blog.keywords.length > 0 && (
+            <div className="mt-8 pt-4 border-t border-slate-100 flex flex-wrap items-center gap-1.5">
+              <span className="text-[11px] font-semibold text-slate-400 mr-1">Target SEO Keywords:</span>
+              {blog.keywords.map((kw, i) => (
+                <span key={i} className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-medium">
+                  #{kw}
+                </span>
+              ))}
+            </div>
+          )}
 
           <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5 mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="text-center sm:text-left space-y-1">

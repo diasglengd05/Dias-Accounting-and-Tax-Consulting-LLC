@@ -4,7 +4,7 @@ import fs from "fs";
 import nodemailer from "nodemailer";
 import compression from "compression";
 import { createServer as createViteServer } from "vite";
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { GoogleGenAI } from "@google/genai";
 import { generateOgSvg } from "./server/ogGenerator.ts";
 import { resolveMetaForRequest, injectMetaIntoHtml, isSocialOrSearchCrawler } from "./server/metaPrerender.ts";
@@ -25,13 +25,21 @@ import {
   setLogLevel
 } from "firebase/firestore";
 import firebaseConfig from "./firebase-applet-config.json" with { type: "json" };
+import {
+  dailyBlogGenerator,
+  triggerDailyBlogGeneration,
+  getStoredBlogPosts,
+  getDailyCronSettings,
+} from "./server/dailyBlogGenerator.ts";
+import { blogsData } from "./src/data/staticData.ts";
 
 // Silence internal Firestore SDK logs
 setLogLevel("silent");
 
-// Initialize Firebase App on Server
-const firebaseApp = initializeApp(firebaseConfig);
-const db = getFirestore(firebaseApp);
+// Initialize Firebase App on Server safely
+const firebaseApp = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+const firestoreDbId = (firebaseConfig as any).firestoreDatabaseId || "(default)";
+const db = getFirestore(firebaseApp, firestoreDbId);
 let isFirestoreAvailable = false;
 
 async function checkFirestore() {
@@ -637,8 +645,20 @@ Please provide a detailed, accurate, and search-grounded explanation with releva
       timestamp: new Date().toISOString(),
     });
   } catch (err: any) {
-    console.error("[Gemini Tax Search] Error generating search-grounded response:", err);
-    // If search grounding fails (e.g. search rate limits), return fallback response with valid answer
+    const errMessage = String(err?.message || err || "");
+    const isQuotaOrRateLimit =
+      err?.status === "RESOURCE_EXHAUSTED" ||
+      err?.code === 429 ||
+      errMessage.includes("429") ||
+      errMessage.includes("quota") ||
+      errMessage.includes("RESOURCE_EXHAUSTED");
+
+    if (isQuotaOrRateLimit) {
+      console.log("[Gemini Tax Search] Quota/rate limit notice (429): returning authoritative statutory advisory response.");
+    } else {
+      console.log(`[Gemini Tax Search] Notice (${errMessage.substring(0, 80)}): returning statutory advisory response.`);
+    }
+    // If search grounding fails (e.g. search rate limits or quota), return fallback response with valid answer
     const fallbackAnswer = isArabic
       ? `التوجيه الضريبي الرسمي من دياس للاستشارات المحاسبية والضريبية:
 
@@ -1422,6 +1442,82 @@ app.post("/api/admin/update-inquiry", verifyAdminToken, async (req, res) => {
   }
 });
 
+// ==================== 24-HOUR CLOUD FUNCTION & BLOG ROUTES ====================
+
+/**
+ * Google Cloud Function HTTP Trigger Endpoint
+ * Compatible with Google Cloud Scheduler (e.g. cron `0 6 * * *`), Cloud Functions, or external webhooks
+ */
+app.all(["/api/cloud-functions/daily-blog-generator", "/api/cron/generate-daily-blog"], dailyBlogGenerator);
+
+/**
+ * Get 24-Hour AI Blog Cron Status
+ */
+app.get("/api/cron/status", async (req, res) => {
+  try {
+    const settings = await getDailyCronSettings();
+    return res.json({
+      success: true,
+      settings: settings || {
+        lastRun: null,
+        lastStatus: "pending_initial_run",
+        nextRunDue: new Date(Date.now() + 60000).toISOString(),
+      },
+      serverTime: new Date().toISOString(),
+      uaeTime: new Date().toLocaleString("en-US", { timeZone: "Asia/Dubai" }) + " (GST)",
+    });
+  } catch (err: any) {
+    return res.status(500).json({ error: "Failed to read cron status." });
+  }
+});
+
+/**
+ * Public Blog Posts Feed: /api/blogs
+ * Returns dynamically generated blog posts merged with static knowledge base articles
+ */
+app.get("/api/blogs", async (req, res) => {
+  try {
+    const dynamicPosts = await getStoredBlogPosts();
+    const dynamicIds = new Set(dynamicPosts.map((p) => p.id));
+    const filteredStatic = blogsData.filter((b) => !dynamicIds.has(b.id));
+    const allBlogs = [...dynamicPosts, ...filteredStatic];
+    return res.json({
+      success: true,
+      total: allBlogs.length,
+      dynamicCount: dynamicPosts.length,
+      blogs: allBlogs,
+    });
+  } catch (err: any) {
+    console.error("[API Blogs] Error loading blogs:", err);
+    return res.json({
+      success: true,
+      total: blogsData.length,
+      dynamicCount: 0,
+      blogs: blogsData,
+    });
+  }
+});
+
+/**
+ * Admin Manual Trigger for 24-Hour Blog Generation
+ * Allows Glen Dias / advisors to test or instantly publish the latest AI-grounded article
+ */
+app.post("/api/admin/trigger-daily-blog", verifyAdminToken, async (req, res) => {
+  try {
+    const result = await triggerDailyBlogGeneration({
+      force: true,
+      triggerSource: "admin_portal_manual_trigger",
+    });
+    return res.json(result);
+  } catch (err: any) {
+    console.error("[Admin Trigger] Failed to trigger daily blog generation:", err);
+    return res.status(500).json({
+      success: false,
+      error: err?.message || "Failed to execute daily blog generation.",
+    });
+  }
+});
+
 // ==================== VITE & STATIC SERVING ====================
 
 async function bootstrap() {
@@ -1508,9 +1604,34 @@ async function bootstrap() {
     });
   }
 
-  const port = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
-  app.listen(port, "0.0.0.0", () => {
-    console.log(`Server listening on port ${port}`);
+  const PORT = 3000;
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server listening on http://localhost:${PORT}`);
+
+    // In-process 24-hour autonomous scheduler check
+    const checkDailyBlogSchedule = async () => {
+      try {
+        const settings = await getDailyCronSettings();
+        const lastRun = settings?.lastRun;
+        const now = Date.now();
+        const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+
+        if (!lastRun || (now - new Date(lastRun).getTime()) >= TWENTY_FOUR_HOURS) {
+          console.log("[24h Scheduler] Daily blog generation is due. Triggering Gemini blog sequence...");
+          await triggerDailyBlogGeneration({ triggerSource: "server_24h_auto_schedule" });
+        } else {
+          const hoursRemaining = ((TWENTY_FOUR_HOURS - (now - new Date(lastRun).getTime())) / (1000 * 60 * 60)).toFixed(1);
+          console.log(`[24h Scheduler] Daily post up-to-date. Next scheduled publication in ${hoursRemaining}h.`);
+        }
+      } catch (err: any) {
+        console.log("[24h Scheduler] Auto check note:", err?.message || err);
+      }
+    };
+
+    // Run first check 30 seconds after server startup (non-blocking)
+    setTimeout(checkDailyBlogSchedule, 30000);
+    // Recurring check every hour
+    setInterval(checkDailyBlogSchedule, 60 * 60 * 1000);
   });
 }
 

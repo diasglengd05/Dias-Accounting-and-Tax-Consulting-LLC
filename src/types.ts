@@ -22,6 +22,11 @@ export interface BlogPost {
     role: string;
     avatar: string;
   };
+  keywords?: string[];
+  schemaMarkup?: string; // JSON-LD schema markup string
+  isAiGenerated?: boolean;
+  generatedAt?: string;
+  sourceTrends?: string[];
 }
 
 export interface PricingTier {

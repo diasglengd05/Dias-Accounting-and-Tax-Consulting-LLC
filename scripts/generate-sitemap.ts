@@ -97,13 +97,36 @@ export function generateSitemapXml(domain = "https://www.diasuae.ae"): string {
     });
   });
 
-  // 3. Knowledge Base / Blog Articles
-  blogsData.forEach((blog) => {
+  // 3. Knowledge Base / Blog Articles (Static + Dynamic 24h AI Grounded)
+  const combinedBlogs = [...blogsData];
+  try {
+    const rootFallbackPath = path.join(process.cwd(), "db_fallback.json");
+    const serverFallbackPath = path.join(process.cwd(), "server", "db_fallback.json");
+    const targetPath = fs.existsSync(rootFallbackPath) ? rootFallbackPath : serverFallbackPath;
+    if (fs.existsSync(targetPath)) {
+      const fallbackRaw = fs.readFileSync(targetPath, "utf-8");
+      const fallbackData = JSON.parse(fallbackRaw);
+      const rawList = Array.isArray(fallbackData.blogs)
+        ? fallbackData.blogs
+        : fallbackData.blog_posts && typeof fallbackData.blog_posts === "object"
+        ? Object.values(fallbackData.blog_posts)
+        : [];
+      rawList.forEach((dynamicBlog: any) => {
+        if (dynamicBlog && dynamicBlog.id && !combinedBlogs.some(b => b.id === dynamicBlog.id)) {
+          combinedBlogs.push(dynamicBlog);
+        }
+      });
+    }
+  } catch {
+    // Graceful fallback
+  }
+
+  combinedBlogs.forEach((blog) => {
     urls.push({
       loc: `${domain}/#blog-${blog.id}`,
       lastmod: today,
-      changefreq: "monthly",
-      priority: "0.80",
+      changefreq: blog.isAiGenerated ? "daily" : "monthly",
+      priority: blog.isAiGenerated ? "0.85" : "0.80",
       comment: `Guide: ${blog.title}`,
     });
   });

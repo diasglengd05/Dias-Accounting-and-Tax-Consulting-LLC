@@ -8,11 +8,13 @@ Dias Accounting & Tax Consulting LLC is an FTA-registered accounting firm based 
 - **UAE Corporate Tax Advisory & Registration**: End-to-end EmaraTax registration, TRN acquisition, statutory 9% return calculations, and deadline management (within 9 months of financial year-end).
 - **Free Zone 0% QFZP Matrix**: Comprehensive substance testing, qualifying activities classification, de minimis calculation (<5% / AED 5M), and Transfer Pricing documentation.
 - **VAT Registration & Compliance**: Quarterly VAT return filing (Form VAT201), 10-point tax invoice audit, 100% compliant input tax recovery, and FTA voluntary disclosure (Form 211) filing.
-- **Small Business Relief (SBR)**: Application for businesses with gross revenue ≤ AED 3,000,000 treating taxable income as 0% through 2026.
+- **Small Business Relief (SBR)**: Application for businesses with gross revenue ≤ AED 3,000,000 treating taxable income as 0% through December 31, 2029 (extended by the UAE Ministry of Finance).
 - **Backlog Bookkeeping & Reconstruction**: Multi-currency ledger restoration, bank reconciliation, and IFRS compliant balance sheets/P&L for past unrecorded fiscal years.
 - **Outsourced CFO & Financial Management**: Cash flow forecasting, payroll WPS compliance, and board-level financial reporting.
+- **Latest Regulatory Briefing (September 15, 2026)**: "September 30, 2026 UAE Corporate Tax Filing Deadline: 15-Day Critical Action Guide" available at https://diasuae.ae/#blogs.
 
 ## Key Compliance Deadlines & Thresholds (UAE Law)
+- **Corporate Tax Filing Deadline (September 30, 2026)**: Entities with FY ending Dec 31, 2025 must submit annual returns and payments via EmaraTax.
 - **Corporate Tax Threshold**: 0% on taxable net profit up to AED 375,000; 9% on taxable net profit exceeding AED 375,000.
 - **Late Registration Fine**: Mandatory AED 10,000 administrative penalty for missing the FTA EmaraTax deadline.
 - **VAT Mandatory Registration Threshold**: AED 375,000 annual taxable supplies/imports (Voluntary threshold: AED 187,500).

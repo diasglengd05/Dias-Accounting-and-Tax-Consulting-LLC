@@ -16,10 +16,10 @@
   - Qualifying Free Zone Person (QFZP): 0% on Qualifying Income satisfying Article 18 conditions.
 - Deadlines:
   - Registration: Staggered based on commercial trade license issue month (AED 10,000 penalty for non-compliance).
-  - Annual Return & Tax Payment: Strictly within 9 calendar months from the end of the financial year.
-- Small Business Relief (Ministerial Decision No. 73/2023):
-  - Available to resident taxable persons whose revenue does not exceed AED 3,000,000 for relevant tax periods through December 31, 2026.
-  - Taxable income treated as zero with simplified reporting.
+  - Annual Return & Tax Payment: Strictly within 9 calendar months from the end of the financial year (Key statutory deadline: September 30, 2026 for FY ending Dec 31, 2025).
+- Small Business Relief (Ministerial Decision No. 73/2023 & MoF Extension):
+  - Available to resident taxable persons whose revenue does not exceed AED 3,000,000 for relevant tax periods through December 31, 2029.
+  - Taxable income treated as zero with simplified reporting, but annual EmaraTax return election remains mandatory.
 
 ### 2. Free Zone Qualifying Income (Cabinet Decision No. 55/2023 & MD No. 139/2023)
 - 5 Statutory Tests for 0% Tax:
