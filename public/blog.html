@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Insights & Updates | Dias Accounting and Tax Consulting LLC</title>
+  <meta name="description" content="Read expert insights and timely updates on navigating UAE corporate finance, Federal Tax Authority compliance, VAT, and Small Business Relief regulations." />
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cinzel:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* Reset & Theme Variables */
+    :root {
+      --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      --font-display: 'Cinzel', Georgia, serif;
+      --color-navy-950: #050b14;
+      --color-navy-900: #0a1526;
+      --color-navy-800: #10223e;
+      --color-gold-400: #d4af37;
+      --color-gold-500: #c59b27;
+      --color-gold-600: #aa821d;
+      --color-gold-50: #faf7ee;
+      --color-slate-50: #f8fafc;
+      --color-slate-100: #f1f5f9;
+      --color-slate-200: #e2e8f0;
+      --color-slate-400: #94a3b8;
+      --color-slate-500: #64748b;
+      --color-slate-600: #475569;
+      --color-slate-700: #334155;
+      --color-slate-900: #0f172a;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--color-slate-700);
+      background-color: var(--color-slate-50);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Navbar */
+    .navbar {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--color-slate-200);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      height: 76px;
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--color-navy-950);
+    }
+
+    .logo-emblem {
+      width: 38px;
+      height: 38px;
+      background: linear-gradient(135deg, var(--color-navy-900) 0%, var(--color-navy-950) 100%);
+      border: 1px solid var(--color-gold-500);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-gold-400);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-name {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.15rem;
+      letter-spacing: 0.05em;
+      color: var(--color-navy-950);
+      line-height: 1.2;
+    }
+
+    .brand-sub {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-gold-600);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      list-style: none;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: var(--color-slate-600);
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: color 0.2s ease;
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--color-gold-600);
+    }
+
+    .cta-btn {
+      background: linear-gradient(135deg, var(--color-navy-900) 0%, var(--color-navy-950) 100%);
+      color: #fff;
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      padding: 0.55rem 1.25rem;
+      border-radius: 9999px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .cta-btn:hover {
+      border-color: var(--color-gold-400);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(10, 21, 38, 0.15);
+    }
+
+    /* Hero Section */
+    .hero-section {
+      background: linear-gradient(180deg, var(--color-navy-950) 0%, var(--color-navy-900) 100%);
+      color: #ffffff;
+      padding: 4.5rem 0 4rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(212, 175, 55, 0.12);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      color: var(--color-gold-400);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      margin-bottom: 1rem;
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      color: #ffffff;
+    }
+
+    .hero-subtitle {
+      color: var(--color-slate-400);
+      font-size: 1.1rem;
+      max-width: 680px;
+      line-height: 1.6;
+    }
+
+    /* Main Layout (Grid + Sidebar) */
+    .layout-wrapper {
+      padding: 3.5rem 0 5rem;
+    }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+    }
+
+    @media (min-width: 992px) {
+      .main-grid {
+        grid-template-columns: 2fr 1fr;
+        gap: 3rem;
+      }
+    }
+
+    /* Blog Card Grid */
+    .blog-cards-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    @media (min-width: 640px) {
+      .blog-cards-grid {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      }
+    }
+
+    .blog-card {
+      background: #ffffff;
+      border: 1px solid var(--color-slate-200);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .blog-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px -6px rgba(10, 21, 38, 0.08);
+      border-color: rgba(212, 175, 55, 0.4);
+    }
+
+    .card-thumb-wrap {
+      position: relative;
+      width: 100%;
+      height: 190px;
+      background: var(--color-navy-900);
+      overflow: hidden;
+    }
+
+    .card-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.88;
+      transition: transform 0.35s ease, opacity 0.35s ease;
+    }
+
+    .blog-card:hover .card-thumb {
+      transform: scale(1.05);
+      opacity: 1;
+    }
+
+    .category-tag {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      background: rgba(10, 21, 38, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      color: var(--color-gold-400);
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+    }
+
+    .card-content {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.75rem;
+      color: var(--color-slate-400);
+      margin-bottom: 0.65rem;
+      font-weight: 500;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--color-navy-950);
+      line-height: 1.35;
+      margin-bottom: 0.75rem;
+      transition: color 0.2s ease;
+    }
+
+    .blog-card:hover .card-title {
+      color: var(--color-gold-600);
+    }
+
+    .card-excerpt {
+      font-size: 0.875rem;
+      color: var(--color-slate-500);
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+      flex-grow: 1;
+    }
+
+    .read-more-btn {
+      align-self: flex-start;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.825rem;
+      font-weight: 700;
+      color: var(--color-gold-600);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: gap 0.2s ease, color 0.2s ease;
+    }
+
+    .read-more-btn:hover {
+      color: var(--color-navy-950);
+      gap: 0.6rem;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .sidebar-widget {
+      background: #ffffff;
+      border: 1px solid var(--color-slate-200);
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    .widget-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-navy-950);
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--color-gold-500);
+      display: inline-block;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-size: 0.8rem;
+    }
+
+    /* Search Form */
+    .search-box {
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      border: 1px solid var(--color-slate-200);
+      border-radius: 10px;
+      font-size: 0.875rem;
+      color: var(--color-navy-950);
+      outline: none;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--color-gold-500);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--color-slate-400);
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Categories Widget */
+    .category-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .category-item button {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.6rem 0.85rem;
+      background: var(--color-slate-50);
+      border: 1px solid transparent;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--color-slate-700);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+    }
+
+    .category-item button:hover,
+    .category-item.active button {
+      background: var(--color-gold-50);
+      border-color: var(--color-gold-400);
+      color: var(--color-gold-600);
+      padding-left: 1.1rem;
+    }
+
+    .count-badge {
+      font-size: 0.75rem;
+      background: var(--color-slate-200);
+      color: var(--color-slate-600);
+      padding: 0.15rem 0.5rem;
+      border-radius: 9999px;
+      font-weight: 700;
+    }
+
+    .category-item button:hover .count-badge,
+    .category-item.active button .count-badge {
+      background: var(--color-gold-500);
+      color: #ffffff;
+    }
+
+    /* Newsletter Widget */
+    .newsletter-desc {
+      font-size: 0.85rem;
+      color: var(--color-slate-500);
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+
+    .newsletter-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .newsletter-input {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-slate-200);
+      border-radius: 10px;
+      font-size: 0.85rem;
+      color: var(--color-navy-950);
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .newsletter-input:focus {
+      border-color: var(--color-gold-500);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
+    }
+
+    .newsletter-btn {
+      background: linear-gradient(135deg, var(--color-gold-500) 0%, var(--color-gold-600) 100%);
+      color: #ffffff;
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      letter-spacing: 0.03em;
+    }
+
+    .newsletter-btn:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+
+    .newsletter-success {
+      display: none;
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+      padding: 0.75rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    /* Modal for Read More Article Viewer */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 11, 20, 0.75);
+      backdrop-filter: blur(6px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      width: 100%;
+      max-width: 760px;
+      max-height: 90vh;
+      border-radius: 20px;
+      overflow-y: auto;
+      border: 1px solid var(--color-slate-200);
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+      position: relative;
+      padding: 2.5rem 2rem;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      background: var(--color-slate-100);
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-slate-600);
+      transition: background 0.2s ease;
+    }
+
+    .modal-close:hover {
+      background: var(--color-slate-200);
+      color: var(--color-navy-950);
+    }
+
+    .modal-tag {
+      display: inline-block;
+      color: var(--color-gold-600);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      color: var(--color-navy-950);
+      line-height: 1.3;
+      margin-bottom: 1rem;
+    }
+
+    .modal-body {
+      color: var(--color-slate-600);
+      font-size: 0.95rem;
+      line-height: 1.8;
+      border-top: 1px solid var(--color-slate-200);
+      padding-top: 1.5rem;
+    }
+
+    .modal-body p {
+      margin-bottom: 1rem;
+    }
+
+    /* Footer */
+    .site-footer {
+      background: var(--color-navy-950);
+      color: var(--color-slate-400);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 3rem 0 2rem;
+      font-size: 0.85rem;
+    }
+
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      align-items: center;
+      text-align: center;
+    }
+
+    @media (min-width: 768px) {
+      .footer-content {
+        flex-direction: row;
+        justify-content: space-between;
+        text-align: left;
+      }
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: var(--color-slate-400);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--color-gold-400);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. Header / Navigation -->
+  <header class="navbar">
+    <div class="container nav-content">
+      <a href="/" class="brand-logo" aria-label="Dias Accounting Home">
+        <div class="logo-emblem">D</div>
+        <div class="brand-text">
+          <span class="brand-name">DIAS</span>
+          <span class="brand-sub">Accounting & Tax Consulting</span>
+        </div>
+      </a>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="/#home">Home</a></li>
+          <li><a href="/#services">Services</a></li>
+          <li><a href="/blog.html" class="active">Insights</a></li>
+          <li><a href="/#contact" class="cta-btn">Book Consultation</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- 2. Hero Section -->
+  <section class="hero-section">
+    <div class="container">
+      <span class="hero-badge">UAE Corporate Financial Advisory</span>
+      <h1 class="hero-title">Insights & Updates</h1>
+      <p class="hero-subtitle">
+        Navigating UAE corporate finance, Federal Tax Authority compliance, VAT requirements, and small business tax exemptions with clarity and confidence.
+      </p>
+    </div>
+  </section>
+
+  <!-- 3. Main Content: Blog Grid & Sidebar -->
+  <main class="layout-wrapper">
+    <div class="container">
+      <div class="main-grid">
+        
+        <!-- Blog Cards Grid -->
+        <section aria-label="Articles">
+          <div class="blog-cards-grid" id="blogGrid">
+            <!-- Article Cards rendered via JS or static HTML -->
+          </div>
+          <div id="noResults" style="display: none; padding: 3rem; text-align: center; background: #fff; border-radius: 16px; border: 1px dashed var(--color-slate-200);">
+            <h3 style="color: var(--color-navy-950); margin-bottom: 0.5rem;">No matching articles found</h3>
+            <p style="color: var(--color-slate-500); font-size: 0.9rem;">Try searching for different keywords or select a different category.</p>
+          </div>
+        </section>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+          
+          <!-- Search Widget -->
+          <div class="sidebar-widget">
+            <span class="widget-title">Search Articles</span>
+            <div class="search-box">
+              <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+              <input type="text" id="searchInput" class="search-input" placeholder="Search tax, VAT, licenses..." />
+            </div>
+          </div>
+
+          <!-- Categories Widget -->
+          <div class="sidebar-widget">
+            <span class="widget-title">Filter by Category</span>
+            <ul class="category-list" id="categoryList">
+              <!-- Rendered via JS -->
+            </ul>
+          </div>
+
+          <!-- Newsletter Subscription -->
+          <div class="sidebar-widget">
+            <span class="widget-title">UAE Tax Newsletter</span>
+            <p class="newsletter-desc">
+              Get timely regulatory alerts, upcoming FTA deadlines, and tactical tax strategies delivered directly to your inbox.
+            </p>
+            <form id="newsletterForm" class="newsletter-form">
+              <input type="email" id="newsletterEmail" class="newsletter-input" placeholder="Your business email" required />
+              <button type="submit" class="newsletter-btn">Subscribe Free</button>
+            </form>
+            <div id="newsletterSuccess" class="newsletter-success">
+              ✓ Subscribed! You will receive our next executive briefing.
+            </div>
+          </div>
+
+        </aside>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- 4. Read Article Modal -->
+  <div class="modal-overlay" id="articleModal" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+        <span class="modal-tag" id="modalTag" style="margin-bottom: 0;">Tax Updates</span>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <a id="modalNewTabBtn" href="#" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.75rem; font-size: 0.75rem; font-weight: 600; color: var(--color-gold-600); background: #fdf8eb; border-radius: 9999px; text-decoration: none;" title="Open in new tab">
+            <span>Open in Tab</span>
+            <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+          </a>
+          <button class="modal-close" id="modalCloseBtn" aria-label="Close article">✕</button>
+        </div>
+      </div>
+      <h2 class="modal-title" id="modalTitle">Article Title</h2>
+      <div class="modal-body" id="modalBody">
+        <!-- Content will be injected -->
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Footer -->
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <div>
+        <p>&copy; 2026 Dias Accounting & Tax Consulting LLC. All rights reserved.</p>
+        <p style="font-size: 0.75rem; color: var(--color-slate-500); margin-top: 0.25rem;">Sharjah Media City (Shams) & Dubai, United Arab Emirates</p>
+      </div>
+      <ul class="footer-links">
+        <li><a href="/#home">Home</a></li>
+        <li><a href="/#services">Services</a></li>
+        <li><a href="/#contact">Contact</a></li>
+        <li><a href="/#privacy">Privacy Policy</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <!-- JavaScript: Dynamic Search, Category Filtering, and Modal Logic -->
+  <script>
+    // Comprehensive Article Catalog (Synchronized with staticData.ts & dynamic AI pipeline)
+    let POSTS_DATA = [
+  {
+    "id": "understanding-uae-small-business-relief-extension-to-2029",
+    "category": "Tax Updates",
+    "date": "September 16, 2026",
+    "readTime": "5 min read",
+    "title": "Understanding the UAE Small Business Relief Extension to 2029",
+    "excerpt": "The UAE Ministry of Finance has extended Small Business Relief (SBR) through December 31, 2029. Discover how UAE resident businesses with gross revenues up to AED 3,000,000 can legally qualify for 0% corporate tax.",
+    "image": "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=700&q=80",
+    "fullContent": "<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">In a landmark pro-business initiative, the UAE Ministry of Finance has officially <strong>extended the Small Business Relief (SBR) regime through tax periods ending on or before December 31, 2029</strong> under Federal Decree-Law No. 47 of 2022 on the Taxation of Corporations and Businesses.</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">This decision provides significant financial certainty for startups, freelancers, and small enterprises operating across Dubai, Abu Dhabi, Sharjah, and all UAE Free Zones.</p>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">1. Key Eligibility Criteria for Small Business Relief</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">To elect for Small Business Relief and be treated as having <strong>no taxable income (0% corporate tax payable)</strong>, a business must satisfy all of the following conditions:</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\"><strong>Gross Revenue Threshold:</strong> Revenue for the relevant tax period and all previous tax periods must not exceed <strong>AED 3,000,000</strong>.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Resident Taxable Person:</strong> The business must be a juridical person or natural person resident in the UAE.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Excluded Entities:</strong> The relief does NOT apply to Qualifying Free Zone Persons (QFZPs) or constituent entities of Multinational Enterprise (MNE) groups with consolidated group revenues exceeding AED 3.15 Billion.</li>\n</ul>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">2. Is Small Business Relief Automatic?</h3>\n<blockquote style=\"border-left: 4px solid var(--color-gold-500); padding: 0.75rem 1rem; margin: 1rem 0; background: #faf7ee; border-radius: 0 8px 8px 0;\"><strong>CRITICAL COMPLIANCE WARNING:</strong> Small Business Relief is <strong>NOT automatic</strong>.</blockquote>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Even if your business generated zero revenue or operated at a net loss:</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\">You <strong>must register for Corporate Tax</strong> and obtain an active Corporate Tax Registration Number (CT TRN).</li>\n<li style=\"margin-bottom: 0.35rem;\">You <strong>must submit an official Corporate Tax Return via EmaraTax</strong> within 9 months from your financial year-end.</li>\n<li style=\"margin-bottom: 0.35rem;\">You <strong>must actively tick the Small Business Relief election box under Article 21</strong> within the return.</li>\n</ul>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Failure to submit your return on time results in the forfeiture of the relief, leading to default assessment at 9% plus statutory administrative late penalties.</p>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">3. Simplified Bookkeeping & Compliance Advantages</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Opting into Small Business Relief delivers several major operational benefits:</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\"><strong>Zero Corporate Tax:</strong> No corporate tax is payable to the Federal Tax Authority.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Transfer Pricing Simplification:</strong> Eligible entities are exempt from maintaining elaborate Master Files and Local Files under Article 55.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Simplified Financial Accounting:</strong> Businesses may prepare simplified accounts in line with cash or accrual standards rather than full enterprise IFRS suites.</li>\n</ul>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">How Dias Accounting Protects Your Relief Status</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">At <strong>Dias Accounting and Tax Consulting LLC</strong>, our FTA-certified chartered tax advisors audit your revenue streams, calculate connected person transactions, and submit your EmaraTax return to guarantee your 0% SBR status is secured without risk of audit fines.</p>"
+  },
+  {
+    "id": "september-2026-uae-corporate-tax-filing-deadline-guide",
+    "category": "Corporate Tax Deadline",
+    "date": "September 15, 2026",
+    "readTime": "6 min read",
+    "title": "September 30, 2026 UAE Corporate Tax Filing Deadline: 15-Day Critical Action Guide",
+    "excerpt": "Essential compliance briefing for UAE businesses with FY ended Dec 31, 2025. Covers the 9-month statutory deadline, EmaraTax electronic return steps, the official Small Business Relief extension to 2029, and penalty avoidance.",
+    "image": "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=700&q=80",
+    "fullContent": "<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">As of <strong>September 15, 2026</strong>, UAE business owners, finance managers, and Free Zone entrepreneurs face a decisive regulatory milestone. Under the UAE Corporate Tax Law (<strong>Federal Decree-Law No. 47 of 2022</strong>), all taxable entities operating on a calendar financial year (January 1, 2025 – December 31, 2025) must file their statutory Corporate Tax Return and remit any tax liabilities within <strong>9 months</strong> from their financial year-end.</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">That statutory deadline arrives in exactly <strong>15 days: September 30, 2026</strong>.</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Whether your company generated AED 500,000 or AED 50,000,000 in revenue—or even if you operated at a net loss—<strong>filing is legally mandatory</strong>. Here is the authoritative breakdown of what you must execute immediately to guarantee full compliance and avoid severe FTA penalties.</p>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">Key Statutory Deadlines at a Glance (2026)</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">| Obligation | Statutory Reference | Deadline | Non-Compliance Risk |</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">| :--- | :--- | :--- | :--- |</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">| <strong>CT Registration</strong> | FTA Decision No. 3 of 2024 | Based on Trade License issuance month | AED 10,000 Fixed Administrative Penalty |</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">| <strong>Annual Tax Return Submission</strong> | Article 53, Decree-Law No. 47 | September 30, 2026 (for FY ending Dec 31, 2025) | AED 500/month (up to AED 1,000/month thereafter) |</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">| <strong>Tax Settlement & Payment</strong> | Article 48, Decree-Law No. 47 | September 30, 2026 | Late payment interest accrues dynamically from due date |</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">| <strong>Small Business Relief (SBR) Claim</strong> | Ministerial Decision No. 73/2023 | Must be actively claimed in the Return | Forfeiture of 0% treatment; default to 9% tax |</p>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">1. The Small Business Relief (SBR) Update: Officially Extended to 2029</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">In a major pro-business reform, the UAE Ministry of Finance has officially <strong>extended the Small Business Relief (SBR) regime through tax periods ending on or before December 31, 2029</strong> (extending the original sunset of 2026 by three additional years).</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">#### What Does SBR Mean for Your Business?</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\"><strong>Revenue Cap:</strong> UAE resident businesses with gross revenue of <strong>AED 3,000,000 or less</strong> in the relevant and all previous tax periods can elect to be treated as having <strong>no taxable income</strong>.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Zero Corporate Tax Payable:</strong> If your revenue is below AED 3M, your taxable profit is treated as AED 0, resulting in <strong>AED 0 corporate tax liability</strong>.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Simplified Reporting:</strong> SBR claimants are exempt from complex Transfer Pricing documentation (Local File & Master File) and can maintain simplified cash or accrual accounting records.</li>\n</ul>\n<blockquote style=\"border-left: 4px solid var(--color-gold-500); padding: 0.75rem 1rem; margin: 1rem 0; background: #faf7ee; border-radius: 0 8px 8px 0;\"><strong>CRITICAL CAVEAT:</strong> Small Business Relief is <strong>NOT AUTOMATIC</strong>. You cannot simply ignore the September 30 deadline. You <strong>must submit an official Corporate Tax Return via the FTA EmaraTax portal</strong> and actively check the election box for Small Business Relief under Article 21. Failure to file on time means you forfeit the relief and will be subjected to the standard 9% tax assessment plus penalties!</blockquote>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">2. Step-by-Step EmaraTax Return Filing Protocol</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">To submit your corporate tax return before the September 30, 2026 cutoff, ensure your accounting records are organized into the following 5-stage workflow:</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">#### Step 1: EmaraTax Portal Authentication</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Log in to your Federal Tax Authority portal via <strong>UAE PASS</strong> or your registered EmaraTax corporate credentials. Ensure your Corporate Tax Registration Number (CT TRN) is in <strong>\"Active\"</strong> status. If you have not yet received your CT TRN, an urgent expedited regularization is required immediately.</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">#### Step 2: Finalize IFRS-Compliant Financial Statements</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Under Article 20 of the Corporate Tax Law, taxable income must be derived from certified financial accounts prepared according to <strong>International Financial Reporting Standards (IFRS or IFRS for SMEs)</strong>.</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\">Reconcile all 12 months of bank statements across all UAE corporate accounts.</li>\n<li style=\"margin-bottom: 0.35rem;\">Verify Accounts Receivable, Accounts Payable, and inventory valuations.</li>\n<li style=\"margin-bottom: 0.35rem;\">Ensure all depreciation schedules follow statutory asset classes.</li>\n</ul>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">#### Step 3: Compute Net Tax Adjustments (Add-Backs & Deductions)</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Accounting profit does not equal taxable profit. You must calculate statutory adjustments:</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\"><strong>50% Entertainment Expenses:</strong> Business entertainment for clients (meals, hospitality, events) is only <strong>50% tax deductible</strong>. The remaining 50% must be added back to taxable profit.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Connected Persons & Director Compensation:</strong> Remuneration, bonuses, or loans paid to owners, shareholders, or directors must be strictly benchmarked to <strong>Fair Market Value</strong>. Unsubstantiated executive salaries will be disallowed by the FTA.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Fines & Penalties:</strong> Traffic fines, late licensing charges, and municipal penalties are <strong>100% non-deductible</strong>.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Exempt Income:</strong> Foreign branch dividends or capital gains qualifying under the Participation Exemption can be legally subtracted.</li>\n</ul>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">#### Step 4: Transfer Pricing Disclosure Form</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">If your business transacted with <strong>Related Parties</strong> (sister entities, overseas parent entities) or <strong>Connected Persons</strong> (shareholders and family directors), you must disclose transaction volumes, contract types, and applied pricing methodologies in the mandatory TP Disclosure Schedule attached to your return.</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">#### Step 5: Declaration, Electronic Submission & Payment</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Review the auto-calculated tax liability:</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\">First <strong>AED 375,000</strong> of Net Taxable Income: <strong>0% Tax</strong>.</li>\n<li style=\"margin-bottom: 0.35rem;\">Net Taxable Income exceeding <strong>AED 375,000</strong>: <strong>9% Tax</strong>.</li>\n</ul>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Verify bank wire or GBI payment details via the e-Dirham / Magnati payment gateway on EmaraTax. Ensure funds transfer with sufficient lead time before the midnight deadline on September 30.</p>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">3. What About UAE Free Zone Companies (DMCC, DIFC, Meydan, SHAMS, IFZA)?</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">A common misconception among Free Zone founders is: <em>\"My company is in a Free Zone, so I am automatically exempt from corporate tax.\"</em></p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\"><strong>This is completely false.</strong> Under Cabinet Decision No. 55 of 2023 and Ministerial Decision No. 139 of 2023:</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\">All Free Zone entities <strong>MUST register and file an annual Corporate Tax return</strong>.</li>\n<li style=\"margin-bottom: 0.35rem;\">To enjoy the <strong>0% Corporate Tax rate</strong> as a <strong>Qualifying Free Zone Person (QFZP)</strong>, you must satisfy five strict cumulative legal tests:</li>\n<li style=\"margin-bottom: 0.35rem;\">Maintain adequate physical substance and headcount in the Free Zone.</li>\n<li style=\"margin-bottom: 0.35rem;\">Derive <strong>Qualifying Income</strong> exclusively from eligible activities or transactions with other Free Zone persons.</li>\n<li style=\"margin-bottom: 0.35rem;\">Satisfy the <strong>De Minimis requirement</strong> (non-qualifying revenue must not exceed 5% of total revenue or AED 5,000,000).</li>\n<li style=\"margin-bottom: 0.35rem;\">Comply with Transfer Pricing Arm's Length rules under Article 34.</li>\n<li style=\"margin-bottom: 0.35rem;\">Prepare <strong>Audited Financial Statements</strong> signed by an accredited UAE auditor.</li>\n</ul>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">If your Free Zone company fails any of these five conditions, your entire income defaults to the standard <strong>9% mainland corporate tax rate</strong>.</p>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">4. Upcoming Compliance Horizon: E-Invoicing Phase 1 (October 2026 Milestone)</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">As you complete your corporate tax return, be aware of the next major compliance shift: the <strong>UAE National E-Invoicing Mandate (Fatoorah)</strong>.</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\"><strong>Accredited Service Provider (ASP) Deadline:</strong> Extended to <strong>October 30, 2026</strong>.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Voluntary Onboarding:</strong> Commenced July 1, 2026.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Mandatory Phase 1 Enforcement:</strong> Businesses with revenues ≥ AED 50M must transmit real-time XML/Peppol invoices directly to the FTA starting January 1, 2027, followed by all VAT-registered entities in mid-2027.</li>\n<li style=\"margin-bottom: 0.35rem;\">Upgrading to cloud ERP solutions (Zoho Books, QuickBooks, Xero, Wafeq) today ensures your business is structurally ready.</li>\n</ul>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">Actionable Pre-Filing Checklist for the Next 15 Days</h3>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\">[ ] Confirm your corporate EmaraTax login credentials and active CT TRN.</li>\n<li style=\"margin-bottom: 0.35rem;\">[ ] Complete full year-end bank reconciliation for all company accounts.</li>\n<li style=\"margin-bottom: 0.35rem;\">[ ] Prepare certified Trial Balance, Profit & Loss, and Balance Sheet.</li>\n<li style=\"margin-bottom: 0.35rem;\">[ ] Review total annual gross revenue: If ≤ AED 3,000,000, prepare the Small Business Relief election.</li>\n<li style=\"margin-bottom: 0.35rem;\">[ ] Calculate the 50% entertainment expense add-back.</li>\n<li style=\"margin-bottom: 0.35rem;\">[ ] Review director/shareholder salaries for fair market value compliance.</li>\n<li style=\"margin-bottom: 0.35rem;\">[ ] If operating in a Free Zone, verify audited accounts are signed by a certified auditor.</li>\n<li style=\"margin-bottom: 0.35rem;\">[ ] Submit the return on EmaraTax and settle any 9% tax balance before September 30, 2026.</li>\n</ul>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">Need Emergency Corporate Tax Filing or Relief Review?</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">At <strong>Dias Accounting & Tax Consulting</strong>, our FTA-certified chartered accountants and senior tax consultants represent UAE businesses across Dubai Mainland, Abu Dhabi, and all UAE Free Zones. We review your books, identify every legal deduction, file your EmaraTax return, and secure your Small Business Relief or 0% Free Zone status before the September 30 cutoff.</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\"><em>Book an expedited 1-on-1 Corporate Tax consultation with Glen Dias or contact our rapid advisory desk on WhatsApp at +971 50 256 0990.</em></p>"
+  },
+  {
+    "id": "uae-corporate-tax-guide",
+    "category": "Corporate Tax",
+    "date": "July 2, 2026",
+    "readTime": "5 min read",
+    "title": "Understanding UAE Corporate Tax: A Comprehensive Guide for SMEs",
+    "excerpt": "Learn the fundamentals of the new 9% corporate tax regime, including the AED 375,000 threshold, exemptions, and Small Business Relief eligibility.",
+    "image": "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=700&q=80",
+    "fullContent": "<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">With the UAE Federal Corporate Tax now active, small and medium enterprises (SMEs) are stepping into a new era of financial compliance. While tax regulations can seem daunting, understanding the key thresholds and exemptions can turn compliance into a strategic advantage.</p>\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">1. What is the UAE Corporate Tax Rate?</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">The UAE imposes a standard corporate tax rate of <strong>9%</strong> on taxable income. However, to support small businesses and startups, the tax is structured progressively:</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\"><strong>0%</strong> on taxable income up to and including <strong>AED 375,000</strong>.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>9%</strong> on taxable income exceeding <strong>AED 375,000</strong>.</li>\n</ul>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">This means that if your business makes AED 400,000 in net taxable profit, you will only pay 9% on the excess amount (AED 25,000), resulting in a tax of just AED 2,250!</p>\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">2. What is Small Business Relief (SBR)?</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">To foster entrepreneurial growth, the Ministry of Finance introduced Small Business Relief. Under this program, UAE resident taxable persons with gross revenue of <strong>AED 3,000,000 or less</strong> in a tax period can elect to be treated as having \"no taxable income.\"</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\"><strong>Eligible Periods:</strong> Available for tax periods starting on or after June 1, 2023, and ending on or before December 31, 2026.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Action Required:</strong> This relief is not automatic; businesses must actively claim SBR in their annual Corporate Tax return.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Requirement:</strong> Standard Transfer Pricing documentation is simplified, though basic compliance and record-keeping remain mandatory.</li>\n</ul>\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">3. Registration Deadlines</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">All taxable entities (including Free Zone companies) <strong>MUST</strong> register for Corporate Tax. Failure to submit a registration application within the timelines designated by the FTA can lead to an administrative penalty of <strong>AED 10,000</strong>.</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\">Deadlines are generally assigned based on the month of your commercial license issuance.</li>\n<li style=\"margin-bottom: 0.35rem;\">We strongly recommend registering immediately to avoid the rush and potential system delays.</li>\n</ul>\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">Summary Checklist for SMEs:</h3>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\"><strong>Determine your Tax Year:</strong> Typically matches your calendar year (Jan 1 - Dec 31).</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Organize Bookkeeping:</strong> You must maintain proper financial ledgers for at least 7 years.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Initiate FTA Registration:</strong> Apply via the EmaraTax portal.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Evaluate Small Business Relief:</strong> Determine if your revenue stays under AED 3 million.</li>\n</ul>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\"><em>At Dias Accounting, we guide you through Corporate Tax registration, impact assessments, and annual filings so you can stay fully compliant while maximizing legal reliefs.</em></p>"
+  },
+  {
+    "id": "vat-compliance-checklist",
+    "category": "VAT Compliance",
+    "date": "June 18, 2026",
+    "readTime": "4 min read",
+    "title": "The Ultimate VAT Compliance Checklist for UAE Businesses",
+    "excerpt": "Avoid severe FTA fines. Review our actionable checklist covering tax invoices, output VAT, input VAT recoveries, and record keeping rules.",
+    "image": "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=700&q=80",
+    "fullContent": "<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Since its implementation in 2018, the UAE Value Added Tax (VAT) of 5% has been a standard element of business. However, the Federal Tax Authority (FTA) has recently increased audits and strict penalties for clerical mistakes.</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Review this comprehensive checklist to ensure your business remains fully compliant.</p>\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">1. Tax Invoice Requirements</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Are your invoices legally compliant? A valid Tax Invoice in the UAE must contain specific details. Omitting these is one of the most common audit failures:</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\">The words <strong>\"Tax Invoice\"</strong> clearly displayed.</li>\n<li style=\"margin-bottom: 0.35rem;\">Name, address, and Tax Registration Number (TRN) of the supplier.</li>\n<li style=\"margin-bottom: 0.35rem;\">Name, address, and TRN of the recipient (mandatory for invoices exceeding AED 10,000).</li>\n<li style=\"margin-bottom: 0.35rem;\">A unique sequential invoice number and date of issue.</li>\n<li style=\"margin-bottom: 0.35rem;\">Description, quantity, price per unit, and VAT rate applied to each item.</li>\n<li style=\"margin-bottom: 0.35rem;\">Total gross amount, VAT amount, and net amount payable in UAE Dirham (AED).</li>\n</ul>\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">2. Input VAT Recovery Rules</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Recovering VAT on business expenses is a great way to boost cash flow, but you can only claim back input VAT if:</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\">The expense was incurred for making taxable supplies.</li>\n<li style=\"margin-bottom: 0.35rem;\">You hold a valid Tax Invoice addressed to your company name.</li>\n<li style=\"margin-bottom: 0.35rem;\">The payment has been settled or is intended to be settled within 6 months.</li>\n<li style=\"margin-bottom: 0.35rem;\">*Warning:* VAT on entertainment expenses (meals, accommodation for clients/non-employees) and private motor vehicle expenses is generally <strong>blocked</strong> from recovery.</li>\n</ul>\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">3. Record Keeping Mandates</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Under Federal Decree-Law on VAT, businesses must keep comprehensive records for at least <strong>5 years</strong> (15 years for real estate records):</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\">All issued and received tax invoices, credit notes, and debit notes.</li>\n<li style=\"margin-bottom: 0.35rem;\">Customs declarations and import documents (such as Bill of Lading, Airway Bill).</li>\n<li style=\"margin-bottom: 0.35rem;\">Inventory books, general ledgers, and bank statements detailing transaction values.</li>\n<li style=\"margin-bottom: 0.35rem;\">Accounts showing Output VAT payable and Input VAT recoverable.</li>\n</ul>\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">4. Filing Frequency and Deadlines</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Most UAE businesses file VAT returns quarterly, but high-revenue companies may be requested to file monthly.</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\"><strong>Filing Deadline:</strong> The 28th day following the end of your tax period.</li>\n<li style=\"margin-bottom: 0.35rem;\">*Crucial Rule:* Both your VAT Return submission and full payment must reach the FTA's bank account before the deadline. Late payment penalties accrue dynamically, so wire funds early.</li>\n</ul>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\"><em>Dias Accounting manages your monthly reconciliation and prepares tax-compliant returns, ensuring you never pay a single dirham in penalties.</em></p>"
+  },
+  {
+    "id": "choosing-uae-jurisdiction",
+    "category": "Incorporation",
+    "date": "May 29, 2026",
+    "readTime": "6 min read",
+    "title": "Choosing the Right Business Jurisdiction: Mainland vs. Free Zone",
+    "excerpt": "Evaluating corporate tax implications, ownership structures, commercial flexibility, and costs to make the perfect launch decision.",
+    "image": "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=700&q=80",
+    "fullContent": "<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Setting up a new business in the UAE is an exciting venture. The country offers two main corporate jurisdictions: <strong>Mainland</strong> and <strong>Free Zones</strong>.</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">With the UAE's new Corporate Tax regulations now in effect, this decision has direct tax implications, beyond standard operational factors. Here is an objective comparison to guide your strategy.</p>\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">1. Ownership & Control</h3>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\"><strong>Free Zone:</strong> Offers 100% foreign ownership of the company from day one, without needing local sponsors.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Mainland:</strong> Historically required a local partner holding 51% shares. Under recent commercial company reforms, 100% foreign ownership is now permitted for over 1,000 industrial and commercial activities, though some strategic sectors still require UAE national participation.</li>\n</ul>\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">2. Geographical Scope & Trading Freedom</h3>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\"><strong>Free Zone:</strong> Businesses are legally restricted to trading within their specific Free Zone, with other Free Zones, or internationally. To sell goods or services directly in UAE Mainland, you must employ a Mainland distributor or open a separate Mainland branch.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Mainland:</strong> Offers complete freedom to trade with any corporate entity or individual anywhere inside or outside the UAE, with zero geographic limitations. Ideal for retail, local distribution, and direct government contracting.</li>\n</ul>\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">3. Corporate Tax Implications</h3>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\"><strong>Mainland:</strong> Subject to the standard corporate tax of 9% on profits above AED 375,000.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Free Zone:</strong> Free Zone Companies can qualify for a <strong>0% Corporate Tax rate</strong> if they maintain the status of a <strong>Qualifying Free Zone Person (QFZP)</strong>. This requires:</li>\n<li style=\"margin-bottom: 0.35rem;\">Maintaining adequate \"substance\" in the UAE (local office, local employees, physical operations).</li>\n<li style=\"margin-bottom: 0.35rem;\">Earning \"Qualifying Income\" (transactions with other Free Zone persons, or certain specified financial/holding activities).</li>\n<li style=\"margin-bottom: 0.35rem;\">Complying with Transfer Pricing rules and preparing audited financial statements.</li>\n</ul>\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">Comparison Summary Matrix:</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">| Feature | UAE Mainland | UAE Free Zone |</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">| :--- | :--- | :--- |</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">| <strong>Trade within UAE</strong> | Unlimited | Restricted (requires agent/branch) |</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">| <strong>0% Corporate Tax</strong> | No (Standard 9% applies) | Yes (If conditions for QFZP are met) |</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">| <strong>Audited Accounts</strong> | Encouraged (Required for CT) | Mandatory in most Free Zones |</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">| <strong>Physical Office</strong> | Mandatory (min. size applies) | Flexible (flexi-desk options allowed) |</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\"><em>Dias Accounting specializes in corporate setups. We don't just register your company; we architect a legal structure designed to optimize your ongoing tax position, saving you money and hassle down the road.</em></p>"
+  },
+  {
+    "id": "uae-transfer-pricing-compliance-guide",
+    "category": "Transfer Pricing",
+    "date": "August 12, 2026",
+    "readTime": "7 min read",
+    "title": "UAE Transfer Pricing Compliance Guide: Local File, Master File & TP Disclosure Form",
+    "excerpt": "Master UAE Transfer Pricing rules under Corporate Tax: Local File & Master File statutory thresholds, Connected Persons and KMP benchmarking, and filing the EmaraTax TP Disclosure Form.",
+    "image": "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=700&q=80",
+    "fullContent": "<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">With the enforcement of the UAE Corporate Tax Law (Federal Decree-Law No. 47 of 2022) and FTA Ministerial Decision No. 97 of 2023, Transfer Pricing (TP) has become one of the most rigorously audited areas of UAE corporate taxation.</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Whether operating as a local group, a Free Zone entity, or a cross-border multinational enterprise (MNE), all businesses must prove that transactions with Related Parties and Connected Persons adhere to the <strong>Arm's Length Principle</strong>.</p>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">1. What is the Arm's Length Principle?</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Article 34 of the Corporate Tax Law dictates that transactions between related parties must produce commercial results identical to transactions between independent third parties negotiating under market conditions. If the FTA determines that pricing departs from the arm's length standard, it has the statutory power to adjust taxable profits and impose substantial penalties.</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Accepted OECD and FTA Transfer Pricing Methods include:</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\"><strong>Comparable Uncontrolled Price (CUP) Method</strong></li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Resale Price Method (RPM)</strong></li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Cost Plus Method (CPM)</strong></li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Transactional Net Margin Method (TNMM)</strong></li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Transactional Profit Split Method (PSM)</strong></li>\n</ul>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">2. Statutory Thresholds: Who Must Maintain a Local File and Master File?</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Under Ministerial Decision No. 97 of 2023, a Taxable Person must maintain a formal <strong>Local File</strong> and <strong>Master File</strong> if they meet either of the following conditions in a tax period:</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\"><strong>Threshold A:</strong> The Taxable Person has total annual revenues of <strong>AED 200 Million or more</strong>; OR</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Threshold B:</strong> The Taxable Person is part of an MNE Group with total consolidated group revenues of <strong>AED 3.15 Billion or more</strong> in the relevant fiscal year.</li>\n</ul>\n<blockquote style=\"border-left: 4px solid var(--color-gold-500); padding: 0.75rem 1rem; margin: 1rem 0; background: #faf7ee; border-radius: 0 8px 8px 0;\"><strong>Crucial Rule:</strong> Even if your business falls below the AED 200M documentation threshold, your transactions must still be on an arm's length basis, and you must maintain baseline supporting records to defend intercompany pricing upon audit.</blockquote>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">3. The EmaraTax TP Disclosure Form</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">All taxable persons engaging in transactions with Related Parties and Connected Persons must complete and submit a <strong>Transfer Pricing Disclosure Form</strong> electronically via the EmaraTax portal alongside their annual Corporate Tax return (due within 9 months following the close of the financial tax period).</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">The Disclosure Form captures:</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\">Names, jurisdictions, and TRNs of all counterparties.</li>\n<li style=\"margin-bottom: 0.35rem;\">Nature and monetary volume of goods, services, loans, and intellectual property exchanged.</li>\n<li style=\"margin-bottom: 0.35rem;\">The specific transfer pricing method applied to substantiate the transaction.</li>\n<li style=\"margin-bottom: 0.35rem;\">Confirmation of whether a Local File and Master File have been drafted and maintained.</li>\n</ul>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">4. Connected Persons & KMP Remuneration Benchmarking</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">One of the most immediate tax risks for UAE SMEs and owner-managed businesses involves <strong>Connected Persons</strong> (shareholders, directors, officers, and family relatives up to the fourth degree of kinship).</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Under Article 36, salaries, director fees, management bonuses, and interest on shareholder loans paid to Connected Persons are <strong>only tax-deductible up to the fair market value</strong> of their services.</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\">Paying an owner-director an inflated salary (e.g., AED 2,000,000) to wipe out corporate profit above the AED 375,000 threshold will be disallowed by the FTA unless backed by an independent market remuneration benchmarking study.</li>\n<li style=\"margin-bottom: 0.35rem;\">Dias Accounting conducts empirical compensation benchmarking studies to defend executive compensation against FTA disallowances.</li>\n</ul>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">5. The 30-Day FTA Submission Rule</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Unlike the disclosure form, you do not proactively upload the thick Local File or Master File upon filing your tax return. However, <strong>you must have them ready before filing</strong>. If the FTA requests your Transfer Pricing Documentation, you must submit both files within <strong>30 days</strong> of receiving the notice. Attempting to draft a Local File and benchmarking study within 30 days during an audit is near impossible and triggers immediate exposure.</p>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">Transfer Pricing Compliance Checklist:</h3>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\"><strong>Map All Related Party Relationships:</strong> Identify all parent, subsidiary, sister companies, and Connected Persons.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Draft Intercompany Agreements:</strong> Ensure written legal contracts exist for all management services, royalties, shared overheads, and cross-company loans.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Perform Economic Benchmarking:</strong> Utilize commercial TP databases to benchmark profit margins and interest rates.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Complete the TP Disclosure Form:</strong> Validate data with financial statements before submitting your Corporate Tax return.</li>\n</ul>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\"><em>Dias Accounting's certified tax team provides comprehensive Transfer Pricing Study Reports, Local File & Master File documentation, and EmaraTax TP Disclosure filings.</em></p>"
+  },
+  {
+    "id": "small-business-relief-extension-2029",
+    "category": "Tax Updates",
+    "date": "September 15, 2026",
+    "readTime": "5 min read",
+    "title": "Understanding the UAE Small Business Relief Extension to 2029",
+    "excerpt": "The Ministry of Finance has extended the Small Business Relief (SBR) regime to tax periods ending in 2029.",
+    "image": "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=700&q=80",
+    "fullContent": "<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">In a landmark pro-business initiative, the UAE Ministry of Finance has officially <strong>extended the Small Business Relief (SBR) regime through tax periods ending on or before December 31, 2029</strong> under Federal Decree-Law No. 47 of 2022 on the Taxation of Corporations and Businesses.</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">This decision provides significant financial certainty for startups, freelancers, and small enterprises operating across Dubai, Abu Dhabi, Sharjah, and all UAE Free Zones.</p>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">1. Key Eligibility Criteria for Small Business Relief</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">To elect for Small Business Relief and be treated as having <strong>no taxable income (0% corporate tax payable)</strong>, a business must satisfy all of the following conditions:</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\"><strong>Gross Revenue Threshold:</strong> Revenue for the relevant tax period and all previous tax periods must not exceed <strong>AED 3,000,000</strong>.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Resident Taxable Person:</strong> The business must be a juridical person or natural person resident in the UAE.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Excluded Entities:</strong> The relief does NOT apply to Qualifying Free Zone Persons (QFZPs) or constituent entities of Multinational Enterprise (MNE) groups with consolidated group revenues exceeding AED 3.15 Billion.</li>\n</ul>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">2. Is Small Business Relief Automatic?</h3>\n<blockquote style=\"border-left: 4px solid var(--color-gold-500); padding: 0.75rem 1rem; margin: 1rem 0; background: #faf7ee; border-radius: 0 8px 8px 0;\"><strong>CRITICAL COMPLIANCE WARNING:</strong> Small Business Relief is <strong>NOT automatic</strong>.</blockquote>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Even if your business generated zero revenue or operated at a net loss:</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\">You <strong>must register for Corporate Tax</strong> and obtain an active Corporate Tax Registration Number (CT TRN).</li>\n<li style=\"margin-bottom: 0.35rem;\">You <strong>must submit an official Corporate Tax Return via EmaraTax</strong> within 9 months from your financial year-end.</li>\n<li style=\"margin-bottom: 0.35rem;\">You <strong>must actively tick the Small Business Relief election box under Article 21</strong> within the return.</li>\n</ul>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Failure to submit your return on time results in the forfeiture of the relief, leading to default assessment at 9% plus statutory administrative late penalties.</p>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">3. Simplified Bookkeeping & Compliance Advantages</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Opting into Small Business Relief delivers several major operational benefits:</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\"><strong>Zero Corporate Tax:</strong> No corporate tax is payable to the Federal Tax Authority.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Transfer Pricing Simplification:</strong> Eligible entities are exempt from maintaining elaborate Master Files and Local Files under Article 55.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Simplified Financial Accounting:</strong> Businesses may prepare simplified accounts in line with cash or accrual standards rather than full enterprise IFRS suites.</li>\n</ul>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">How Dias Accounting Protects Your Relief Status</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">At <strong>Dias Accounting and Tax Consulting LLC</strong>, our FTA-certified chartered tax advisors audit your revenue streams, calculate connected person transactions, and submit your EmaraTax return to guarantee your 0% SBR status is secured without risk of audit fines.</p>"
+  }
+];
+
+    function mdToHtml(md) {
+      if (!md) return "";
+      const lines = md.split("\n");
+      let res = [];
+      let inList = false;
+      lines.forEach(line => {
+        let l = line.trim();
+        if (!l) {
+          if (inList) { res.push("</ul>"); inList = false; }
+          return;
+        }
+        if (l.startsWith("### ")) {
+          if (inList) { res.push("</ul>"); inList = false; }
+          res.push("<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">" + l.slice(4) + "</h3>");
+        } else if (l.startsWith("## ")) {
+          if (inList) { res.push("</ul>"); inList = false; }
+          res.push("<h2 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.75rem; margin-bottom: 0.75rem; font-size: 1.4rem;\">" + l.slice(3) + "</h2>");
+        } else if (l.startsWith("> ")) {
+          if (inList) { res.push("</ul>"); inList = false; }
+          res.push("<blockquote style=\"border-left: 4px solid var(--color-gold-500); padding: 0.75rem 1rem; margin: 1rem 0; background: #faf7ee; border-radius: 0 8px 8px 0;\">" + l.slice(2).replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") + "</blockquote>");
+        } else if (l.startsWith("* ") || l.startsWith("- ") || /^\d+\.\s+/.test(l)) {
+          if (!inList) { res.push("<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">"); inList = true; }
+          const content = l.replace(/^(\*|-|\d+\.)\s+/, "").replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+          res.push("<li style=\"margin-bottom: 0.35rem;\">" + content + "</li>");
+        } else if (l === "---") {
+          if (inList) { res.push("</ul>"); inList = false; }
+          res.push("<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />");
+        } else {
+          if (inList) { res.push("</ul>"); inList = false; }
+          res.push("<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">" + l.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>").replace(/\*(.*?)\*/g, "<em>$1</em>") + "</p>");
+        }
+      });
+      if (inList) res.push("</ul>");
+      return res.join("\n");
+    }
+
+    let activeCategory = "All";
+    let searchQuery = "";
+
+    const blogGrid = document.getElementById("blogGrid");
+    const noResults = document.getElementById("noResults");
+    const categoryList = document.getElementById("categoryList");
+    const searchInput = document.getElementById("searchInput");
+    const newsletterForm = document.getElementById("newsletterForm");
+    const newsletterSuccess = document.getElementById("newsletterSuccess");
+    const articleModal = document.getElementById("articleModal");
+    const modalCloseBtn = document.getElementById("modalCloseBtn");
+    const modalTag = document.getElementById("modalTag");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalBody = document.getElementById("modalBody");
+    const modalNewTabBtn = document.getElementById("modalNewTabBtn");
+
+    function renderCategories() {
+      const categories = ["All", ...new Set(POSTS_DATA.map(p => p.category))];
+      categoryList.innerHTML = categories.map(cat => {
+        const count = cat === "All" ? POSTS_DATA.length : POSTS_DATA.filter(p => p.category === cat).length;
+        const isActive = cat === activeCategory;
+        return "<li class=\"category-item " + (isActive ? "active" : "") + "\">" +
+          "<button type=\"button\" onclick=\"setCategory('" + cat + "')\">" +
+            "<span>" + cat + "</span>" +
+            "<span class=\"count-badge\">" + count + "</span>" +
+          "</button>" +
+        "</li>";
+      }).join("");
+    }
+
+    function renderPosts() {
+      const filtered = POSTS_DATA.filter(post => {
+        const matchesCategory = activeCategory === "All" || post.category === activeCategory;
+        const query = searchQuery.toLowerCase().trim();
+        const matchesSearch = !query || 
+          post.title.toLowerCase().includes(query) || 
+          post.excerpt.toLowerCase().includes(query) || 
+          post.category.toLowerCase().includes(query);
+        return matchesCategory && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        blogGrid.innerHTML = "";
+        noResults.style.display = "block";
+        return;
+      }
+
+      noResults.style.display = "none";
+      blogGrid.innerHTML = filtered.map(post => {
+        return "<article class=\"blog-card\" style=\"cursor: pointer;\" onclick=\"openArticle('" + post.id + "')\">" +
+          "<div class=\"card-thumb-wrap\">" +
+            "<img class=\"card-thumb\" src=\"" + post.image + "\" alt=\"" + post.title + "\" loading=\"lazy\" />" +
+            "<span class=\"category-tag\">" + post.category + "</span>" +
+          "</div>" +
+          "<div class=\"card-content\">" +
+            "<div class=\"card-meta\">" +
+              "<span>" + post.date + "</span>" +
+              "<span>•</span>" +
+              "<span>" + post.readTime + "</span>" +
+            "</div>" +
+            "<h2 class=\"card-title\">" + post.title + "</h2>" +
+            "<p class=\"card-excerpt\">" + post.excerpt + "</p>" +
+            "<button type=\"button\" class=\"read-more-btn\" onclick=\"event.stopPropagation(); openArticle('" + post.id + "')\">" +
+              "Read Article" +
+              "<svg width=\"14\" height=\"14\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">" +
+                "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.5\" d=\"M14 5l7 7m0 0l-7 7m7-7H3\"/>" +
+              "</svg>" +
+            "</button>" +
+          "</div>" +
+        "</article>";
+      }).join("");
+    }
+
+    window.setCategory = function(cat) {
+      activeCategory = cat;
+      renderCategories();
+      renderPosts();
+    };
+
+    searchInput.addEventListener("input", (e) => {
+      searchQuery = e.target.value;
+      renderPosts();
+    });
+
+    newsletterForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const email = document.getElementById("newsletterEmail").value;
+      if (!email) return;
+      newsletterForm.style.display = "none";
+      newsletterSuccess.style.display = "block";
+    });
+
+    window.openArticle = function(id) {
+      if (!id) return;
+      const cleanId = id.toString().replace(/^#/, "").replace(/^blog-/, "").trim().toLowerCase();
+      
+      const post = POSTS_DATA.find(p => {
+        const pid = p.id.toLowerCase();
+        return pid === cleanId || pid.includes(cleanId) || cleanId.includes(pid);
+      });
+
+      if (!post) {
+        console.warn("Article not found for ID:", id);
+        return;
+      }
+
+      modalTag.textContent = post.category;
+      modalTitle.textContent = post.title;
+      modalBody.innerHTML = "<div style=\"font-size: 0.8rem; color: var(--color-slate-500); margin-bottom: 1.25rem; display: flex; gap: 0.75rem; align-items: center; border-bottom: 1px solid var(--color-slate-200); padding-bottom: 0.75rem;\">" +
+        "<span>Published: " + post.date + "</span>" +
+        "<span>•</span>" +
+        "<span>Reading Time: " + post.readTime + "</span>" +
+        "<span>•</span>" +
+        "<span style=\"color: var(--color-gold-600); font-weight: 600;\">FTA Approved Tax Practice</span>" +
+      "</div>" +
+      "<div class=\"article-rich-content\" style=\"line-height: 1.8; color: var(--color-slate-700); font-size: 0.95rem;\">" +
+        post.fullContent +
+      "</div>" +
+      "<div style=\"margin-top: 2.5rem; padding: 1.75rem; background: #faf7ee; border: 1px solid #aa821d33; border-radius: 16px; display: flex; flex-direction: column; gap: 0.75rem;\">" +
+        "<h4 style=\"color: #0a1526; font-family: var(--font-display); font-size: 1.15rem; margin: 0; font-weight: 700;\">Require FTA-Compliant Tax Advisory in Dubai?</h4>" +
+        "<p style=\"font-size: 0.85rem; color: #475569; margin: 0; line-height: 1.6;\">Dias Accounting and Tax Consulting LLC provides certified corporate tax filings, EmaraTax Small Business Relief elections, and quarterly VAT audit protection.</p>" +
+        "<a href=\"/#contact\" style=\"align-self: flex-start; display: inline-flex; align-items: center; gap: 0.5rem; background: #0a1526; color: #d4af37; padding: 0.75rem 1.5rem; border-radius: 10px; font-weight: 700; font-size: 0.85rem; text-decoration: none; margin-top: 0.35rem; transition: background 0.2s;\">" +
+          "Book a Free 30-Min Tax Consultation →" +
+        "</a>" +
+      "</div>";
+
+      if (modalNewTabBtn) {
+        modalNewTabBtn.href = "/blog.html#" + post.id;
+      }
+
+      articleModal.classList.add("active");
+      document.body.style.overflow = "hidden";
+      window.history.replaceState(null, "", "#" + post.id);
+      articleModal.scrollTo({ top: 0, behavior: "smooth" });
+    };
+
+    function closeModal() {
+      articleModal.classList.remove("active");
+      document.body.style.overflow = "auto";
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+
+    modalCloseBtn.addEventListener("click", closeModal);
+    articleModal.addEventListener("click", (e) => {
+      if (e.target === articleModal) closeModal();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && articleModal.classList.contains("active")) closeModal();
+    });
+
+    function checkInitialTarget() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const paramId = urlParams.get("id") || urlParams.get("blog");
+      const hashId = window.location.hash ? window.location.hash.replace(/^#/, "").replace(/^blog-/, "") : "";
+      const targetId = paramId || hashId;
+      if (targetId) {
+        setTimeout(() => window.openArticle(targetId), 50);
+      }
+    }
+
+    renderCategories();
+    renderPosts();
+    checkInitialTarget();
+    window.addEventListener("hashchange", checkInitialTarget);
+
+    fetch("/api/blogs")
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.success && Array.isArray(data.blogs) && data.blogs.length > 0) {
+          data.blogs.forEach(dyn => {
+            if (!POSTS_DATA.some(p => p.id === dyn.id)) {
+              POSTS_DATA.unshift({
+                id: dyn.id,
+                category: dyn.tag || "Tax Updates",
+                date: dyn.date || "Recent",
+                readTime: dyn.readTime || "5 min read",
+                title: dyn.title,
+                excerpt: dyn.summary,
+                image: "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=700&q=80",
+                fullContent: mdToHtml(dyn.content || dyn.summary)
+              });
+            }
+          });
+          renderCategories();
+          renderPosts();
+          checkInitialTarget();
+        }
+      })
+      .catch(err => {
+        console.log("Static catalog active, dynamic fetch skipped:", err);
+      });
+  </script>
+</body>
+</html>

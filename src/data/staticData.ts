@@ -199,6 +199,59 @@ export const servicesData: Service[] = [
 
 export const blogsData: BlogPost[] = [
   {
+    id: "understanding-uae-small-business-relief-extension-to-2029",
+    title: "Understanding the UAE Small Business Relief Extension to 2029",
+    summary: "The UAE Ministry of Finance has extended Small Business Relief (SBR) through December 31, 2029. Discover how UAE resident businesses with gross revenues up to AED 3,000,000 can legally qualify for 0% corporate tax.",
+    content: `In a landmark pro-business initiative, the UAE Ministry of Finance has officially **extended the Small Business Relief (SBR) regime through tax periods ending on or before December 31, 2029** under Federal Decree-Law No. 47 of 2022 on the Taxation of Corporations and Businesses.
+
+This decision provides significant financial certainty for startups, freelancers, and small enterprises operating across Dubai, Abu Dhabi, Sharjah, and all UAE Free Zones.
+
+---
+
+### 1. Key Eligibility Criteria for Small Business Relief
+
+To elect for Small Business Relief and be treated as having **no taxable income (0% corporate tax payable)**, a business must satisfy all of the following conditions:
+
+*   **Gross Revenue Threshold:** Revenue for the relevant tax period and all previous tax periods must not exceed **AED 3,000,000**.
+*   **Resident Taxable Person:** The business must be a juridical person or natural person resident in the UAE.
+*   **Excluded Entities:** The relief does NOT apply to Qualifying Free Zone Persons (QFZPs) or constituent entities of Multinational Enterprise (MNE) groups with consolidated group revenues exceeding AED 3.15 Billion.
+
+---
+
+### 2. Is Small Business Relief Automatic?
+
+> **CRITICAL COMPLIANCE WARNING:** Small Business Relief is **NOT automatic**. 
+
+Even if your business generated zero revenue or operated at a net loss:
+1. You **must register for Corporate Tax** and obtain an active Corporate Tax Registration Number (CT TRN).
+2. You **must submit an official Corporate Tax Return via EmaraTax** within 9 months from your financial year-end.
+3. You **must actively tick the Small Business Relief election box under Article 21** within the return.
+
+Failure to submit your return on time results in the forfeiture of the relief, leading to default assessment at 9% plus statutory administrative late penalties.
+
+---
+
+### 3. Simplified Bookkeeping & Compliance Advantages
+
+Opting into Small Business Relief delivers several major operational benefits:
+*   **Zero Corporate Tax:** No corporate tax is payable to the Federal Tax Authority.
+*   **Transfer Pricing Simplification:** Eligible entities are exempt from maintaining elaborate Master Files and Local Files under Article 55.
+*   **Simplified Financial Accounting:** Businesses may prepare simplified accounts in line with cash or accrual standards rather than full enterprise IFRS suites.
+
+---
+
+### How Dias Accounting Protects Your Relief Status
+At **Dias Accounting and Tax Consulting LLC**, our FTA-certified chartered tax advisors audit your revenue streams, calculate connected person transactions, and submit your EmaraTax return to guarantee your 0% SBR status is secured without risk of audit fines.`,
+    date: "September 16, 2026",
+    readTime: "5 min read",
+    tag: "Tax Updates",
+    author: {
+      name: "Glen Dias",
+      role: "Managing Director & Certified Tax Advisor",
+      avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=120"
+    }
+  },
+  {
     id: "september-2026-uae-corporate-tax-filing-deadline-guide",
     title: "September 30, 2026 UAE Corporate Tax Filing Deadline: 15-Day Critical Action Guide",
     summary: "Essential compliance briefing for UAE businesses with FY ended Dec 31, 2025. Covers the 9-month statutory deadline, EmaraTax electronic return steps, the official Small Business Relief extension to 2029, and penalty avoidance.",

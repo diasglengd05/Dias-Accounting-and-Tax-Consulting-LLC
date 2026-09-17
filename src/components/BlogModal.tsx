@@ -66,6 +66,10 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
 
   if (!blog) return null;
 
+  const standaloneBlogUrl = typeof window !== "undefined"
+    ? `${window.location.origin}/blog.html#${blog.id}`
+    : `https://diasuae.ae/blog.html#${blog.id}`;
+
   const blogUrl = typeof window !== "undefined"
     ? `${window.location.origin}${window.location.pathname}#blog-${blog.id}`
     : `https://diasuae.ae/#blog-${blog.id}`;
@@ -109,16 +113,29 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
       <div className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh] md:max-h-[85vh] animate-scaleUp">
         {/* Header */}
         <div className="bg-navy-900 p-5 sm:p-6 md:p-8 text-white relative">
-          <button
-            onClick={() => {
-              onClose();
-              setShowOgPreview(false);
-            }}
-            className="absolute top-4 right-4 p-2.5 text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 cursor-pointer min-w-[44px] min-h-[44px] flex items-center justify-center"
-            aria-label="Close article modal"
-          >
-            <X className="w-5 h-5" />
-          </button>
+          <div className="absolute top-4 right-4 flex items-center gap-2">
+            <a
+              href={standaloneBlogUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3 py-1.5 text-xs font-bold text-navy-950 hover:text-navy-900 bg-gold-400 hover:bg-gold-300 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 cursor-pointer min-h-[36px] flex items-center gap-1.5 shadow-sm active:scale-95"
+              title="Open full article in a new browser tab"
+              aria-label="Open article in a new tab"
+            >
+              <ExternalLink className="w-3.5 h-3.5 text-navy-950" />
+              <span>Open in New Tab</span>
+            </a>
+            <button
+              onClick={() => {
+                onClose();
+                setShowOgPreview(false);
+              }}
+              className="p-2 text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 cursor-pointer min-w-[36px] min-h-[36px] flex items-center justify-center"
+              aria-label="Close article modal"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
           <div className="flex flex-wrap items-center gap-2 mb-3">
             <span className="text-[9px] bg-gold-400 text-navy-950 font-bold uppercase tracking-widest px-2.5 py-1 rounded-full inline-block">
               {blog.tag}
@@ -185,6 +202,18 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose }) => {
               title="Share to X (Twitter)"
             >
               X (Twitter)
+            </a>
+
+            {/* Open in New Tab */}
+            <a
+              href={standaloneBlogUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-gradient-to-r from-navy-900 to-navy-950 hover:from-navy-800 hover:to-navy-900 text-gold-300 hover:text-gold-200 border border-gold-400/20 rounded-lg font-semibold text-[11px] transition-all shadow-sm min-h-[36px]"
+              title="Open full blog in new tab"
+            >
+              <ExternalLink className="w-3.5 h-3.5 text-gold-400" />
+              <span>Open in New Tab</span>
             </a>
 
             {/* Copy Link */}

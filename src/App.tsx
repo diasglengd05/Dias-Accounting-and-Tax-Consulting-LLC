@@ -56,6 +56,7 @@ import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 import LanguageToggle from "./components/LanguageToggle";
 import LazyMount from "./components/LazyMount";
 import AnimatedSection from "./components/AnimatedSection";
+import BlogSection from "./components/BlogSection";
 
 // Lazy-loaded components for fast mobile JS execution & small initial bundle size
 const GooglePreferredSourceModal = React.lazy(() => import("./components/GooglePreferredSourceModal"));
@@ -344,6 +345,7 @@ function MainApp() {
               { id: "services", label: t.nav.services },
               { id: "pricing", label: t.nav.pricing },
               { id: "why-choose-us", label: language === "ar" ? "لماذا دياس؟" : "Why Choose Us" },
+              { id: "blogs", label: language === "ar" ? "الرؤى والمدونة" : "Insights" },
               { id: "testimonials", label: t.nav.reviews },
               { id: "faqs", label: t.nav.faq },
               { id: "contact", label: t.nav.contact },
@@ -416,6 +418,7 @@ function MainApp() {
                 { id: "why-choose-us", label: language === "ar" ? "لماذا تختار دياس؟" : "Why Choose Us (6 Pillars)" },
                 { id: "jurisdictions", label: language === "ar" ? "المناطق الحرة والضريبية" : "UAE Jurisdictions (0% QFZP)" },
                 { id: "case-studies", label: language === "ar" ? "دراسات حالة العملاء" : "Client Case Studies" },
+                { id: "blogs", label: language === "ar" ? "الرؤى والمدونة" : "Insights & Blog" },
                 { id: "testimonials", label: t.nav.reviews },
                 { id: "faqs", label: t.nav.faq },
               ].map((link) => (
@@ -1622,117 +1625,35 @@ function MainApp() {
         </AnimatedSection>
       </section>
 
-      {/* 7. Blogs / News Section */}
-      <section id="blogs" className="py-20 bg-white scroll-mt-20 sm:scroll-mt-24">
-        <AnimatedSection className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          
-          {/* Section Header */}
-          <div className="text-center space-y-3 max-w-2xl mx-auto">
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              <span className="text-xs text-gold-600 font-bold uppercase tracking-widest block">
-                UAE Financial Intelligence
-              </span>
-              <button
-                onClick={() => setSeoDashboardOpen(true)}
-                className="inline-flex items-center gap-1.5 px-3 py-1 bg-navy-900 text-gold-300 hover:text-gold-200 hover:bg-navy-950 rounded-full text-[11px] font-bold shadow-sm transition-all cursor-pointer"
-                title="Open SEO Content Engine & Cloud Function Monitor"
-              >
-                <Sparkles className="w-3 h-3 text-gold-400 animate-pulse" />
-                <span>SEO Content Engine &amp; 24h Cloud Function</span>
-              </button>
-            </div>
-            <h2 className="font-display text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight">
-              Regulatory Insights & Advisories
-            </h2>
-            <p className="text-slate-500 text-sm">
-              Read actionable expert guides on the Federal Tax Authority rules, VAT recovery procedures, and general business licensing inside the UAE.
-            </p>
-          </div>
+      {/* 7. Blogs / Insights & Updates Section */}
+      <BlogSection
+        blogs={allBlogs || []}
+        onSelectBlog={(blog) => {
+          if (typeof window !== "undefined") {
+            window.open(`/blog.html#${blog.id}`, "_blank", "noopener,noreferrer");
+          }
+        }}
+        onOpenSeoEngine={() => setSeoDashboardOpen(true)}
+      />
 
-          {/* Blogs Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {(allBlogs || []).map((blog, idx) => (
-              <div
-                key={blog.id}
-                className={`bg-white border ${idx === 0 ? "border-gold-400/80 shadow-md ring-1 ring-gold-400/20" : "border-slate-200/60 shadow-sm"} rounded-3xl overflow-hidden hover:shadow-lg hover:border-gold-400 transition-all hover:-translate-y-1 flex flex-col cursor-pointer group`}
-                onClick={() => setSelectedBlog(blog)}
-              >
-                {/* Visual Header */}
-                <div className="bg-navy-900 p-6 flex flex-col justify-between h-48 relative overflow-hidden">
-                  <div className="absolute right-0 bottom-0 opacity-10">
-                    <BookOpen className="w-40 h-40 transform translate-x-12 translate-y-12" />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] bg-white/15 text-gold-300 font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border border-white/5 self-start backdrop-blur-md">
-                      {blog.tag}
-                    </span>
-                    {blog.isAiGenerated ? (
-                      <span className="text-[10px] bg-gradient-to-r from-emerald-500 to-teal-400 text-white font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full shadow-sm flex items-center gap-1">
-                        <Sparkles className="w-2.5 h-2.5" />
-                        24h AI Grounded
-                      </span>
-                    ) : idx === 0 ? (
-                      <span className="text-[10px] bg-gradient-to-r from-amber-400 to-gold-400 text-navy-950 font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full shadow-sm">
-                        Daily Briefing
-                      </span>
-                    ) : null}
-                  </div>
-                  <div className="text-xs text-slate-400 font-medium flex justify-between">
-                    <span>{blog.date}</span>
-                    <span>{blog.readTime}</span>
-                  </div>
-                </div>
-
-                {/* Content */}
-                <div className="p-6 flex-grow flex flex-col justify-between">
-                  <div className="space-y-2 mb-6">
-                    <h3 className="font-display text-base font-bold text-navy-950 group-hover:text-gold-600 transition-colors line-clamp-2">
-                      {blog.title}
-                    </h3>
-                    <p className="text-slate-500 text-xs leading-relaxed line-clamp-3">
-                      {blog.summary}
-                    </p>
-                  </div>
-
-                  {/* Author detail */}
-                  <div className="flex items-center justify-between border-t border-slate-100 pt-4 mt-auto">
-                    <div className="flex items-center gap-2.5">
-                      <img
-                        src={blog.author.avatar}
-                        alt={blog.author.name}
-                        width={32}
-                        height={32}
-                        loading="lazy"
-                        decoding="async"
-                        className="w-8 h-8 rounded-full object-cover border border-slate-200"
-                      />
-                      <div className="leading-tight">
-                        <span className="block text-[11px] font-bold text-navy-900">{blog.author.name}</span>
-                        <span className="text-[9px] text-slate-400 font-medium">{blog.author.role}</span>
-                      </div>
-                    </div>
-                    <span className="text-[10px] font-display font-bold text-gold-600 group-hover:text-gold-700 transition-all flex items-center gap-1 group-hover:translate-x-1">
-                      Read Article
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Blog Read Modal Popup (Lazy-Loaded to reduce main mobile JS bundle) */}
-          <React.Suspense fallback={null}>
-            {selectedBlog && (
-              <BlogModal
-                blog={selectedBlog}
-                onClose={() => setSelectedBlog(null)}
-              />
-            )}
-          </React.Suspense>
-
-        </AnimatedSection>
-      </section>
+      {/* Blog Read Modal Popup (Lazy-Loaded to reduce main mobile JS bundle) */}
+      <React.Suspense fallback={null}>
+        {selectedBlog && (
+          <BlogModal
+            blog={selectedBlog}
+            onClose={() => {
+              setSelectedBlog(null);
+              if (typeof window !== "undefined" && window.location.hash.startsWith("#blog-")) {
+                try {
+                  window.history.replaceState(null, "", window.location.pathname + window.location.search);
+                } catch (e) {
+                  // Ignore
+                }
+              }
+            }}
+          />
+        )}
+      </React.Suspense>
 
       {/* 8. Contact Us & Consultation Scheduler */}
       <section id="contact" className="py-20 bg-slate-50 border-t border-slate-100 scroll-mt-20 sm:scroll-mt-24">
