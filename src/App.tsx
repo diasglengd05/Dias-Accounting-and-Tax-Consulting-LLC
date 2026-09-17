@@ -169,7 +169,19 @@ function MainApp() {
   // Open on the Home page by default, or scroll to specific hash if directly targeted in URL
   useEffect(() => {
     const hash = window.location.hash;
-    if (hash && hash !== "#home") {
+    if (hash === "#seo-engine" || hash === "#admin-seo" || window.location.search.includes("seo=admin")) {
+      setSeoDashboardOpen(true);
+    }
+
+    const handleHash = () => {
+      const currentHash = window.location.hash;
+      if (currentHash === "#seo-engine" || currentHash === "#admin-seo") {
+        setSeoDashboardOpen(true);
+      }
+    };
+    window.addEventListener("hashchange", handleHash);
+
+    if (hash && hash !== "#home" && hash !== "#seo-engine" && hash !== "#admin-seo") {
       const targetId = hash.replace("#", "");
       const scrollToTarget = () => {
         const targetElement = document.getElementById(targetId);
@@ -178,11 +190,18 @@ function MainApp() {
         }
       };
       const timer = setTimeout(scrollToTarget, 100);
-      return () => clearTimeout(timer);
-    } else {
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener("hashchange", handleHash);
+      };
+    } else if (hash !== "#seo-engine" && hash !== "#admin-seo") {
       // Default: ensure viewport starts cleanly at the top on home page
       window.scrollTo({ top: 0, behavior: "instant" as ScrollBehavior });
     }
+
+    return () => {
+      window.removeEventListener("hashchange", handleHash);
+    };
   }, []);
 
   // Set up active section observer using a highly performant IntersectionObserver

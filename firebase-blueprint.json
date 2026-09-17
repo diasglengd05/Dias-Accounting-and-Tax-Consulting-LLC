@@ -153,6 +153,76 @@
         }
       },
       "required": ["id", "title", "summary", "content", "date", "tag"]
+    },
+    "blogQueueItem": {
+      "title": "Blog Queue Item",
+      "description": "Pending blog content waiting in the queue to be published on scheduled Tuesdays or Fridays.",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the queue item."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title of the pending blog post."
+        },
+        "summary": {
+          "type": "string",
+          "description": "Executive summary or abstract."
+        },
+        "content": {
+          "type": "string",
+          "description": "Full markdown content or outline of the article."
+        },
+        "tag": {
+          "type": "string",
+          "description": "Category tag (e.g. Corporate Tax, VAT, Free Zones)."
+        },
+        "readTime": {
+          "type": "string",
+          "description": "Estimated reading duration."
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Target SEO keywords."
+        },
+        "targetDay": {
+          "type": "string",
+          "description": "Preferred scheduled day (Tuesday or Friday)."
+        },
+        "priority": {
+          "type": "number",
+          "description": "Ordering priority in queue (1 = highest)."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pending", "published", "archived"],
+          "description": "Current status in the publication pipeline."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when queued."
+        },
+        "publishedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when published."
+        },
+        "publishedBlogId": {
+          "type": "string",
+          "description": "ID of published blog post document."
+        },
+        "author": {
+          "type": "object",
+          "description": "Author profile."
+        }
+      },
+      "required": ["id", "title", "content", "status", "createdAt"]
     }
   },
   "firestore": {
@@ -167,6 +237,10 @@
     "blog_posts/{blogId}": {
       "schema": "blogPost",
       "description": "Collection of published and AI-generated blog posts."
+    },
+    "blog_queue/{queueId}": {
+      "schema": "blogQueueItem",
+      "description": "Queue of pending blog posts scheduled to be published on Tuesdays and Fridays."
     }
   }
 }

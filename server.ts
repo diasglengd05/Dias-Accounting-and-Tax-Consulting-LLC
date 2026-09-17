@@ -27,9 +27,19 @@ import {
 import firebaseConfig from "./firebase-applet-config.json" with { type: "json" };
 import {
   dailyBlogGenerator,
+  processBlogQueueHandler,
   triggerDailyBlogGeneration,
   getStoredBlogPosts,
   getDailyCronSettings,
+  getUAEDate,
+  getNextScheduledRunDate,
+  checkAndTriggerScheduledBlog,
+  SEMI_WEEKLY_SCHEDULE,
+  getBlogQueue,
+  addToBlogQueue,
+  updateBlogQueueItem,
+  removeBlogQueueItem,
+  publishScheduledQueueItem,
 } from "./server/dailyBlogGenerator.ts";
 import { blogsData } from "./src/data/staticData.ts";
 
@@ -1446,22 +1456,73 @@ app.post("/api/admin/update-inquiry", verifyAdminToken, async (req, res) => {
 
 /**
  * Google Cloud Function HTTP Trigger Endpoint
- * Compatible with Google Cloud Scheduler (e.g. cron `0 6 * * *`), Cloud Functions, or external webhooks
+ * Compatible with Google Cloud Scheduler (cron `0 6 * * 2,5` in Asia/Dubai or `0 2 * * 2,5` in UTC)
+ * Automatically publishes pending draft from queue (or falls back to AI generation)
  */
-app.all(["/api/cloud-functions/daily-blog-generator", "/api/cron/generate-daily-blog"], dailyBlogGenerator);
+app.all(
+  [
+    "/api/cloud-functions/daily-blog-generator",
+    "/api/cloud-functions/publish-queue-article",
+    "/api/cron/generate-daily-blog",
+    "/api/cron/publish-scheduled-article",
+    "/api/cron/process-blog-queue",
+  ],
+  dailyBlogGenerator
+);
 
 /**
- * Get 24-Hour AI Blog Cron Status
+ * Get Semi-Weekly Blog Cron Status (Tuesday & Friday at 06:00 GST)
  */
 app.get("/api/cron/status", async (req, res) => {
   try {
     const settings = await getDailyCronSettings();
+    const uaeNow = getUAEDate();
+    const isTodayScheduledDay = uaeNow.dayOfWeek === 2 || uaeNow.dayOfWeek === 5;
+    const lastRun = settings?.lastRun;
+    const lastRunUaeDate = lastRun ? getUAEDate(new Date(lastRun)).dateString : null;
+    const publishedToday = lastRunUaeDate === uaeNow.dateString;
+    const nextRun = getNextScheduledRunDate(new Date(), publishedToday);
+    const queueItems = await getBlogQueue();
+    const pendingQueue = queueItems.filter((i) => i.status === "pending");
+
     return res.json({
       success: true,
+      cadence: "semi-weekly",
+      scheduleDescription: "2 articles published every week: Tuesday and Friday at 06:00 GST",
+      activeDays: ["Tuesday", "Friday"],
+      activeDayNumbers: [2, 5],
+      isTodayScheduledDay,
+      todayDayName: uaeNow.dayName,
+      todayDate: uaeNow.dateString,
+      publishedToday,
+      queueSummary: {
+        total: queueItems.length,
+        pending: pendingQueue.length,
+        published: queueItems.filter((i) => i.status === "published").length,
+        nextInLine: pendingQueue[0]
+          ? {
+              id: pendingQueue[0].id,
+              title: pendingQueue[0].title,
+              targetDay: pendingQueue[0].targetDay,
+              priority: pendingQueue[0].priority,
+            }
+          : null,
+      },
+      nextScheduledRun: {
+        iso: nextRun.nextDate.toISOString(),
+        dayName: nextRun.dayName,
+        dateFormatted: nextRun.dateFormatted,
+        countdownHours: nextRun.countdownHours,
+        countdownText: nextRun.countdownText,
+      },
+      cronExpressionGST: "0 6 * * 2,5",
+      cronExpressionUTC: "0 2 * * 2,5",
       settings: settings || {
         lastRun: null,
         lastStatus: "pending_initial_run",
-        nextRunDue: new Date(Date.now() + 60000).toISOString(),
+        cadence: "semi-weekly",
+        activeDays: ["Tuesday", "Friday"],
+        nextRunDue: nextRun.nextDate.toISOString(),
       },
       serverTime: new Date().toISOString(),
       uaeTime: new Date().toLocaleString("en-US", { timeZone: "Asia/Dubai" }) + " (GST)",
@@ -1494,6 +1555,95 @@ app.get("/api/blogs", async (req, res) => {
       total: blogsData.length,
       dynamicCount: 0,
       blogs: blogsData,
+    });
+  }
+});
+
+/**
+ * Blog Editorial Queue Management APIs
+ */
+app.get("/api/queue", async (req, res) => {
+  try {
+    const status = (req.query.status as any) || "all";
+    const items = await getBlogQueue({ status });
+    return res.json({
+      success: true,
+      total: items.length,
+      statusFilter: status,
+      items,
+    });
+  } catch (err: any) {
+    console.error("[API Queue] Error retrieving queue:", err);
+    return res.status(500).json({ success: false, error: "Failed to fetch blog queue." });
+  }
+});
+
+app.post("/api/queue", verifyAdminToken, async (req, res) => {
+  try {
+    const item = await addToBlogQueue(req.body || {});
+    return res.status(201).json({
+      success: true,
+      message: "Article draft added to publishing queue.",
+      item,
+    });
+  } catch (err: any) {
+    console.error("[API Queue] Error creating queue item:", err);
+    return res.status(500).json({ success: false, error: "Failed to add draft to queue." });
+  }
+});
+
+app.put("/api/queue/:id", verifyAdminToken, async (req, res) => {
+  try {
+    const id = req.params.id;
+    const updated = await updateBlogQueueItem(id, req.body || {});
+    if (!updated) {
+      return res.status(404).json({ success: false, error: "Queue item not found." });
+    }
+    return res.json({
+      success: true,
+      message: "Queue draft updated successfully.",
+      item: updated,
+    });
+  } catch (err: any) {
+    console.error("[API Queue] Error updating queue item:", err);
+    return res.status(500).json({ success: false, error: "Failed to update draft in queue." });
+  }
+});
+
+app.delete("/api/queue/:id", verifyAdminToken, async (req, res) => {
+  try {
+    const id = req.params.id;
+    await removeBlogQueueItem(id);
+    return res.json({
+      success: true,
+      message: "Draft removed from queue.",
+      id,
+    });
+  } catch (err: any) {
+    console.error("[API Queue] Error deleting queue item:", err);
+    return res.status(500).json({ success: false, error: "Failed to delete queue item." });
+  }
+});
+
+/**
+ * Publish Next Item from Queue (or trigger specific queue draft)
+ * Supports force=true to test/publish off-schedule
+ */
+app.post("/api/queue/publish-next", verifyAdminToken, async (req, res) => {
+  try {
+    const force = req.body?.force === true;
+    const specificId = req.body?.id;
+    const result = await publishScheduledQueueItem({
+      force,
+      specificId,
+      triggerSource: "admin_portal_manual_queue_trigger",
+    });
+    return res.json(result);
+  } catch (err: any) {
+    console.error("[API Queue Publish] Failed to publish queued draft:", err);
+    return res.status(500).json({
+      success: false,
+      error: err?.message || "Failed to publish queued article.",
     });
   }
 });
@@ -1608,30 +1758,20 @@ async function bootstrap() {
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server listening on http://localhost:${PORT}`);
 
-    // In-process 24-hour autonomous scheduler check
-    const checkDailyBlogSchedule = async () => {
+    // In-process autonomous semi-weekly scheduler (Tuesday & Friday at 06:00 GST)
+    const checkScheduledBlogSchedule = async () => {
       try {
-        const settings = await getDailyCronSettings();
-        const lastRun = settings?.lastRun;
-        const now = Date.now();
-        const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
-
-        if (!lastRun || (now - new Date(lastRun).getTime()) >= TWENTY_FOUR_HOURS) {
-          console.log("[24h Scheduler] Daily blog generation is due. Triggering Gemini blog sequence...");
-          await triggerDailyBlogGeneration({ triggerSource: "server_24h_auto_schedule" });
-        } else {
-          const hoursRemaining = ((TWENTY_FOUR_HOURS - (now - new Date(lastRun).getTime())) / (1000 * 60 * 60)).toFixed(1);
-          console.log(`[24h Scheduler] Daily post up-to-date. Next scheduled publication in ${hoursRemaining}h.`);
-        }
+        const scheduleResult = await checkAndTriggerScheduledBlog();
+        console.log(`[Semi-Weekly Scheduler] ${scheduleResult.message}`);
       } catch (err: any) {
-        console.log("[24h Scheduler] Auto check note:", err?.message || err);
+        console.log("[Semi-Weekly Scheduler] Autonomous check note:", err?.message || err);
       }
     };
 
-    // Run first check 30 seconds after server startup (non-blocking)
-    setTimeout(checkDailyBlogSchedule, 30000);
-    // Recurring check every hour
-    setInterval(checkDailyBlogSchedule, 60 * 60 * 1000);
+    // Run first check 20 seconds after server startup (non-blocking)
+    setTimeout(checkScheduledBlogSchedule, 20000);
+    // Recurring check every 15 minutes to evaluate Tuesday and Friday 06:00 GST trigger
+    setInterval(checkScheduledBlogSchedule, 15 * 60 * 1000);
   });
 }
 

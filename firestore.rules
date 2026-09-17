@@ -29,5 +29,10 @@ service cloud.firestore {
       allow read: if true;
       allow write: if true;
     }
+
+    // Blog Publication Queue (Scheduled Tuesdays & Fridays queue processing)
+    match /blog_queue/{queueId} {
+      allow read, write: if true;
+    }
   }
 }

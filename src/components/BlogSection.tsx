@@ -44,22 +44,9 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
         
         {/* Section Header */}
         <div className="text-center space-y-3 max-w-2xl mx-auto">
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            <span className="text-xs text-gold-600 font-bold uppercase tracking-widest block">
-              UAE Corporate Finance &amp; Tax Intelligence
-            </span>
-            {onOpenSeoEngine && (
-              <button
-                type="button"
-                onClick={onOpenSeoEngine}
-                className="inline-flex items-center gap-1.5 px-3 py-1 bg-navy-900 text-gold-300 hover:text-gold-200 hover:bg-navy-950 rounded-full text-[11px] font-bold shadow-sm transition-all cursor-pointer"
-                title="Open SEO Content Engine & Cloud Function Monitor"
-              >
-                <Sparkles className="w-3 h-3 text-gold-400 animate-pulse" />
-                <span>SEO Content Engine</span>
-              </button>
-            )}
-          </div>
+          <span className="text-xs text-gold-600 font-bold uppercase tracking-widest block">
+            UAE Corporate Finance &amp; Tax Intelligence
+          </span>
           <h2 className="font-display text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight">
             Insights &amp; Updates
           </h2>
