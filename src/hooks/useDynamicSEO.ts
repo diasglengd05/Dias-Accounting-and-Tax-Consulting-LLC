@@ -15,11 +15,11 @@ export interface SEOConfig {
 // Master English SEO Metadata Dictionary
 export const SECTION_SEO_MAP_EN: Record<string, SEOConfig> = {
   home: {
-    title: "Best Accounting Firm in Dubai | Free 60s Penalty Risk Audit | Dias LLC",
-    description: "Dias Accounting and Tax Consulting LLC is the best accounting firm in Dubai & UAE. Instant Free 60s Penalty Risk Audit & FTA Audit Representation & Defense. Calculate your UAE Corporate Tax & discover 0% relief options. Outsource bookkeeping, VAT, and corporate tax across Dubai & all 7 Emirates.",
+    title: "Best Accounting Firms in Dubai UAE | Best Accounting & Tax Consulting | Dias LLC",
+    description: "Best Accounting Firms in Dubai UAE. Top-rated FTA tax consultants & accountants in Dubai. Instant Free 60s Penalty Risk Audit, FTA audit defense, 0% Corporate Tax relief & monthly bookkeeping across all 7 Emirates.",
     keywords: "Best Accounting Firm in Dubai, Best Accounting firm in UAE, Free 60s Penalty Risk Audit, FTA Audit Representation & Defense, Calculate UAE Corporate Tax 0% Relief Options, Small Business Relief AED 3M, Best Accounting Firms in Dubai UAE, Top CA Firms in Dubai, Outsource Accounting & Bookkeeping, UAE corporate tax consultant, VAT filing Dubai, Free Zone bookkeeping DMCC, FTA tax agent Dubai, Corporate tax registration EmaraTax, transfer pricing services dubai, business setup UAE",
     hash: "#home",
-    ogImage: "/api/og?title=Best+Accounting+Firm+in+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=UAE+Tax+Compliance&readTime=FTA+Certified",
+    ogImage: "/api/og?title=Best+Accounting+Firms+in+Dubai+UAE&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=UAE+Tax+Compliance&readTime=FTA+Certified",
   },
   services: {
     title: "Corporate Tax, VAT Compliance & Bookkeeping Services | Dias Accounting Dubai",
