@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import {
   MapPin,
   Building2,
@@ -149,149 +150,178 @@ const JURISDICTIONS: JurisdictionInfo[] = [
 export function UAEJurisdictionsSEO() {
   const { language } = useLanguage();
   const [activeJurisdiction, setActiveJurisdiction] = useState<JurisdictionInfo>(JURISDICTIONS[0]);
+  const isAr = language === "ar";
 
   return (
-    <section id="jurisdictions" className="py-8 sm:py-10 bg-gradient-to-b from-navy-950 via-slate-900 to-navy-950 text-white border-t border-b border-white/10 relative overflow-hidden scroll-mt-20">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-6">
-        
-        {/* Compact Header */}
-        <div className="text-center space-y-2 max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gold-500/15 border border-gold-500/30 text-gold-400 text-[11px] font-bold uppercase tracking-wider">
-            <Building2 className="w-3.5 h-3.5" />
-            <span>{language === "ar" ? "تغطية كافة إمارات الدولة والمناطق الحرة" : "UAE Nationwide Jurisdictions & Free Zones"}</span>
-          </div>
+    <section id="jurisdictions" className="py-6 sm:py-8 md:py-10 bg-gradient-to-b from-navy-950 via-slate-900 to-navy-950 text-white border-t border-b border-white/10 relative overflow-hidden scroll-mt-20">
+      {/* Dynamic Ambient Background Glow */}
+      <motion.div
+        animate={{ scale: [1, 1.12, 1], opacity: [0.12, 0.22, 0.12] }}
+        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute -top-24 left-1/2 -translate-x-1/2 w-[550px] h-[180px] bg-gold-500/15 rounded-full blur-3xl pointer-events-none"
+      />
 
-          <h2 className="font-display text-xl sm:text-2xl font-extrabold text-white tracking-tight">
-            {language === "ar" ? (
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-4 sm:space-y-5">
+        {/* Compact Header */}
+        <div className="text-center space-y-1.5 max-w-xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: -4 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gold-500/15 border border-gold-500/30 text-gold-400 text-[10.5px] font-bold uppercase tracking-wider font-mono"
+          >
+            <Building2 className="w-3 h-3" />
+            <span>{isAr ? "تغطية كافة إمارات الدولة والمناطق الحرة" : "UAE Jurisdictions & Free Zones"}</span>
+          </motion.div>
+
+          <h2 className="font-display text-lg sm:text-2xl font-extrabold text-white tracking-tight">
+            {isAr ? (
               <>خبرة ضريبية ومحاسبية في <span className="text-gold-400">كافة إمارات الدولة والـ 40+ منطقة حرة</span></>
             ) : (
-              <>Tax & Audit Compliance Across <span className="text-gold-400">All 7 Emirates & 40+ Free Zones</span></>
+              <>Compliance Across <span className="text-gold-400">All 7 Emirates & 40+ Free Zones</span></>
             )}
           </h2>
 
-          <p className="text-slate-400 text-xs sm:text-sm">
-            {language === "ar"
-              ? "مسك دفاتر معتمد، هيكلة ضريبة الشركات بنسبة 0%، وتمثيل كامل أمام الهيئة الاتحادية للضرائب لجميع الرخص."
-              : "Certified bookkeeping, 0% QFZP tax structuring, and audit compliance across Dubai, Abu Dhabi, and Northern Emirates."}
+          <p className="text-slate-400 text-xs max-w-md mx-auto">
+            {isAr
+              ? "مسك دفاتر معتمد، هيكلة ضريبة الشركات بنسبة 0%، وإقرارات معتمدة أمام الهيئة الاتحادية للضرائب."
+              : "Certified bookkeeping, 0% QFZP tax structuring, and statutory filings across all UAE authorities."}
           </p>
         </div>
 
-        {/* Compact Horizontal Jurisdiction Switcher */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 scrollbar-none justify-start sm:justify-center">
-          {JURISDICTIONS.map((j) => {
-            const isActive = activeJurisdiction.id === j.id;
-            return (
-              <button
-                key={j.id}
-                onClick={() => setActiveJurisdiction(j)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer shrink-0 ${
-                  isActive
-                    ? "bg-gold-500 text-navy-950 font-bold shadow-sm"
-                    : "bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white border border-white/10"
-                }`}
-              >
-                {language === "ar" ? j.nameAr.split(" (")[0] : j.name.split(" (")[0]}
-              </button>
-            );
-          })}
+        {/* Animated Horizontal Jurisdiction Switcher */}
+        <div className="flex items-center justify-start sm:justify-center overflow-x-auto pb-1 scrollbar-none gap-1.5">
+          <div className="inline-flex items-center p-1 bg-navy-950/80 border border-slate-800 rounded-xl shadow-inner backdrop-blur-md">
+            {JURISDICTIONS.map((j) => {
+              const isActive = activeJurisdiction.id === j.id;
+              const shortName = isAr ? j.nameAr.split(" (")[0] : j.name.split(" (")[0];
+
+              return (
+                <button
+                  key={j.id}
+                  onClick={() => setActiveJurisdiction(j)}
+                  className={`relative px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer shrink-0 select-none ${
+                    isActive ? "text-navy-950 font-bold" : "text-slate-300 hover:text-white hover:bg-white/5"
+                  }`}
+                >
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeJurisdictionPill"
+                      className="absolute inset-0 bg-gold-400 rounded-lg shadow-sm"
+                      transition={{ type: "spring", stiffness: 450, damping: 32 }}
+                    />
+                  )}
+                  <span className="relative z-10">{shortName}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Streamlined Single Focus Card */}
-        <div className="bg-navy-900/80 border border-gold-500/30 rounded-2xl p-4 sm:p-5 shadow-lg backdrop-blur-md space-y-4">
-          {/* Card Top Strip */}
-          <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-white/10 pb-3">
-            <div>
-              <div className="flex items-center gap-1.5 text-gold-400 text-[11px] font-bold uppercase tracking-wider mb-0.5">
-                <MapPin className="w-3.5 h-3.5" />
-                <span>{language === "ar" ? activeJurisdiction.categoryAr : activeJurisdiction.category}</span>
+        {/* Animated Single Focus Card */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeJurisdiction.id}
+            initial={{ opacity: 0, y: 8, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.98 }}
+            transition={{ duration: 0.22 }}
+            className="bg-navy-900/85 border border-gold-500/30 hover:border-gold-500/50 rounded-2xl p-4 sm:p-5 shadow-lg backdrop-blur-md space-y-3.5 transition-colors"
+          >
+            {/* Card Top Strip */}
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-2.5">
+              <div>
+                <div className="flex items-center gap-1.5 text-gold-400 text-[10.5px] font-bold uppercase tracking-wider mb-0.5">
+                  <MapPin className="w-3.5 h-3.5" />
+                  <span>{isAr ? activeJurisdiction.categoryAr : activeJurisdiction.category}</span>
+                </div>
+                <h3 className="font-display text-base sm:text-lg font-bold text-white">
+                  {isAr ? activeJurisdiction.nameAr : activeJurisdiction.name}
+                </h3>
               </div>
-              <h3 className="font-display text-base sm:text-lg font-bold text-white">
-                {language === "ar" ? activeJurisdiction.nameAr : activeJurisdiction.name}
-              </h3>
-            </div>
 
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-lg bg-gold-400/20 text-gold-300 border border-gold-500/30">
-                {activeJurisdiction.qfzpEligible ? "0% QFZP Eligible" : "Mainland SBR 0% / 9%"}
-              </span>
-              <div className="hidden sm:flex items-center gap-1 bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 px-2.5 py-1 rounded-lg text-[11px] font-semibold">
-                <ShieldCheck className="w-3 h-3" />
-                <span>FTA Compliant</span>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-md bg-gold-400/20 text-gold-300 border border-gold-500/30">
+                  {activeJurisdiction.qfzpEligible ? "0% QFZP Eligible" : "Mainland SBR 0% / 9%"}
+                </span>
+                <div className="flex items-center gap-1 bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 px-2 py-0.5 rounded-md text-[10px] font-semibold">
+                  <ShieldCheck className="w-3 h-3" />
+                  <span>FTA Compliant</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Key Highlight / Description */}
-          <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
-            {language === "ar" ? activeJurisdiction.descriptionAr : activeJurisdiction.description}
-          </p>
+            {/* Key Highlight / Description */}
+            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+              {isAr ? activeJurisdiction.descriptionAr : activeJurisdiction.description}
+            </p>
 
-          {/* 3-Column Quick Metric Strip */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
-            <div className="bg-slate-950/60 border border-white/10 rounded-xl p-2.5">
-              <div className="flex items-center gap-1.5 text-gold-400 font-bold mb-1">
-                <Percent className="w-3 h-3" />
-                <span className="text-[11px]">{language === "ar" ? "ضريبة الشركات" : "Corporate Tax Rate"}</span>
+            {/* 3-Column Quick Metric Strip with Hover Animation */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+              <motion.div whileHover={{ y: -1 }} className="bg-slate-950/70 border border-white/10 rounded-xl p-2.5">
+                <div className="flex items-center gap-1.5 text-gold-400 font-bold mb-0.5">
+                  <Percent className="w-3 h-3" />
+                  <span className="text-[10.5px]">{isAr ? "ضريبة الشركات" : "Corporate Tax"}</span>
+                </div>
+                <p className="text-slate-200 text-[11px] font-medium leading-snug truncate" title={activeJurisdiction.taxRate}>
+                  {activeJurisdiction.taxRate}
+                </p>
+              </motion.div>
+
+              <motion.div whileHover={{ y: -1 }} className="bg-slate-950/70 border border-white/10 rounded-xl p-2.5">
+                <div className="flex items-center gap-1.5 text-emerald-400 font-bold mb-0.5">
+                  <FileCheck className="w-3 h-3" />
+                  <span className="text-[10.5px]">{isAr ? "التدقيق المالي" : "Audit Requirement"}</span>
+                </div>
+                <p className="text-slate-200 text-[11px] font-medium leading-snug truncate" title={isAr ? activeJurisdiction.auditRequirementAr : activeJurisdiction.auditRequirement}>
+                  {isAr ? activeJurisdiction.auditRequirementAr : activeJurisdiction.auditRequirement}
+                </p>
+              </motion.div>
+
+              <motion.div whileHover={{ y: -1 }} className="bg-slate-950/70 border border-white/10 rounded-xl p-2.5">
+                <div className="flex items-center gap-1.5 text-blue-400 font-bold mb-0.5">
+                  <Building2 className="w-3 h-3" />
+                  <span className="text-[10.5px]">{isAr ? "أبرز المناطق" : "Covered Districts"}</span>
+                </div>
+                <p className="text-slate-200 text-[11px] font-medium leading-snug truncate" title={activeJurisdiction.coverageAreas.join(", ")}>
+                  {activeJurisdiction.coverageAreas.slice(0, 3).join(", ")}...
+                </p>
+              </motion.div>
+            </div>
+
+            {/* Compact Actions Row */}
+            <div className="pt-1.5 border-t border-white/10 flex flex-wrap items-center justify-between gap-2.5 text-xs">
+              <div className="flex items-center gap-1.5 text-slate-300 text-[11px]">
+                <Sparkles className="w-3.5 h-3.5 text-gold-400 shrink-0" />
+                <span>
+                  {isAr
+                    ? "استشارة أولية مجانية لتقييم الامتثال الضريبي لشركتك"
+                    : "Free 30-min compliance & tax assessment for your license"}
+                </span>
               </div>
-              <p className="text-slate-200 text-[11px] font-medium leading-snug truncate" title={activeJurisdiction.taxRate}>
-                {activeJurisdiction.taxRate}
-              </p>
-            </div>
 
-            <div className="bg-slate-950/60 border border-white/10 rounded-xl p-2.5">
-              <div className="flex items-center gap-1.5 text-emerald-400 font-bold mb-1">
-                <FileCheck className="w-3 h-3" />
-                <span className="text-[11px]">{language === "ar" ? "التدقيق المالي" : "Audit Requirement"}</span>
+              <div className="flex items-center gap-2">
+                <a
+                  href={`https://wa.me/971529226958?text=Hello%20Glen,%20I%20have%20an%20inquiry%20regarding%20accounting%20and%20corporate%20tax%20for%20my%20company%20in%20${encodeURIComponent(activeJurisdiction.name)}.`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-3 py-1.5 rounded-lg text-xs transition-colors shadow-xs"
+                >
+                  <Phone className="w-3 h-3" />
+                  <span>WhatsApp</span>
+                </a>
+
+                <a
+                  href="#contact"
+                  className="inline-flex items-center gap-1 bg-gold-500 hover:bg-gold-400 text-navy-950 font-bold px-3 py-1.5 rounded-lg text-xs transition-colors cursor-pointer shadow-xs active:scale-95"
+                >
+                  <span>{isAr ? "حجز استشارة" : "Book Assessment"}</span>
+                  <ArrowRight className="w-3 h-3" />
+                </a>
               </div>
-              <p className="text-slate-200 text-[11px] font-medium leading-snug truncate" title={language === "ar" ? activeJurisdiction.auditRequirementAr : activeJurisdiction.auditRequirement}>
-                {language === "ar" ? activeJurisdiction.auditRequirementAr : activeJurisdiction.auditRequirement}
-              </p>
             </div>
-
-            <div className="bg-slate-950/60 border border-white/10 rounded-xl p-2.5">
-              <div className="flex items-center gap-1.5 text-blue-400 font-bold mb-1">
-                <Building2 className="w-3 h-3" />
-                <span className="text-[11px]">{language === "ar" ? "أبرز المناطق" : "Key Covered Districts"}</span>
-              </div>
-              <p className="text-slate-200 text-[11px] font-medium leading-snug truncate" title={activeJurisdiction.coverageAreas.join(", ")}>
-                {activeJurisdiction.coverageAreas.slice(0, 3).join(", ")}...
-              </p>
-            </div>
-          </div>
-
-          {/* Compact CTA Footer */}
-          <div className="pt-2 border-t border-white/10 flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-1.5 text-slate-300 text-[11px]">
-              <Sparkles className="w-3.5 h-3.5 text-gold-400 shrink-0" />
-              <span>
-                {language === "ar"
-                  ? "استشارة أولية مجانية لتقييم الامتثال الضريبي لشركتك"
-                  : "Free 30-min compliance & tax assessment for your license"}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <a
-                href={`https://wa.me/971529226958?text=Hello%20Glen,%20I%20have%20an%20inquiry%20regarding%20accounting%20and%20corporate%20tax%20for%20my%20company%20in%20${encodeURIComponent(activeJurisdiction.name)}.`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-3 py-1.5 rounded-lg text-xs transition-colors"
-              >
-                <Phone className="w-3 h-3" />
-                <span>WhatsApp</span>
-              </a>
-
-              <a
-                href="#contact"
-                className="inline-flex items-center gap-1 bg-gold-500 hover:bg-gold-400 text-navy-950 font-bold px-3.5 py-1.5 rounded-lg text-xs transition-colors cursor-pointer"
-              >
-                <span>{language === "ar" ? "حجز استشارة" : "Book Assessment"}</span>
-                <ArrowRight className="w-3 h-3" />
-              </a>
-            </div>
-          </div>
-
-        </div>
+          </motion.div>
+        </AnimatePresence>
 
       </div>
     </section>

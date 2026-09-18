@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import {
   ArrowRight,
   CheckCircle2,
@@ -364,20 +365,45 @@ export const OurAffiliations: React.FC = () => {
     window.open(`https://wa.me/${phoneNumber}?text=${encodedText}`, "_blank", "noopener,noreferrer");
   };
 
-  return (
-    <section id="affiliations" className="py-10 sm:py-14 bg-slate-900 text-white relative overflow-hidden">
-      {/* Background Architectural Glow and Grid */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#1e293b,transparent_70%)] pointer-events-none" />
-      <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[250px] bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+  const tabs = [
+    { id: "all", labelEn: "All Authorities (6)", labelAr: "كافة الهيئات (6)" },
+    { id: "dubai", labelEn: "Dubai Hubs (3)", labelAr: "مناطق دبي (3)" },
+    { id: "northern", labelEn: "Northern Emirates (3)", labelAr: "الإمارات الشمالية (3)" },
+  ];
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-6 sm:space-y-8">
+  const filteredAffiliations = affiliations.filter((aff) => {
+    if (activeTab === "dubai") return aff.id === "meydan" || aff.id === "ifza" || aff.id === "ded";
+    if (activeTab === "northern") return aff.id === "rakez" || aff.id === "shams" || aff.id === "spc";
+    return true;
+  });
+
+  return (
+    <section id="affiliations" className="py-8 sm:py-10 md:py-12 bg-slate-900 text-white relative overflow-hidden">
+      {/* Dynamic Ambient Glows */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#1e293b,transparent_75%)] pointer-events-none" />
+      <motion.div
+        animate={{ scale: [1, 1.15, 1], opacity: [0.15, 0.28, 0.15] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute -top-28 left-1/2 -translate-x-1/2 w-[650px] h-[220px] bg-gold-500/20 rounded-full blur-3xl pointer-events-none"
+      />
+      <motion.div
+        animate={{ opacity: [0.08, 0.18, 0.08] }}
+        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute bottom-0 right-10 w-72 h-72 bg-blue-500/15 rounded-full blur-3xl pointer-events-none"
+      />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-5 sm:space-y-6">
         {/* Section Header */}
-        <div className="text-center space-y-2 max-w-2xl mx-auto">
-          <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-gold-500/15 border border-gold-500/30 text-gold-400 text-[11px] font-bold uppercase tracking-widest font-mono">
-            <Award className="w-3 h-3 text-gold-400" />
+        <div className="text-center space-y-2 max-w-xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: -6 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-gold-500/15 border border-gold-500/30 text-gold-400 text-[11px] font-bold uppercase tracking-widest font-mono"
+          >
+            <Award className="w-3.5 h-3.5 text-gold-400" />
             <span>{isAr ? "شراكات واعتمادات رسمية" : "Official UAE Jurisdictions"}</span>
-          </div>
+          </motion.div>
 
           <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
             {isAr ? (
@@ -391,271 +417,237 @@ export const OurAffiliations: React.FC = () => {
             )}
           </h2>
 
-          <p className="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-xl mx-auto">
+          <p className="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-lg mx-auto">
             {isAr
-              ? "معتمدون لدى كبرى الهيئات والمناطق الحرة في دولة الإمارات لتأسيس الشركات، مسك الدفاتر المؤهل، والامتثال لضريبة الشركات وضريبة القيمة المضافة."
-              : "Officially registered and authorized partner for company setup, compliant accounting, FTA tax filings, and 0% Free Zone tax eligibility across the UAE."}
+              ? "معتمدون ومخولون لتأسيس الشركات، مسك الدفاتر المؤهل، والامتثال لضريبة الشركات في كافة مناطق الدولة."
+              : "Officially authorized partner for company setup, compliant accounting, and 0% Free Zone tax eligibility across the UAE."}
           </p>
         </div>
 
-        {/* Crisp Unified 6-Card Strip Layout (Desktop: 6 Columns) */}
-        <div className="hidden xl:block relative max-w-6xl mx-auto">
-          <div className="bg-navy-950/90 border border-slate-700/70 rounded-3xl p-4 shadow-xl backdrop-blur-md relative overflow-hidden">
-            <div className="grid grid-cols-6 gap-3 relative z-10">
-              {affiliations.map((aff) => {
-                const name = isAr ? aff.nameAr : aff.nameEn;
-                const category = isAr ? aff.categoryAr : aff.categoryEn;
-
-                return (
-                  <div
-                    key={aff.id}
-                    className="bg-navy-900 border border-slate-700/80 hover:border-gold-500/60 rounded-2xl overflow-hidden shadow-md flex flex-col justify-between transition-all duration-300 hover:-translate-y-0.5 group"
-                  >
-                    {/* Top: Crisp White Logo Tile */}
-                    <div className="h-28 bg-white p-2.5 flex flex-col items-center justify-center relative overflow-hidden">
-                      <span className="absolute top-2 right-2 px-1.5 py-0.5 rounded-full bg-slate-100 text-[7.5px] font-extrabold uppercase tracking-wider text-slate-600">
-                        {aff.accentBadge}
-                      </span>
-                      <div className="transform scale-90">
-                        {aff.logoComponent}
-                      </div>
-                    </div>
-
-                    {/* Bottom: Compact Solid Navy/Gold Action Block */}
-                    <div className="p-3 flex flex-col justify-between gap-2.5 text-center text-white flex-1 border-t border-slate-800">
-                      <div className="space-y-0.5">
-                        <span className="text-[8.5px] uppercase tracking-wider text-gold-400 font-mono block truncate">
-                          {category}
-                        </span>
-                        <h3 className="font-display text-xs font-bold tracking-tight text-white line-clamp-1">
-                          {name}
-                        </h3>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => setSelectedAffiliation(aff)}
-                        className="w-full py-1.5 rounded-lg border border-gold-400/80 text-gold-400 hover:bg-gold-500 hover:text-navy-950 text-[10px] font-extrabold uppercase tracking-wider transition-all cursor-pointer shadow-xs active:scale-95 flex items-center justify-center gap-1"
-                      >
-                        <span>{isAr ? "اكتشف المزيد" : "KNOW MORE"}</span>
-                        <ChevronRight className={`w-3 h-3 ${isRTL ? "rotate-180" : ""}`} />
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+        {/* Animated Filter Pills */}
+        <div className="flex items-center justify-center">
+          <div className="inline-flex items-center p-1 bg-navy-950/80 border border-slate-800/90 rounded-full shadow-inner backdrop-blur-md">
+            {tabs.map((tab) => {
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`relative px-3.5 py-1.5 text-xs font-semibold rounded-full transition-colors cursor-pointer select-none ${
+                    isActive ? "text-navy-950" : "text-slate-400 hover:text-slate-200"
+                  }`}
+                >
+                  {isActive && (
+                    <motion.div
+                      layoutId="activeAffiliationTab"
+                      className="absolute inset-0 bg-gold-400 rounded-full shadow-sm"
+                      transition={{ type: "spring", stiffness: 450, damping: 32 }}
+                    />
+                  )}
+                  <span className="relative z-10">{isAr ? tab.labelAr : tab.labelEn}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        {/* Medium Screens (Tablets / Laptops): 3x2 Bento Grid */}
-        <div className="hidden sm:grid xl:hidden grid-cols-2 lg:grid-cols-3 gap-3.5 max-w-4xl mx-auto">
-          {affiliations.map((aff) => {
-            const name = isAr ? aff.nameAr : aff.nameEn;
-            const category = isAr ? aff.categoryAr : aff.categoryEn;
+        {/* Responsive Animated Grid (Desktop 6-col, Tablet 3-col, Mobile 2-col) */}
+        <motion.div
+          layout
+          className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 max-w-6xl mx-auto"
+        >
+          <AnimatePresence mode="popLayout">
+            {filteredAffiliations.map((aff, index) => {
+              const name = isAr ? aff.nameAr : aff.nameEn;
+              const category = isAr ? aff.categoryAr : aff.categoryEn;
 
-            return (
-              <div
-                key={aff.id}
-                className="bg-navy-950 border border-slate-800 rounded-2xl overflow-hidden shadow-md flex flex-col justify-between transition-all duration-300 hover:border-gold-500/50 group"
-              >
-                {/* White Logo Banner */}
-                <div className="p-3 bg-white border-b border-slate-200 flex items-center justify-center min-h-[95px] relative">
-                  <span className="absolute top-2 right-2 px-1.5 py-0.5 rounded-full bg-slate-100 text-[8px] font-extrabold uppercase tracking-wider text-slate-700">
-                    {aff.accentBadge}
-                  </span>
-                  <div className="transform scale-90">
-                    {aff.logoComponent}
-                  </div>
-                </div>
-
-                {/* Dark Action Block */}
-                <div className="p-3 space-y-2.5 flex flex-col justify-between flex-grow">
-                  <div className="space-y-0.5">
-                    <span className="text-[9px] uppercase font-mono tracking-wider text-gold-400 block">
-                      {category}
+              return (
+                <motion.div
+                  key={aff.id}
+                  layout
+                  initial={{ opacity: 0, scale: 0.92, y: 14 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.92, y: 10 }}
+                  transition={{ duration: 0.25, delay: index * 0.03 }}
+                  whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setSelectedAffiliation(aff)}
+                  className="group relative bg-navy-950/90 border border-slate-800/90 hover:border-gold-400/80 rounded-2xl overflow-hidden shadow-md hover:shadow-xl hover:shadow-gold-500/10 flex flex-col justify-between transition-colors cursor-pointer"
+                >
+                  {/* White Logo Chamber */}
+                  <div className="h-24 sm:h-28 bg-white p-2.5 flex flex-col items-center justify-center relative overflow-hidden border-b border-slate-200/40">
+                    <span className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded-full bg-slate-100 text-[7.5px] font-extrabold uppercase tracking-wider text-slate-700 shadow-2xs">
+                      {aff.accentBadge}
                     </span>
-                    <h3 className="font-display text-sm font-bold text-white">
-                      {name}
-                    </h3>
+                    <div className="transform scale-85 sm:scale-90 group-hover:scale-100 transition-transform duration-300">
+                      {aff.logoComponent}
+                    </div>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => setSelectedAffiliation(aff)}
-                    className="w-full py-1.5 rounded-lg border border-gold-400 text-gold-400 hover:bg-gold-500 hover:text-navy-950 text-[11px] font-extrabold uppercase tracking-wider transition-all cursor-pointer shadow-xs active:scale-98 text-center flex items-center justify-center gap-1"
-                  >
-                    <span>{isAr ? "اكتشف المزيد" : "KNOW MORE"}</span>
-                    <ChevronRight className={`w-3 h-3 ${isRTL ? "rotate-180" : ""}`} />
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                  {/* Dark Action Block */}
+                  <div className="p-3 bg-gradient-to-b from-navy-900 to-navy-950 flex flex-col justify-between gap-2.5 flex-1 text-center">
+                    <div className="space-y-0.5">
+                      <span className="text-[8.5px] uppercase tracking-wider text-gold-400 font-mono block truncate">
+                        {category}
+                      </span>
+                      <h3 className="font-display text-xs font-bold tracking-tight text-white line-clamp-1 group-hover:text-gold-300 transition-colors">
+                        {name}
+                      </h3>
+                    </div>
 
-        {/* Mobile Screens: Compact 2-column Cards */}
-        <div className="grid grid-cols-2 gap-2.5 sm:hidden">
-          {affiliations.map((aff) => {
-            const name = isAr ? aff.nameAr : aff.nameEn;
-            const category = isAr ? aff.categoryAr : aff.categoryEn;
-
-            return (
-              <div
-                key={aff.id}
-                className="bg-navy-950 border border-slate-800 rounded-xl overflow-hidden shadow-sm flex flex-col justify-between"
-              >
-                <div className="p-2.5 bg-white flex items-center justify-center min-h-[85px] relative">
-                  <span className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded-full bg-slate-100 text-[7px] font-extrabold uppercase tracking-wider text-slate-700">
-                    {aff.accentBadge}
-                  </span>
-                  <div className="transform scale-80">
-                    {aff.logoComponent}
+                    <div className="w-full py-1.5 rounded-lg border border-gold-400/50 group-hover:border-gold-400 bg-gold-400/10 group-hover:bg-gold-500 text-gold-300 group-hover:text-navy-950 text-[10px] font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-1 shadow-xs">
+                      <span>{isAr ? "اكتشف المزيد" : "KNOW MORE"}</span>
+                      <ChevronRight className={`w-3 h-3 transition-transform group-hover:translate-x-0.5 ${isRTL ? "rotate-180 group-hover:-translate-x-0.5" : ""}`} />
+                    </div>
                   </div>
-                </div>
-
-                <div className="p-2.5 bg-navy-900 flex flex-col justify-between gap-2 flex-1">
-                  <div className="space-y-0.5">
-                    <span className="text-[8px] uppercase font-mono tracking-wider text-gold-400 block truncate">
-                      {category}
-                    </span>
-                    <h3 className="font-display text-xs font-bold text-white line-clamp-1">
-                      {name}
-                    </h3>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => setSelectedAffiliation(aff)}
-                    className="w-full py-1.5 rounded-md bg-gold-500 hover:bg-gold-400 text-navy-950 text-[10px] font-extrabold uppercase tracking-wider transition-all cursor-pointer text-center"
-                  >
-                    {isAr ? "تفاصيل" : "KNOW MORE"}
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        </motion.div>
 
         {/* Bottom Fast CTA Strip */}
-        <div className="bg-navy-950/80 border border-slate-800 rounded-xl p-3 sm:p-4 max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
-          <div className="space-y-0.5">
-            <h4 className="font-display text-xs sm:text-sm font-bold text-white flex items-center justify-center sm:justify-start gap-1.5">
-              <Globe2 className="w-3.5 h-3.5 text-gold-400" />
-              <span>
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="bg-navy-950/80 border border-slate-800/80 hover:border-slate-700/90 rounded-2xl p-3 sm:p-3.5 max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left transition-colors"
+        >
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-gold-500/15 border border-gold-500/30 flex items-center justify-center shrink-0">
+              <Globe2 className="w-4 h-4 text-gold-400" />
+            </div>
+            <div className="space-y-0.5">
+              <h4 className="font-display text-xs sm:text-sm font-bold text-white">
                 {isAr ? "هل تبحث عن ترخيص أو استشارة لمنطقة أخرى؟" : "Looking for Setup or Tax Filing in Another Jurisdiction?"}
-              </span>
-            </h4>
-            <p className="text-[11px] text-slate-400">
-              {isAr
-                ? "نوفر الدعم والمحاسبة القانونية عبر كافة المناطق الحرة والتراخيص التجارية في دبي والإمارات."
-                : "We support formation, bookkeeping, and tax compliance across all UAE Free Zones and Mainland authorities."}
-            </p>
+              </h4>
+              <p className="text-[11px] text-slate-400">
+                {isAr
+                  ? "نوفر الدعم والمحاسبة والامتثال الضريبي عبر كافة المناطق الحرة والتراخيص التجارية في دبي والإمارات."
+                  : "We support formation, bookkeeping, and tax compliance across all UAE Free Zones and Mainland authorities."}
+              </p>
+            </div>
           </div>
 
           <a
             href="https://wa.me/971529226958"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-4 py-2 rounded-lg bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-sm shrink-0 transition-all active:scale-95"
+            className="px-3.5 py-1.5 rounded-lg bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-sm shrink-0 transition-all active:scale-95 whitespace-nowrap"
           >
             <MessageCircle className="w-3.5 h-3.5 text-navy-950" />
             <span>{isAr ? "تحدث مع مستشارنا" : "Talk to an Advisor"}</span>
           </a>
-        </div>
+        </motion.div>
       </div>
 
-      {/* Interactive Detail Modal for "KNOW MORE" */}
-      {selectedAffiliation && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white border border-slate-200 rounded-3xl max-w-lg w-full shadow-2xl overflow-hidden relative animate-in zoom-in-95 duration-200">
-            {/* Modal Header: Website Navy & Gold */}
-            <div className="p-6 bg-navy-950 text-white flex items-start justify-between relative border-b border-gold-500/30">
-              <div className="space-y-1">
-                <span className="text-[10px] font-mono uppercase tracking-wider text-gold-400 block">
-                  {isAr ? selectedAffiliation.categoryAr : selectedAffiliation.categoryEn}
-                </span>
-                <h3 className="font-display text-2xl font-bold text-white">
-                  {isAr ? selectedAffiliation.nameAr : selectedAffiliation.nameEn}
-                </h3>
-                <p className="text-xs text-slate-300">
-                  {isAr ? selectedAffiliation.taglineAr : selectedAffiliation.taglineEn}
-                </p>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setSelectedAffiliation(null)}
-                className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            {/* Modal Content */}
-            <div className="p-6 space-y-5 max-h-[75vh] overflow-y-auto">
-              {/* Logo & Description */}
-              <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                <div className="w-24 shrink-0 flex items-center justify-center bg-white p-2 rounded-xl shadow-xs">
-                  {selectedAffiliation.logoComponent}
+      {/* Smoothly Animated Detail Modal */}
+      <AnimatePresence>
+        {selectedAffiliation && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedAffiliation(null)}
+              className="fixed inset-0 bg-navy-950/80 backdrop-blur-sm cursor-pointer"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 15 }}
+              transition={{ type: "spring", damping: 26, stiffness: 360 }}
+              className="bg-white border border-slate-200 rounded-3xl max-w-lg w-full shadow-2xl overflow-hidden relative z-10"
+            >
+              {/* Modal Header */}
+              <div className="p-5 sm:p-6 bg-navy-950 text-white flex items-start justify-between relative border-b border-gold-500/30">
+                <div className="space-y-1">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-gold-400 block">
+                    {isAr ? selectedAffiliation.categoryAr : selectedAffiliation.categoryEn}
+                  </span>
+                  <h3 className="font-display text-xl sm:text-2xl font-bold text-white">
+                    {isAr ? selectedAffiliation.nameAr : selectedAffiliation.nameEn}
+                  </h3>
+                  <p className="text-xs text-slate-300">
+                    {isAr ? selectedAffiliation.taglineAr : selectedAffiliation.taglineEn}
+                  </p>
                 </div>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  {isAr ? selectedAffiliation.descriptionAr : selectedAffiliation.descriptionEn}
-                </p>
-              </div>
 
-              {/* Key Advantages */}
-              <div className="space-y-2.5">
-                <h4 className="text-xs font-extrabold uppercase tracking-wider text-navy-950 flex items-center gap-1.5">
-                  <Building2 className="w-3.5 h-3.5 text-gold-600" />
-                  <span>{isAr ? "أبرز المزايا والتسهيلات:" : "Key Authority Advantages:"}</span>
-                </h4>
-                <div className="space-y-2">
-                  {(isAr ? selectedAffiliation.benefitsAr : selectedAffiliation.benefitsEn).map((benefit, idx) => (
-                    <div key={idx} className="flex items-start gap-2 text-xs text-slate-700">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                      <span className="leading-tight">{benefit}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Corporate Tax / FTA Highlight */}
-              <div className="bg-gold-500/10 border border-gold-500/30 rounded-2xl p-3.5 space-y-1">
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-navy-950 flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-gold-600" />
-                  {isAr ? "الامتثال لضريبة الشركات في الإمارات:" : "UAE Corporate Tax & 0% Treatment:"}
-                </span>
-                <p className="text-xs text-slate-700 leading-relaxed font-medium">
-                  {isAr ? selectedAffiliation.corporateTaxAr : selectedAffiliation.corporateTaxEn}
-                </p>
-              </div>
-
-              {/* Modal Actions */}
-              <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
                 <button
                   type="button"
-                  onClick={() => {
-                    handleOpenWhatsApp(selectedAffiliation);
-                    setSelectedAffiliation(null);
-                  }}
-                  className="w-full sm:flex-1 py-3 px-4 rounded-xl bg-navy-950 hover:bg-navy-900 text-gold-400 hover:text-white font-display font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-lg transition-all"
-                >
-                  <MessageCircle className="w-4 h-4 text-emerald-400" />
-                  <span>{isAr ? "استفسر عبر واتساب" : "Inquire on WhatsApp"}</span>
-                </button>
-
-                <a
-                  href="#contact"
                   onClick={() => setSelectedAffiliation(null)}
-                  className="w-full sm:w-auto py-3 px-5 rounded-xl border border-slate-200 hover:border-slate-300 text-navy-950 font-display font-bold text-xs text-center cursor-pointer transition-colors"
+                  className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer transition-colors shrink-0"
                 >
-                  {isAr ? "حجز استشارة" : "Book Meeting"}
-                </a>
+                  <X className="w-4 h-4" />
+                </button>
               </div>
-            </div>
+
+              {/* Modal Content */}
+              <div className="p-5 sm:p-6 space-y-4 max-h-[75vh] overflow-y-auto text-slate-800">
+                {/* Logo & Description */}
+                <div className="flex items-center gap-4 p-3.5 rounded-2xl bg-slate-50 border border-slate-100">
+                  <div className="w-24 shrink-0 flex items-center justify-center bg-white p-2 rounded-xl shadow-xs">
+                    {selectedAffiliation.logoComponent}
+                  </div>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    {isAr ? selectedAffiliation.descriptionAr : selectedAffiliation.descriptionEn}
+                  </p>
+                </div>
+
+                {/* Key Advantages */}
+                <div className="space-y-2">
+                  <h4 className="text-xs font-extrabold uppercase tracking-wider text-navy-950 flex items-center gap-1.5">
+                    <Building2 className="w-3.5 h-3.5 text-gold-600" />
+                    <span>{isAr ? "أبرز المزايا والتسهيلات:" : "Key Authority Advantages:"}</span>
+                  </h4>
+                  <div className="space-y-1.5">
+                    {(isAr ? selectedAffiliation.benefitsAr : selectedAffiliation.benefitsEn).map((benefit, idx) => (
+                      <div key={idx} className="flex items-start gap-2 text-xs text-slate-700">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                        <span className="leading-tight">{benefit}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Corporate Tax / FTA Highlight */}
+                <div className="bg-gold-500/10 border border-gold-500/30 rounded-2xl p-3 space-y-1">
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-navy-950 flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-gold-600" />
+                    {isAr ? "الامتثال لضريبة الشركات في الإمارات:" : "UAE Corporate Tax & 0% Treatment:"}
+                  </span>
+                  <p className="text-xs text-slate-700 leading-relaxed font-medium">
+                    {isAr ? selectedAffiliation.corporateTaxAr : selectedAffiliation.corporateTaxEn}
+                  </p>
+                </div>
+
+                {/* Modal Actions */}
+                <div className="pt-2 flex flex-col sm:flex-row items-center gap-2.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleOpenWhatsApp(selectedAffiliation);
+                      setSelectedAffiliation(null);
+                    }}
+                    className="w-full sm:flex-1 py-2.5 px-4 rounded-xl bg-navy-950 hover:bg-navy-900 text-gold-400 hover:text-white font-display font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-lg transition-all"
+                  >
+                    <MessageCircle className="w-4 h-4 text-emerald-400" />
+                    <span>{isAr ? "استفسر عبر واتساب" : "Inquire on WhatsApp"}</span>
+                  </button>
+
+                  <a
+                    href="#contact"
+                    onClick={() => setSelectedAffiliation(null)}
+                    className="w-full sm:w-auto py-2.5 px-5 rounded-xl border border-slate-200 hover:border-slate-300 text-navy-950 font-display font-bold text-xs text-center cursor-pointer transition-colors"
+                  >
+                    {isAr ? "حجز استشارة" : "Book Meeting"}
+                  </a>
+                </div>
+              </div>
+            </motion.div>
           </div>
-        </div>
-      )}
+        )}
+      </AnimatePresence>
     </section>
   );
 };

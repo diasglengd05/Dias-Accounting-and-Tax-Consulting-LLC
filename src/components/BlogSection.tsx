@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Search, ArrowRight, BookOpen, Sparkles, Mail, CheckCircle2, ExternalLink } from "lucide-react";
+import { ArrowRight, BookOpen, Sparkles, Mail, CheckCircle2, ExternalLink } from "lucide-react";
 import { BlogPost } from "../types";
 
 interface BlogSectionProps {
@@ -180,23 +180,6 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
           {/* Sidebar Column: 4 Columns */}
           <aside className="lg:col-span-4 space-y-6">
             
-            {/* Search Box */}
-            <div className="bg-white rounded-3xl border border-slate-200/80 p-6 shadow-sm">
-              <span className="text-[11px] font-bold text-gold-600 uppercase tracking-widest block mb-2">
-                Search Articles
-              </span>
-              <div className="relative">
-                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search tax, VAT, licenses..."
-                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs sm:text-sm text-navy-950 placeholder-slate-400 focus:outline-none focus:border-gold-500 focus:bg-white transition-all"
-                />
-              </div>
-            </div>
-
             {/* Newsletter Subscription */}
             <div className="bg-gradient-to-br from-navy-950 to-navy-900 rounded-3xl border border-gold-500/30 p-6 text-white shadow-md space-y-4">
               <div className="space-y-1">

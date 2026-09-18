@@ -207,7 +207,7 @@ export const StandalonePricingCards: React.FC<StandalonePricingCardsProps> = () 
             return (
               <div
                 key={card.id}
-                className="bg-white border border-slate-200/90 rounded-3xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 hover:shadow-xl hover:border-gold-500/40 relative group"
+                className="bg-white border border-slate-200/80 rounded-2xl p-6 flex flex-col justify-between transition-all duration-200 hover:shadow-md hover:border-gold-400 relative group"
               >
                 {/* Top Info */}
                 <div className="space-y-4">

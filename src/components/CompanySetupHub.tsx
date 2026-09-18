@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { motion, AnimatePresence } from "motion/react";
 import {
   Building2,
   FileCheck,
@@ -68,12 +69,10 @@ export const CompanySetupHub: React.FC<CompanySetupHubProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 mb-16">
           
           {/* Pillar 1: Residence Visas */}
-          <div className="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 group flex flex-col justify-between relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-gold-500/5 rounded-bl-full pointer-events-none group-hover:scale-110 transition-transform" />
-            
+          <div className="bg-white rounded-2xl p-7 border border-slate-200/80 shadow-sm hover:shadow-md hover:border-gold-400 transition-all duration-200 group flex flex-col justify-between relative overflow-hidden">
             <div>
-              <div className="w-14 h-14 rounded-2xl bg-gold-50 border border-gold-200/60 flex items-center justify-center text-gold-600 mb-6 group-hover:bg-gold-500 group-hover:text-navy-950 transition-all duration-300 shadow-sm">
-                <Users className="w-7 h-7" />
+              <div className="w-12 h-12 rounded-xl bg-gold-50 border border-gold-200/60 flex items-center justify-center text-gold-600 mb-5 group-hover:bg-gold-500 group-hover:text-navy-950 transition-colors shadow-sm">
+                <Users className="w-6 h-6" />
               </div>
 
               <span className="text-xs font-mono font-bold text-gold-600 uppercase tracking-wider block mb-1">
@@ -115,12 +114,10 @@ export const CompanySetupHub: React.FC<CompanySetupHubProps> = ({
           </div>
 
           {/* Pillar 2: Minimum Office Requirements */}
-          <div className="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 group flex flex-col justify-between relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-navy-900/5 rounded-bl-full pointer-events-none group-hover:scale-110 transition-transform" />
-            
+          <div className="bg-white rounded-2xl p-7 border border-slate-200/80 shadow-sm hover:shadow-md hover:border-gold-400 transition-all duration-200 group flex flex-col justify-between relative overflow-hidden">
             <div>
-              <div className="w-14 h-14 rounded-2xl bg-navy-50 border border-navy-100 flex items-center justify-center text-navy-800 mb-6 group-hover:bg-navy-900 group-hover:text-gold-400 transition-all duration-300 shadow-sm">
-                <Building2 className="w-7 h-7" />
+              <div className="w-12 h-12 rounded-xl bg-navy-50 border border-navy-100 flex items-center justify-center text-navy-800 mb-5 group-hover:bg-navy-900 group-hover:text-gold-400 transition-colors shadow-sm">
+                <Building2 className="w-6 h-6" />
               </div>
 
               <span className="text-xs font-mono font-bold text-navy-800 uppercase tracking-wider block mb-1">
@@ -162,12 +159,10 @@ export const CompanySetupHub: React.FC<CompanySetupHubProps> = ({
           </div>
 
           {/* Pillar 3: Corporate Bank Account */}
-          <div className="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 group flex flex-col justify-between relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-bl-full pointer-events-none group-hover:scale-110 transition-transform" />
-            
+          <div className="bg-white rounded-2xl p-7 border border-slate-200/80 shadow-sm hover:shadow-md hover:border-gold-400 transition-all duration-200 group flex flex-col justify-between relative overflow-hidden">
             <div>
-              <div className="w-14 h-14 rounded-2xl bg-emerald-50 border border-emerald-200/60 flex items-center justify-center text-emerald-600 mb-6 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-300 shadow-sm">
-                <CreditCard className="w-7 h-7" />
+              <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200/60 flex items-center justify-center text-emerald-600 mb-5 group-hover:bg-emerald-600 group-hover:text-white transition-colors shadow-sm">
+                <CreditCard className="w-6 h-6" />
               </div>
 
               <span className="text-xs font-mono font-bold text-emerald-700 uppercase tracking-wider block mb-1">
@@ -211,131 +206,115 @@ export const CompanySetupHub: React.FC<CompanySetupHubProps> = ({
         </div>
 
         {/* Mainland vs Free Zone Selector Card */}
-        <div className="bg-navy-950 rounded-3xl p-8 sm:p-10 text-white relative overflow-hidden border border-white/10 shadow-2xl">
+        <div className="bg-navy-950 rounded-2xl p-5 sm:p-6 text-white relative overflow-hidden border border-slate-800 shadow-xl">
           <div className="absolute -top-32 -right-32 w-80 h-80 bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
 
-          <div className="relative z-10">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-8 border-b border-white/10">
+          <div className="relative z-10 space-y-4">
+            {/* Header & Animated Tabs */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 border-b border-white/10">
               <div>
-                <span className="text-xs font-bold text-gold-400 uppercase tracking-widest block mb-1">
+                <span className="text-[10px] font-mono font-bold text-gold-400 uppercase tracking-widest block mb-0.5">
                   {isAr ? "المقارنة القانونية" : "Jurisdiction Selection"}
                 </span>
-                <h3 className="font-display text-2xl sm:text-3xl font-bold text-white">
-                  {isAr ? "البر الرئيسي أم المنطقة الحرة؟ نحن نوجهك للأفضل" : "Mainland vs. Free Zone: Tailored to Your Model"}
+                <h3 className="font-display text-lg sm:text-2xl font-bold text-white">
+                  {isAr ? "البر الرئيسي أم المنطقة الحرة؟" : "Mainland vs. Free Zone"}
                 </h3>
               </div>
 
-              {/* Tab Selector */}
-              <div className="flex bg-white/10 p-1.5 rounded-2xl border border-white/10 shrink-0">
+              {/* Animated Tab Switcher */}
+              <div className="inline-flex bg-white/10 p-1 rounded-xl border border-white/10 shrink-0 self-start sm:self-auto">
                 <button
                   onClick={() => setActiveTab("mainland")}
-                  className={`px-5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    activeTab === "mainland"
-                      ? "bg-gold-500 text-navy-950 shadow-md"
-                      : "text-slate-300 hover:text-white"
+                  className={`relative px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer select-none ${
+                    activeTab === "mainland" ? "text-navy-950" : "text-slate-300 hover:text-white"
                   }`}
                 >
-                  {isAr ? "البر الرئيسي (دبي DET)" : "Dubai Mainland (DET)"}
+                  {activeTab === "mainland" && (
+                    <motion.div
+                      layoutId="setupActiveTab"
+                      className="absolute inset-0 bg-gold-400 rounded-lg shadow-sm"
+                      transition={{ type: "spring", stiffness: 450, damping: 32 }}
+                    />
+                  )}
+                  <span className="relative z-10">{isAr ? "البر الرئيسي (دبي DET)" : "Dubai Mainland (DET)"}</span>
                 </button>
                 <button
                   onClick={() => setActiveTab("freezone")}
-                  className={`px-5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    activeTab === "freezone"
-                      ? "bg-gold-500 text-navy-950 shadow-md"
-                      : "text-slate-300 hover:text-white"
+                  className={`relative px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer select-none ${
+                    activeTab === "freezone" ? "text-navy-950" : "text-slate-300 hover:text-white"
                   }`}
                 >
-                  {isAr ? "المناطق الحرة (SHAMS / Meydan / IFZA)" : "UAE Free Zones (0% QFZP)"}
+                  {activeTab === "freezone" && (
+                    <motion.div
+                      layoutId="setupActiveTab"
+                      className="absolute inset-0 bg-gold-400 rounded-lg shadow-sm"
+                      transition={{ type: "spring", stiffness: 450, damping: 32 }}
+                    />
+                  )}
+                  <span className="relative z-10">{isAr ? "المناطق الحرة (0% QFZP)" : "UAE Free Zones (0% QFZP)"}</span>
                 </button>
               </div>
             </div>
 
-            {/* Dynamic Content Based on Selected Tab */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 pt-8 items-center">
-              
-              <div className="lg:col-span-8 space-y-4">
-                {activeTab === "mainland" ? (
-                  <div className="space-y-4">
-                    <h4 className="text-xl font-bold text-gold-300">
-                      {isAr ? "ميزات تأسيس شركة في البر الرئيسي لدبي (Mainland)" : "Dubai Mainland (Department of Economy & Tourism)"}
-                    </h4>
-                    <p className="text-slate-300 text-sm leading-relaxed">
-                      {isAr
-                        ? "تتيح رخصة البر الرئيسي التجارة بحرية داخل السوق المحلي الإماراتي والمشاركة في المناقصات الحكومية والتعاقد المباشر مع جميع الشركات دون قيود جغرافية، مع ملكية أجنبية بنسبة 100% لمعظم الأنشطة."
-                        : "Trade freely anywhere in the UAE local mainland market, bid for government tenders, and establish retail or commercial locations across Dubai with 100% foreign ownership."}
-                    </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                      <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-xs text-slate-200 flex items-start gap-2.5">
-                        <CheckCircle2 className="w-4 h-4 text-gold-400 shrink-0 mt-0.5" />
-                        <span>{isAr ? "حرية كاملة للبيع داخل السوق المحلي الإماراتي" : "Zero restrictions on local UAE direct retail & B2B trading"}</span>
-                      </div>
-                      <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-xs text-slate-200 flex items-start gap-2.5">
-                        <CheckCircle2 className="w-4 h-4 text-gold-400 shrink-0 mt-0.5" />
-                        <span>{isAr ? "المشاركة في المناقصات والعقود الحكومية" : "Eligibility to bid on government & municipal contracts"}</span>
-                      </div>
-                      <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-xs text-slate-200 flex items-start gap-2.5">
-                        <CheckCircle2 className="w-4 h-4 text-gold-400 shrink-0 mt-0.5" />
-                        <span>{isAr ? "عدد غير محدود من تأشيرات الإقامة حسب مساحة المكتب" : "Scalable employee visa quotas based on office space"}</span>
-                      </div>
-                      <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-xs text-slate-200 flex items-start gap-2.5">
-                        <CheckCircle2 className="w-4 h-4 text-gold-400 shrink-0 mt-0.5" />
-                        <span>{isAr ? "الاستفادة من إعفاء الشركات الصغيرة (SBR حتى 3 مليون درهم)" : "Eligible for Small Business Relief up to AED 3M revenue"}</span>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <h4 className="text-xl font-bold text-gold-300">
-                      {isAr ? "ميزات تأسيس شركة في المناطق الحرة بالإمارات" : "UAE Top Free Zones (SHAMS, Meydan, IFZA, DMCC, RAKEZ)"}
-                    </h4>
-                    <p className="text-slate-300 text-sm leading-relaxed">
-                      {isAr
-                        ? "المناطق الحرة هي الوجهة المثالية للشركات التقنية، والاستشارات الدولية، والتجارة الإلكترونية، حيث تتيح ملكية أجنبية 100%، وإمكانية الاستفادة من نسبة 0% ضريبة شركات للشخص المؤهل (QFZP)."
-                        : "Ideal for tech startups, global consulting, international trade, and service providers. Benefit from 100% foreign equity, zero customs duties within free zones, and potential 0% Corporate Tax under Qualifying Free Zone Person (QFZP) rules."}
-                    </p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                      <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-xs text-slate-200 flex items-start gap-2.5">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                        <span>{isAr ? "0% ضريبة شركات للدخل المؤهل (QFZP)" : "0% Corporate Tax potential on Qualifying Income"}</span>
-                      </div>
-                      <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-xs text-slate-200 flex items-start gap-2.5">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                        <span>{isAr ? "حزم مكاتب مرنة (Flexi-desk) منخفضة التكلفة" : "Affordable flexi-desk & virtual coworking packages"}</span>
-                      </div>
-                      <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-xs text-slate-200 flex items-start gap-2.5">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                        <span>{isAr ? "إصدار فوري بدون الحاجة لرأس مال مدفوع" : "Fast incorporation without paid-up share capital upfront"}</span>
-                      </div>
-                      <div className="bg-white/5 border border-white/10 rounded-xl p-3 text-xs text-slate-200 flex items-start gap-2.5">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                        <span>{isAr ? "إعادة كاملة للأرباح ورأس المال إلى بلد المنشأ" : "100% repatriation of corporate capital and profits"}</span>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Callout action box */}
-              <div className="lg:col-span-4 bg-white/10 rounded-2xl p-6 border border-white/15 text-center space-y-4">
-                <div className="text-2xl font-bold font-mono text-gold-400">
-                  {isAr ? "استشارة تأسيس مجانية" : "Free Formation Assessment"}
-                </div>
-                <p className="text-xs text-slate-300 leading-relaxed">
-                  {isAr
-                    ? "تحدث مع مستشاري التأسيس والضرائب لتحديد الرخصة الأنسب لنشاطك بأقل تكلفة ممكنة."
-                    : "Speak with our registered company setup & tax specialists to evaluate exact license costs, visa allocations, and banking pre-approvals."}
+            {/* Dynamic Content with Spring Animation */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.18 }}
+                className="space-y-3.5"
+              >
+                <p className="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-3xl">
+                  {activeTab === "mainland"
+                    ? (isAr
+                        ? "تتيح رخصة البر الرئيسي التجارة بحرية كاملة داخل السوق المحلي الإماراتي والتعاقدات الحكومية مع ملكية أجنبية 100% لكافة الأنشطة التجارية."
+                        : "Trade freely anywhere in the UAE local mainland market, bid for government tenders, and establish retail or commercial locations across Dubai with 100% foreign ownership.")
+                    : (isAr
+                        ? "الخيار المثالي للتجارة الدولية والخدمات الرقمية مع ميزة 0% ضريبة شركات للدخل المؤهل وحزم مكاتب افتراضية مرنة بأقل التكاليف."
+                        : "Ideal for tech startups, global consulting, international trade, and service providers. Benefit from 100% foreign equity, zero customs duties, and potential 0% Corporate Tax under QFZP rules.")
+                  }
                 </p>
-                <button
-                  onClick={() => handleConsultClick(activeTab === "mainland" ? "Dubai Mainland Company Setup" : "UAE Free Zone Company Setup")}
-                  className="w-full bg-gold-500 hover:bg-gold-600 text-navy-950 font-display font-bold py-3 px-4 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 text-xs cursor-pointer"
-                >
-                  <span>{isAr ? "احجز استشارة التأسيس الآن" : "Book Free Setup Advisory"}</span>
-                  <ArrowRight className={`w-4 h-4 ${isRTL ? "rotate-180" : ""}`} />
-                </button>
-              </div>
 
-            </div>
+                {/* 4 Crisp Key Points */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2">
+                  {(activeTab === "mainland" ? [
+                    { en: "100% Foreign Ownership on commercial activities", ar: "ملكية أجنبية 100% لكافة الأنشطة التجارية" },
+                    { en: "Unrestricted direct local UAE B2B & retail sales", ar: "حرية بيع وتوزيع غير مقيدة داخل السوق المحلي" },
+                    { en: "Direct eligibility for UAE government contracts", ar: "أهلية مباشرة للمناقصات والعقود الحكومية" },
+                    { en: "Small Business Relief 0% tax up to AED 3M", ar: "إعفاء الشركات الصغيرة (0% حتى 3 مليون درهم)" },
+                  ] : [
+                    { en: "0% Corporate Tax on Qualifying Income (QFZP)", ar: "0% ضريبة شركات للدخل المؤهل (QFZP)" },
+                    { en: "Affordable flexi-desk & virtual office packages", ar: "حزم مكاتب مرنة وافتراضية بأقل التكاليف" },
+                    { en: "Fast setup with zero upfront paid-up capital", ar: "تأسيس فوري بدون متطلبات رأس مال مدفوع" },
+                    { en: "100% capital and profit repatriation to home country", ar: "إعادة كامل الأرباح ورأس المال بنسبة 100%" },
+                  ]).map((item, idx) => (
+                    <div key={idx} className="bg-white/5 border border-white/10 rounded-xl p-2.5 text-xs text-slate-200 flex items-center gap-2">
+                      <CheckCircle2 className={`w-4 h-4 shrink-0 ${activeTab === "mainland" ? "text-gold-400" : "text-emerald-400"}`} />
+                      <span className="leading-tight text-[11px]">{isAr ? item.ar : item.en}</span>
+                    </div>
+                  ))}
+                </div>
 
+                {/* Compact Bottom Action Bar */}
+                <div className="pt-2 border-t border-white/10 flex flex-wrap items-center justify-between gap-2.5 text-xs">
+                  <span className="text-slate-400 text-xs">
+                    {isAr
+                      ? "تقييم مجاني لاختيار الهيئة والنشاط الأنسب لشركتك وتحديد الرسوم الدقيقة."
+                      : "Free 15-minute advisory to match the optimal jurisdiction and exact formation fee."}
+                  </span>
+
+                  <button
+                    onClick={() => handleConsultClick(activeTab === "mainland" ? "Dubai Mainland Company Setup" : "UAE Free Zone Company Setup")}
+                    className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold py-2 px-3.5 rounded-xl shadow-md transition-all flex items-center gap-1.5 text-xs cursor-pointer active:scale-95 shrink-0"
+                  >
+                    <span>{isAr ? "احجز استشارة التأسيس المجانية" : "Book Free Setup Advisory"}</span>
+                    <ArrowRight className={`w-3.5 h-3.5 ${isRTL ? "rotate-180" : ""}`} />
+                  </button>
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
         </div>
 

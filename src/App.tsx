@@ -501,226 +501,233 @@ function MainApp() {
           />
 
           {/* Precision Gradient & Vignette Overlays for Maximum Text Legibility & Brand Contrast */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#070d19]/85 via-[#0d1b2a]/75 to-[#070d19]/95 pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-tr from-purple-950/30 via-transparent to-[#070d19]/70 pointer-events-none" />
-          <div className="absolute inset-0 bg-radial from-gold-500/10 via-transparent to-navy-950/80 pointer-events-none" />
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-5xl h-64 bg-gradient-to-b from-purple-500/10 to-transparent blur-3xl pointer-events-none" />
+          <div className="absolute inset-0 bg-navy-950/85 backdrop-blur-[1px] pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-navy-950/90 via-navy-950/75 to-navy-950/95 pointer-events-none" />
 
-          <AnimatedSection className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-20 lg:py-24 relative z-10 text-center space-y-5 sm:space-y-8">
+          <AnimatedSection className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-24 relative z-10 text-center space-y-6 sm:space-y-8">
             
             {/* Trust Pill & Google Rating Badge */}
-            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5">
-              <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/15 border border-white/20 backdrop-blur-md text-[11px] sm:text-xs font-semibold text-gold-300 shadow-sm transition-all">
-                <Sparkles className="w-3.5 h-3.5 text-gold-400 animate-pulse" />
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-[11px] sm:text-xs font-semibold text-gold-300">
+                <Sparkles className="w-3.5 h-3.5 text-gold-400" />
                 <span>{t.hero.badge}</span>
               </div>
               <a
                 href={GOOGLE_BUSINESS_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 rounded-full bg-navy-900/80 hover:bg-navy-900 border border-gold-500/30 hover:border-gold-400/60 backdrop-blur-md text-[11px] sm:text-xs font-semibold text-white transition-all shadow-sm group"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-navy-900/90 hover:bg-navy-900 border border-gold-500/40 hover:border-gold-400 backdrop-blur-md text-[11px] sm:text-xs font-semibold text-white transition-all shadow-sm group"
                 title="View Dias Accounting on Google Business"
               >
                 <GoogleLogo className="w-3.5 h-3.5" />
                 <span className="text-amber-400 font-bold">★★★★★</span>
-                <span className="text-slate-100 font-bold">5.0</span>
+                <span className="text-white font-bold">5.0</span>
                 <span className="text-slate-300 text-[11px] font-normal hidden sm:inline">{t.hero.googleRatingText}</span>
                 <ExternalLink className="w-3 h-3 text-gold-400 group-hover:translate-x-0.5 transition-transform" />
               </a>
             </div>
 
             {/* Prominent Main Brand Title */}
-            <div className="space-y-2">
-              <h1 className="font-display text-3xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-white drop-shadow-md">
+            <div className="space-y-3 max-w-4xl mx-auto">
+              <h1 className="font-display text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-white">
                 {t.hero.companyTitle}
                 <span className="sr-only"> - Best Accounting Firm in Dubai & UAE</span>
               </h1>
 
               {/* Sub-headline 1: UAE's leading firm */}
-              <h2 className="text-base sm:text-2xl md:text-3xl font-bold text-slate-100 tracking-tight max-w-3xl mx-auto leading-snug drop-shadow">
+              <h2 className="text-lg sm:text-2xl md:text-3xl font-bold text-slate-100 tracking-tight leading-snug">
                 {t.hero.subheadline1}
               </h2>
 
-              {/* Punchy Growth Tagline */}
-              <p className="text-base sm:text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-gold-400 to-emerald-300 tracking-tight drop-shadow pt-1 leading-snug">
+              {/* Punchy Growth Tagline in solid brushed gold */}
+              <p className="text-base sm:text-xl md:text-2xl font-bold text-gold-400 tracking-tight leading-snug">
                 {t.hero.subheadline2}
               </p>
             </div>
 
             {/* Clear, High-Converting Client Value Statement */}
-            <p className="text-slate-200 text-xs sm:text-base md:text-lg max-w-3xl mx-auto leading-relaxed font-normal drop-shadow-sm px-1">
+            <p className="text-slate-200 text-sm sm:text-base md:text-lg max-w-3xl mx-auto leading-relaxed font-normal">
               {t.hero.description}
             </p>
 
-            {/* High-Converting Action Buttons Bar with Immediate 0% Relief & Small Business Incentive */}
-            <div className="flex flex-col items-center justify-center gap-2.5 sm:gap-3.5 max-w-3xl mx-auto pt-1 sm:pt-2 w-full">
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 sm:gap-3.5 w-full">
-                <a
-                  href="#calculator"
-                  className="sm:w-auto bg-gradient-to-tr from-gold-400 via-gold-500 to-gold-600 hover:from-gold-500 hover:to-gold-700 text-navy-950 font-display font-bold py-2.5 sm:py-3 px-4 sm:px-5 rounded-xl shadow-lg hover:shadow-gold-500/30 transition-all flex items-center justify-center gap-2 group cursor-pointer hover:scale-[1.02] active:scale-98 text-center shrink-0"
-                  title="Calculate UAE Corporate Tax & Discover 0% Relief Options"
-                >
-                  <Calculator className="w-4 h-4 text-navy-950 shrink-0" />
-                  <span className="text-xs sm:text-sm font-extrabold">{t.hero.ctaConsultation}</span>
-                  <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1 shrink-0 rtl:rotate-180" />
-                </a>
+            {/* High-Converting Action Buttons Bar */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2 max-w-2xl mx-auto w-full">
+              <a
+                href="#contact"
+                className="w-full sm:w-auto bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold py-3.5 px-6 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 group cursor-pointer text-sm whitespace-nowrap"
+              >
+                <Calendar className="w-4 h-4 text-navy-950 shrink-0" />
+                <span>{language === "ar" ? "احجز استشارة مجانية" : "Book Free Consultation"}</span>
+                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 shrink-0 rtl:rotate-180" />
+              </a>
 
-                <button
-                  type="button"
-                  onClick={() => setTaxHealthModalOpen(true)}
-                  className="sm:w-auto bg-white/15 hover:bg-white/25 border border-white/30 hover:border-gold-400/80 text-white font-display font-bold py-3 sm:py-3.5 px-4 sm:px-6 rounded-2xl backdrop-blur-md transition-all text-xs sm:text-base flex items-center justify-center gap-2 cursor-pointer group hover:scale-[1.02] active:scale-98 shadow-lg shrink-0"
-                >
-                  <ShieldCheck className="w-4 h-4 text-gold-400 group-hover:scale-110 transition-transform shrink-0" />
-                  <span>{t.hero.ctaRiskAudit}</span>
-                </button>
+              <a
+                href="https://wa.me/971529226958?text=Hello%20Dias%20Accounting,%20I%20would%20like%20to%20consult%20about%20accounting%20and%20corporate%20tax%20for%20our%20UAE%20business."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto bg-white/10 hover:bg-white/15 border border-white/20 hover:border-gold-400/60 text-white font-display font-semibold py-3.5 px-5 rounded-xl transition-all text-sm flex items-center justify-center gap-2 whitespace-nowrap"
+                title="Direct WhatsApp Chat with Senior Partner Glen Dias"
+              >
+                <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span>{language === "ar" ? "تواصل عبر واتساب (+971 52 922 6958)" : "WhatsApp Glen Dias (+971 52 922 6958)"}</span>
+              </a>
 
-                <a
-                  href="https://wa.me/971529226958?text=Hello%20Glen,%20I%20would%20like%20to%20consult%20about%20verifying%20our%200%25%20Corporate%20Tax%20relief%20and%20accounting%20for%20our%20UAE%20business."
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="sm:w-auto bg-emerald-600/90 hover:bg-emerald-600 border border-emerald-400/40 text-white font-display font-semibold py-3 sm:py-3.5 px-4 sm:px-5 rounded-2xl backdrop-blur-md transition-all text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg hover:scale-[1.02] active:scale-98 shrink-0"
-                  title="Direct WhatsApp Chat with Senior Partner Glen Dias"
-                >
-                  <Phone className="w-4 h-4 text-emerald-200 shrink-0" />
-                  <span>{t.hero.ctaWhatsApp}</span>
-                </a>
-              </div>
-            </div>
-
-            {/* 4 Core BCL-Style Value Guarantees Banner */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto pt-2">
-              <div className="bg-white/10 hover:bg-white/15 border border-white/15 rounded-2xl p-3 text-left rtl:text-right backdrop-blur-md transition-all">
-                <div className="flex items-center gap-1.5 text-gold-400 font-display font-bold text-xs">
-                  <CheckCircle2 className="w-3.5 h-3.5 shrink-0 text-gold-400" />
-                  <span>{language === "ar" ? "معاملات غير محدودة" : "Unlimited Transactions"}</span>
-                </div>
-                <p className="text-[10px] text-slate-300 mt-1 leading-snug">
-                  {language === "ar" ? "لا رسوم إضافية مخفية ولا حد لعدد الفواتير" : "No hidden overage surcharges or transaction caps"}
-                </p>
-              </div>
-
-              <div className="bg-white/10 hover:bg-white/15 border border-white/15 rounded-2xl p-3 text-left rtl:text-right backdrop-blur-md transition-all">
-                <div className="flex items-center gap-1.5 text-emerald-300 font-display font-bold text-xs">
-                  <CheckCircle2 className="w-3.5 h-3.5 shrink-0 text-emerald-400" />
-                  <span>{language === "ar" ? "بدون سقف للإيرادات" : "No Revenue Cap"}</span>
-                </div>
-                <p className="text-[10px] text-slate-300 mt-1 leading-snug">
-                  {language === "ar" ? "تسعير شفاف ينمو مع شركتك دون قفزات غير مبررة" : "Transparent scale without arbitrary bracket jumps"}
-                </p>
-              </div>
-
-              <div className="bg-white/10 hover:bg-white/15 border border-white/15 rounded-2xl p-3 text-left rtl:text-right backdrop-blur-md transition-all">
-                <div className="flex items-center gap-1.5 text-gold-400 font-display font-bold text-xs">
-                  <ShieldCheck className="w-3.5 h-3.5 shrink-0 text-gold-400" />
-                  <span>{language === "ar" ? "ضمان الرضا 100%" : "100% Satisfaction Guarantee"}</span>
-                </div>
-                <p className="text-[10px] text-slate-300 mt-1 leading-snug">
-                  {language === "ar" ? "دفاتر جاهزة للتدقيق وضمان خلو من غرامات الهيئة" : "Zero penalty guarantee with audit-ready records"}
-                </p>
-              </div>
-
-              <div className="bg-white/10 hover:bg-white/15 border border-white/15 rounded-2xl p-3 text-left rtl:text-right backdrop-blur-md transition-all">
-                <div className="flex items-center gap-1.5 text-emerald-300 font-display font-bold text-xs">
-                  <Award className="w-3.5 h-3.5 shrink-0 text-emerald-400" />
-                  <span>{language === "ar" ? "وكالة ضريبية معتمدة" : "FTA Registered Agency"}</span>
-                </div>
-                <p className="text-[10px] text-slate-300 mt-1 leading-snug">
-                  {language === "ar" ? "محاسبون قانونيون معتمدون CAs & CPAs في دبي والإمارات" : "Licensed Chartered Accountants & CPAs across UAE"}
-                </p>
-              </div>
+              <button
+                type="button"
+                onClick={() => setTaxHealthModalOpen(true)}
+                className="w-full sm:w-auto text-slate-300 hover:text-gold-300 text-xs font-semibold py-2 px-3 underline underline-offset-4 cursor-pointer transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-gold-400 shrink-0" />
+                <span>{t.hero.ctaRiskAudit}</span>
+              </button>
             </div>
 
             {/* Key Trust & Performance Metrics Banner */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 pt-4 sm:pt-6 border-t border-white/15 max-w-4xl mx-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 pt-6 border-t border-white/10 max-w-4xl mx-auto">
               <div className="text-center">
                 <span className="block text-2xl sm:text-3xl font-extrabold font-display text-gold-400">45+</span>
-                <span className="text-[11px] text-slate-300 font-medium block mt-0.5">{language === "ar" ? "شركة انضمت إلينا" : "UAE Businesses Onboarded"}</span>
+                <span className="text-[11px] text-slate-300 font-medium block mt-0.5">{language === "ar" ? "شركة انضمت إلينا" : "UAE Businesses"}</span>
               </div>
               <div className="text-center">
                 <span className="block text-2xl sm:text-3xl font-extrabold font-display text-gold-400">100%</span>
-                <span className="text-[11px] text-slate-300 font-medium block mt-0.5">{language === "ar" ? "سجل خالٍ تماماً من الغرامات" : "Zero-Penalty Compliance Rate"}</span>
+                <span className="text-[11px] text-slate-300 font-medium block mt-0.5">{language === "ar" ? "سجل خالٍ تماماً من الغرامات" : "Zero-Penalty Rate"}</span>
               </div>
               <div className="text-center">
-                <span className="block text-2xl sm:text-3xl font-extrabold font-display text-gold-400">15+</span>
-                <span className="text-[11px] text-slate-300 font-medium block mt-0.5">{language === "ar" ? "قطاعاً في المناطق الحرة والمحلية" : "Free Zone & Mainland Sectors"}</span>
+                <span className="block text-2xl sm:text-3xl font-extrabold font-display text-gold-400">0% / 9%</span>
+                <span className="text-[11px] text-slate-300 font-medium block mt-0.5">{language === "ar" ? "إعفاءات SBR و QFZP" : "Tax Optimization"}</span>
               </div>
               <div className="text-center">
-                <span className="block text-2xl sm:text-3xl font-extrabold font-display text-gold-400">15+</span>
-                <span className="text-[11px] text-slate-300 font-medium block mt-0.5">{language === "ar" ? "سنة خبرة مهنية للشريك الإداري" : "Years Senior Partner CA Exp"}</span>
+                <span className="block text-2xl sm:text-3xl font-extrabold font-display text-gold-400">15+ Yrs</span>
+                <span className="text-[11px] text-slate-300 font-medium block mt-0.5">{language === "ar" ? "سنة خبرة مهنية للشريك" : "Senior Partner CA Exp"}</span>
               </div>
             </div>
 
           </AnimatedSection>
         </section>
 
+        {/* 2.1 Core BCL-Style Value Guarantees Strip */}
+        <section className="bg-white border-b border-slate-200/80 py-6">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="flex items-center gap-3 p-3.5 rounded-xl border border-slate-100 bg-slate-50/60 hover:bg-white hover:border-gold-300/60 transition-all">
+                <div className="w-10 h-10 rounded-lg bg-gold-50 border border-gold-200/60 flex items-center justify-center text-gold-600 shrink-0">
+                  <CheckCircle2 className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-display font-bold text-xs text-navy-950">
+                    {language === "ar" ? "معاملات غير محدودة" : "Unlimited Transactions"}
+                  </h4>
+                  <p className="text-[11px] text-slate-500 leading-tight mt-0.5">
+                    {language === "ar" ? "لا رسوم إضافية مخفية ولا حد لعدد الفواتير" : "No hidden overage fees or volume caps"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 p-3.5 rounded-xl border border-slate-100 bg-slate-50/60 hover:bg-white hover:border-gold-300/60 transition-all">
+                <div className="w-10 h-10 rounded-lg bg-gold-50 border border-gold-200/60 flex items-center justify-center text-gold-600 shrink-0">
+                  <Shield className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-display font-bold text-xs text-navy-950">
+                    {language === "ar" ? "بدون سقف للإيرادات" : "No Revenue Cap"}
+                  </h4>
+                  <p className="text-[11px] text-slate-500 leading-tight mt-0.5">
+                    {language === "ar" ? "تسعير شفاف ينمو مع شركتك" : "Transparent pricing with no bracket penalties"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 p-3.5 rounded-xl border border-slate-100 bg-slate-50/60 hover:bg-white hover:border-gold-300/60 transition-all">
+                <div className="w-10 h-10 rounded-lg bg-gold-50 border border-gold-200/60 flex items-center justify-center text-gold-600 shrink-0">
+                  <Award className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-display font-bold text-xs text-navy-950">
+                    {language === "ar" ? "ضمان الامتثال 100%" : "100% Satisfaction Guarantee"}
+                  </h4>
+                  <p className="text-[11px] text-slate-500 leading-tight mt-0.5">
+                    {language === "ar" ? "دفاتر جاهزة للتدقيق وخالية من الغرامات" : "Audit-ready books with zero FTA penalties"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* 2.2 Instant Interactive Tax Planning & Health Estimator Section */}
-        <section id="calculator" className="py-12 md:py-16 bg-navy-900 border-b border-slate-800 text-white relative overflow-hidden scroll-mt-20 sm:scroll-mt-24">
+        <section id="calculator" className="py-8 sm:py-10 md:py-12 bg-navy-900 border-b border-slate-800 text-white relative overflow-hidden scroll-mt-20">
           <AnimatedSection className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               
               {/* Left Explanatory Column */}
-              <div className="lg:col-span-6 space-y-6 text-center lg:text-left rtl:lg:text-right">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-500/10 border border-gold-500/30 text-gold-400 text-xs font-bold uppercase tracking-wider">
+              <div className="lg:col-span-5 space-y-4 text-center lg:text-left rtl:lg:text-right">
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gold-500/10 border border-gold-500/30 text-gold-400 text-[11px] font-bold uppercase tracking-wider">
                   <Calculator className="w-3.5 h-3.5" />
-                  <span>{language === "ar" ? "حاسبة ضريبة الشركات التفاعلية" : "Interactive Tax Estimator"}</span>
+                  <span>{language === "ar" ? "حاسبة ضريبة الشركات" : "Interactive Tax Estimator"}</span>
                 </div>
                 
-                <h2 className="font-display text-3xl sm:text-4xl font-bold text-white tracking-tight leading-tight">
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight leading-snug">
                   {language === "ar" 
-                    ? "احسب التزامك الضريبي واكتشف فرص الإعفاء القانوني" 
-                    : "Calculate Your UAE Corporate Tax & Discover 0% Relief Options"}
+                    ? "احسب ضريبة شركتك وتحقق من إعفاء الـ 0%" 
+                    : "Calculate Corporate Tax & Verify 0% Relief"}
                 </h2>
                 
-                <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+                <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
                   {language === "ar"
-                    ? "سواء كانت شركتك مسجلة في البر الرئيسي (Mainland) أو في إحدى المناطق الحرة (Free Zone)، استخدم حاسبتنا المعتمدة لتقدير ضريبة الـ 9%، والتحقق من أهلية تسهيلات الأعمال الصغيرة (SBR) حتى 3 مليون درهم."
-                    : "Whether you operate in UAE Mainland or Free Zones (DMCC, Meydan, RAKEZ, IFZA, Shams), use our compliant estimator to calculate your 9% liability, check Small Business Relief eligibility, and verify 0% Qualifying Free Zone Person conditions."}
+                    ? "تقدير فوري لضريبة الـ 9%، والتحقق من أهلية تسهيلات الأعمال الصغيرة (SBR حتى 3M درهم) ودخل المناطق الحرة المؤهل."
+                    : "Quickly estimate your 9% corporate tax liability and verify 0% statutory relief under Small Business Relief (revenue < AED 3M) and Qualifying Free Zone status."}
                 </p>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                  <div className="bg-navy-950/70 border border-white/10 rounded-xl p-4 space-y-1 text-left rtl:text-right">
-                    <div className="flex items-center gap-2 text-gold-400 font-bold text-sm">
-                      <CheckCircle2 className="w-4 h-4 shrink-0" />
-                      <span>{language === "ar" ? "تسهيلات حتى 3M درهم" : "Small Business Relief"}</span>
+                {/* Compact Relief Indicators */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                  <div className="bg-navy-950/80 border border-white/10 rounded-xl p-3 flex items-start gap-2.5 text-left rtl:text-right">
+                    <CheckCircle2 className="w-4 h-4 text-gold-400 shrink-0 mt-0.5" />
+                    <div>
+                      <div className="text-xs font-bold text-white leading-tight">
+                        {language === "ar" ? "تسهيلات حتى 3M درهم" : "Small Business Relief"}
+                      </div>
+                      <p className="text-[11px] text-slate-400 mt-0.5 leading-tight">
+                        {language === "ar" ? "0% ضريبة للإيرادات السنوية دون 3M" : "0% tax under AED 3M revenue"}
+                      </p>
                     </div>
-                    <p className="text-xs text-slate-400">
-                      {language === "ar" ? "0% ضريبة إذا كانت الإيرادات السنوية أقل من 3,000,000 درهم." : "0% tax for UAE businesses with annual revenues under AED 3,000,000."}
-                    </p>
                   </div>
 
-                  <div className="bg-navy-950/70 border border-white/10 rounded-xl p-4 space-y-1 text-left rtl:text-right">
-                    <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm">
-                      <CheckCircle2 className="w-4 h-4 shrink-0" />
-                      <span>{language === "ar" ? "المناطق الحرة 0% QFZP" : "0% Free Zone QFZP"}</span>
+                  <div className="bg-navy-950/80 border border-white/10 rounded-xl p-3 flex items-start gap-2.5 text-left rtl:text-right">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                    <div>
+                      <div className="text-xs font-bold text-white leading-tight">
+                        {language === "ar" ? "المناطق الحرة 0% QFZP" : "0% Free Zone QFZP"}
+                      </div>
+                      <p className="text-[11px] text-slate-400 mt-0.5 leading-tight">
+                        {language === "ar" ? "إعفاء ضريبي على الدخل المؤهل" : "0% rate on qualifying income"}
+                      </p>
                     </div>
-                    <p className="text-xs text-slate-400">
-                      {language === "ar" ? "هيكلة متوافقة للاستفادة من الإعفاء للدخل المؤهل." : "Compliant structuring to maintain 0% corporate tax on qualifying income."}
-                    </p>
                   </div>
                 </div>
 
-                <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-3">
+                {/* Action Row */}
+                <div className="pt-2 flex flex-wrap items-center justify-center lg:justify-start gap-2.5">
                   <button
                     type="button"
                     onClick={() => setTaxHealthModalOpen(true)}
-                    className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold py-3 px-5 rounded-xl text-xs sm:text-sm flex items-center gap-2 transition-all shadow cursor-pointer"
+                    className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold py-2.5 px-4 rounded-xl text-xs flex items-center gap-1.5 transition-all shadow cursor-pointer"
                   >
-                    <ShieldCheck className="w-4 h-4" />
-                    <span>{language === "ar" ? "افحص مخاطر الامتثال (مجاناً)" : "Free 60s Penalty Risk Audit"}</span>
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <span>{language === "ar" ? "افحص مخاطر الامتثال" : "Free Penalty Risk Audit"}</span>
                   </button>
                   <a
-                    href="#services"
-                    className="border border-white/20 hover:border-white/40 text-slate-200 hover:text-white font-display font-semibold py-3 px-5 rounded-xl text-xs sm:text-sm transition-all"
+                    href="#pricing"
+                    className="border border-white/20 hover:border-white/40 text-slate-200 hover:text-white font-display font-semibold py-2.5 px-4 rounded-xl text-xs transition-all"
                   >
-                    {language === "ar" ? "عرض جميع الخدمات" : "View All Services"}
+                    {language === "ar" ? "عرض باقات الأسعار" : "View Packages"}
                   </a>
                 </div>
               </div>
 
               {/* Right Interactive Tax Calculator */}
-              <div className="lg:col-span-6 w-full max-w-lg mx-auto">
-                <LazyMount minHeight={480} sectionId="calculator">
-                  <React.Suspense fallback={<div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-100 shadow-xl min-h-[480px] p-6 flex flex-col justify-center items-center text-slate-400 text-xs animate-pulse">Loading Tax Estimator...</div>}>
+              <div className="lg:col-span-7 w-full max-w-lg mx-auto">
+                <LazyMount minHeight={400} sectionId="calculator">
+                  <React.Suspense fallback={<div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-100 shadow-xl min-h-[400px] p-6 flex flex-col justify-center items-center text-slate-400 text-xs animate-pulse">Loading Tax Estimator...</div>}>
                     <TaxCalculator />
                   </React.Suspense>
                 </LazyMount>
@@ -849,10 +856,10 @@ function MainApp() {
             {(t.services.items || servicesData || []).map((service) => (
               <div
                 key={service.id}
-                className="premium-card rounded-3xl p-6 flex flex-col group"
+                className="bg-white border border-slate-200/80 hover:border-gold-400 rounded-2xl p-6 flex flex-col group transition-all duration-200 hover:shadow-md"
               >
                 {/* Header Icon */}
-                <div className="w-12 h-12 rounded-2xl bg-gold-50 border border-gold-100 flex items-center justify-center mb-5 group-hover:bg-gold-500 group-hover:border-gold-500 transition-all">
+                <div className="w-12 h-12 rounded-xl bg-gold-50 border border-gold-200/60 flex items-center justify-center mb-5 group-hover:bg-gold-500 group-hover:border-gold-500 transition-all">
                   <div className="group-hover:text-navy-950 transition-colors">
                     {getServiceIcon(service.iconName)}
                   </div>
@@ -869,7 +876,7 @@ function MainApp() {
                 {/* Action trigger */}
                 <button
                   onClick={() => setSelectedService(service)}
-                  className="w-full mt-auto border border-slate-100 bg-slate-50 hover:bg-navy-900 text-navy-800 hover:text-white font-display font-semibold py-2.5 px-4 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                  className="w-full mt-auto border border-slate-200/80 bg-slate-50 hover:bg-navy-950 text-navy-950 hover:text-white font-display font-semibold py-2.5 px-4 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <span>{t.services.readMore}</span>
                   <ChevronRight className="w-3.5 h-3.5" />
@@ -1191,10 +1198,10 @@ function MainApp() {
                 return (
                   <div
                     key={tier.id}
-                    className={`bg-white border rounded-3xl p-8 flex flex-col relative transition-all duration-300 ${
+                    className={`bg-white border rounded-2xl p-7 flex flex-col relative transition-all duration-200 ${
                       tier.popular
-                        ? "border-gold-500 ring-4 ring-gold-500/15 shadow-xl"
-                        : "border-slate-200/80 shadow-sm hover:shadow-md"
+                        ? "border-gold-500 ring-1 ring-gold-500 shadow-md"
+                        : "border-slate-200/80 shadow-sm hover:border-slate-300 hover:shadow-md"
                     }`}
                   >
                     {tier.popular && (
@@ -1285,7 +1292,7 @@ function MainApp() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
                 
                 {/* 1. Single Year Backlog */}
-                <div className="bg-white border-2 border-gold-500 rounded-3xl p-8 flex flex-col relative transition-all duration-300 shadow-lg shadow-gold-500/10 hover:shadow-xl ring-4 ring-gold-500/5">
+                <div className="bg-white border-2 border-gold-500 rounded-2xl p-7 flex flex-col relative transition-all duration-200 shadow-md">
                   <span className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-gold-500 text-navy-950 text-[10px] font-extrabold uppercase tracking-widest px-4 py-1 rounded-full shadow-md whitespace-nowrap">
                     {language === "ar" ? "الأكثر طلباً للمواعيد" : "High Urgency Package"}
                   </span>
@@ -1345,7 +1352,7 @@ function MainApp() {
                 </div>
 
                 {/* 2. Multi-Year Catchup */}
-                <div className="bg-white border border-slate-200/80 rounded-3xl p-8 flex flex-col relative transition-all duration-300 shadow-sm hover:shadow-md">
+                <div className="bg-white border border-slate-200/80 hover:border-slate-300 rounded-2xl p-7 flex flex-col relative transition-all duration-200 shadow-sm hover:shadow-md">
                   <div className="space-y-1 mb-4 mt-2">
                     <h3 className="font-display text-lg font-extrabold text-navy-950">
                       {language === "ar" ? "إغلاق متأخرات متعدد السنوات (سنتين)" : "Multi-Year Full Catch-Up (2 FYs)"}
@@ -1401,7 +1408,7 @@ function MainApp() {
                 </div>
 
                 {/* 3. High-Volume E-Commerce / Multi-Entity */}
-                <div className="bg-white border border-slate-200/80 rounded-3xl p-8 flex flex-col relative transition-all duration-300 shadow-sm hover:shadow-md">
+                <div className="bg-white border border-slate-200/80 hover:border-slate-300 rounded-2xl p-7 flex flex-col relative transition-all duration-200 shadow-sm hover:shadow-md">
                   <div className="space-y-1 mb-4 mt-2">
                     <h3 className="font-display text-lg font-extrabold text-navy-950">
                       {language === "ar" ? "المتاجر الإلكترونية والشركات المتعددة" : "E-Commerce & High Volume Clean-up"}
@@ -1607,38 +1614,6 @@ function MainApp() {
                 </div>
               );
             })}
-          </div>
-
-          {/* AI Regulatory Search Banner in FAQ */}
-          <div className="bg-gradient-to-r from-navy-950 via-slate-900 to-navy-900 rounded-3xl p-6 sm:p-8 text-white max-w-3xl mx-auto border border-gold-500/20 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div className="flex items-center gap-4 text-center sm:text-left rtl:sm:text-right">
-              <div className="w-12 h-12 rounded-2xl bg-gold-500/20 border border-gold-500/30 flex items-center justify-center shrink-0 shadow-inner">
-                <Sparkles className="w-6 h-6 text-gold-400 animate-pulse" />
-              </div>
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 justify-center sm:justify-start rtl:sm:justify-end flex-wrap">
-                  <h4 className="font-display font-bold text-base text-white">
-                    {language === "ar" ? "هل لديك سؤال حول قانون ضريبي أو موعد محدد؟" : "Have a specific UAE tax regulation or penalty question?"}
-                  </h4>
-                  <span className="text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-400/30 px-2 py-0.5 rounded-full">
-                    Google Grounded
-                  </span>
-                </div>
-                <p className="text-xs text-slate-300">
-                  {language === "ar"
-                    ? "ابحث فورياً عبر مساعد الذكاء الاصطناعي المدعوم ببيانات بحث Google وقرارات الهيئة الاتحادية للضرائب."
-                    : "Ask our live Search-Grounded AI assistant to retrieve official 2025/2026 Cabinet Decisions & circulars."}
-                </p>
-              </div>
-            </div>
-
-            <button
-              onClick={() => handleOpenTaxAi()}
-              className="bg-gradient-to-r from-gold-400 to-gold-500 hover:from-gold-500 hover:to-gold-600 text-navy-950 font-display font-bold py-3 px-5 rounded-xl text-xs flex items-center justify-center gap-2 shadow-lg transition-all hover:scale-105 active:scale-95 cursor-pointer shrink-0 w-full sm:w-auto"
-            >
-              <Globe className="w-4 h-4 text-navy-950" />
-              <span>{language === "ar" ? "فتح البحث الضريبي المباشر" : "Ask Live Tax AI"}</span>
-            </button>
           </div>
 
         </AnimatedSection>

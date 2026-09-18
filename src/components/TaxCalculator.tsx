@@ -103,14 +103,14 @@ export default function TaxCalculator() {
   };
 
   return (
-    <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-100 shadow-xl overflow-hidden text-slate-800 transition-all hover:shadow-2xl">
+    <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-100 shadow-lg overflow-hidden text-slate-800 transition-all hover:shadow-xl">
       {/* Header */}
-      <div className="bg-gradient-to-r from-navy-800 to-navy-950 px-6 py-4 text-white flex items-center justify-between">
+      <div className="bg-gradient-to-r from-navy-800 to-navy-950 px-5 py-3 text-white flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Calculator className="w-5 h-5 text-gold-400" />
-          <span className="font-display font-bold tracking-tight">{t.calculator.headerTitle}</span>
+          <Calculator className="w-4 h-4 text-gold-400" />
+          <span className="font-display font-bold text-sm tracking-tight">{t.calculator.headerTitle}</span>
         </div>
-        <span className="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-mono border border-emerald-500/30">
+        <span className="text-[11px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-mono border border-emerald-500/30">
           {t.calculator.headerBadge}
         </span>
       </div>
@@ -119,7 +119,7 @@ export default function TaxCalculator() {
       <div className="flex border-b border-slate-100 bg-slate-50">
         <button
           onClick={() => setActiveTab("corporate-tax")}
-          className={`flex-1 py-3 text-center text-xs sm:text-sm font-semibold transition-all border-b-2 flex items-center justify-center gap-1.5 cursor-pointer ${
+          className={`flex-1 py-2 px-2 text-center text-xs font-semibold transition-all border-b-2 flex items-center justify-center gap-1.5 cursor-pointer ${
             activeTab === "corporate-tax"
               ? "border-gold-500 text-navy-800 bg-white"
               : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/50"
@@ -130,7 +130,7 @@ export default function TaxCalculator() {
         </button>
         <button
           onClick={() => setActiveTab("vat-estimator")}
-          className={`flex-1 py-3 text-center text-xs sm:text-sm font-semibold transition-all border-b-2 flex items-center justify-center gap-1.5 cursor-pointer ${
+          className={`flex-1 py-2 px-2 text-center text-xs font-semibold transition-all border-b-2 flex items-center justify-center gap-1.5 cursor-pointer ${
             activeTab === "vat-estimator"
               ? "border-gold-500 text-navy-800 bg-white"
               : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/50"
@@ -141,25 +141,25 @@ export default function TaxCalculator() {
         </button>
         <button
           onClick={() => setActiveTab("gratuity-calculator")}
-          className={`flex-1 py-3 text-center text-xs sm:text-sm font-semibold transition-all border-b-2 flex items-center justify-center gap-1.5 cursor-pointer ${
+          className={`flex-1 py-2 px-2 text-center text-xs font-semibold transition-all border-b-2 flex items-center justify-center gap-1.5 cursor-pointer ${
             activeTab === "gratuity-calculator"
               ? "border-gold-500 text-navy-800 bg-white"
               : "border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-100/50"
           }`}
         >
           <Briefcase className="w-3.5 h-3.5 shrink-0 text-gold-600" />
-          <span>{language === "ar" ? "مكافأة نهاية الخدمة" : "UAE Gratuity"}</span>
+          <span>{language === "ar" ? "مكافأة نهاية الخدمة" : "Gratuity"}</span>
         </button>
       </div>
 
-      <div className="p-6">
+      <div className="p-4 sm:p-5">
         {activeTab === "corporate-tax" ? (
           /* Corporate Tax Panel */
-          <div className="space-y-5 animate-fadeIn">
+          <div className="space-y-3.5 animate-fadeIn">
             <div>
-              <label htmlFor="ct-profit-range" className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2 flex justify-between">
+              <label htmlFor="ct-profit-range" className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5 flex justify-between">
                 <span>{t.calculator.annualProfitLabel}</span>
-                <span className="text-navy-800 font-mono text-sm">{formatAED(taxableProfit)}</span>
+                <span className="text-navy-800 font-mono text-sm font-bold">{formatAED(taxableProfit)}</span>
               </label>
               <input
                 id="ct-profit-range"
@@ -178,69 +178,69 @@ export default function TaxCalculator() {
                 <span>1.5M</span>
                 <span>5M+</span>
               </div>
-              <div className="mt-3">
+              <div className="mt-2">
                 <label htmlFor="ct-profit-number" className="sr-only">{t.calculator.annualProfitLabel}</label>
                 <input
                   id="ct-profit-number"
                   type="number"
                   value={taxableProfit}
                   onChange={(e) => setTaxableProfit(Math.max(0, Number(e.target.value)))}
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none font-mono focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:outline-none"
+                  className="w-full px-3 py-1.5 border border-slate-200 rounded-lg text-sm font-medium focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none font-mono focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:outline-none"
                   placeholder="Enter exact profit"
                 />
               </div>
             </div>
 
             {/* Results Grid */}
-            <div className="grid grid-cols-2 gap-3 pt-2">
-              <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                <span className="text-[10px] font-bold uppercase text-slate-400 block mb-1">{t.calculator.tier0Label}</span>
-                <span className="font-mono text-sm font-bold text-slate-700">{formatAED(ctResults.tier0)}</span>
+            <div className="grid grid-cols-2 gap-2.5 pt-0.5">
+              <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                <span className="text-[10px] font-bold uppercase text-slate-400 block mb-0.5">{t.calculator.tier0Label}</span>
+                <span className="font-mono text-xs sm:text-sm font-bold text-slate-700">{formatAED(ctResults.tier0)}</span>
               </div>
-              <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
-                <span className="text-[10px] font-bold uppercase text-slate-400 block mb-1">{t.calculator.tier9Label}</span>
-                <span className="font-mono text-sm font-bold text-slate-700">{formatAED(ctResults.tier9)}</span>
+              <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100">
+                <span className="text-[10px] font-bold uppercase text-slate-400 block mb-0.5">{t.calculator.tier9Label}</span>
+                <span className="font-mono text-xs sm:text-sm font-bold text-slate-700">{formatAED(ctResults.tier9)}</span>
               </div>
             </div>
 
             {/* Total Tax Liability Alert Box */}
-            <div className="bg-navy-900 text-white rounded-xl p-4 relative overflow-hidden">
+            <div className="bg-navy-900 text-white rounded-xl p-3 relative overflow-hidden">
               <div className="absolute right-0 bottom-0 opacity-10">
-                <Calculator className="w-32 h-32 transform translate-x-8 translate-y-8" />
+                <Calculator className="w-24 h-24 transform translate-x-4 translate-y-4" />
               </div>
-              <div className="flex justify-between items-start">
+              <div className="flex justify-between items-center relative z-10">
                 <div>
-                  <span className="text-xs text-slate-300 font-medium block">{t.calculator.estTaxLiability}</span>
-                  <span className="text-2xl font-bold font-mono tracking-tight text-gold-400">
+                  <span className="text-[11px] text-slate-300 font-medium block leading-tight">{t.calculator.estTaxLiability}</span>
+                  <span className="text-xl font-bold font-mono tracking-tight text-gold-400">
                     {formatAED(ctResults.liability)}
                   </span>
                 </div>
                 <div className={isRTL ? "text-left" : "text-right"}>
-                  <span className="text-xs text-slate-300 font-medium block">{t.calculator.effectiveRate}</span>
-                  <span className="text-lg font-bold font-mono text-emerald-400">{ctResults.effectiveRate}%</span>
+                  <span className="text-[11px] text-slate-300 font-medium block leading-tight">{t.calculator.effectiveRate}</span>
+                  <span className="text-base font-bold font-mono text-emerald-400">{ctResults.effectiveRate}%</span>
                 </div>
               </div>
             </div>
 
             {/* Tax Relief Recommendation */}
             {taxableProfit <= 3000000 ? (
-              <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3 flex gap-2.5 items-start text-emerald-900 text-xs">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+              <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-2.5 flex gap-2 items-start text-emerald-900 text-[11px]">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                 <div>
                   <span className="font-bold block text-emerald-800">{t.calculator.reliefBannerTitle}</span>
                   {t.calculator.reliefBannerDesc}
                 </div>
               </div>
             ) : (
-              <div className="bg-amber-50 border border-amber-100 rounded-xl p-3 flex gap-2.5 items-start text-amber-900 text-xs">
-                <ShieldAlert className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+              <div className="bg-amber-50 border border-amber-100 rounded-xl p-2.5 flex gap-2 items-start text-amber-900 text-[11px]">
+                <ShieldAlert className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                 <div>
                   <span className="font-bold block text-amber-800">
                     {language === "ar" ? "تخطيط ضريبي متقدم مطلوب" : "Advanced Structure Required"}
                   </span>
                   {language === "ar"
                     ? "للأرباح التي تتجاوز 375,000 درهم، تخضع الزيادة لنسبة 9%. يساعد التخطيط الاستراتيجي في تقليل الالتزامات الضريبية قانونياً."
-                    : "For profits exceeding AED 375,000, standard 9% corporate tax is mandatory. Proper structuring is critical to optimize liability."}
+                    : "For profits exceeding AED 375,000, standard 9% corporate tax applies. Proper structuring optimizes liability."}
                 </div>
               </div>
             )}
