@@ -192,6 +192,9 @@ export interface Translations {
     submittingBtn: string;
     successTitle: string;
     successMessage: string;
+    emailInvalidError: string;
+    phoneInvalidError: string;
+    validationErrorAlert: string;
     officeAddressTitle: string;
     officeAddress: string;
     workingHoursTitle: string;
@@ -714,6 +717,9 @@ export const translations: Record<Language, Translations> = {
       submittingBtn: "Submitting your details...",
       successTitle: "Consultation Request Received!",
       successMessage: "Thank you! Glen Dias has received your request and will contact you via WhatsApp/Email shortly.",
+      emailInvalidError: "Please enter a valid email address (e.g. name@company.ae)",
+      phoneInvalidError: "Please enter a valid phone number (7-15 digits, e.g. +971 50 123 4567)",
+      validationErrorAlert: "Please provide a valid email and phone number before submitting.",
       officeAddressTitle: "Our Office Location",
       officeAddress: "Prime Tower, Business Bay, Dubai, United Arab Emirates",
       workingHoursTitle: "Working Hours",
@@ -1232,6 +1238,9 @@ export const translations: Record<Language, Translations> = {
       submittingBtn: "جاري إرسال البيانات...",
       successTitle: "تم استلام طلبك بنجاح!",
       successMessage: "شكراً لك! تلقى المستشار غلين دياز بياناتك وسيتواصل معك مباشرة عبر الواتساب أو البريد الإلكتروني قريباً.",
+      emailInvalidError: "يرجى إدخال بريد إلكتروني صحيح (مثال: name@company.ae)",
+      phoneInvalidError: "يرجى إدخال رقم هاتف صحيح مع رمز الدولة (7-15 رقماً، مثال: 4567 123 50 971+)",
+      validationErrorAlert: "يرجى التحقق من صحة البريد الإلكتروني ورقم الهاتف قبل الإرسال.",
       officeAddressTitle: "موقع مكتبنا الرئيسي",
       officeAddress: "برج برايم، الخليج التجاري (Business Bay)، دبي، دولة الإمارات العربية المتحدة",
       workingHoursTitle: "ساعات العمل الرسمية",

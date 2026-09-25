@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from "react";
-import { ArrowRight, BookOpen, Sparkles, Mail, CheckCircle2, ExternalLink } from "lucide-react";
+import { ArrowRight, BookOpen, Sparkles, Mail, CheckCircle2, ExternalLink, AlertCircle } from "lucide-react";
 import { BlogPost } from "../types";
+import { isValidEmail } from "../lib/validation";
 
 interface BlogSectionProps {
   blogs: BlogPost[];
@@ -32,9 +33,15 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
     });
   }, [blogs, selectedCategory, searchQuery]);
 
+  const [newsletterEmailError, setNewsletterEmailError] = useState<string | null>(null);
+
   const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newsletterEmail) return;
+    if (!newsletterEmail || !isValidEmail(newsletterEmail)) {
+      setNewsletterEmailError("Please enter a valid business email address.");
+      return;
+    }
+    setNewsletterEmailError(null);
     setNewsletterSubscribed(true);
   };
 
@@ -202,15 +209,28 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
                   </span>
                 </div>
               ) : (
-                <form onSubmit={handleNewsletterSubmit} className="space-y-2.5">
+                <form onSubmit={handleNewsletterSubmit} noValidate className="space-y-2.5">
                   <input
                     type="email"
                     value={newsletterEmail}
-                    onChange={(e) => setNewsletterEmail(e.target.value)}
+                    onChange={(e) => {
+                      setNewsletterEmail(e.target.value);
+                      if (newsletterEmailError) setNewsletterEmailError(null);
+                    }}
                     required
                     placeholder="Enter your corporate email"
-                    className="w-full px-3.5 py-2.5 bg-white/10 border border-white/15 rounded-xl text-xs text-white placeholder-slate-400 focus:outline-none focus:border-gold-400 transition-all"
+                    className={`w-full px-3.5 py-2.5 rounded-xl text-xs text-white placeholder-slate-400 focus:outline-none transition-all ${
+                      newsletterEmailError
+                        ? "bg-rose-950/30 border border-rose-400 focus:border-rose-400"
+                        : "bg-white/10 border border-white/15 focus:border-gold-400"
+                    }`}
                   />
+                  {newsletterEmailError && (
+                    <p className="text-[10px] text-rose-300 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3 shrink-0" />
+                      <span>{newsletterEmailError}</span>
+                    </p>
+                  )}
                   <button
                     type="submit"
                     className="w-full py-2.5 bg-gradient-to-r from-gold-500 to-gold-600 hover:from-gold-400 hover:to-gold-500 text-navy-950 font-display font-bold text-xs rounded-xl shadow transition-all cursor-pointer flex items-center justify-center gap-2"

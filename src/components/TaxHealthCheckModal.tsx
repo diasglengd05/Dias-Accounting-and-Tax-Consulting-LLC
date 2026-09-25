@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { X, ShieldAlert, ShieldCheck, CheckCircle2, AlertTriangle, ArrowRight, MessageSquare, Send, Award, Phone, Building2, User, Mail, Sparkles } from "lucide-react";
+import { X, ShieldAlert, ShieldCheck, CheckCircle2, AlertTriangle, ArrowRight, MessageSquare, Send, Award, Phone, Building2, User, Mail, Sparkles, AlertCircle, Check } from "lucide-react";
 import { submitToGoogleSheetsDirectly } from "../lib/sheetsService";
 import { useLanguage } from "../i18n/LanguageContext";
+import { validateContactForm, validateEmailField, validatePhoneField } from "../lib/validation";
 
 interface TaxHealthCheckModalProps {
   isOpen: boolean;
@@ -26,6 +27,60 @@ export default function TaxHealthCheckModal({ isOpen, onClose }: TaxHealthCheckM
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
+  const [fieldErrors, setFieldErrors] = useState<{
+    name?: string;
+    email?: string;
+    phone?: string;
+  }>({});
+  const [touched, setTouched] = useState<{
+    name?: boolean;
+    email?: boolean;
+    phone?: boolean;
+  }>({});
+
+  const handleNameChange = (val: string) => {
+    setFullName(val);
+    if (touched.name) {
+      setFieldErrors(prev => ({
+        ...prev,
+        name: val.trim() ? undefined : (isAr ? "الاسم الكامل مطلوب" : "Full name is required.")
+      }));
+    }
+  };
+
+  const handleEmailChange = (val: string) => {
+    setEmail(val);
+    if (touched.email) {
+      const res = validateEmailField(val, isAr ? "ar" : "en");
+      setFieldErrors(prev => ({ ...prev, email: res.isValid ? undefined : res.error }));
+    }
+  };
+
+  const handlePhoneChange = (val: string) => {
+    setPhone(val);
+    if (touched.phone) {
+      const res = validatePhoneField(val, isAr ? "ar" : "en");
+      setFieldErrors(prev => ({ ...prev, phone: res.isValid ? undefined : res.error }));
+    }
+  };
+
+  const handleBlur = (field: "name" | "email" | "phone") => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+    if (field === "name") {
+      setFieldErrors(prev => ({
+        ...prev,
+        name: fullName.trim() ? undefined : (isAr ? "الاسم الكامل مطلوب" : "Full name is required.")
+      }));
+    } else if (field === "email") {
+      const res = validateEmailField(email, isAr ? "ar" : "en");
+      setFieldErrors(prev => ({ ...prev, email: res.isValid ? undefined : res.error }));
+    } else if (field === "phone") {
+      const res = validatePhoneField(phone, isAr ? "ar" : "en");
+      setFieldErrors(prev => ({ ...prev, phone: res.isValid ? undefined : res.error }));
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -74,8 +129,26 @@ export default function TaxHealthCheckModal({ isOpen, onClose }: TaxHealthCheckM
 
   const handleSubmitLead = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!fullName.trim() || !phone.trim() || !email.trim()) return;
+    setSubmitError(null);
 
+    const validation = validateContactForm(
+      { name: fullName, email, phone },
+      isAr ? "ar" : "en"
+    );
+    setTouched({ name: true, email: true, phone: true });
+
+    if (!validation.isValid) {
+      setFieldErrors(validation.errors);
+      setSubmitError(
+        validation.errors.email ||
+        validation.errors.phone ||
+        validation.errors.name ||
+        (isAr ? "يرجى التحقق من صحة البريد الإلكتروني ورقم الهاتف قبل الإرسال." : "Please provide a valid phone number and email format.")
+      );
+      return;
+    }
+
+    setFieldErrors({});
     setIsSubmitting(true);
 
     const auditSummary = `[Tax Health Audit] Jurisdiction: ${jurisdiction}, Turnover: ${turnover}, CT Status: ${ctStatus}, VAT Status: ${vatStatus}, Backlog: ${backlogStatus}, Penalty Risk: ${insights.penaltyRisk}`;
@@ -336,16 +409,23 @@ I would like my Free 15-Minute FTA Tax Strategy Consultation.`;
             </div>
 
             {/* Lead Capture Form */}
-            <form onSubmit={handleSubmitLead} className="space-y-3 pt-2 border-t border-slate-100">
+            <form onSubmit={handleSubmitLead} noValidate className="space-y-3 pt-2 border-t border-slate-100">
               <span className="text-xs font-bold text-navy-950 block">
                 {isAr ? "احصل على استشارتك المجانية لمدة 15 دقيقة وتقرير التدقيق الكامل:" : "Claim Your Free 15-Min Strategy Session & Full Audit Breakdown:"}
               </span>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div>
-                  <label htmlFor="tax-health-fullname" className="text-[10px] font-bold text-slate-700 uppercase block mb-1">
-                    {isAr ? "الاسم الكامل *" : "Your Name *"}
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label htmlFor="tax-health-fullname" className="text-[10px] font-bold text-slate-700 uppercase block">
+                      {isAr ? "الاسم الكامل *" : "Your Name *"}
+                    </label>
+                    {touched.name && !fieldErrors.name && fullName.trim() && (
+                      <span className="text-[10px] text-emerald-600 font-semibold inline-flex items-center gap-0.5">
+                        <Check className="w-3 h-3" />
+                      </span>
+                    )}
+                  </div>
                   <div className="relative">
                     <User className={`w-3.5 h-3.5 text-slate-400 absolute top-3 ${isRTL ? "right-3" : "left-3"}`} />
                     <input
@@ -354,12 +434,26 @@ I would like my Free 15-Minute FTA Tax Strategy Consultation.`;
                       type="text"
                       autoComplete="name"
                       required
+                      aria-invalid={touched.name && !!fieldErrors.name}
                       value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
+                      onChange={(e) => handleNameChange(e.target.value)}
+                      onBlur={() => handleBlur("name")}
                       placeholder={isAr ? "مثال: محمد الهاشمي" : "e.g. Mohammed Al Hashimi"}
-                      className={`w-full text-xs py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-gold-500 outline-none ${isRTL ? "pr-8 pl-3" : "pl-8 pr-3"}`}
+                      className={`w-full text-xs py-2 border rounded-xl outline-none transition-all ${
+                        touched.name && fieldErrors.name
+                          ? "border-rose-400 bg-rose-50/20 focus:ring-2 focus:ring-rose-400"
+                          : touched.name && fullName.trim()
+                          ? "border-emerald-300 bg-white focus:ring-2 focus:ring-emerald-500"
+                          : "border-slate-200 focus:ring-2 focus:ring-gold-500"
+                      } ${isRTL ? "pr-8 pl-3" : "pl-8 pr-3"}`}
                     />
                   </div>
+                  {touched.name && fieldErrors.name && (
+                    <p className="mt-1 text-[10px] font-medium text-rose-600 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3 shrink-0" />
+                      <span>{fieldErrors.name}</span>
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -384,9 +478,16 @@ I would like my Free 15-Minute FTA Tax Strategy Consultation.`;
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div>
-                  <label htmlFor="tax-health-phone" className="text-[10px] font-bold text-slate-700 uppercase block mb-1">
-                    {isAr ? "رقم الواتساب / الهاتف *" : "WhatsApp / Phone *"}
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label htmlFor="tax-health-phone" className="text-[10px] font-bold text-slate-700 uppercase block">
+                      {isAr ? "رقم الواتساب / الهاتف *" : "WhatsApp / Phone *"}
+                    </label>
+                    {touched.phone && !fieldErrors.phone && phone.trim() && (
+                      <span className="text-[10px] text-emerald-600 font-semibold inline-flex items-center gap-0.5">
+                        <Check className="w-3 h-3" /> {isAr ? "صالح" : "Valid"}
+                      </span>
+                    )}
+                  </div>
                   <div className="relative">
                     <Phone className={`w-3.5 h-3.5 text-slate-400 absolute top-3 ${isRTL ? "right-3" : "left-3"}`} />
                     <input
@@ -395,18 +496,44 @@ I would like my Free 15-Minute FTA Tax Strategy Consultation.`;
                       type="tel"
                       autoComplete="tel"
                       required
+                      aria-invalid={touched.phone && !!fieldErrors.phone}
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
+                      onChange={(e) => handlePhoneChange(e.target.value)}
+                      onBlur={() => handleBlur("phone")}
                       placeholder="+971 50 123 4567"
-                      className={`w-full text-xs py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-gold-500 outline-none font-mono ${isRTL ? "pr-8 pl-3" : "pl-8 pr-3"}`}
+                      className={`w-full text-xs py-2 border rounded-xl outline-none font-mono transition-all ${
+                        touched.phone && fieldErrors.phone
+                          ? "border-rose-400 bg-rose-50/20 focus:ring-2 focus:ring-rose-400"
+                          : touched.phone && !fieldErrors.phone && phone.trim()
+                          ? "border-emerald-300 bg-white focus:ring-2 focus:ring-emerald-500"
+                          : "border-slate-200 focus:ring-2 focus:ring-gold-500"
+                      } ${isRTL ? "pr-8 pl-3" : "pl-8 pr-3"}`}
                     />
                   </div>
+                  {touched.phone && fieldErrors.phone && (
+                    <p className="mt-1 text-[10px] font-medium text-rose-600 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3 shrink-0" />
+                      <span>{fieldErrors.phone}</span>
+                    </p>
+                  )}
+                  {!touched.phone && (
+                    <span className="text-[9px] text-slate-400 block mt-0.5">
+                      {isAr ? "7-15 رقماً مع رمز الدولة" : "7-15 digits (e.g. +971 50 123 4567)"}
+                    </span>
+                  )}
                 </div>
 
                 <div>
-                  <label htmlFor="tax-health-email" className="text-[10px] font-bold text-slate-700 uppercase block mb-1">
-                    {isAr ? "البريد الإلكتروني المهني *" : "Email Address *"}
-                  </label>
+                  <div className="flex items-center justify-between mb-1">
+                    <label htmlFor="tax-health-email" className="text-[10px] font-bold text-slate-700 uppercase block">
+                      {isAr ? "البريد الإلكتروني المهني *" : "Email Address *"}
+                    </label>
+                    {touched.email && !fieldErrors.email && email.trim() && (
+                      <span className="text-[10px] text-emerald-600 font-semibold inline-flex items-center gap-0.5">
+                        <Check className="w-3 h-3" /> {isAr ? "صالح" : "Valid"}
+                      </span>
+                    )}
+                  </div>
                   <div className="relative">
                     <Mail className={`w-3.5 h-3.5 text-slate-400 absolute top-3 ${isRTL ? "right-3" : "left-3"}`} />
                     <input
@@ -415,14 +542,35 @@ I would like my Free 15-Minute FTA Tax Strategy Consultation.`;
                       type="email"
                       autoComplete="email"
                       required
+                      aria-invalid={touched.email && !!fieldErrors.email}
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={(e) => handleEmailChange(e.target.value)}
+                      onBlur={() => handleBlur("email")}
                       placeholder="name@company.ae"
-                      className={`w-full text-xs py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-gold-500 outline-none ${isRTL ? "pr-8 pl-3" : "pl-8 pr-3"}`}
+                      className={`w-full text-xs py-2 border rounded-xl outline-none transition-all ${
+                        touched.email && fieldErrors.email
+                          ? "border-rose-400 bg-rose-50/20 focus:ring-2 focus:ring-rose-400"
+                          : touched.email && !fieldErrors.email && email.trim()
+                          ? "border-emerald-300 bg-white focus:ring-2 focus:ring-emerald-500"
+                          : "border-slate-200 focus:ring-2 focus:ring-gold-500"
+                      } ${isRTL ? "pr-8 pl-3" : "pl-8 pr-3"}`}
                     />
                   </div>
+                  {touched.email && fieldErrors.email && (
+                    <p className="mt-1 text-[10px] font-medium text-rose-600 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3 shrink-0" />
+                      <span>{fieldErrors.email}</span>
+                    </p>
+                  )}
                 </div>
               </div>
+
+              {submitError && (
+                <div className="text-[11px] text-rose-700 bg-rose-50 border border-rose-100 p-2 rounded-lg font-medium flex items-center gap-1.5">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0 text-rose-500" />
+                  <span>{submitError}</span>
+                </div>
+              )}
 
               <div className="flex gap-2 pt-2">
                 <button

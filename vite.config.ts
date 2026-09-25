@@ -18,6 +18,14 @@ export default defineConfig(() => {
       cssCodeSplit: true,
       sourcemap: false,
       chunkSizeWarningLimit: 1000,
+      modulePreload: {
+        resolveDependencies(filename, deps) {
+          // Do not preload heavy non-critical vendors on initial page load
+          return deps.filter(
+            (dep) => !dep.includes('vendor-pdf') && !dep.includes('vendor-charts')
+          );
+        },
+      },
       rollupOptions: {
         output: {
           manualChunks(id) {

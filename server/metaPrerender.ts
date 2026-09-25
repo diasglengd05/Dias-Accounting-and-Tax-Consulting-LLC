@@ -213,6 +213,9 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     description: isArabic
       ? "أفضل مكاتب المحاسبة في دبي الإمارات. استشارات ضريبية معتمدة ومسك الدفاتر وحساب ضريبة الشركات وتدقيق مخاطر الغرامات في 60 ثانية لكافة الإمارات."
       : "Best Accounting Firms in Dubai UAE. Top-rated FTA tax consultants & accountants in Dubai. Instant Free 60s Penalty Risk Audit, FTA audit defense, 0% Corporate Tax relief & monthly bookkeeping across all 7 Emirates.",
+    keywords: isArabic
+      ? "أفضل مكتب محاسبة في الإمارات, تدقيق مخاطر الغرامات 60 ثانية, تمثيل دفاعي الهيئة الاتحادية للضرائب, خيارات إعفاء ضريبة الشركات 0%, تسهيلات الأعمال الصغيرة 3 مليون, أفضل شركات المحاسبة في دبي, كبرى مكاتب المحاسبين القانونيين في دبي, الاستعانة بمصادر خارجية للمحاسبة ومسك الدفاتر, مستشار ضريبي معتمد, ضريبة الشركات دبي 9%, تسجيل ضريبة القيمة المضافة, وكيل ضريبي معتمد دبي, محاسبة الشركات في دبي, تسعير المعاملات الإمارات, تأسيس شركات الإمارات"
+      : "Best Accounting Firms in Dubai UAE, Best Accounting Firm in Dubai, Top CA Firms in Dubai, Top Tax Consultant in Dubai, Best Tax Consultants in UAE, FTA Registered Tax Agency Dubai, FTA Certified Tax Agent UAE, Chartered Accountants in Dubai Business Bay, Corporate Tax Consultant Dubai, UAE Corporate Tax 9%, Corporate Tax Filing 2026, EmaraTax Return Filing, Small Business Relief UAE AED 3M, Qualifying Free Zone Person 0%, QFZP Corporate Tax Compliance, VAT Registration Dubai, VAT Filing UAE 5%, VAT Voluntary Disclosure Form 211, Transfer Pricing Services Dubai, Audited Financial Statements Free Zone UAE, Bookkeeping Services Dubai, Outsource Accounting UAE, Business Setup Dubai Mainland, how to file corporate tax in uae without penalty, who is the best tax consultant in dubai",
     url: `${baseUrl}/`,
     ogImage: `${baseUrl}/api/og?title=Best+Accounting+Firms+in+Dubai+UAE&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=UAE+Tax+Compliance&readTime=FTA+Certified`,
     ogType: "business.business",
@@ -225,6 +228,10 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
  */
 export function injectMetaIntoHtml(html: string, meta: MetaOverride): string {
   let modified = html;
+
+  if (meta.keywords) {
+    modified = modified.replace(/<meta name="keywords" content="[\s\S]*?" \/>/i, `<meta name="keywords" content="${meta.keywords}" />`);
+  }
 
   if (meta.title) {
     // Replace <title>

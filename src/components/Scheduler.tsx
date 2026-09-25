@@ -25,6 +25,7 @@ import { User } from "firebase/auth";
 import { initAuth, googleSignIn, logout } from "../lib/firebase";
 import { findOrCreateSpreadsheet, appendInquiryRow, InquiryData, submitToGoogleSheetsDirectly } from "../lib/sheetsService";
 import { useLanguage } from "../i18n/LanguageContext";
+import { validateContactForm, validateEmailField, validatePhoneField } from "../lib/validation";
 
 interface SchedulerProps {
   preselectedService?: string;
@@ -51,6 +52,66 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showPortal, setShowPortal] = useState(false);
+
+  // Field validation states for client-side feedback
+  const [fieldErrors, setFieldErrors] = useState<{
+    name?: string;
+    email?: string;
+    phone?: string;
+  }>({});
+  const [touched, setTouched] = useState<{
+    name?: boolean;
+    email?: boolean;
+    phone?: boolean;
+  }>({});
+
+  const handleNameChange = (val: string) => {
+    setName(val);
+    if (touched.name) {
+      setFieldErrors(prev => ({
+        ...prev,
+        name: val.trim() ? undefined : (language === "ar" ? "الاسم الكامل مطلوب" : "Full name is required.")
+      }));
+    }
+  };
+
+  const handleEmailChange = (val: string) => {
+    setEmail(val);
+    if (touched.email) {
+      const res = validateEmailField(val, language === "ar" ? "ar" : "en");
+      setFieldErrors(prev => ({
+        ...prev,
+        email: res.isValid ? undefined : res.error
+      }));
+    }
+  };
+
+  const handlePhoneChange = (val: string) => {
+    setPhone(val);
+    if (touched.phone) {
+      const res = validatePhoneField(val, language === "ar" ? "ar" : "en");
+      setFieldErrors(prev => ({
+        ...prev,
+        phone: res.isValid ? undefined : res.error
+      }));
+    }
+  };
+
+  const handleBlur = (field: "name" | "email" | "phone") => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+    if (field === "name") {
+      setFieldErrors(prev => ({
+        ...prev,
+        name: name.trim() ? undefined : (language === "ar" ? "الاسم الكامل مطلوب" : "Full name is required.")
+      }));
+    } else if (field === "email") {
+      const res = validateEmailField(email, language === "ar" ? "ar" : "en");
+      setFieldErrors(prev => ({ ...prev, email: res.isValid ? undefined : res.error }));
+    } else if (field === "phone") {
+      const res = validatePhoneField(phone, language === "ar" ? "ar" : "en");
+      setFieldErrors(prev => ({ ...prev, phone: res.isValid ? undefined : res.error }));
+    }
+  };
 
   // Portal States (Only for the Owner/Advisor)
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -272,15 +333,38 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    console.log("Submitting consultation inquiry form directly to Google Sheet...", { name, email, phone, company, serviceType });
 
-    if (!name || !email || !phone) {
-      console.warn("Form submission rejected: missing required fields", { name, email, phone });
-      setError("Please fill out all required fields.");
+    // Validate fields client-side before proceeding
+    const validation = validateContactForm(
+      { name, email, phone },
+      language === "ar" ? "ar" : "en"
+    );
+
+    setTouched({ name: true, email: true, phone: true });
+
+    if (!validation.isValid) {
+      setFieldErrors(validation.errors);
+      setError(
+        validation.errors.email ||
+        validation.errors.phone ||
+        validation.errors.name ||
+        t.contact.validationErrorAlert
+      );
+
+      // Focus first invalid field for better UX
+      if (validation.errors.name) {
+        document.getElementById("scheduler-name-input")?.focus();
+      } else if (validation.errors.email) {
+        document.getElementById("scheduler-email-input")?.focus();
+      } else if (validation.errors.phone) {
+        document.getElementById("scheduler-phone-input")?.focus();
+      }
       return;
     }
 
+    setFieldErrors({});
     setIsSubmitting(true);
+    console.log("Submitting consultation inquiry form directly to Google Sheet...", { name, email, phone, company, serviceType });
 
     try {
       await submitToGoogleSheetsDirectly({
@@ -403,6 +487,8 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
     setEmail("");
     setPhone("");
     setCompany("");
+    setFieldErrors({});
+    setTouched({});
     setError(null);
   };
 
@@ -766,7 +852,7 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
             </div>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6">
+          <form onSubmit={handleSubmit} noValidate className="p-6 md:p-8 space-y-6">
             
             {/* Header Section */}
             <div className="space-y-1.5 border-b border-slate-100 pb-4">
@@ -782,9 +868,16 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
               {/* Name & Email row */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="scheduler-name-input" className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5 flex items-center gap-1.5">
-                    <LucideUser className="w-3.5 h-3.5 text-slate-500" />
-                    {t.contact.fullNameLabel} *
+                  <label htmlFor="scheduler-name-input" className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5 flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <LucideUser className="w-3.5 h-3.5 text-slate-500" />
+                      {t.contact.fullNameLabel} *
+                    </span>
+                    {touched.name && !fieldErrors.name && name.trim() && (
+                      <span className="text-[10px] text-emerald-600 font-semibold inline-flex items-center gap-0.5">
+                        <Check className="w-3 h-3" />
+                      </span>
+                    )}
                   </label>
                   <input
                     id="scheduler-name-input"
@@ -792,17 +885,39 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
                     type="text"
                     autoComplete="name"
                     required
+                    aria-invalid={touched.name && !!fieldErrors.name}
+                    aria-describedby={touched.name && fieldErrors.name ? "scheduler-name-error" : undefined}
                     value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full px-4 py-2.5 text-xs border border-slate-200 rounded-xl bg-slate-50/50 text-slate-800 focus:bg-white focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none transition-all"
+                    onChange={(e) => handleNameChange(e.target.value)}
+                    onBlur={() => handleBlur("name")}
+                    className={`w-full px-4 py-2.5 text-xs border rounded-xl outline-none transition-all ${
+                      touched.name && fieldErrors.name
+                        ? "border-rose-400 bg-rose-50/20 text-slate-800 focus:bg-white focus:ring-2 focus:ring-rose-400"
+                        : touched.name && name.trim()
+                        ? "border-emerald-300 bg-white text-slate-800 focus:ring-2 focus:ring-emerald-500"
+                        : "border-slate-200 bg-slate-50/50 text-slate-800 focus:bg-white focus:ring-2 focus:ring-gold-500"
+                    }`}
                     placeholder={t.contact.fullNamePlaceholder}
                   />
+                  {touched.name && fieldErrors.name && (
+                    <p id="scheduler-name-error" className="mt-1.5 text-[11px] font-medium text-rose-600 flex items-center gap-1">
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                      <span>{fieldErrors.name}</span>
+                    </p>
+                  )}
                 </div>
 
                 <div>
-                  <label htmlFor="scheduler-email-input" className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5 flex items-center gap-1.5">
-                    <Mail className="w-3.5 h-3.5 text-slate-500" />
-                    {t.contact.emailLabel} *
+                  <label htmlFor="scheduler-email-input" className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5 flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <Mail className="w-3.5 h-3.5 text-slate-500" />
+                      {t.contact.emailLabel} *
+                    </span>
+                    {touched.email && !fieldErrors.email && email.trim() && (
+                      <span className="text-[10px] text-emerald-600 font-semibold inline-flex items-center gap-0.5">
+                        <Check className="w-3 h-3" /> {language === "ar" ? "صالح" : "Valid"}
+                      </span>
+                    )}
                   </label>
                   <input
                     id="scheduler-email-input"
@@ -810,20 +925,48 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
                     type="email"
                     autoComplete="email"
                     required
+                    aria-invalid={touched.email && !!fieldErrors.email}
+                    aria-describedby={touched.email && fieldErrors.email ? "scheduler-email-error" : undefined}
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-4 py-2.5 text-xs border border-slate-200 rounded-xl bg-slate-50/50 text-slate-800 focus:bg-white focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none transition-all"
+                    onChange={(e) => handleEmailChange(e.target.value)}
+                    onBlur={() => handleBlur("email")}
+                    className={`w-full px-4 py-2.5 text-xs border rounded-xl outline-none transition-all ${
+                      touched.email && fieldErrors.email
+                        ? "border-rose-400 bg-rose-50/20 text-slate-800 focus:bg-white focus:ring-2 focus:ring-rose-400"
+                        : touched.email && !fieldErrors.email && email.trim()
+                        ? "border-emerald-300 bg-white text-slate-800 focus:ring-2 focus:ring-emerald-500"
+                        : "border-slate-200 bg-slate-50/50 text-slate-800 focus:bg-white focus:ring-2 focus:ring-gold-500"
+                    }`}
                     placeholder={t.contact.emailPlaceholder}
                   />
+                  {touched.email && fieldErrors.email && (
+                    <p id="scheduler-email-error" className="mt-1.5 text-[11px] font-medium text-rose-600 flex items-center gap-1">
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                      <span>{fieldErrors.email}</span>
+                    </p>
+                  )}
+                  {touched.email && !fieldErrors.email && email.trim() && (
+                    <p className="mt-1 text-[10px] text-emerald-600 font-medium flex items-center gap-1">
+                      <Check className="w-3 h-3 shrink-0" />
+                      <span>{language === "ar" ? "صيغة بريد إلكتروني صالحة" : "Valid email format"}</span>
+                    </p>
+                  )}
                 </div>
               </div>
 
               {/* Phone & Company row */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="scheduler-phone-input" className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5 flex items-center gap-1.5">
-                    <Phone className="w-3.5 h-3.5 text-slate-500" />
-                    {t.contact.phoneLabel} *
+                  <label htmlFor="scheduler-phone-input" className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1.5 flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <Phone className="w-3.5 h-3.5 text-slate-500" />
+                      {t.contact.phoneLabel} *
+                    </span>
+                    {touched.phone && !fieldErrors.phone && phone.trim() && (
+                      <span className="text-[10px] text-emerald-600 font-semibold inline-flex items-center gap-0.5">
+                        <Check className="w-3 h-3" /> {language === "ar" ? "صالح" : "Valid"}
+                      </span>
+                    )}
                   </label>
                   <input
                     id="scheduler-phone-input"
@@ -831,11 +974,37 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
                     type="tel"
                     autoComplete="tel"
                     required
+                    aria-invalid={touched.phone && !!fieldErrors.phone}
+                    aria-describedby={touched.phone && fieldErrors.phone ? "scheduler-phone-error" : undefined}
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="w-full px-4 py-2.5 text-xs border border-slate-200 rounded-xl bg-slate-50/50 text-slate-800 focus:bg-white focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none transition-all"
+                    onChange={(e) => handlePhoneChange(e.target.value)}
+                    onBlur={() => handleBlur("phone")}
+                    className={`w-full px-4 py-2.5 text-xs border rounded-xl outline-none transition-all ${
+                      touched.phone && fieldErrors.phone
+                        ? "border-rose-400 bg-rose-50/20 text-slate-800 focus:bg-white focus:ring-2 focus:ring-rose-400"
+                        : touched.phone && !fieldErrors.phone && phone.trim()
+                        ? "border-emerald-300 bg-white text-slate-800 focus:ring-2 focus:ring-emerald-500"
+                        : "border-slate-200 bg-slate-50/50 text-slate-800 focus:bg-white focus:ring-2 focus:ring-gold-500"
+                    }`}
                     placeholder={t.contact.phonePlaceholder}
                   />
+                  {touched.phone && fieldErrors.phone && (
+                    <p id="scheduler-phone-error" className="mt-1.5 text-[11px] font-medium text-rose-600 flex items-center gap-1">
+                      <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                      <span>{fieldErrors.phone}</span>
+                    </p>
+                  )}
+                  {touched.phone && !fieldErrors.phone && phone.trim() && (
+                    <p className="mt-1 text-[10px] text-emerald-600 font-medium flex items-center gap-1">
+                      <Check className="w-3 h-3 shrink-0" />
+                      <span>{language === "ar" ? "رقم هاتف صحيح" : "Valid phone number format"}</span>
+                    </p>
+                  )}
+                  {!touched.phone && (
+                    <span className="text-[10px] text-slate-400 block mt-1">
+                      {language === "ar" ? "مثال: 4567 123 50 971+ أو 0501234567" : "e.g. +971 50 123 4567 or international with country code"}
+                    </span>
+                  )}
                 </div>
 
                 <div>

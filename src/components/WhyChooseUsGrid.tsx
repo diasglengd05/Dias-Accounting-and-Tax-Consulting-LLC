@@ -13,8 +13,8 @@ import {
 } from "lucide-react";
 import { useLanguage } from "../i18n/LanguageContext";
 
-interface WhyChooseUsGridProps {
-  onBookCall?: () => void;
+export interface WhyChooseUsGridProps {
+  onBookCall?: (serviceTitle?: string) => void;
 }
 
 export const WhyChooseUsGrid: React.FC<WhyChooseUsGridProps> = ({ onBookCall }) => {
@@ -85,7 +85,7 @@ export const WhyChooseUsGrid: React.FC<WhyChooseUsGridProps> = ({ onBookCall }) 
   ];
 
   return (
-    <section className="py-10 sm:py-12 md:py-14 bg-white relative overflow-hidden border-t border-slate-100">
+    <section id="why-choose-us" className="py-10 sm:py-12 md:py-14 bg-white relative overflow-hidden border-t border-slate-100 scroll-mt-20 sm:scroll-mt-24">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative">
         
         {/* Compact, Scannable Header */}
@@ -182,4 +182,5 @@ export const WhyChooseUsGrid: React.FC<WhyChooseUsGridProps> = ({ onBookCall }) 
   );
 };
 
+export const WhyChooseUs = WhyChooseUsGrid;
 export default WhyChooseUsGrid;

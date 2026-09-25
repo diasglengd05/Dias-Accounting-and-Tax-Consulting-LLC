@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import {
   Menu,
   X,
@@ -43,22 +43,23 @@ import {
 
 // Imports from our modular files
 import { Service, BlogPost, PricingTier, Testimonial, FAQItem } from "./types";
-import { servicesData, blogsData, pricingTiers, testimonialsData, faqsData, GOOGLE_BUSINESS_URL, GOOGLE_RATING_STATS } from "./data/staticData";
+import { servicesData, pricingTiers, testimonialsData, faqsData, GOOGLE_BUSINESS_URL, GOOGLE_RATING_STATS } from "./data/staticData";
 import DiasLogo from "./components/DiasLogo";
 import { GoogleLogo } from "./components/GoogleLogo";
 import ComplianceAlertBanner from "./components/ComplianceAlertBanner";
 import StickyMobileLeadBar from "./components/StickyMobileLeadBar";
 import FloatingSideTabs from "./components/FloatingSideTabs";
 import AddToPreferredSources from "./components/AddToPreferredSources";
-import GoogleOfficeMap from "./components/GoogleOfficeMap";
 import useDynamicSEO from "./hooks/useDynamicSEO";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 import LanguageToggle from "./components/LanguageToggle";
 import LazyMount from "./components/LazyMount";
 import AnimatedSection from "./components/AnimatedSection";
-import BlogSection from "./components/BlogSection";
+import { motion, type Variants } from "framer-motion";
 
 // Lazy-loaded components for fast mobile JS execution & small initial bundle size
+const GoogleOfficeMap = React.lazy(() => import("./components/GoogleOfficeMap"));
+const BlogSection = React.lazy(() => import("./components/BlogSection"));
 const GooglePreferredSourceModal = React.lazy(() => import("./components/GooglePreferredSourceModal"));
 const BlogModal = React.lazy(() => import("./components/BlogModal"));
 const TaxCalculator = React.lazy(() => import("./components/TaxCalculator"));
@@ -72,11 +73,41 @@ const LeadMagnetDownloadModal = React.lazy(() => import("./components/LeadMagnet
 const StandalonePricingCards = React.lazy<React.ComponentType<any>>(() => import("./components/StandalonePricingCards").then(m => ({ default: (m as any).default || (m as any).StandalonePricingCards })));
 const OurAffiliations = React.lazy<React.ComponentType<any>>(() => import("./components/OurAffiliations").then(m => ({ default: (m as any).default || (m as any).OurAffiliations })));
 const UAEJurisdictionsSEO = React.lazy<React.ComponentType<any>>(() => import("./components/UAEJurisdictionsSEO").then(m => ({ default: (m as any).default || (m as any).UAEJurisdictionsSEO })));
-const ClientCaseStudies = React.lazy<React.ComponentType<any>>(() => import("./components/ClientCaseStudies").then(m => ({ default: (m as any).default || (m as any).ClientCaseStudies })));
+const ClientCaseStudies = lazy(() => import("./components/ClientCaseStudies"));
 const TaxAiAdvisorModal = React.lazy<React.ComponentType<any>>(() => import("./components/TaxAiAdvisorModal"));
 const CompanySetupHub = React.lazy<React.ComponentType<any>>(() => import("./components/CompanySetupHub").then(m => ({ default: (m as any).default || (m as any).CompanySetupHub })));
-const WhyChooseUsGrid = React.lazy<React.ComponentType<any>>(() => import("./components/WhyChooseUsGrid").then(m => ({ default: (m as any).default || (m as any).WhyChooseUsGrid })));
+const WhyChooseUs = lazy(() => import("./components/WhyChooseUs"));
+const WhyChooseUsGrid = WhyChooseUs;
 const SeoEngineDashboardModal = React.lazy(() => import("./components/SeoEngineDashboardModal"));
+
+// Framer Motion variants for staggered sequential reveal in Services section
+const servicesContainerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const serviceCardVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 30,
+    scale: 0.96,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      duration: 0.5,
+      ease: [0.22, 1, 0.36, 1], // Luxury smooth cubic-bezier ease
+    },
+  },
+};
 
 function MainApp() {
   const { t, language, isRTL } = useLanguage();
@@ -106,7 +137,7 @@ function MainApp() {
   // Selected details for modals
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedBlog, setSelectedBlog] = useState<BlogPost | null>(null);
-  const [allBlogs, setAllBlogs] = useState<BlogPost[]>(blogsData);
+  const [allBlogs, setAllBlogs] = useState<BlogPost[]>([]);
   const [seoDashboardOpen, setSeoDashboardOpen] = useState(false);
   const [copiedBlogLink, setCopiedBlogLink] = useState(false);
   const [showOgPreview, setShowOgPreview] = useState(false);
@@ -257,6 +288,11 @@ function MainApp() {
 
   // Deep-linking support for SEO Blog articles (#blog-[id]) & SEO Engine (#seo-engine)
   useEffect(() => {
+    // Dynamic import static fallback in background so it doesn't block initial page paint
+    import("./data/blogsData").then((m) => {
+      setAllBlogs((prev) => (prev.length === 0 ? m.blogsData : prev));
+    });
+
     // Fetch latest dynamic blog posts from 24-hour Cloud Function trigger
     fetch("/api/blogs")
       .then((r) => r.json())
@@ -273,10 +309,12 @@ function MainApp() {
       const hash = window.location.hash;
       if (hash && hash.startsWith("#blog-")) {
         const blogId = hash.replace("#blog-", "");
-        const found = allBlogs.find((b) => b.id === blogId) || blogsData.find((b) => b.id === blogId);
-        if (found) {
-          setSelectedBlog(found);
-        }
+        import("./data/blogsData").then((m) => {
+          const found = (allBlogs.length > 0 ? allBlogs : m.blogsData).find((b) => b.id === blogId);
+          if (found) {
+            setSelectedBlog(found);
+          }
+        });
       } else if (hash === "#seo-engine" || hash === "#cloud-function") {
         setSeoDashboardOpen(true);
       }
@@ -326,8 +364,8 @@ function MainApp() {
     }
   };
 
-  const handlePreselectedCallBooking = (serviceTitle: string) => {
-    setPreselectedServiceTitle(serviceTitle);
+  const handlePreselectedCallBooking = (serviceTitle?: string) => {
+    setPreselectedServiceTitle(serviceTitle || "Consultation Request");
     const contactSection = document.getElementById("contact");
     if (contactSection) {
       contactSection.scrollIntoView({ behavior: "smooth" });
@@ -348,16 +386,32 @@ function MainApp() {
       <ComplianceAlertBanner onOpenAudit={() => setTaxHealthModalOpen(true)} />
 
       {/* 1. Header / Navigation */}
-      <header role="banner" className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100 transition-all duration-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <header role="banner" className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-100/90 shadow-[0_4px_24px_-4px_rgba(15,23,42,0.04)] transition-all duration-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-3 relative">
+          {/* Subtle Golden Ambient Hairline */}
+          <div className="absolute top-0 inset-x-4 sm:inset-x-6 lg:inset-x-8 h-px bg-gradient-to-r from-transparent via-gold-400/35 to-transparent pointer-events-none" />
           
-          {/* Logo */}
-          <a href="#home" className="cursor-pointer" aria-label="Dias Accounting Home">
-            <DiasLogo className="w-11 h-11" showText={true} textSize="text-2xl" textColor="text-navy-950" />
-          </a>
+          {/* Logo & Credibility Stamp */}
+          <div className="flex items-center gap-3 shrink-0">
+            <a
+              href="#home"
+              className="group flex items-center gap-3 cursor-pointer select-none transition-transform duration-200 hover:scale-[1.02] active:scale-[0.99]"
+              aria-label="Dias Accounting Home"
+            >
+              <DiasLogo className="w-11 h-11 transition-all duration-300 group-hover:drop-shadow-[0_4px_14px_rgba(217,178,92,0.4)]" showText={true} textSize="text-2xl" textColor="text-navy-950" />
+            </a>
+
+            {/* Official FTA Trust Pill for High-End Enterprise Credibility */}
+            <div className="hidden xl:flex items-center gap-2 pl-3 border-l border-slate-200/80 py-1">
+              <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50/90 border border-emerald-200/70 text-emerald-800 text-[10px] font-bold tracking-wide shadow-xs">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span>FTA Tax Agency</span>
+              </div>
+            </div>
+          </div>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex items-center gap-1 lg:gap-2 font-medium text-sm text-slate-600">
+          <nav className="hidden md:flex items-center gap-0.5 lg:gap-1 p-1 bg-slate-100/80 backdrop-blur-xs rounded-2xl border border-slate-200/60 shadow-xs">
             {[
               { id: "home", label: t.nav.home },
               { id: "company-setup", label: language === "ar" ? "تأسيس الشركات" : "Company Setup", highlight: true },
@@ -368,45 +422,92 @@ function MainApp() {
               { id: "testimonials", label: t.nav.reviews },
               { id: "faqs", label: t.nav.faq },
               { id: "contact", label: t.nav.contact },
-            ].map((link) => (
-              <a
-                key={link.id}
-                href={`#${link.id}`}
-                className={`px-2.5 py-2 rounded-lg transition-all text-xs lg:text-sm ${
-                  activeSection === link.id
-                    ? "bg-navy-50 text-navy-800 font-bold"
-                    : (link as any).highlight
-                    ? "text-gold-600 font-bold hover:text-gold-700 hover:bg-gold-50/60"
-                    : "hover:text-navy-800 hover:bg-slate-50"
-                }`}
-              >
-                {link.label}
-              </a>
-            ))}
+            ].map((link) => {
+              const isActive = activeSection === link.id;
+              const isHighlight = (link as any).highlight;
+              
+              return (
+                <a
+                  key={link.id}
+                  href={`#${link.id}`}
+                  className={`relative px-2.5 lg:px-3 py-1.5 rounded-xl transition-all duration-200 text-xs font-semibold whitespace-nowrap flex items-center gap-1.5 ${
+                    isActive
+                      ? "bg-navy-900 text-white shadow-sm shadow-navy-950/20 font-bold"
+                      : isHighlight
+                      ? "text-gold-700 bg-gradient-to-r from-gold-500/15 to-amber-500/10 hover:from-gold-500/25 hover:to-amber-500/20 border border-gold-400/40 hover:border-gold-500 font-bold"
+                      : "text-slate-600 hover:text-navy-950 hover:bg-white/80"
+                  }`}
+                >
+                  {isHighlight && !isActive && (
+                    <Sparkles className="w-3 h-3 text-gold-500 shrink-0 animate-pulse" />
+                  )}
+                  <span>{link.label}</span>
+                  {isActive && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-gold-400 shrink-0" />
+                  )}
+                </a>
+              );
+            })}
           </nav>
 
-          {/* Header Actions: Language Selector & Booking CTA (Desktop Only) */}
-          <div className="hidden md:flex items-center gap-2 lg:gap-2.5">
+          {/* Header Actions: Advisory Call, Language Toggle & Luxury Booking CTA */}
+          <div className="hidden md:flex items-center gap-2 lg:gap-3 shrink-0">
+            {/* Direct Phone Advisory Touchpoint */}
+            <a
+              href="tel:+971529226958"
+              className="hidden 2xl:inline-flex items-center gap-2 text-xs font-bold text-slate-700 hover:text-navy-950 px-2.5 py-1.5 rounded-xl hover:bg-slate-100 transition-colors group cursor-pointer"
+              title="Call Dias Advisory Directly"
+            >
+              <span className="w-6 h-6 rounded-lg bg-gold-50 border border-gold-200/80 flex items-center justify-center text-gold-600 group-hover:scale-105 transition-transform">
+                <Phone className="w-3 h-3" />
+              </span>
+              <span className="text-[11px] font-mono tracking-tight text-slate-600 group-hover:text-navy-950">+971 52 922 6958</span>
+            </a>
+
             <LanguageToggle variant="desktop" />
+
+            {/* Elevated Gold-Accented Booking Button with Light Sheen */}
             <a
               href="#contact"
-              className="bg-navy-900 hover:bg-navy-950 text-white font-display font-bold py-2.5 px-4 lg:px-5 rounded-xl text-xs tracking-tight transition-all shadow-md hover:shadow-lg active:scale-98 cursor-pointer flex items-center gap-1.5"
+              className="relative group overflow-hidden bg-gradient-to-r from-navy-900 via-navy-800 to-navy-950 hover:from-navy-950 hover:to-navy-900 text-white font-display font-bold py-2.5 px-4 lg:px-5 rounded-xl text-xs tracking-tight transition-all duration-300 shadow-md shadow-navy-950/15 hover:shadow-xl hover:shadow-navy-950/25 active:scale-98 cursor-pointer flex items-center gap-2 border border-gold-500/35 hover:border-gold-400"
             >
-              <Calendar className="w-3.5 h-3.5 text-gold-400" />
-              <span>{t.nav.bookConsultation}</span>
+              {/* Animated Sheen sweep effect on hover */}
+              <span
+                className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/15 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out pointer-events-none"
+                aria-hidden="true"
+              />
+              <div className="w-5 h-5 rounded-md bg-gold-500/20 border border-gold-400/40 flex items-center justify-center text-gold-400 group-hover:bg-gold-500/30 transition-colors">
+                <Calendar className="w-3 h-3 text-gold-300 transition-transform group-hover:scale-110" />
+              </div>
+              <span className="relative z-10">{t.nav.bookConsultation}</span>
+              <ChevronRight className="w-3.5 h-3.5 text-gold-400/80 transition-transform duration-200 group-hover:translate-x-0.5" />
             </a>
           </div>
 
-          {/* Mobile Hamburger Toggle */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden w-12 h-12 min-w-[48px] min-h-[48px] flex items-center justify-center p-2.5 text-slate-600 hover:text-navy-900 hover:bg-slate-50 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-500 cursor-pointer touch-manipulation"
-            aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-            aria-expanded={mobileMenuOpen}
-            aria-controls="mobile-nav-menu"
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          {/* Mobile Right Controls: Quick Direct Call + Refined Hamburger Toggle */}
+          <div className="flex md:hidden items-center gap-2">
+            <a
+              href="tel:+971529226958"
+              className="w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-gold-50 border border-gold-200/80 flex items-center justify-center text-gold-600 hover:bg-gold-100 transition-all active:scale-95 shadow-xs"
+              aria-label="Direct Phone Advisory Call"
+            >
+              <Phone className="w-4 h-4" />
+            </a>
+
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center text-slate-700 hover:text-navy-900 bg-slate-100/90 hover:bg-slate-200/90 border border-slate-200/80 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-500 cursor-pointer touch-manipulation transition-all duration-200 active:scale-95 shadow-xs"
+              aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-nav-menu"
+            >
+              {mobileMenuOpen ? (
+                <X className="w-5 h-5 transition-transform rotate-90 duration-200" />
+              ) : (
+                <Menu className="w-5 h-5 transition-transform duration-200" />
+              )}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Navigation Drawer with Pure CSS Smooth Animation & Sticky Footer CTA */}
@@ -504,7 +605,7 @@ function MainApp() {
           <div className="absolute inset-0 bg-navy-950/85 backdrop-blur-[1px] pointer-events-none" />
           <div className="absolute inset-0 bg-gradient-to-b from-navy-950/90 via-navy-950/75 to-navy-950/95 pointer-events-none" />
 
-          <AnimatedSection className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-24 relative z-10 text-center space-y-6 sm:space-y-8">
+          <AnimatedSection instant direction="none" className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-24 relative z-10 text-center space-y-6 sm:space-y-8">
             
             {/* Trust Pill & Google Rating Badge */}
             <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
@@ -836,10 +937,10 @@ function MainApp() {
 
       {/* 4. Core Services Grid Section */}
       <section id="services" className="py-20 bg-slate-50 scroll-mt-20 sm:scroll-mt-24">
-        <AnimatedSection className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           {/* Section Header */}
-          <div className="text-center space-y-3 max-w-2xl mx-auto">
+          <AnimatedSection direction="up" className="text-center space-y-3 max-w-2xl mx-auto">
             <span className="text-xs text-gold-600 font-bold uppercase tracking-widest block">
               {t.services.badge}
             </span>
@@ -849,41 +950,58 @@ function MainApp() {
             <p className="text-slate-500 text-sm">
               {t.services.subtitle}
             </p>
-          </div>
+          </AnimatedSection>
 
-          {/* Responsive Services Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Responsive Services Grid with Framer-Motion Staggered Sequential Reveal */}
+          <motion.div
+            variants={servicesContainerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.08, margin: "-20px 0px" }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+          >
             {(t.services.items || servicesData || []).map((service) => (
-              <div
+              <motion.div
                 key={service.id}
-                className="bg-white border border-slate-200/80 hover:border-gold-400 rounded-2xl p-6 flex flex-col group transition-all duration-200 hover:shadow-md"
+                variants={serviceCardVariants}
+                whileHover={{ y: -6, transition: { duration: 0.22, ease: "easeOut" } }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setSelectedService(service)}
+                className="relative bg-white border border-slate-200/80 hover:border-gold-400/90 rounded-2xl p-6 flex flex-col group transition-all duration-300 ease-out hover:shadow-xl hover:shadow-slate-900/5 hover:ring-1 hover:ring-gold-400/25 overflow-hidden cursor-pointer"
               >
-                {/* Header Icon */}
-                <div className="w-12 h-12 rounded-xl bg-gold-50 border border-gold-200/60 flex items-center justify-center mb-5 group-hover:bg-gold-500 group-hover:border-gold-500 transition-all">
-                  <div className="group-hover:text-navy-950 transition-colors">
+                {/* Top Subtle Gold Gradient Accent Line on Hover */}
+                <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-gold-400/0 via-gold-400/0 to-gold-400/0 group-hover:from-gold-300 group-hover:via-gold-400 group-hover:to-gold-500 transition-all duration-300 pointer-events-none" />
+
+                {/* Header Icon with Lift & Scale Animation */}
+                <div className="w-12 h-12 rounded-xl bg-gold-50 border border-gold-200/60 flex items-center justify-center mb-5 transition-all duration-300 ease-out group-hover:bg-gold-500 group-hover:border-gold-500 group-hover:scale-105 group-hover:-translate-y-0.5 group-hover:shadow-md group-hover:shadow-gold-500/20">
+                  <div className="text-gold-700 group-hover:text-navy-950 transition-colors duration-200">
                     {getServiceIcon(service.iconName)}
                   </div>
                 </div>
 
                 {/* Content */}
-                <h3 className="font-display text-lg font-bold text-navy-950 group-hover:text-gold-600 transition-colors mb-2">
+                <h3 className="font-display text-lg font-bold text-navy-950 group-hover:text-gold-600 transition-colors duration-200 mb-2">
                   {service.title}
                 </h3>
-                <p className="text-slate-500 text-xs leading-relaxed flex-grow mb-6">
+                <p className="text-slate-500 text-xs leading-relaxed flex-grow mb-6 transition-colors duration-200 group-hover:text-slate-600">
                   {service.shortDesc}
                 </p>
 
-                {/* Action trigger */}
+                {/* Action trigger button */}
                 <button
-                  onClick={() => setSelectedService(service)}
-                  className="w-full mt-auto border border-slate-200/80 bg-slate-50 hover:bg-navy-950 text-navy-950 hover:text-white font-display font-semibold py-2.5 px-4 rounded-xl text-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedService(service);
+                  }}
+                  className="w-full mt-auto border border-slate-200/80 bg-slate-50 group-hover:bg-navy-950 group-hover:text-white group-hover:border-navy-950 text-navy-950 font-display font-semibold py-2.5 px-4 rounded-xl text-xs transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
                 >
                   <span>{t.services.readMore}</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
+                  <ChevronRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1 rtl:group-hover:-translate-x-1" />
                 </button>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
 
           {/* Service detail Modal */}
           {selectedService && (
@@ -897,7 +1015,7 @@ function MainApp() {
             </React.Suspense>
           )}
 
-        </AnimatedSection>
+        </div>
       </section>
 
       {/* Official UAE Free Zone & Mainland Affiliations Section */}
@@ -927,16 +1045,32 @@ function MainApp() {
         </LazyMount>
       </AnimatedSection>
 
-      {/* 4.7 BCL-Style 6 Pillars of Excellence: "Why Choose Dias Accounting?" */}
-      <div id="why-choose-us" className="scroll-mt-20 sm:scroll-mt-24">
-        <AnimatedSection>
-          <LazyMount minHeight={480}>
-            <React.Suspense fallback={<div className="py-16 text-center text-xs text-slate-400 animate-pulse">Loading Why Choose Us...</div>}>
-              <WhyChooseUsGrid onBookCall={handlePreselectedCallBooking} />
-            </React.Suspense>
-          </LazyMount>
-        </AnimatedSection>
-      </div>
+      {/* 4.7 "Why Choose Us" (6 Pillars of Excellence) Section - Lazy Loaded with Suspense */}
+      <Suspense
+        fallback={
+          <div
+            id="why-choose-us"
+            className="py-12 sm:py-16 bg-white border-t border-slate-100 scroll-mt-20 sm:scroll-mt-24 min-h-[460px] flex flex-col items-center justify-center text-center px-4"
+          >
+            <div className="max-w-md mx-auto space-y-3 animate-pulse">
+              <div className="h-5 w-36 bg-gold-100 rounded-full mx-auto" />
+              <div className="h-7 w-64 bg-slate-200 rounded-lg mx-auto" />
+              <div className="h-4 w-80 bg-slate-100 rounded mx-auto" />
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-6 w-full max-w-2xl">
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="h-28 bg-slate-50 border border-slate-100 rounded-2xl p-3 space-y-2">
+                    <div className="h-6 w-6 bg-slate-200 rounded-lg" />
+                    <div className="h-4 w-20 bg-slate-200 rounded" />
+                    <div className="h-3 w-28 bg-slate-100 rounded" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        }
+      >
+        <WhyChooseUs onBookCall={handlePreselectedCallBooking} />
+      </Suspense>
 
       {/* 5. "Why Partner With Us" Section */}
       <section id="about" className="py-20 bg-white relative overflow-hidden scroll-mt-20 sm:scroll-mt-24">
@@ -1044,14 +1178,32 @@ function MainApp() {
         </AnimatedSection>
       </section>
 
-      {/* 5.5 Proven Client Case Studies & E-E-A-T Track Record */}
-      <AnimatedSection>
-        <LazyMount minHeight={380}>
-          <React.Suspense fallback={<div className="py-16 text-center text-xs text-slate-400 animate-pulse">Loading Client Case Studies...</div>}>
-            <ClientCaseStudies />
-          </React.Suspense>
-        </LazyMount>
-      </AnimatedSection>
+      {/* 5.5 Proven Client Case Studies & E-E-A-T Track Record - Lazy Loaded with Suspense */}
+      <Suspense
+        fallback={
+          <div
+            id="case-studies"
+            className="py-12 sm:py-16 bg-gradient-to-b from-navy-950 via-slate-900 to-navy-950 border-b border-slate-800 text-white scroll-mt-20 min-h-[380px] flex flex-col items-center justify-center text-center px-4"
+          >
+            <div className="max-w-md mx-auto space-y-3 animate-pulse">
+              <div className="h-5 w-32 bg-emerald-900/60 rounded-full mx-auto" />
+              <div className="h-7 w-72 bg-slate-800 rounded-lg mx-auto" />
+              <div className="h-4 w-64 bg-slate-800/60 rounded mx-auto" />
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-6 w-full max-w-3xl">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="h-32 bg-navy-900/80 border border-slate-800 rounded-2xl p-4 space-y-2 text-left">
+                    <div className="h-6 w-24 bg-gold-400/20 rounded" />
+                    <div className="h-3 w-16 bg-slate-700 rounded" />
+                    <div className="h-3 w-full bg-slate-800 rounded" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        }
+      >
+        <ClientCaseStudies />
+      </Suspense>
 
       {/* 6. Pricing Plans Section - BCL.ae Dual Pathway ("Staying ahead going forward" vs "Catching up on the past") */}
       <section id="pricing" className="py-20 bg-slate-50 border-t border-slate-100 scroll-mt-20 sm:scroll-mt-24">
@@ -1620,15 +1772,19 @@ function MainApp() {
       </section>
 
       {/* 7. Blogs / Insights & Updates Section */}
-      <BlogSection
-        blogs={allBlogs || []}
-        onSelectBlog={(blog) => {
-          if (typeof window !== "undefined") {
-            window.open(`/blog.html#${blog.id}`, "_blank", "noopener,noreferrer");
-          }
-        }}
-        onOpenSeoEngine={() => setSeoDashboardOpen(true)}
-      />
+      <LazyMount minHeight={580} sectionId="blogs">
+        <React.Suspense fallback={<div className="py-20 text-center text-xs text-slate-400 animate-pulse">Loading Insights &amp; Updates...</div>}>
+          <BlogSection
+            blogs={allBlogs || []}
+            onSelectBlog={(blog) => {
+              if (typeof window !== "undefined") {
+                window.open(`/blog.html#${blog.id}`, "_blank", "noopener,noreferrer");
+              }
+            }}
+            onOpenSeoEngine={() => setSeoDashboardOpen(true)}
+          />
+        </React.Suspense>
+      </LazyMount>
 
       {/* Blog Read Modal Popup (Lazy-Loaded to reduce main mobile JS bundle) */}
       <React.Suspense fallback={null}>
@@ -1732,7 +1888,11 @@ function MainApp() {
               </div>
 
               {/* Real Google Maps Office Locator & Coverage */}
-              <GoogleOfficeMap language={language} />
+              <LazyMount minHeight={260}>
+                <React.Suspense fallback={<div className="h-64 sm:h-72 bg-slate-900 rounded-3xl animate-pulse flex items-center justify-center text-xs text-slate-500">Loading Map Location...</div>}>
+                  <GoogleOfficeMap language={language} />
+                </React.Suspense>
+              </LazyMount>
 
             </div>
 

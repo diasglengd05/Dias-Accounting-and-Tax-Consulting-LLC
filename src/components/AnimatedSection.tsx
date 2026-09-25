@@ -9,6 +9,7 @@ interface AnimatedSectionProps {
   direction?: "up" | "down" | "left" | "right" | "none";
   amount?: number | "some" | "all";
   scale?: boolean;
+  instant?: boolean;
 }
 
 export const AnimatedSection: React.FC<AnimatedSectionProps> = ({
@@ -19,21 +20,30 @@ export const AnimatedSection: React.FC<AnimatedSectionProps> = ({
   direction = "up",
   amount = 0.08,
   scale = false,
+  instant = false,
 }) => {
+  // If instant render requested or no direction, bypass Framer Motion entirely
+  // so above-the-fold content paints instantly without any initial opacity-0 delay
+  if (instant || direction === "none") {
+    return (
+      <div id={id} className={className}>
+        {children}
+      </div>
+    );
+  }
+
   const getInitialOffset = () => {
     switch (direction) {
       case "up":
-        return { y: 24, x: 0 };
+        return { y: 20, x: 0 };
       case "down":
-        return { y: -24, x: 0 };
+        return { y: -20, x: 0 };
       case "left":
-        return { x: 24, y: 0 };
+        return { x: 20, y: 0 };
       case "right":
-        return { x: -24, y: 0 };
-      case "none":
-        return { x: 0, y: 0 };
+        return { x: -20, y: 0 };
       default:
-        return { y: 24, x: 0 };
+        return { y: 20, x: 0 };
     }
   };
 
@@ -54,12 +64,12 @@ export const AnimatedSection: React.FC<AnimatedSectionProps> = ({
         scale: 1,
       }}
       viewport={{
-        once: false,
+        once: true,
         amount,
-        margin: "-20px 0px -20px 0px",
+        margin: "-10px 0px -10px 0px",
       }}
       transition={{
-        duration: 0.6,
+        duration: 0.45,
         delay,
         ease: [0.16, 1, 0.3, 1],
       }}
