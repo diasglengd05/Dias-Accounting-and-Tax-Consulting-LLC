@@ -1542,6 +1542,12 @@ app.get("/api/blogs", async (req, res) => {
     const dynamicIds = new Set(dynamicPosts.map((p) => p.id));
     const filteredStatic = blogsData.filter((b) => !dynamicIds.has(b.id));
     const allBlogs = [...dynamicPosts, ...filteredStatic];
+    // Sort all blogs in chronological order as per date (most recent first)
+    allBlogs.sort((a, b) => {
+      const timeA = new Date(a.date).getTime() || 0;
+      const timeB = new Date(b.date).getTime() || 0;
+      return timeB - timeA;
+    });
     return res.json({
       success: true,
       total: allBlogs.length,
@@ -1550,11 +1556,16 @@ app.get("/api/blogs", async (req, res) => {
     });
   } catch (err: any) {
     console.error("[API Blogs] Error loading blogs:", err);
+    const sorted = [...blogsData].sort((a, b) => {
+      const timeA = new Date(a.date).getTime() || 0;
+      const timeB = new Date(b.date).getTime() || 0;
+      return timeB - timeA;
+    });
     return res.json({
       success: true,
-      total: blogsData.length,
+      total: sorted.length,
       dynamicCount: 0,
-      blogs: blogsData,
+      blogs: sorted,
     });
   }
 });

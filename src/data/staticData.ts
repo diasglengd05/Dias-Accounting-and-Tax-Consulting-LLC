@@ -209,7 +209,6 @@ export const pricingTiers: PricingTier[] = [
     period: "month",
     description: "Essential accounting, bookkeeping, and basic compliance for growing startups and small companies.",
     features: [
-      "Up to 50 transactions per month",
       "Monthly ledger reconciliation",
       "Standard Profit & Loss & Balance Sheet reports",
       "Dedicated Associate Accountant support",
@@ -225,7 +224,6 @@ export const pricingTiers: PricingTier[] = [
     period: "month",
     description: "Full-service accounting, proactive tax management, and quarterly VAT compliance for scaling businesses.",
     features: [
-      "Up to 200 transactions per month",
       "Weekly ledger updates and reconciliation",
       "Quarterly VAT return preparation and filing",
       "Dedicated Senior Tax Accountant",

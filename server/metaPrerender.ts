@@ -22,6 +22,22 @@ export interface MetaOverride {
 }
 
 const KNOWN_BLOGS: Record<string, { title: string; summary: string; author: string; role: string; tag: string; date: string }> = {
+  "uae-2026-tax-update-latest-fta-guidelines": {
+    title: "2026 Tax Update: Latest UAE Federal Tax Authority Guidelines & Strategic Roadmap",
+    summary: "The definitive 2026 UAE Corporate Tax and VAT regulatory briefing from the Federal Tax Authority (FTA). Comprehensive coverage of the Small Business Relief (SBR) extension to 2029, Qualifying Free Zone Person (QFZP) de minimis compliance, Cabinet Decision No. 75 penalty mitigation, Voluntary Disclosures (Form 211), and the Phase 1 National E-Invoicing mandate.",
+    author: "Glen Dias",
+    role: "Managing Director & Certified Tax Advisor",
+    tag: "2026 Tax Update",
+    date: "2026-10-02",
+  },
+  "uae-corporate-tax-post-deadline-penalty-waiver-guide-2026": {
+    title: "Post-Deadline UAE Corporate Tax Guide: Late Filing, Penalty Relief & Audit Readiness",
+    summary: "Crucial advisory for UAE companies following the September 30 filing deadline. How to submit late returns on EmaraTax, apply for FTA penalty reconsiderations, file Voluntary Disclosures (Form 211), and maintain IFRS audit readiness for 2026–2027.",
+    author: "Glen Dias",
+    role: "Managing Director & Certified Tax Advisor",
+    tag: "Corporate Tax Regularization",
+    date: "2026-10-01",
+  },
   "uae-corporate-tax-guide": {
     title: "Understanding UAE Corporate Tax: A Comprehensive Guide for SMEs",
     summary: "Learn the fundamentals of the new 9% corporate tax regime, including the AED 375,000 threshold, exemptions, and Small Business Relief eligibility.",
@@ -209,7 +225,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
   return {
     title: isArabic
       ? "أفضل مكاتب المحاسبة في دبي الإمارات | دياز للمحاسبة والاستشارات الضريبية"
-      : "Best Accounting Firms in Dubai UAE | Best Accounting & Tax Consulting | Dias LLC",
+      : "Best Accounting Firm in Dubai UAE | Dias Tax Consulting",
     description: isArabic
       ? "أفضل مكاتب المحاسبة في دبي الإمارات. استشارات ضريبية معتمدة ومسك الدفاتر وحساب ضريبة الشركات وتدقيق مخاطر الغرامات في 60 ثانية لكافة الإمارات."
       : "Best Accounting Firms in Dubai UAE. Top-rated FTA tax consultants & accountants in Dubai. Instant Free 60s Penalty Risk Audit, FTA audit defense, 0% Corporate Tax relief & monthly bookkeeping across all 7 Emirates.",

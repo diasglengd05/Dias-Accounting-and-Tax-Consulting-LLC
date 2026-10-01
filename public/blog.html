@@ -777,6 +777,16 @@
     // Comprehensive Article Catalog (Synchronized with staticData.ts & dynamic AI pipeline)
     let POSTS_DATA = [
   {
+    "id": "uae-2026-tax-update-latest-fta-guidelines",
+    "category": "2026 Tax Update",
+    "date": "October 2, 2026",
+    "readTime": "7 min read",
+    "title": "2026 Tax Update: Latest UAE Federal Tax Authority Guidelines & Strategic Roadmap",
+    "excerpt": "The definitive 2026 UAE Corporate Tax and VAT regulatory briefing from the Federal Tax Authority (FTA). Comprehensive coverage of the Small Business Relief (SBR) extension to 2029, Qualifying Free Zone Person (QFZP) de minimis compliance, Cabinet Decision No. 75 penalty mitigation, Voluntary Disclosures (Form 211), and the Phase 1 National E-Invoicing mandate.",
+    "image": "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=700&q=80",
+    "fullContent": "<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">The UAE taxation landscape has entered an advanced phase of institutional enforcement and digitalization. Under <strong>Federal Decree-Law No. 47 of 2022 on the Taxation of Corporations and Businesses</strong>, together with the latest <strong>Cabinet Decisions, Ministerial Decisions, and Federal Tax Authority (FTA) Public Clarifications issued for 2026</strong>, business leaders across the UAE must adapt to enhanced transparency requirements, automated compliance checks, and tighter filing deadlines.</p>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Whether you operate a mainland LLC, a Free Zone enterprise, or a cross-border holding group, this <strong>2026 Tax Update</strong> provides the definitive executive overview of the latest FTA guidelines, compliance thresholds, penalty mitigation procedures, and practical actions required to protect your business.</p>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">1. Small Business Relief (SBR): Extended to 2029 with Stricter Audit Oversight</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">In a major fiscal policy decision supporting SMEs, startups, and foreign investors, the UAE Ministry of Finance has formally <strong>extended the Small Business Relief regime to tax periods ending on or before December 31, 2029</strong>.</p>\n<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">\n<li style=\"margin-bottom: 0.35rem;\"><strong>Gross Revenue Ceiling:</strong> Taxable persons whose revenue in the current and all prior tax periods does not exceed <strong>AED 3,000,000</strong> can elect to be treated as having <strong>no taxable income (0% tax liability)</strong>.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Relief is NOT Automatic:</strong> SBR must be <strong>actively elected within your annual Corporate Tax return on EmaraTax under Article 21</strong>. Failing to submit a return forfeits the relief and subjects the company to default assessment at 9% plus monthly non-submission penalties.</li>\n<li style=\"margin-bottom: 0.35rem;\"><strong>Anti-Abuse Provisions:</strong> Anti-fragmentation rules empower the FTA to consolidate revenues of artificially split businesses.</li>\n</ul>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">2. Free Zone Qualifying Entities (QFZP): 0% vs. 9% Compliance Check</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">To preserve the 0% rate on <strong>Qualifying Income</strong>, your Free Zone company must satisfy five cumulative tests: maintain physical economic substance, prepare annual <strong>Audited Financial Statements</strong>, keep non-qualifying revenue below the lower of 5% or AED 5,000,000, and follow Transfer Pricing arm's length standards.</p>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">3. Post-Filing Regularization & Cabinet Decision No. 75 Penalties</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Failure to submit returns triggers <strong>AED 500/month</strong> late filing fees (AED 1,000/month after 12 months) and late payment interest of <strong>14% per annum</strong>. Taxpayers can submit Voluntary Disclosures (Form 211) within 20 business days to mitigate audit penalties, or submit formal Reconsideration Requests within 40 business days for legitimate reasonable excuses.</p>\n<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />\n<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">4. UAE National E-Invoicing System (Fatoorah)</h3>\n<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">ASP accreditation deadline is extended to <strong>October 30, 2026</strong>, with Phase 1 mandatory for large enterprises on <strong>January 1, 2027</strong>. Invoices must be transmitted in standardized Peppol/XML format.</p>"
+  },
+  {
     "id": "understanding-uae-small-business-relief-extension-to-2029",
     "category": "Tax Updates",
     "date": "September 16, 2026",
@@ -1044,6 +1054,9 @@
       }
     }
 
+    // Initial sort in chronological order as per date (most recent first)
+    POSTS_DATA.sort((a, b) => (new Date(b.date).getTime() || 0) - (new Date(a.date).getTime() || 0));
+
     renderCategories();
     renderPosts();
     checkInitialTarget();
@@ -1055,7 +1068,7 @@
         if (data && data.success && Array.isArray(data.blogs) && data.blogs.length > 0) {
           data.blogs.forEach(dyn => {
             if (!POSTS_DATA.some(p => p.id === dyn.id)) {
-              POSTS_DATA.unshift({
+              POSTS_DATA.push({
                 id: dyn.id,
                 category: dyn.tag || "Tax Updates",
                 date: dyn.date || "Recent",
@@ -1067,6 +1080,8 @@
               });
             }
           });
+          // Sort chronologically as per date
+          POSTS_DATA.sort((a, b) => (new Date(b.date).getTime() || 0) - (new Date(a.date).getTime() || 0));
           renderCategories();
           renderPosts();
           checkInitialTarget();

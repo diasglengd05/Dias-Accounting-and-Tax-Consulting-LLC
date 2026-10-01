@@ -15,7 +15,7 @@ export interface SEOConfig {
 // Master English SEO Metadata Dictionary
 export const SECTION_SEO_MAP_EN: Record<string, SEOConfig> = {
   home: {
-    title: "Best Accounting Firms in Dubai UAE | Best Accounting & Tax Consulting | Dias LLC",
+    title: "Best Accounting Firm in Dubai UAE | Dias Tax Consulting",
     description: "Best Accounting Firms in Dubai UAE. Top-rated FTA tax consultants & accountants in Dubai. Instant Free 60s Penalty Risk Audit, FTA audit defense, 0% Corporate Tax relief & monthly bookkeeping across all 7 Emirates.",
     keywords: "Best Accounting Firms in Dubai UAE, Best Accounting Firm in Dubai, Top CA Firms in Dubai, Top Tax Consultant in Dubai, Best Tax Consultants in UAE, FTA Registered Tax Agency Dubai, FTA Certified Tax Agent UAE, Chartered Accountants in Dubai Business Bay, Corporate Tax Consultant Dubai, UAE Corporate Tax 9%, Corporate Tax Filing 2026, EmaraTax Return Filing, Small Business Relief UAE AED 3M, Qualifying Free Zone Person 0%, QFZP Corporate Tax Compliance, VAT Registration Dubai, VAT Filing UAE 5%, VAT Voluntary Disclosure Form 211, Transfer Pricing Services Dubai, Audited Financial Statements Free Zone UAE, Bookkeeping Services Dubai, Outsource Accounting UAE, Business Setup Dubai Mainland, how to file corporate tax in uae without penalty, who is the best tax consultant in dubai",
     hash: "#home",

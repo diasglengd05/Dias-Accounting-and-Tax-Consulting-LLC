@@ -1777,8 +1777,11 @@ function MainApp() {
           <BlogSection
             blogs={allBlogs || []}
             onSelectBlog={(blog) => {
+              setSelectedBlog(blog);
               if (typeof window !== "undefined") {
-                window.open(`/blog.html#${blog.id}`, "_blank", "noopener,noreferrer");
+                try {
+                  window.history.pushState(null, "", `#blog-${blog.id}`);
+                } catch (e) {}
               }
             }}
             onOpenSeoEngine={() => setSeoDashboardOpen(true)}

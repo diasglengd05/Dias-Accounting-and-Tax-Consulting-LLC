@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { ArrowRight, BookOpen, Sparkles, Mail, CheckCircle2, ExternalLink, AlertCircle } from "lucide-react";
+import { ArrowRight, BookOpen, Sparkles, Mail, CheckCircle2, ExternalLink, AlertCircle, Search, Calendar, Filter } from "lucide-react";
 import { BlogPost } from "../types";
 import { isValidEmail } from "../lib/validation";
 
@@ -19,9 +19,24 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
 
-  // Filtered posts
+  // Arrange all articles in strict chronological order as per date (most recent first)
+  const sortedBlogs = useMemo(() => {
+    return [...blogs].sort((a, b) => {
+      const timeA = new Date(a.date).getTime() || 0;
+      const timeB = new Date(b.date).getTime() || 0;
+      return timeB - timeA;
+    });
+  }, [blogs]);
+
+  // Dynamic categories extracted from articles
+  const categories = useMemo(() => {
+    const tags = Array.from(new Set(sortedBlogs.map((b) => b.tag))).filter(Boolean);
+    return ["All", ...tags];
+  }, [sortedBlogs]);
+
+  // Filtered posts based on category and search query
   const filteredBlogs = useMemo(() => {
-    return blogs.filter((blog) => {
+    return sortedBlogs.filter((blog) => {
       const matchesCategory = selectedCategory === "All" || blog.tag === selectedCategory;
       const query = searchQuery.toLowerCase().trim();
       const matchesSearch =
@@ -31,7 +46,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
         blog.tag.toLowerCase().includes(query);
       return matchesCategory && matchesSearch;
     });
-  }, [blogs, selectedCategory, searchQuery]);
+  }, [sortedBlogs, selectedCategory, searchQuery]);
 
   const [newsletterEmailError, setNewsletterEmailError] = useState<string | null>(null);
 
@@ -47,7 +62,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
 
   return (
     <section id="blogs" className="py-20 bg-slate-50/50 border-t border-slate-100 scroll-mt-20 sm:scroll-mt-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
         
         {/* Section Header */}
         <div className="text-center space-y-3 max-w-2xl mx-auto">
@@ -60,6 +75,72 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
           <p className="text-slate-500 text-sm sm:text-base leading-relaxed">
             Navigating UAE corporate finance, Federal Tax Authority compliance, VAT procedures, and small business tax exemptions with executive clarity.
           </p>
+        </div>
+
+        {/* Filter & Search Bar + Chronological Order Indicator */}
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-sm space-y-4">
+          <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
+            {/* Search Input */}
+            <div className="relative flex-grow max-w-md">
+              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search articles, FTA updates, corporate tax..."
+                className="w-full pl-10 pr-4 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl text-navy-950 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all"
+              />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+
+            {/* Chronological Sort Badge */}
+            <div className="flex items-center gap-2 text-xs text-slate-500 bg-slate-100/80 px-3.5 py-2 rounded-xl self-start md:self-auto border border-slate-200/50">
+              <Calendar className="w-3.5 h-3.5 text-gold-600 shrink-0" />
+              <span className="font-medium text-navy-900">Chronological Order:</span>
+              <span className="text-slate-600 font-semibold">Latest Date First</span>
+            </div>
+          </div>
+
+          {/* Category Filter Pills */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-1 no-scrollbar text-xs">
+            <span className="text-slate-400 font-semibold flex items-center gap-1 shrink-0 mr-1">
+              <Filter className="w-3 h-3" />
+              <span>Category:</span>
+            </span>
+            {categories.map((cat) => {
+              const count = cat === "All" ? sortedBlogs.length : sortedBlogs.filter((b) => b.tag === cat).length;
+              const isSelected = selectedCategory === cat;
+              return (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setSelectedCategory(cat)}
+                  className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
+                    isSelected
+                      ? "bg-navy-950 text-gold-400 shadow-sm"
+                      : "bg-slate-100 hover:bg-slate-200/80 text-slate-600"
+                  }`}
+                >
+                  <span>{cat}</span>
+                  <span
+                    className={`text-[10px] px-1.5 py-0.2 rounded-full ${
+                      isSelected ? "bg-white/15 text-gold-300" : "bg-slate-200 text-slate-600"
+                    }`}
+                  >
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {/* Layout Grid: 8 Columns Blog Grid + 4 Columns Sidebar */}
@@ -89,11 +170,9 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {filteredBlogs.map((blog, idx) => (
-                  <a
+                  <div
                     key={blog.id}
-                    href={`/blog.html#${blog.id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    onClick={() => onSelectBlog(blog)}
                     className={`bg-white border ${
                       idx === 0
                         ? "border-gold-400/80 shadow-md ring-1 ring-gold-400/20"
@@ -125,18 +204,28 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
                         </div>
 
                         {/* Direct new tab shortcut indicator */}
-                        <span
-                          className="p-1.5 text-slate-400 group-hover:text-gold-300 group-hover:bg-white/10 rounded-full transition-colors flex items-center justify-center"
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (typeof window !== "undefined") {
+                              window.open(`/blog.html#${blog.id}`, "_blank", "noopener,noreferrer");
+                            }
+                          }}
+                          className="p-1.5 text-slate-400 group-hover:text-gold-300 group-hover:bg-white/10 rounded-full transition-colors flex items-center justify-center cursor-pointer"
                           title="Open article in a new tab"
                           aria-label="Open article in a new tab"
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
-                        </span>
+                        </button>
                       </div>
 
                       {/* Date & Read Time */}
                       <div className="text-xs text-slate-400 font-medium flex justify-between items-center z-10">
-                        <span>{blog.date}</span>
+                        <span className="flex items-center gap-1.5 font-semibold text-slate-300">
+                          <Calendar className="w-3 h-3 text-gold-400" />
+                          <span>{blog.date}</span>
+                        </span>
                         <span>•</span>
                         <span>{blog.readTime}</span>
                       </div>
@@ -178,7 +267,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
                         </span>
                       </div>
                     </div>
-                  </a>
+                  </div>
                 ))}
               </div>
             )}
