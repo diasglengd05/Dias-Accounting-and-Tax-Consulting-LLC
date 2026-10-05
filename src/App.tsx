@@ -44,6 +44,7 @@ import {
 // Imports from our modular files
 import { Service, BlogPost, PricingTier, Testimonial, FAQItem } from "./types";
 import { servicesData, pricingTiers, testimonialsData, faqsData, GOOGLE_BUSINESS_URL, GOOGLE_RATING_STATS } from "./data/staticData";
+import { blogsData } from "./data/blogsData";
 import DiasLogo from "./components/DiasLogo";
 import { GoogleLogo } from "./components/GoogleLogo";
 import ComplianceAlertBanner from "./components/ComplianceAlertBanner";
@@ -137,7 +138,7 @@ function MainApp() {
   // Selected details for modals
   const [selectedService, setSelectedService] = useState<Service | null>(null);
   const [selectedBlog, setSelectedBlog] = useState<BlogPost | null>(null);
-  const [allBlogs, setAllBlogs] = useState<BlogPost[]>([]);
+  const [allBlogs, setAllBlogs] = useState<BlogPost[]>(blogsData);
   const [seoDashboardOpen, setSeoDashboardOpen] = useState(false);
   const [copiedBlogLink, setCopiedBlogLink] = useState(false);
   const [showOgPreview, setShowOgPreview] = useState(false);
@@ -288,17 +289,18 @@ function MainApp() {
 
   // Deep-linking support for SEO Blog articles (#blog-[id]) & SEO Engine (#seo-engine)
   useEffect(() => {
-    // Dynamic import static fallback in background so it doesn't block initial page paint
-    import("./data/blogsData").then((m) => {
-      setAllBlogs((prev) => (prev.length === 0 ? m.blogsData : prev));
-    });
-
-    // Fetch latest dynamic blog posts from 24-hour Cloud Function trigger
+    // Fetch latest dynamic blog posts from server feed and merge with static blogs
     fetch("/api/blogs")
       .then((r) => r.json())
       .then((data) => {
         if (data && data.success && Array.isArray(data.blogs) && data.blogs.length > 0) {
-          setAllBlogs(data.blogs);
+          const dynamicIds = new Set(data.blogs.map((b: BlogPost) => b.id));
+          const merged = [
+            ...data.blogs,
+            ...blogsData.filter((b) => !dynamicIds.has(b.id)),
+          ];
+          merged.sort((a, b) => (new Date(b.date).getTime() || 0) - (new Date(a.date).getTime() || 0));
+          setAllBlogs(merged);
         }
       })
       .catch((err) => {
@@ -308,13 +310,23 @@ function MainApp() {
     const handleHashChange = () => {
       const hash = window.location.hash;
       if (hash && hash.startsWith("#blog-")) {
-        const blogId = hash.replace("#blog-", "");
-        import("./data/blogsData").then((m) => {
-          const found = (allBlogs.length > 0 ? allBlogs : m.blogsData).find((b) => b.id === blogId);
-          if (found) {
-            setSelectedBlog(found);
-          }
-        });
+        const blogId = hash.replace("#blog-", "").trim().toLowerCase();
+        const found =
+          blogsData.find(
+            (b) =>
+              b.id.toLowerCase() === blogId ||
+              b.id.toLowerCase().startsWith(blogId) ||
+              blogId.startsWith(b.id.toLowerCase())
+          ) ||
+          allBlogs.find(
+            (b) =>
+              b.id.toLowerCase() === blogId ||
+              b.id.toLowerCase().startsWith(blogId) ||
+              blogId.startsWith(b.id.toLowerCase())
+          );
+        if (found) {
+          setSelectedBlog(found);
+        }
       } else if (hash === "#seo-engine" || hash === "#cloud-function") {
         setSeoDashboardOpen(true);
       }
@@ -323,7 +335,7 @@ function MainApp() {
     handleHashChange();
     window.addEventListener("hashchange", handleHashChange);
     return () => window.removeEventListener("hashchange", handleHashChange);
-  }, [allBlogs.length]);
+  }, []);
 
   // Helper to resolve Service icons dynamically
   const getServiceIcon = (iconName: string) => {
