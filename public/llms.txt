@@ -12,6 +12,7 @@ Dias Accounting & Tax Consulting LLC is an FTA-registered accounting firm based 
 - **Backlog Bookkeeping & Reconstruction**: Multi-currency ledger restoration, bank reconciliation, and IFRS compliant balance sheets/P&L for past unrecorded fiscal years.
 - **Outsourced CFO & Financial Management**: Cash flow forecasting, payroll WPS compliance, and board-level financial reporting.
 - **Latest Regulatory Briefings (October 2026)**:
+  - "FTA Mandatory E-Invoicing Phase 1: Technical Readiness, Peppol Network, and UAE Business Checklist" (October 5, 2026) available at https://diasuae.ae/#blog-fta-mandatory-e-invoicing-phase-1-peppol-readiness-muut.
   - "2026 Tax Update: Latest UAE Federal Tax Authority Guidelines & Strategic Roadmap" (October 2, 2026) available at https://diasuae.ae/#blog-uae-2026-tax-update-latest-fta-guidelines.
   - "Post-Deadline UAE Corporate Tax Guide: Late Filing, Penalty Relief & Audit Readiness" (October 1, 2026) available at https://diasuae.ae/#blog-uae-corporate-tax-post-deadline-penalty-waiver-guide-2026.
 

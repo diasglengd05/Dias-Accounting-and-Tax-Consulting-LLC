@@ -740,6 +740,12 @@
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
         <span class="modal-tag" id="modalTag" style="margin-bottom: 0;">Tax Updates</span>
         <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <a id="modalContactBtn" href="/#contact" style="display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.85rem; font-size: 0.75rem; font-weight: 700; color: #0d1527; background: linear-gradient(135deg, #f6d88b 0%, #e2b755 100%); border-radius: 9999px; text-decoration: none; box-shadow: 0 2px 6px rgba(0,0,0,0.08);" title="Contact Dias Accounting">
+            <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+            </svg>
+            <span>Contact Now</span>
+          </a>
           <a id="modalNewTabBtn" href="#" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.75rem; font-size: 0.75rem; font-weight: 600; color: var(--color-gold-600); background: #fdf8eb; border-radius: 9999px; text-decoration: none;" title="Open in new tab">
             <span>Open in Tab</span>
             <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -776,6 +782,16 @@
   <script>
     // Comprehensive Article Catalog (Synchronized with staticData.ts & dynamic AI pipeline)
     let POSTS_DATA = [
+  {
+    "id": "fta-mandatory-e-invoicing-phase-1-peppol-readiness-muut",
+    "category": "VAT & Compliance",
+    "date": "October 5, 2026",
+    "readTime": "6 min read",
+    "title": "FTA Mandatory E-Invoicing Phase 1: Technical Readiness, Peppol Network, and UAE Business Checklist",
+    "excerpt": "Strategic action plan for UAE enterprises navigating Ministry of Finance e-invoicing mandates, Peppol decentralized exchange standards, and ERP integration requirements.",
+    "image": "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=700&q=80",
+    "fullContent": "<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">The UAE Ministry of Finance (MoF) and the Federal Tax Authority (FTA) are advancing the nationwide implementation of the <strong>Mandatory E-Invoicing System</strong> under the <strong>Decentralized Continuous Transaction Controls and Exchange (DCTCE)</strong> model.</p><p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Moving beyond static PDF invoices and manual portal uploads, the UAE e-invoicing regime requires structured digital exchange directly between enterprise ERP systems and certified Accredited Service Providers (ASPs) using the international Peppol interoperability network.</p><hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" /><h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">1. Statutory Timelines & Milestone Dates</h3><ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\"><li style=\"margin-bottom: 0.35rem;\"><strong>ASP Certification Deadline:</strong> Extended through <strong>October 30, 2026</strong> for technology providers and gateways to finalize FTA compliance certification.</li><li style=\"margin-bottom: 0.35rem;\"><strong>Phase 1 Mandatory Go-Live:</strong> <strong>January 1, 2027</strong> for large enterprise taxpayers with annual revenue exceeding AED 50,000,000.</li><li style=\"margin-bottom: 0.35rem;\"><strong>Phase 2 Rollout:</strong> Mid-2027 covering all remaining VAT-registered businesses across the UAE.</li></ul><hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" /><h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">2. Core Technical Architecture: Peppol DCTCE</h3><p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">Unlike centralized tax clearance models (such as KSA ZATCA), the UAE adopted a 5-corner decentralized Peppol framework: Seller &gt; Seller ASP &gt; FTA Tax Authority Reporting Node &gt; Buyer ASP &gt; Buyer. Invoices are exchanged in standard UBL XML syntax with digital signatures.</p><hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" /><h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">3. Immediate Action Plan for Finance Teams</h3><ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\"><li style=\"margin-bottom: 0.35rem;\">Audit your accounting and billing systems (Zoho Books, QuickBooks, Xero, SAP, Microsoft Dynamics, Wafeq) for Peppol e-invoicing export capabilities.</li><li style=\"margin-bottom: 0.35rem;\">Standardize tax invoice master data including mandatory fields: Seller &amp; Buyer TRN, Peppol Participant IDs, and VAT breakdowns.</li><li style=\"margin-bottom: 0.35rem;\">Connect with Dias Accounting for full e-invoicing architecture readiness, VAT reconciliations, and penalty-free FTA transition.</li></ul>"
+  },
   {
     "id": "uae-2026-tax-update-latest-fta-guidelines",
     "category": "2026 Tax Update",
@@ -860,37 +876,99 @@
 
     function mdToHtml(md) {
       if (!md) return "";
+      function inlineFormat(text) {
+        if (!text) return "";
+        let s = text.replace(/^[*#]+\s*/, "");
+        s = s.replace(/\*\*\*(.*?)\*\*\*/g, "<strong><em>$1</em></strong>");
+        s = s.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+        s = s.replace(/\*(.*?)\*/g, "<em>$1</em>");
+        s = s.replace(/`([^`]+)`/g, "<code style=\"background:#f1f5f9;padding:2px 5px;border-radius:4px;font-size:0.85em;\">$1</code>");
+        s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, "<a href=\"$2\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"color:var(--color-gold-600);text-decoration:underline;\">$1</a>");
+        // Remove any loose stray * or # symbols
+        s = s.replace(/[*#]/g, "");
+        return s;
+      }
+
       const lines = md.split("\n");
       let res = [];
       let inList = false;
+      let inTable = false;
+      let tableRows = [];
+
+      function flushTable() {
+        if (!inTable || tableRows.length === 0) { inTable = false; tableRows = []; return; }
+        let html = "<div style=\"overflow-x:auto; margin: 1.25rem 0; border: 1px solid var(--color-slate-200); border-radius: 12px;\"><table style=\"min-width:100%; border-collapse:collapse; font-size:0.85rem;\">";
+        if (tableRows.length > 0) {
+          const headerCells = tableRows[0].split("|").slice(1, -1).map(c => c.trim());
+          html += "<thead style=\"background:var(--color-slate-50); color:var(--color-navy-950); font-weight:700;\"><tr>";
+          headerCells.forEach(cell => {
+            html += "<th style=\"padding: 8px 12px; border-bottom: 1px solid var(--color-slate-200); text-align:left;\">" + inlineFormat(cell) + "</th>";
+          });
+          html += "</tr></thead><tbody>";
+          const dataRows = (tableRows[1] && /^\|(\s*:?-+:?\s*\|)+$/.test(tableRows[1])) ? tableRows.slice(2) : tableRows.slice(1);
+          dataRows.forEach((r, idx) => {
+            const cells = r.split("|").slice(1, -1).map(c => c.trim());
+            const bg = idx % 2 === 1 ? "background:#f8fafc;" : "background:#fff;";
+            html += "<tr style=\"" + bg + "\">";
+            cells.forEach(cell => {
+              html += "<td style=\"padding: 8px 12px; border-bottom: 1px solid var(--color-slate-100);\">" + inlineFormat(cell) + "</td>";
+            });
+            html += "</tr>";
+          });
+          html += "</tbody>";
+        }
+        html += "</table></div>";
+        res.push(html);
+        inTable = false;
+        tableRows = [];
+      }
+
       lines.forEach(line => {
         let l = line.trim();
         if (!l) {
           if (inList) { res.push("</ul>"); inList = false; }
+          if (inTable) { flushTable(); }
           return;
         }
-        if (l.startsWith("### ")) {
+
+        if (l.startsWith("|") && l.endsWith("|")) {
           if (inList) { res.push("</ul>"); inList = false; }
-          res.push("<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">" + l.slice(4) + "</h3>");
+          inTable = true;
+          tableRows.push(l);
+          return;
+        } else if (inTable) {
+          flushTable();
+        }
+
+        if (/^#{4,}\s+/.test(l)) {
+          if (inList) { res.push("</ul>"); inList = false; }
+          res.push("<h4 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.25rem; margin-bottom: 0.4rem; font-size: 1.1rem;\">" + inlineFormat(l.replace(/^#{4,}\s+/, "")) + "</h4>");
+        } else if (l.startsWith("### ")) {
+          if (inList) { res.push("</ul>"); inList = false; }
+          res.push("<h3 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.5rem; margin-bottom: 0.5rem; font-size: 1.25rem;\">" + inlineFormat(l.slice(4)) + "</h3>");
         } else if (l.startsWith("## ")) {
           if (inList) { res.push("</ul>"); inList = false; }
-          res.push("<h2 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.75rem; margin-bottom: 0.75rem; font-size: 1.4rem;\">" + l.slice(3) + "</h2>");
+          res.push("<h2 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.75rem; margin-bottom: 0.75rem; font-size: 1.4rem;\">" + inlineFormat(l.slice(3)) + "</h2>");
+        } else if (l.startsWith("# ")) {
+          if (inList) { res.push("</ul>"); inList = false; }
+          res.push("<h2 style=\"color: var(--color-navy-950); font-family: var(--font-display); margin-top: 1.75rem; margin-bottom: 0.75rem; font-size: 1.4rem;\">" + inlineFormat(l.slice(2)) + "</h2>");
         } else if (l.startsWith("> ")) {
           if (inList) { res.push("</ul>"); inList = false; }
-          res.push("<blockquote style=\"border-left: 4px solid var(--color-gold-500); padding: 0.75rem 1rem; margin: 1rem 0; background: #faf7ee; border-radius: 0 8px 8px 0;\">" + l.slice(2).replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") + "</blockquote>");
+          res.push("<blockquote style=\"border-left: 4px solid var(--color-gold-500); padding: 0.75rem 1rem; margin: 1rem 0; background: #faf7ee; border-radius: 0 8px 8px 0;\">" + inlineFormat(l.slice(2)) + "</blockquote>");
         } else if (l.startsWith("* ") || l.startsWith("- ") || /^\d+\.\s+/.test(l)) {
           if (!inList) { res.push("<ul style=\"margin: 0.75rem 0; padding-left: 1.5rem;\">"); inList = true; }
-          const content = l.replace(/^(\*|-|\d+\.)\s+/, "").replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+          const content = inlineFormat(l.replace(/^(\*|-|\d+\.)\s+/, ""));
           res.push("<li style=\"margin-bottom: 0.35rem;\">" + content + "</li>");
-        } else if (l === "---") {
+        } else if (/^(\-{3,}|\*{3,}|_{3,})$/.test(l)) {
           if (inList) { res.push("</ul>"); inList = false; }
           res.push("<hr style=\"margin: 1.5rem 0; border: 0; border-top: 1px solid var(--color-slate-200);\" />");
         } else {
           if (inList) { res.push("</ul>"); inList = false; }
-          res.push("<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">" + l.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>").replace(/\*(.*?)\*/g, "<em>$1</em>") + "</p>");
+          res.push("<p style=\"margin-bottom: 0.9rem; line-height: 1.7;\">" + inlineFormat(l) + "</p>");
         }
       });
       if (inList) res.push("</ul>");
+      if (inTable) flushTable();
       return res.join("\n");
     }
 

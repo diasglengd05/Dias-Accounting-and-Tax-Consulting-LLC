@@ -1804,6 +1804,19 @@ function MainApp() {
                 }
               }
             }}
+            onContact={() => {
+              setSelectedBlog(null);
+              if (typeof window !== "undefined" && window.location.hash.startsWith("#blog-")) {
+                try {
+                  window.history.replaceState(null, "", window.location.pathname + window.location.search);
+                } catch (e) {}
+              }
+              setTimeout(() => {
+                const el = document.getElementById("contact");
+                if (el) el.scrollIntoView({ behavior: "smooth" });
+                else window.location.hash = "contact";
+              }, 120);
+            }}
           />
         )}
       </React.Suspense>

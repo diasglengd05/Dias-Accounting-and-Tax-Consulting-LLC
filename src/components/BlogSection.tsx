@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { ArrowRight, BookOpen, Sparkles, Mail, CheckCircle2, ExternalLink, AlertCircle, Search, Calendar, Filter } from "lucide-react";
+import { ArrowRight, BookOpen, Sparkles, Mail, CheckCircle2, ExternalLink, AlertCircle, Calendar } from "lucide-react";
 import { BlogPost } from "../types";
 import { isValidEmail } from "../lib/validation";
 
@@ -14,8 +14,6 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
   onSelectBlog,
   onOpenSeoEngine,
 }) => {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [newsletterSubscribed, setNewsletterSubscribed] = useState(false);
 
@@ -27,26 +25,6 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
       return timeB - timeA;
     });
   }, [blogs]);
-
-  // Dynamic categories extracted from articles
-  const categories = useMemo(() => {
-    const tags = Array.from(new Set(sortedBlogs.map((b) => b.tag))).filter(Boolean);
-    return ["All", ...tags];
-  }, [sortedBlogs]);
-
-  // Filtered posts based on category and search query
-  const filteredBlogs = useMemo(() => {
-    return sortedBlogs.filter((blog) => {
-      const matchesCategory = selectedCategory === "All" || blog.tag === selectedCategory;
-      const query = searchQuery.toLowerCase().trim();
-      const matchesSearch =
-        !query ||
-        blog.title.toLowerCase().includes(query) ||
-        blog.summary.toLowerCase().includes(query) ||
-        blog.tag.toLowerCase().includes(query);
-      return matchesCategory && matchesSearch;
-    });
-  }, [sortedBlogs, selectedCategory, searchQuery]);
 
   const [newsletterEmailError, setNewsletterEmailError] = useState<string | null>(null);
 
@@ -77,99 +55,23 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
           </p>
         </div>
 
-        {/* Filter & Search Bar + Chronological Order Indicator */}
-        <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-sm space-y-4">
-          <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between">
-            {/* Search Input */}
-            <div className="relative flex-grow max-w-md">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search articles, FTA updates, corporate tax..."
-                className="w-full pl-10 pr-4 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-xl text-navy-950 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-gold-500/20 focus:border-gold-500 transition-all"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-
-            {/* Chronological Sort Badge */}
-            <div className="flex items-center gap-2 text-xs text-slate-500 bg-slate-100/80 px-3.5 py-2 rounded-xl self-start md:self-auto border border-slate-200/50">
-              <Calendar className="w-3.5 h-3.5 text-gold-600 shrink-0" />
-              <span className="font-medium text-navy-900">Chronological Order:</span>
-              <span className="text-slate-600 font-semibold">Latest Date First</span>
-            </div>
-          </div>
-
-          {/* Category Filter Pills */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-1 no-scrollbar text-xs">
-            <span className="text-slate-400 font-semibold flex items-center gap-1 shrink-0 mr-1">
-              <Filter className="w-3 h-3" />
-              <span>Category:</span>
-            </span>
-            {categories.map((cat) => {
-              const count = cat === "All" ? sortedBlogs.length : sortedBlogs.filter((b) => b.tag === cat).length;
-              const isSelected = selectedCategory === cat;
-              return (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-all flex items-center gap-1.5 ${
-                    isSelected
-                      ? "bg-navy-950 text-gold-400 shadow-sm"
-                      : "bg-slate-100 hover:bg-slate-200/80 text-slate-600"
-                  }`}
-                >
-                  <span>{cat}</span>
-                  <span
-                    className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                      isSelected ? "bg-white/15 text-gold-300" : "bg-slate-200 text-slate-600"
-                    }`}
-                  >
-                    {count}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
         {/* Layout Grid: 8 Columns Blog Grid + 4 Columns Sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           
           {/* Main Column: Blog Cards */}
           <div className="lg:col-span-8 space-y-6">
             
-            {filteredBlogs.length === 0 ? (
+            {sortedBlogs.length === 0 ? (
               <div className="bg-white rounded-3xl border border-dashed border-slate-200 p-12 text-center space-y-3 shadow-sm">
                 <BookOpen className="w-10 h-10 text-slate-300 mx-auto" />
-                <h3 className="font-display text-lg font-bold text-navy-950">No matching articles found</h3>
+                <h3 className="font-display text-lg font-bold text-navy-950">No articles available</h3>
                 <p className="text-slate-500 text-xs sm:text-sm max-w-md mx-auto">
-                  Try adjusting your search terms or select "All" categories to view all published guides and briefings.
+                  New corporate tax briefings and FTA regulatory guides are being prepared by our chartered tax agents.
                 </p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSelectedCategory("All");
-                    setSearchQuery("");
-                  }}
-                  className="mt-2 px-4 py-2 bg-navy-900 text-white rounded-xl text-xs font-bold hover:bg-navy-950 transition-colors"
-                >
-                  Reset Filters
-                </button>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filteredBlogs.map((blog, idx) => (
+                {sortedBlogs.map((blog, idx) => (
                   <div
                     key={blog.id}
                     onClick={() => onSelectBlog(blog)}
