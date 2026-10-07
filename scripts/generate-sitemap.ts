@@ -84,6 +84,28 @@ export function generateSitemapXml(domain = "https://www.diasuae.ae"): string {
       priority: "0.95",
       comment: "Consultation Scheduler & Lead Capture",
     },
+    // Dedicated High-Authority SEO Service Landing Pages
+    {
+      loc: `${domain}/small-business-tax-relief`,
+      lastmod: today,
+      changefreq: "weekly",
+      priority: "0.95",
+      comment: "Small Business Corporate Tax Relief Dubai (AED 3M SBR Extended to 2029)",
+    },
+    {
+      loc: `${domain}/difc-dtec-accounting`,
+      lastmod: today,
+      changefreq: "weekly",
+      priority: "0.95",
+      comment: "Tax and Accounting Services in DIFC & DTEC Free Zones (QFZP 0% Tax)",
+    },
+    {
+      loc: `${domain}/dividends-audit`,
+      lastmod: today,
+      changefreq: "weekly",
+      priority: "0.95",
+      comment: "Dividend Audit & Distribution Advisory Dubai (Commercial Companies Law)",
+    },
   ];
 
   // 2. Individual Service Sections & Anchors

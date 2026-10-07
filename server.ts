@@ -1765,9 +1765,16 @@ async function bootstrap() {
     });
   }
 
-  const PORT = 3000;
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server listening on http://localhost:${PORT}`);
+  // Server Port & Host Configuration:
+  // In Firebase App Hosting & Cloud Run container environments, process.env.PORT is defined (e.g. 8080).
+  // In local development, the runner supplies --port 3000 to process.argv.
+  const portArgIndex = process.argv.indexOf("--port");
+  const cliPort = portArgIndex !== -1 ? parseInt(process.argv[portArgIndex + 1], 10) : undefined;
+  const PORT = cliPort || (process.env.PORT ? parseInt(process.env.PORT, 10) : 8080);
+  const HOST = "0.0.0.0";
+
+  app.listen(PORT, HOST, () => {
+    console.log(`Server listening on http://${HOST}:${PORT}`);
 
     // In-process autonomous semi-weekly scheduler (Tuesday & Friday at 06:00 GST)
     const checkScheduledBlogSchedule = async () => {

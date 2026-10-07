@@ -80,6 +80,9 @@ const CompanySetupHub = React.lazy<React.ComponentType<any>>(() => import("./com
 const WhyChooseUs = lazy(() => import("./components/WhyChooseUs"));
 const WhyChooseUsGrid = WhyChooseUs;
 const SeoEngineDashboardModal = React.lazy(() => import("./components/SeoEngineDashboardModal"));
+const SmallBusinessTaxReliefPage = React.lazy(() => import("./pages/SmallBusinessTaxReliefPage").then(m => ({ default: m.SmallBusinessTaxReliefPage })));
+const DifcDtecAccountingPage = React.lazy(() => import("./pages/DifcDtecAccountingPage").then(m => ({ default: m.DifcDtecAccountingPage })));
+const DividendsAuditPage = React.lazy(() => import("./pages/DividendsAuditPage").then(m => ({ default: m.DividendsAuditPage })));
 
 // Framer Motion variants for staggered sequential reveal in Services section
 const servicesContainerVariants: Variants = {
@@ -116,6 +119,30 @@ function MainApp() {
   // Navigation states
   const [activeSection, setActiveSection] = useState("home");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Dedicated SEO Landing Pages Path State
+  const [currentPath, setCurrentPath] = useState<string>(() => {
+    if (typeof window !== "undefined") {
+      return window.location.pathname;
+    }
+    return "/";
+  });
+
+  useEffect(() => {
+    const handlePopState = () => {
+      setCurrentPath(window.location.pathname);
+    };
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  const navigateTo = (path: string) => {
+    if (typeof window !== "undefined") {
+      window.history.pushState(null, "", path);
+      setCurrentPath(path);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   // Lead generation modals
   const [taxHealthModalOpen, setTaxHealthModalOpen] = useState(false);
@@ -384,6 +411,31 @@ function MainApp() {
     }
   };
 
+  // Dedicated Landing Page Routes
+  if (currentPath === "/small-business-tax-relief") {
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading Small Business Relief Hub...</div>}>
+        <SmallBusinessTaxReliefPage onNavigate={navigateTo} />
+      </Suspense>
+    );
+  }
+
+  if (currentPath === "/difc-dtec-accounting") {
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading DIFC &amp; DTEC Hub...</div>}>
+        <DifcDtecAccountingPage onNavigate={navigateTo} />
+      </Suspense>
+    );
+  }
+
+  if (currentPath === "/dividends-audit") {
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading Dividend Audit Hub...</div>}>
+        <DividendsAuditPage onNavigate={navigateTo} />
+      </Suspense>
+    );
+  }
+
   return (
     <div className="mobile-container min-h-screen bg-slate-50 font-sans text-slate-800 antialiased selection:bg-gold-500/30 selection:text-navy-950 pb-24 md:pb-0">
       {/* Skip to Main Content Link for Keyboard Accessibility */}
@@ -460,6 +512,66 @@ function MainApp() {
                 </a>
               );
             })}
+
+            {/* Dedicated SEO Advisory Hubs Dropdown */}
+            <div className="relative group">
+              <button
+                type="button"
+                className="relative px-2.5 lg:px-3 py-1.5 rounded-xl transition-all duration-200 text-xs font-semibold whitespace-nowrap flex items-center gap-1 text-slate-600 hover:text-navy-950 hover:bg-white/80 cursor-pointer"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <span>{language === "ar" ? "المراكز المتخصصة" : "Advisory Hubs"}</span>
+                <ChevronDown className="w-3 h-3 text-gold-500 transition-transform group-hover:rotate-180" />
+              </button>
+              <div className="absolute top-full right-0 mt-1.5 w-64 bg-white/95 backdrop-blur-md rounded-2xl shadow-xl border border-slate-200/80 p-2 hidden group-hover:block z-50">
+                <a
+                  href="/small-business-tax-relief"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigateTo("/small-business-tax-relief");
+                  }}
+                  className="flex flex-col p-2 rounded-xl hover:bg-gold-50/50 transition-colors group/item"
+                >
+                  <span className="text-xs font-bold text-navy-950 group-hover/item:text-gold-600 transition-colors">
+                    {language === "ar" ? "تسهيلات الأعمال الصغيرة (0%)" : "Small Business Tax Relief"}
+                  </span>
+                  <span className="text-[10px] text-slate-500">
+                    {language === "ar" ? "إعفاء حتى 2029 (3 ملايين درهم)" : "AED 3M SBR extended to 2029"}
+                  </span>
+                </a>
+                <a
+                  href="/difc-dtec-accounting"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigateTo("/difc-dtec-accounting");
+                  }}
+                  className="flex flex-col p-2 rounded-xl hover:bg-gold-50/50 transition-colors group/item"
+                >
+                  <span className="text-xs font-bold text-navy-950 group-hover/item:text-gold-600 transition-colors">
+                    {language === "ar" ? "محاسبة وتدقيق DIFC و DTEC" : "DIFC & DTEC Accounting"}
+                  </span>
+                  <span className="text-[10px] text-slate-500">
+                    {language === "ar" ? "امتثال 0% QFZP وتدقيق DFSA" : "0% QFZP & DFSA audit readiness"}
+                  </span>
+                </a>
+                <a
+                  href="/dividends-audit"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigateTo("/dividends-audit");
+                  }}
+                  className="flex flex-col p-2 rounded-xl hover:bg-gold-50/50 transition-colors group/item"
+                >
+                  <span className="text-xs font-bold text-navy-950 group-hover/item:text-gold-600 transition-colors">
+                    {language === "ar" ? "تدقيق وتوزيع الأرباح" : "Dividend Audit & Distribution"}
+                  </span>
+                  <span className="text-[10px] text-slate-500">
+                    {language === "ar" ? "شهادة الأرباح وقانون الشركات" : "IFRS & Commercial Companies Law"}
+                  </span>
+                </a>
+              </div>
+            </div>
           </nav>
 
           {/* Header Actions: Advisory Call, Language Toggle & Luxury Booking CTA */}
@@ -572,6 +684,34 @@ function MainApp() {
                       {(link as any).badge}
                     </span>
                   )}
+                </a>
+              ))}
+            </div>
+
+            {/* Dedicated High-Authority SEO Service Hubs */}
+            <div className="pt-2 pb-1 border-t border-slate-100">
+              <span className="text-[11px] font-bold text-gold-600 uppercase tracking-wider px-3 block mb-1">
+                {language === "ar" ? "خدمات ضريبية متخصصة" : "Specialized Practice Hubs"}
+              </span>
+              {[
+                { path: "/small-business-tax-relief", label: language === "ar" ? "تسهيلات الأعمال الصغيرة (0% حتى 2029)" : "Small Business Tax Relief (SBR)", badge: "0% to 2029" },
+                { path: "/difc-dtec-accounting", label: language === "ar" ? "محاسبة وتدقيق DIFC و DTEC" : "DIFC & DTEC Accounting & Audit", badge: "Free Zone" },
+                { path: "/dividends-audit", label: language === "ar" ? "تدقيق وتوزيع الأرباح" : "Dividend Audit & Distribution", badge: "IFRS / CCL" },
+              ].map((hub) => (
+                <a
+                  key={hub.path}
+                  href={hub.path}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setMobileMenuOpen(false);
+                    navigateTo(hub.path);
+                  }}
+                  className="flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-700 hover:text-navy-950 hover:bg-slate-50 transition-colors"
+                >
+                  <span>{hub.label}</span>
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-gold-100 text-gold-800 border border-gold-300">
+                    {hub.badge}
+                  </span>
                 </a>
               ))}
             </div>
@@ -2006,20 +2146,26 @@ function MainApp() {
                 <li><a href="#pricing" className="hover:text-gold-300 transition-colors">Pricing Structure</a></li>
                 <li><a href="#blogs" className="hover:text-gold-300 transition-colors">Regulatory Blogs</a></li>
                 <li><a href="#contact" className="hover:text-gold-300 transition-colors">Consult Advisory</a></li>
+                <li><a href="/small-business-tax-relief" onClick={(e) => { e.preventDefault(); navigateTo("/small-business-tax-relief"); }} className="text-gold-400 hover:text-gold-300 transition-colors font-semibold">Tax Relief (SBR)</a></li>
+                <li><a href="/difc-dtec-accounting" onClick={(e) => { e.preventDefault(); navigateTo("/difc-dtec-accounting"); }} className="text-gold-400 hover:text-gold-300 transition-colors font-semibold">DIFC / DTEC Audit</a></li>
+                <li><a href="/dividends-audit" onClick={(e) => { e.preventDefault(); navigateTo("/dividends-audit"); }} className="text-gold-400 hover:text-gold-300 transition-colors font-semibold">Dividends Advisory</a></li>
               </ul>
             </div>
 
             {/* Services Links Column */}
             <div className="md:col-span-3 space-y-4">
               <h4 className="font-display font-bold text-xs uppercase tracking-widest text-slate-300">
-                Advisory Practices
+                Advisory Practices &amp; Hubs
               </h4>
               <ul className="space-y-2 text-xs text-slate-400">
+                <li><a href="/small-business-tax-relief" onClick={(e) => { e.preventDefault(); navigateTo("/small-business-tax-relief"); }} className="hover:text-gold-300 transition-colors block text-gold-400 font-semibold">Small Business Tax Relief (AED 3M SBR)</a></li>
+                <li><a href="/difc-dtec-accounting" onClick={(e) => { e.preventDefault(); navigateTo("/difc-dtec-accounting"); }} className="hover:text-gold-300 transition-colors block text-gold-400 font-semibold">DIFC &amp; DTEC Accounting &amp; Audit</a></li>
+                <li><a href="/dividends-audit" onClick={(e) => { e.preventDefault(); navigateTo("/dividends-audit"); }} className="hover:text-gold-300 transition-colors block text-gold-400 font-semibold">Dividend Audit &amp; Distribution Advisory</a></li>
                 <li><a href="#services" className="hover:text-gold-300 transition-colors block">Corporate Tax Registration (9%)</a></li>
                 <li><a href="#services" className="hover:text-gold-300 transition-colors block">VAT Return Preparation (5%)</a></li>
                 <li><a href="#services" className="hover:text-gold-300 transition-colors block">Double-Entry Ledger Maintenance</a></li>
                 <li><a href="#services" className="hover:text-gold-300 transition-colors block">Sharjah Media City Incorporation</a></li>
-                <li><a href="#services" className="hover:text-gold-300 transition-colors block">Mainland Licensing & DED Visas</a></li>
+                <li><a href="#services" className="hover:text-gold-300 transition-colors block">Mainland Licensing &amp; DED Visas</a></li>
               </ul>
             </div>
 

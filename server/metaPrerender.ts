@@ -237,7 +237,44 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     };
   }
 
-  // 5. Default Fallback
+  // 5. Dedicated SEO Service Landing Pages
+  if (pathname === "/small-business-tax-relief") {
+    return {
+      title: "Small Business Corporate Tax Relief Dubai | Dias UAE",
+      description: "Comprehensive advisory on UAE Small Business Relief (SBR) under Ministerial Decision No. 73/2023. SBR extended through Dec 31, 2029 for businesses with gross revenue up to AED 3M, 0% corporate tax rate, and EmaraTax registration support.",
+      keywords: "small business tax relief dubai, UAE small business relief 2029, SBR AED 3M revenue, 0% corporate tax dubai, EmaraTax SBR registration, article 21 corporate tax UAE",
+      url: `${baseUrl}/small-business-tax-relief`,
+      ogImage: `${baseUrl}/api/og?title=Small+Business+Corporate+Tax+Relief+Dubai+(0%25+Tax)&author=Glen+Dias&tag=SBR+Extended+to+2029`,
+      ogType: "website",
+      isArabic,
+    };
+  }
+
+  if (pathname === "/difc-dtec-accounting") {
+    return {
+      title: "Tax and Accounting Services in DIFC & DTEC | Dias UAE",
+      description: "Specialized accounting, tax compliance, and audit readiness for DIFC and DTEC free zone entities. 0% Qualifying Free Zone Person (QFZP) substance advisory and DFSA audit preparation.",
+      keywords: "DIFC accounting services, DTEC accounting dubai, DIFC DFSA tax audit, QFZP 0% corporate tax, Dubai Silicon Oasis tech accounting, free zone audit readiness UAE",
+      url: `${baseUrl}/difc-dtec-accounting`,
+      ogImage: `${baseUrl}/api/og?title=Tax+%26+Accounting+Services+in+DIFC+%26+DTEC&author=Glen+Dias&tag=Free+Zone+0%25+QFZP+Advisory`,
+      ogType: "website",
+      isArabic,
+    };
+  }
+
+  if (pathname === "/dividends-audit") {
+    return {
+      title: "Dividend Audit & Distribution Advisory Dubai | Dias UAE",
+      description: "Expert dividend audit and distribution advisory in Dubai. Ensure commercial companies law compliance, distributable profits certification, and withholding tax optimization across the UAE.",
+      keywords: "dividend audit dubai, profit distribution advisory UAE, commercial companies law dividends, article 23 participation exemption, 0% withholding tax dividends dubai",
+      url: `${baseUrl}/dividends-audit`,
+      ogImage: `${baseUrl}/api/og?title=Dividend+Audit+%26+Distribution+Advisory+Dubai&author=Glen+Dias&tag=Commercial+Companies+Law`,
+      ogType: "website",
+      isArabic,
+    };
+  }
+
+  // 6. Default Fallback
   return {
     title: isArabic
       ? "أفضل مكاتب المحاسبة في دبي الإمارات | دياز للمحاسبة والاستشارات الضريبية"
