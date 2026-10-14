@@ -115,6 +115,25 @@ export default function ServiceModal({ service, isOpen, onClose, onBookCall }: S
     setIsSubmitting(true);
 
     try {
+      // 1. Submit to server-side API to store in database and trigger admin email
+      try {
+        await fetch("/api/inquiries", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name,
+            email,
+            phone,
+            company: company || "N/A",
+            message: `Inquiry for: ${service.title}`,
+            serviceType: service.id || "general"
+          })
+        });
+      } catch (backendErr) {
+        console.warn("Backend /api/inquiries error in ServiceModal:", backendErr);
+      }
+
+      // 2. Submit to Google Sheets direct integration
       await submitToGoogleSheetsDirectly({
         name,
         email,

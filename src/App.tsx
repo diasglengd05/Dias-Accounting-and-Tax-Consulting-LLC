@@ -15,6 +15,7 @@ import {
   Calendar,
   ChevronRight,
   ExternalLink,
+  FileSpreadsheet,
   ShieldCheck,
   Shield,
   AlertCircle,
@@ -433,6 +434,54 @@ function MainApp() {
       <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading Dividend Audit Hub...</div>}>
         <DividendsAuditPage onNavigate={navigateTo} />
       </Suspense>
+    );
+  }
+
+  if (currentPath === "/admin" || currentPath === "/inquiry-sheet" || currentPath === "/admin/sheet" || currentPath === "/inquiries") {
+    return (
+      <div className="min-h-screen bg-navy-950 flex flex-col items-center justify-center text-white p-6 space-y-6 text-center">
+        <div className="w-16 h-16 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center animate-pulse">
+          <FileSpreadsheet className="w-8 h-8" />
+        </div>
+        <div className="space-y-2 max-w-md">
+          <h2 className="font-display text-2xl font-bold">Dias UAE Inquiries Spreadsheet</h2>
+          <p className="text-slate-300 text-xs leading-relaxed">
+            Direct access to the live Google Sheets database for all consultation inquiries and lead submissions.
+          </p>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <a
+            href="https://docs.google.com/spreadsheets/d/12DjTgoDGdU05oRWFiiQFJ5fLhW4G9rctepWBuOXGDuY/edit"
+            target="_blank"
+            rel="noopener noreferrer"
+            referrerPolicy="no-referrer"
+            className="inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-display font-bold px-6 py-3 rounded-xl text-xs shadow-lg transition-all"
+          >
+            <FileSpreadsheet className="w-4 h-4" />
+            <span>Open Google Spreadsheet</span>
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+          <a
+            href="/api/inquiries/export-csv"
+            className="inline-flex items-center justify-center gap-2 bg-gold-500/20 hover:bg-gold-500/30 text-gold-300 border border-gold-400/40 font-display font-semibold px-6 py-3 rounded-xl text-xs transition-all"
+          >
+            <span>Download Inquiries CSV</span>
+          </a>
+          <button
+            onClick={() => {
+              navigateTo("/");
+              setTimeout(() => {
+                window.location.hash = "#portal";
+                const el = document.getElementById("contact");
+                el?.scrollIntoView({ behavior: "smooth" });
+              }, 100);
+            }}
+            className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white font-display font-medium px-6 py-3 rounded-xl text-xs transition-all cursor-pointer"
+          >
+            <span>Open In-App Inquiries Hub</span>
+          </button>
+        </div>
+      </div>
     );
   }
 
@@ -2205,6 +2254,19 @@ function MainApp() {
               </button>
               <span>•</span>
               <a href="#" className="hover:text-slate-300 transition-colors">FTA Agreements</a>
+              <span>•</span>
+              <a
+                href="/admin"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigateTo("/admin");
+                }}
+                className="opacity-35 hover:opacity-100 transition-opacity hover:text-gold-400 inline-flex items-center gap-1 cursor-pointer"
+                title="Advisor Portal (Authorized Personnel Only)"
+              >
+                <Lock className="w-2.5 h-2.5" />
+                <span>Advisor Portal</span>
+              </a>
             </div>
           </div>
 

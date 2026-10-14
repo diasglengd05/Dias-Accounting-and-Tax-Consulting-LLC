@@ -54,21 +54,39 @@ export const initAuth = (
 // Must be called from a button click or user interaction
 export const googleSignIn = async (): Promise<{ user: User; accessToken: string } | null> => {
   if (!auth) {
-    throw new Error("Firebase Auth is not initialized.");
+    console.warn("Firebase Auth is not initialized.");
+    return null;
   }
   try {
     isSigningIn = true;
+    provider.setCustomParameters({ prompt: "select_account" });
     const result = await signInWithPopup(auth, provider);
     const credential = GoogleAuthProvider.credentialFromResult(result);
     if (!credential?.accessToken) {
-      throw new Error("Failed to get access token from Firebase Auth");
+      console.warn("Failed to get access token from Firebase Auth credential");
+      return null;
     }
 
     cachedAccessToken = credential.accessToken;
     return { user: result.user, accessToken: cachedAccessToken };
   } catch (error: any) {
-    console.error("Sign in error:", error);
-    throw error;
+    const code = error?.code || "";
+    const msg = String(error?.message || error || "");
+    if (
+      code === "auth/popup-closed-by-user" ||
+      code === "auth/cancelled-popup-request" ||
+      msg.includes("popup-closed-by-user") ||
+      msg.includes("cancelled-popup-request")
+    ) {
+      // User closed or dismissed the popup cleanly
+      return null;
+    }
+    if (code === "auth/popup-blocked" || msg.includes("popup-blocked")) {
+      console.warn("Google Sign-In popup was blocked by browser. Please enable popups.");
+      return null;
+    }
+    console.warn("Google sign-in attempt notice:", msg);
+    return null;
   } finally {
     isSigningIn = false;
   }

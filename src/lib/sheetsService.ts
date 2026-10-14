@@ -162,8 +162,9 @@ export async function appendInquiryRow(
     "New Lead"
   ];
 
-  const appendRes = await fetch(
-    `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/A1:G1:append?valueInputOption=USER_ENTERED`,
+  // Try appending to A:G range first, fallback to A1:G1
+  let appendRes = await fetch(
+    `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/A:G:append?valueInputOption=USER_ENTERED`,
     {
       method: "POST",
       headers: {
@@ -177,11 +178,27 @@ export async function appendInquiryRow(
   );
 
   if (!appendRes.ok) {
-    const errorJson = await appendRes.ok ? {} : await appendRes.json();
-    throw new Error(`Failed to append lead to Google Sheet: ${errorJson.error?.message || appendRes.statusText}`);
+    appendRes = await fetch(
+      `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/A1:G1:append?valueInputOption=USER_ENTERED`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          values: [row]
+        })
+      }
+    );
   }
 
-  return await appendRes.json();
+  if (!appendRes.ok) {
+    const errorJson = await appendRes.json().catch(() => ({}));
+    throw new Error(`Failed to append lead to Google Sheet: ${(errorJson as any)?.error?.message || appendRes.statusText}`);
+  }
+
+  return await appendRes.json().catch(() => ({ success: true }));
 }
 
 export interface DirectSyncPayload {
@@ -298,4 +315,50 @@ export async function submitToGoogleSheetsDirectly(data: DirectSyncPayload): Pro
     return false;
   }
 }
+
+/**
+ * 100% Reliable Google Apps Script Template for zero-login, automated public form syncing.
+ * Users can paste this into Extensions > Apps Script in their Google Sheet and deploy as Web App (Anyone).
+ */
+export const GOOGLE_APPS_SCRIPT_TEMPLATE = `function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var p = e.parameter || {};
+    if (e.postData && e.postData.contents) {
+      try {
+        var json = JSON.parse(e.postData.contents);
+        for (var k in json) { p[k] = json[k]; }
+      } catch (err) {}
+    }
+    
+    // Ensure header row exists
+    if (sheet.getLastRow() === 0) {
+      sheet.appendRow([
+        "Submission Time (GST)",
+        "Full Name",
+        "Work Email",
+        "Mobile Number",
+        "Company Name",
+        "Service Interest",
+        "Lead Status"
+      ]);
+    }
+    
+    var timestamp = Utilities.formatDate(new Date(), "Asia/Dubai", "MMM dd, yyyy, hh:mm:ss a") + " (GST)";
+    var name = p.name || p.fullName || p["Full Name"] || "N/A";
+    var email = p.email || p.workEmail || p["Work Email"] || "N/A";
+    var phone = p.phone || p.mobileNumber || p["Mobile Number"] || "N/A";
+    var company = p.company || p.companyName || p["Company Name"] || "N/A";
+    var service = p.serviceType || p.serviceInterest || p["Service Interest"] || "Tax Consultation";
+    
+    sheet.appendRow([timestamp, name, email, phone, company, service, "New Lead"]);
+    
+    return ContentService.createTextOutput(JSON.stringify({ status: "success", name: name }))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch (err) {
+    return ContentService.createTextOutput(JSON.stringify({ status: "error", error: err.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}`;
+
 

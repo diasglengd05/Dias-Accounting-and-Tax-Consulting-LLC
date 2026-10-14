@@ -1,5 +1,39 @@
 {
-  "inquiries": [],
+  "inquiries": [
+    {
+      "name": "Ahmed Al-Maktoum",
+      "email": "ahmed@dubaitrading.ae",
+      "phone": "+971501234567",
+      "company": "Dubai Global Trading LLC (Msg: Need Corporate Tax Small Business Relief and annual bookkeeping review)",
+      "serviceType": "corporate-tax",
+      "createdAt": "2026-10-14T05:31:54.307Z",
+      "synced": false,
+      "status": "New Lead",
+      "id": "VYmnhYGDyhwI96tYlDxH"
+    },
+    {
+      "name": "Fatima Al-Nuaimi",
+      "email": "fatima@holding.ae",
+      "phone": "+971509876543",
+      "company": "Nuaimi Holdings (Msg: VAT Audit Consultation)",
+      "serviceType": "vat-compliance",
+      "createdAt": "2026-10-14T06:05:53.677Z",
+      "synced": false,
+      "status": "New Lead",
+      "id": "wSVpSDH8B2NMNCSonwsB"
+    },
+    {
+      "name": "Verification Test Lead",
+      "email": "verify@testlead.com",
+      "phone": "+971509998888",
+      "company": "Test Sync Enterprise",
+      "serviceType": "corporate-tax",
+      "createdAt": "2026-10-14T06:48:28.047Z",
+      "synced": true,
+      "status": "New Lead",
+      "id": "4znCtQAqueE2sOGFS75J"
+    }
+  ],
   "settings": {
     "daily_blog_cron": {
       "lastRun": "2026-10-05T05:39:04.508Z",
