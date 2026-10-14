@@ -29,6 +29,7 @@ import {
   HelpCircle,
   Sparkles,
   Lock,
+  MessageCircle,
   Linkedin,
   Instagram,
   Facebook,
@@ -1548,6 +1549,15 @@ function MainApp() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto">
               {(t.pricing.tiers || pricingTiers || []).map((tier) => {
                 const displayPrice = billingPeriod === "annual" ? tier.annualPrice : tier.price;
+                const isAr = language === "ar";
+                const periodLabel = billingPeriod === "annual"
+                  ? (isAr ? "سنوياً (خصم 20%)" : "year (Annual Billing)")
+                  : (isAr ? "شهرياً" : "month (Monthly Billing)");
+                const whatsappMessage = isAr
+                  ? `مرحباً دياس للمحاسبة، أود اختيار باقة "${tier.name}" بسعر ${displayPrice} درهم / ${periodLabel}. يرجى تزويدي بالخطوات والمستندات المطلوبة للبدء.`
+                  : `Hello Dias Accounting, I would like to choose the "${tier.name}" plan (${displayPrice} AED / ${periodLabel}). Please assist me with getting started and onboarding.`;
+                const whatsappUrl = `https://wa.me/971529226958?text=${encodeURIComponent(whatsappMessage)}`;
+
                 return (
                   <div
                     key={tier.id}
@@ -1597,14 +1607,17 @@ function MainApp() {
                     </div>
 
                     <a
-                      href="#contact"
-                      className={`w-full py-3.5 px-4 rounded-xl font-display font-bold text-xs text-center transition-all cursor-pointer ${
+                      href={whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`w-full py-3.5 px-4 rounded-xl font-display font-bold text-xs text-center transition-all cursor-pointer flex items-center justify-center gap-2 group/btn shadow-xs active:scale-[0.98] ${
                         tier.popular
                           ? "bg-gold-500 hover:bg-gold-600 text-navy-950 shadow-md shadow-gold-500/10"
                           : "bg-navy-900 hover:bg-navy-950 text-white"
                       }`}
                     >
-                      {t.pricing.getStartedBtn}
+                      <MessageCircle className="w-4 h-4 text-emerald-500 group-hover/btn:scale-110 transition-transform shrink-0" />
+                      <span>{t.pricing.getStartedBtn}</span>
                     </a>
                   </div>
                 );
@@ -1695,13 +1708,19 @@ function MainApp() {
                     </ul>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => handlePreselectedCallBooking("Single FY Backlog (AED 2,500)")}
-                    className="w-full py-3.5 px-4 rounded-xl font-display font-bold text-xs text-center transition-all cursor-pointer bg-gold-500 hover:bg-gold-600 text-navy-950 shadow-md shadow-gold-500/20"
+                  <a
+                    href={`https://wa.me/971529226958?text=${encodeURIComponent(
+                      language === "ar"
+                        ? "مرحباً دياس للمحاسبة، أود حجز باقة متأخرات سنة مالية واحدة + إقرار ضريبة الشركات (2,500 درهم). يرجى إرشادي بالمستندات والخطوات المطلوبة."
+                        : "Hello Dias Accounting, I would like to book the Single FY Backlog + Corporate Tax Return package (AED 2,500). Please guide me on required documents."
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-3.5 px-4 rounded-xl font-display font-bold text-xs text-center transition-all cursor-pointer bg-gold-500 hover:bg-gold-600 text-navy-950 shadow-md shadow-gold-500/20 flex items-center justify-center gap-2 group/btn active:scale-[0.98]"
                   >
-                    {language === "ar" ? "احجز حزمة المتأخرات الآن" : "Book Single FY Package"}
-                  </button>
+                    <MessageCircle className="w-4 h-4 text-emerald-800 group-hover/btn:scale-110 transition-transform shrink-0" />
+                    <span>{language === "ar" ? "احجز حزمة المتأخرات عبر واتساب" : "Book Single FY Package on WhatsApp"}</span>
+                  </a>
                 </div>
 
                 {/* 2. Multi-Year Catchup */}
@@ -1751,13 +1770,19 @@ function MainApp() {
                     </ul>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => handlePreselectedCallBooking("Multi-Year Backlog (AED 4,800)")}
-                    className="w-full py-3.5 px-4 rounded-xl font-display font-bold text-xs text-center transition-all cursor-pointer bg-navy-900 hover:bg-navy-950 text-white"
+                  <a
+                    href={`https://wa.me/971529226958?text=${encodeURIComponent(
+                      language === "ar"
+                        ? "مرحباً دياس للمحاسبة، أود حجز باكيج إغلاق متأخرات سنتين ماليتين (4,800 درهم). يرجى إرشادي بالمستندات والخطوات المطلوبة."
+                        : "Hello Dias Accounting, I would like to book the Multi-Year Full Catch-Up (2 FYs) package (AED 4,800). Please guide me on required documents."
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-3.5 px-4 rounded-xl font-display font-bold text-xs text-center transition-all cursor-pointer bg-navy-900 hover:bg-navy-950 text-white flex items-center justify-center gap-2 group/btn shadow-xs active:scale-[0.98]"
                   >
-                    {language === "ar" ? "حجز باكيج السنتين" : "Book 2-Year Catchup"}
-                  </button>
+                    <MessageCircle className="w-4 h-4 text-emerald-400 group-hover/btn:scale-110 transition-transform shrink-0" />
+                    <span>{language === "ar" ? "حجز باكيج السنتين عبر واتساب" : "Book 2-Year Catchup on WhatsApp"}</span>
+                  </a>
                 </div>
 
                 {/* 3. High-Volume E-Commerce / Multi-Entity */}
@@ -1803,13 +1828,19 @@ function MainApp() {
                     </ul>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => handlePreselectedCallBooking("E-Commerce Backlog Clean-up (AED 7,500)")}
-                    className="w-full py-3.5 px-4 rounded-xl font-display font-bold text-xs text-center transition-all cursor-pointer bg-navy-900 hover:bg-navy-950 text-white"
+                  <a
+                    href={`https://wa.me/971529226958?text=${encodeURIComponent(
+                      language === "ar"
+                        ? "مرحباً دياس للمحاسبة، أود حجز باكيج تسوية حسابات المتاجر الإلكترونية والشركات المتعددة (7,500 درهم). يرجى إرشادي بالمستندات والخطوات المطلوبة."
+                        : "Hello Dias Accounting, I would like to book the E-Commerce & High Volume Clean-up package (AED 7,500). Please guide me on required documents."
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-3.5 px-4 rounded-xl font-display font-bold text-xs text-center transition-all cursor-pointer bg-navy-900 hover:bg-navy-950 text-white flex items-center justify-center gap-2 group/btn shadow-xs active:scale-[0.98]"
                   >
-                    {language === "ar" ? "حجز باكيج التجارة الإلكترونية" : "Book E-Commerce Package"}
-                  </button>
+                    <MessageCircle className="w-4 h-4 text-emerald-400 group-hover/btn:scale-110 transition-transform shrink-0" />
+                    <span>{language === "ar" ? "حجز باكيج التجارة الإلكترونية عبر واتساب" : "Book E-Commerce Package on WhatsApp"}</span>
+                  </a>
                 </div>
 
               </div>
