@@ -163,6 +163,19 @@ function MainApp() {
   // Pricing duration & path state (BCL-style prospective vs retrospective backlog)
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annual">("annual");
   const [pricingPath, setPricingPath] = useState<"prospective" | "retrospective">("prospective");
+  const [openPricingAddons, setOpenPricingAddons] = useState<Record<string, boolean>>({});
+
+  const isAddonOpen = (key: string, defaultOpen = true) =>
+    openPricingAddons[key] !== undefined ? openPricingAddons[key] : defaultOpen;
+  const togglePricingAddon = (key: string, defaultOpen = true) => {
+    setOpenPricingAddons((prev) => {
+      const current = prev[key] !== undefined ? prev[key] : defaultOpen;
+      return {
+        ...prev,
+        [key]: !current,
+      };
+    });
+  };
 
   // Selected details for modals
   const [selectedService, setSelectedService] = useState<Service | null>(null);
@@ -1721,18 +1734,518 @@ function MainApp() {
                       </span>
                     </div>
 
-                    <div className="space-y-3.5 flex-grow mb-8">
-                      <span className="text-[10px] font-mono text-slate-400 font-bold uppercase tracking-wider block">
-                        Scope of Services:
-                      </span>
-                      <ul className="space-y-2.5 text-xs text-slate-600">
-                        {(tier.features || []).map((feat, idx) => (
-                          <li key={idx} className="flex gap-2.5 items-start">
-                            <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                            <span className="leading-relaxed">{feat}</span>
-                          </li>
-                        ))}
-                      </ul>
+                    <div className="space-y-3 flex-grow mb-8 text-left rtl:text-right">
+                      <h4 className="font-display font-bold text-sm text-navy-950 mb-3">
+                        {isAr ? "ما تتضمنه الباقة (نطاق الخدمات)" : "What's included"}
+                      </h4>
+
+                      {/* 1. CORPORATE TAX COMPLIANCE SUPPORT (All 3 Packages) */}
+                      <div className="bg-slate-50/90 border border-slate-200/80 rounded-xl p-4 transition-colors hover:border-slate-300/90">
+                        <button
+                          type="button"
+                          onClick={() => togglePricingAddon(`${tier.id}-ct`, true)}
+                          className="w-full flex items-start justify-between gap-2 cursor-pointer text-left rtl:text-right"
+                        >
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 rounded-full bg-navy-950 shrink-0" />
+                              <span className="font-display font-bold text-[11px] uppercase tracking-wider text-navy-950">
+                                {isAr ? "دعم الامتثال لضريبة الشركات" : "CORPORATE TAX COMPLIANCE SUPPORT"}
+                              </span>
+                            </div>
+                            <span className="text-[11px] text-slate-500 font-normal block mt-0.5 pl-3.5 rtl:pl-0 rtl:pr-3.5">
+                              {isAr ? "4 خدمات مشمولة" : "4 services included"}
+                            </span>
+                          </div>
+                          <ChevronDown
+                            className={`w-4 h-4 text-slate-500 shrink-0 mt-0.5 transition-transform duration-200 ${
+                              isAddonOpen(`${tier.id}-ct`, true) ? "rotate-180" : ""
+                            }`}
+                          />
+                        </button>
+
+                        {isAddonOpen(`${tier.id}-ct`, true) && (
+                          <ul className="mt-3.5 space-y-2.5 text-xs text-slate-700 pl-1 rtl:pl-0 rtl:pr-1">
+                            {(isAr
+                              ? [
+                                  "استشارات ضريبة الشركات",
+                                  "استشارات مستمرة حول مسائل ضريبة الشركات",
+                                  "احتساب ضريبة الشركات السنوية",
+                                  "إعداد وتقديم إقرار ضريبة الشركات السنوي",
+                                ]
+                              : [
+                                  "CT advisory",
+                                  "Ongoing advisory on corporate tax matters",
+                                  "Annual CT computation",
+                                  "CT return preparation & filing support",
+                                ]
+                            ).map((item, idx) => (
+                              <li key={idx} className="flex items-start gap-2.5">
+                                <Check className="w-3.5 h-3.5 text-gold-600 shrink-0 mt-0.5" />
+                                <span className="leading-relaxed">{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+
+                      {/* 2. VAT COMPLIANCE ADVISORY (Corporate Growth & Enterprise Premium) */}
+                      {tier.id !== "starter" && (
+                        <div className="bg-slate-50/90 border border-slate-200/80 rounded-xl p-4 transition-colors hover:border-slate-300/90">
+                          <button
+                            type="button"
+                            onClick={() => togglePricingAddon(`${tier.id}-vat`, true)}
+                            className="w-full flex items-start justify-between gap-2 cursor-pointer text-left rtl:text-right"
+                          >
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-navy-950 shrink-0" />
+                                <span className="font-display font-bold text-[11px] uppercase tracking-wider text-navy-950">
+                                  {isAr ? "استشارات الامتثال لضريبة القيمة المضافة" : "VAT COMPLIANCE ADVISORY"}
+                                </span>
+                              </div>
+                              <span className="text-[11px] text-slate-500 font-normal block mt-0.5 pl-3.5 rtl:pl-0 rtl:pr-3.5">
+                                {isAr ? "4 خدمات مشمولة" : "4 services included"}
+                              </span>
+                            </div>
+                            <ChevronDown
+                              className={`w-4 h-4 text-slate-500 shrink-0 mt-0.5 transition-transform duration-200 ${
+                                isAddonOpen(`${tier.id}-vat`, true) ? "rotate-180" : ""
+                              }`}
+                            />
+                          </button>
+
+                          {isAddonOpen(`${tier.id}-vat`, true) && (
+                            <ul className="mt-3.5 space-y-2.5 text-xs text-slate-700 pl-1 rtl:pl-0 rtl:pr-1">
+                              {(isAr
+                                ? [
+                                    "استشارات ضريبة القيمة المضافة",
+                                    "استشارات دورية حول مسائل ضريبة القيمة المضافة",
+                                    "احتساب ضريبة القيمة المضافة الربع سنوية",
+                                    "إعداد وتقديم إقرارات ضريبة القيمة المضافة الربع سنوية",
+                                  ]
+                                : [
+                                    "VAT advisory",
+                                    "Regular advisory on VAT matters",
+                                    "Quarterly VAT computation",
+                                    "Quarterly VAT Return Preparation & Compliance Support",
+                                  ]
+                              ).map((item, idx) => (
+                                <li key={idx} className="flex items-start gap-2.5">
+                                  <Check className="w-3.5 h-3.5 text-gold-600 shrink-0 mt-0.5" />
+                                  <span className="leading-relaxed">{item}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      )}
+
+                      {/* 3. ACCOUNTING & BOOKKEEPING (All 3 Packages) */}
+                      <div className="bg-slate-50/90 border border-slate-200/80 rounded-xl p-4 transition-colors hover:border-slate-300/90">
+                        <button
+                          type="button"
+                          onClick={() => togglePricingAddon(`${tier.id}-accounting`, true)}
+                          className="w-full flex items-start justify-between gap-2 cursor-pointer text-left rtl:text-right"
+                        >
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 rounded-full bg-navy-950 shrink-0" />
+                              <span className="font-display font-bold text-[11px] uppercase tracking-wider text-navy-950">
+                                {isAr ? "المحاسبة ومسك الدفاتر" : "ACCOUNTING & BOOKKEEPING"}
+                              </span>
+                            </div>
+                            <span className="text-[11px] text-slate-500 font-normal block mt-0.5 pl-3.5 rtl:pl-0 rtl:pr-3.5">
+                              {isAr ? "14 خدمة مشمولة" : "14 services included"}
+                            </span>
+                          </div>
+                          <ChevronDown
+                            className={`w-4 h-4 text-slate-500 shrink-0 mt-0.5 transition-transform duration-200 ${
+                              isAddonOpen(`${tier.id}-accounting`, true) ? "rotate-180" : ""
+                            }`}
+                          />
+                        </button>
+
+                        {isAddonOpen(`${tier.id}-accounting`, true) && (
+                          <ul className="mt-3.5 space-y-2.5 text-xs text-slate-700 pl-1 rtl:pl-0 rtl:pr-1">
+                            {(isAr
+                              ? [
+                                  "المحاسبة ومسك الدفاتر الشهرية",
+                                  "إعداد دليل الحسابات المحاسبي",
+                                  "إعداد قوالب الفواتير الضريبية",
+                                  "معالجة الحسابات المتأخرة (Backlog accounting)",
+                                  "إنشاء وترحيل فواتير المبيعات",
+                                  "ترحيل فواتير المشتريات",
+                                  "ترحيل فواتير المصروفات",
+                                  "مطابقة وترحيل كشوفات الحسابات البنكية",
+                                  "مطابقة وترحيل بطاقات الائتمان",
+                                  "ترحيل قيود اليومية الأخرى",
+                                  "قيود الإغلاق الشهري والسنوي",
+                                  "إدارة كاملة للمستندات وفقاً لإرشادات الهيئة الاتحادية للضرائب",
+                                  "توثيق سنوي جاهز للتدقيق",
+                                  "إعداد ملف التدقيق السنوي",
+                                ]
+                              : [
+                                  "Monthly accounting and bookkeeping",
+                                  "Setup of chart of accounts",
+                                  "Setup of invoicing templates",
+                                  "Backlog accounting",
+                                  "Sales invoice creation & posting",
+                                  "Purchase bill posting",
+                                  "Expense bill posting",
+                                  "Bank account reconciliation & posting",
+                                  "Credit card reconciliation & posting",
+                                  "Other journal entries posting",
+                                  "Month-end & year-end closing entries",
+                                  "Complete document management as per FTA guidelines",
+                                  "Annual audit-ready documentation",
+                                  "Audit file preparation",
+                                ]
+                            ).map((item, idx) => (
+                              <li key={idx} className="flex items-start gap-2.5">
+                                <Check className="w-3.5 h-3.5 text-gold-600 shrink-0 mt-0.5" />
+                                <span className="leading-relaxed">{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+
+                      {/* 4. MONTHLY REPORTING (All 3 Packages) */}
+                      <div className="bg-slate-50/90 border border-slate-200/80 rounded-xl p-4 transition-colors hover:border-slate-300/90">
+                        <button
+                          type="button"
+                          onClick={() => togglePricingAddon(`${tier.id}-reporting`, true)}
+                          className="w-full flex items-center justify-between gap-2 cursor-pointer text-left rtl:text-right"
+                        >
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-navy-950 shrink-0" />
+                            <span className="font-display font-bold text-[11px] uppercase tracking-wider text-navy-950">
+                              {isAr ? "التقارير الشهرية" : "MONTHLY REPORTING"}
+                            </span>
+                            <span className="text-[11px] text-slate-500 font-normal">
+                              {isAr ? "4 تقارير مشمولة" : "4 reports included"}
+                            </span>
+                          </div>
+                          <ChevronDown
+                            className={`w-4 h-4 text-slate-500 shrink-0 transition-transform duration-200 ${
+                              isAddonOpen(`${tier.id}-reporting`, true) ? "rotate-180" : ""
+                            }`}
+                          />
+                        </button>
+
+                        {isAddonOpen(`${tier.id}-reporting`, true) && (
+                          <ul className="mt-3.5 space-y-2.5 text-xs text-slate-700 pl-1 rtl:pl-0 rtl:pr-1">
+                            {(isAr
+                              ? [
+                                  "الميزانية العمومية الشهرية",
+                                  "قائمة الأرباح والخسائر الشهرية",
+                                  "تقرير الذمم المدينة الشهري",
+                                  "تقرير الذمم الدائنة الشهري",
+                                ]
+                              : [
+                                  "Monthly balance sheet",
+                                  "Monthly profit & loss statement",
+                                  "Monthly accounts receivable report",
+                                  "Monthly accounts payable report",
+                                ]
+                            ).map((item, idx) => (
+                              <li key={idx} className="flex items-start gap-2.5">
+                                <Check className="w-3.5 h-3.5 text-gold-600 shrink-0 mt-0.5" />
+                                <span className="leading-relaxed">{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+
+                      {/* 5. SUPPORT (All 3 Packages) */}
+                      <div className="bg-slate-50/90 border border-slate-200/80 rounded-xl p-4 transition-colors hover:border-slate-300/90">
+                        <button
+                          type="button"
+                          onClick={() => togglePricingAddon(`${tier.id}-support`, true)}
+                          className="w-full flex items-center justify-between gap-2 cursor-pointer text-left rtl:text-right"
+                        >
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-navy-950 shrink-0" />
+                            <span className="font-display font-bold text-[11px] uppercase tracking-wider text-navy-950">
+                              {isAr ? "الدعم والمتابعة" : "SUPPORT"}
+                            </span>
+                            <span className="text-[11px] text-slate-500 font-normal">
+                              {isAr ? "4 مزايا مشمولة" : "4 benefits included"}
+                            </span>
+                          </div>
+                          <ChevronDown
+                            className={`w-4 h-4 text-slate-500 shrink-0 transition-transform duration-200 ${
+                              isAddonOpen(`${tier.id}-support`, true) ? "rotate-180" : ""
+                            }`}
+                          />
+                        </button>
+
+                        {isAddonOpen(`${tier.id}-support`, true) && (
+                          <ul className="mt-3.5 space-y-2.5 text-xs text-slate-700 pl-1 rtl:pl-0 rtl:pr-1">
+                            {(isAr
+                              ? [
+                                  "تخصيص فريق محاسبي وضريبي متفرغ لشركتك",
+                                  "دعم عبر البريد الإلكتروني والاجتماعات الافتراضية والحضورية",
+                                  "مجموعة واتساب مخصصة للتواصل السريع والمباشر",
+                                  "اجتماعات مراجعة مالية شهرية",
+                                ]
+                              : [
+                                  "A dedicated team will be assigned to you",
+                                  "Support via email, virtual calls & in-person meetings",
+                                  "A dedicated WhatsApp group for quick communication",
+                                  "Monthly review meetings",
+                                ]
+                            ).map((item, idx) => (
+                              <li key={idx} className="flex items-start gap-2.5">
+                                <Check className="w-3.5 h-3.5 text-gold-600 shrink-0 mt-0.5" />
+                                <span className="leading-relaxed">{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+
+                      {/* 5B. EXECUTIVE CFO & PRIORITY SLA (Enterprise Premium) */}
+                      {tier.id === "enterprise" && (
+                        <div className="bg-slate-50/90 border border-slate-200/80 rounded-xl p-4 transition-colors hover:border-slate-300/90">
+                          <button
+                            type="button"
+                            onClick={() => togglePricingAddon(`${tier.id}-cfo`, true)}
+                            className="w-full flex items-start justify-between gap-2 cursor-pointer text-left rtl:text-right"
+                          >
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-navy-950 shrink-0" />
+                                <span className="font-display font-bold text-[11px] uppercase tracking-wider text-navy-950">
+                                  {isAr ? "استشارات المدير المالي والأولوية القصوى" : "EXECUTIVE CFO & AUDIT ADVISORY"}
+                                </span>
+                              </div>
+                              <span className="text-[11px] text-slate-500 font-normal block mt-0.5 pl-3.5 rtl:pl-0 rtl:pr-3.5">
+                                {isAr ? "4 مزايا تنفيذية مشمولة" : "4 benefits included"}
+                              </span>
+                            </div>
+                            <ChevronDown
+                              className={`w-4 h-4 text-slate-500 shrink-0 mt-0.5 transition-transform duration-200 ${
+                                isAddonOpen(`${tier.id}-cfo`, true) ? "rotate-180" : ""
+                              }`}
+                            />
+                          </button>
+
+                          {isAddonOpen(`${tier.id}-cfo`, true) && (
+                            <ul className="mt-3.5 space-y-2.5 text-xs text-slate-700 pl-1 rtl:pl-0 rtl:pr-1">
+                              {(isAr
+                                ? [
+                                    "جلسات استشارية مباشرة مع المدير التنفيذي",
+                                    "استشارات المدير المالي (CFO) والتنبؤ بالتدفقات النقدية",
+                                    "التنسيق الكامل والجاهزية لمدققي الحسابات الخارجيين",
+                                    "أولوية دعم قصوى (SLA) مع وقت استجابة خلال 4 ساعات",
+                                  ]
+                                : [
+                                    "Direct consultation with Managing Director",
+                                    "CFO-level advisory and financial forecasting",
+                                    "Interim audit readiness & external auditor coordination",
+                                    "Priority SLA support with 4-hour response time",
+                                  ]
+                              ).map((item, idx) => (
+                                <li key={idx} className="flex items-start gap-2.5">
+                                  <Check className="w-3.5 h-3.5 text-gold-600 shrink-0 mt-0.5" />
+                                  <span className="leading-relaxed">{item}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      )}
+
+                      {/* 6. E-INVOICING Module (All 3 Packages — Collapsed by default with dropdown just like screenshot) */}
+                      <div className="bg-slate-50/90 border border-slate-200/80 rounded-xl p-4 transition-colors hover:border-slate-300/90">
+                        <button
+                          type="button"
+                          onClick={() => togglePricingAddon(`${tier.id}-einvoicing`, false)}
+                          className="w-full flex items-center justify-between gap-2 cursor-pointer text-left rtl:text-right"
+                        >
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-navy-950 shrink-0" />
+                            <span className="font-display font-bold text-[11px] uppercase tracking-wider text-navy-950">
+                              {isAr ? "الفوترة الإلكترونية" : "E-INVOICING"}
+                            </span>
+                            <span className="text-[11px] text-slate-500 font-normal">
+                              {isAr ? `متاح الآن في ${tier.name}` : `Now in ${tier.name}`}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <ChevronDown
+                              className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${
+                                isAddonOpen(`${tier.id}-einvoicing`, false) ? "rotate-180" : ""
+                              }`}
+                            />
+                            <span className="px-2.5 py-0.5 rounded-full bg-navy-950 text-gold-400 border border-gold-500/40 font-mono text-[10px] font-bold uppercase tracking-wider">
+                              {isAr ? "جديد" : "NEW"}
+                            </span>
+                          </div>
+                        </button>
+
+                        {isAddonOpen(`${tier.id}-einvoicing`, false) && (
+                          <div className="mt-3.5 space-y-3 border-t border-slate-200/70 pt-3.5">
+                            <div className="flex items-start gap-2.5 border-b border-dashed border-slate-200 pb-3">
+                              <Check className="w-3.5 h-3.5 text-gold-600 shrink-0 mt-0.5" />
+                              <div>
+                                <p className="font-display font-bold text-xs text-navy-950">
+                                  {isAr ? `الآن جزء من باقة ${tier.name}` : `Now part of ${tier.name}`}
+                                </p>
+                                <p className="text-[11px] text-slate-500 leading-relaxed mt-0.5">
+                                  {isAr
+                                    ? `يأتي دعم الفوترة الإلكترونية مدمجاً في باقة ${tier.name} إلى جانب التزاماتك الضريبية المعتادة.`
+                                    : `E-invoicing support comes built into the ${tier.name} plan, alongside your regular compliance.`}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="flex items-start gap-2.5 border-b border-dashed border-slate-200 pb-3">
+                              <Check className="w-3.5 h-3.5 text-gold-600 shrink-0 mt-0.5" />
+                              <div>
+                                <p className="font-display font-bold text-xs text-navy-950">
+                                  {isAr ? "ما يصل إلى 100 فاتورة إلكترونية في Zoho Books" : "Up to 100 e-invoices in Zoho Books"}
+                                </p>
+                                <p className="text-[11px] text-slate-500 leading-relaxed mt-0.5">
+                                  {isAr
+                                    ? "تستخدم Zoho بالفعل؟ أصدر الفواتير الإلكترونية مباشرة من البرنامج دون الحاجة لشراء باقة منفصلة."
+                                    : "Already on Zoho? Issue e-invoices straight from the software, with no separate plan to buy."}
+                                </p>
+                              </div>
+                            </div>
+
+                            <div className="flex items-start gap-2.5 border-b border-dashed border-slate-200 pb-3">
+                              <Check className="w-3.5 h-3.5 text-gold-600 shrink-0 mt-0.5" />
+                              <div>
+                                <p className="font-display font-bold text-xs text-navy-950">
+                                  {isAr ? "الإعداد وتعيين مزود الخدمة المعتمد (ASP)" : "Setup and ASP appointment"}
+                                </p>
+                                <p className="text-[11px] text-slate-500 leading-relaxed mt-0.5">
+                                  {isAr
+                                    ? "نقوم بإعداد الفوترة الإلكترونية لشركتك ومساعدتك في تعيين مزود خدمة معتمد (ASP)، لتكون مدعوماً في كل خطوة."
+                                    : "We set up e-invoicing for your business and help you appoint an Accredited Service Provider (ASP), so you're never working it out alone."}
+                                </p>
+                              </div>
+                            </div>
+
+                            <p className="text-[11px] font-medium text-navy-950 leading-relaxed pt-0.5">
+                              {isAr
+                                ? "*الفوترة الإلكترونية مشمولة بدون أي رسوم إضافية في باقاتنا. يوفر Zoho Books أول 100 معاملة فوترة إلكترونية مجاناً في الباقات الاحترافية فما فوق. تُحتسب المعاملات الإضافية بدءاً من 41 درهماً لكل 100 معاملة وفقاً لأسعار Zoho السائدة."
+                                : "*E-invoicing is included at no additional charge in our plans. Zoho Books offers the first 100 e-invoicing transactions free on Professional plans and above. Additional transactions are charged starting from AED 41 per 100 transactions. These charges are subject to Zoho's prevailing pricing and may change if Zoho revises its rates."}
+                            </p>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* 7. KNOW YOUR SUPPLIER (KYS) Module (Corporate Growth & Enterprise Premium — Collapsed by default with dropdown) */}
+                      {tier.id !== "starter" && (
+                        <div className="bg-slate-50/90 border border-slate-200/80 rounded-xl p-4 transition-colors hover:border-slate-300/90">
+                          <button
+                            type="button"
+                            onClick={() => togglePricingAddon(`${tier.id}-kys`, false)}
+                            className="w-full flex items-start justify-between gap-2 cursor-pointer text-left rtl:text-right"
+                          >
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="w-1.5 h-1.5 rounded-full bg-navy-950 shrink-0" />
+                                <span className="font-display font-bold text-[11px] uppercase tracking-wider text-navy-950">
+                                  {isAr ? "اعرف موردك (KYS)" : "KNOW YOUR SUPPLIER (KYS)"}
+                                </span>
+                              </div>
+                              <span className="text-[11px] text-slate-500 font-normal block mt-0.5 pl-3.5 rtl:pl-0 rtl:pr-3.5">
+                                {isAr ? `متاح الآن في ${tier.name}` : `Now in ${tier.name}`}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-2 shrink-0 mt-0.5">
+                              <ChevronDown
+                                className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${
+                                  isAddonOpen(`${tier.id}-kys`, false) ? "rotate-180" : ""
+                                }`}
+                              />
+                              <span className="px-2.5 py-0.5 rounded-full bg-navy-950 text-gold-400 border border-gold-500/40 font-mono text-[10px] font-bold uppercase tracking-wider">
+                                {isAr ? "جديد" : "NEW"}
+                              </span>
+                            </div>
+                          </button>
+
+                          {isAddonOpen(`${tier.id}-kys`, false) && (
+                            <div className="mt-3.5 space-y-3 border-t border-slate-200/70 pt-3.5">
+                              <div className="flex items-start gap-2.5 border-b border-dashed border-slate-200 pb-3">
+                                <Check className="w-3.5 h-3.5 text-gold-600 shrink-0 mt-0.5" />
+                                <div>
+                                  <p className="font-display font-bold text-xs text-navy-950">
+                                    {isAr ? "متطلبات الهيئة الاتحادية للضرائب مدمجة" : "FTA requirements, built in"}
+                                  </p>
+                                  <p className="text-[11px] text-slate-500 leading-relaxed mt-0.5">
+                                    {isAr
+                                      ? "فحوصات مبنية على المخاطر ومراجعات للمشتريات مع توثيق الأسباب."
+                                      : "Risk-based checks and purchase reviews, with reasons recorded."}
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className="flex items-start gap-2.5 border-b border-dashed border-slate-200 pb-3">
+                                <Check className="w-3.5 h-3.5 text-gold-600 shrink-0 mt-0.5" />
+                                <div>
+                                  <p className="font-display font-bold text-xs text-navy-950">
+                                    {isAr ? "التحقق من الموردين عبر الإنترنت" : "Online supplier verification"}
+                                  </p>
+                                  <p className="text-[11px] text-slate-500 leading-relaxed mt-0.5">
+                                    {isAr
+                                      ? "يرفع الموردون مستنداتهم عبر رابط إلكتروني آمن."
+                                      : "Suppliers submit documents through a secure link."}
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className="flex items-start gap-2.5 border-b border-dashed border-slate-200 pb-3">
+                                <Check className="w-3.5 h-3.5 text-gold-600 shrink-0 mt-0.5" />
+                                <div>
+                                  <p className="font-display font-bold text-xs text-navy-950">
+                                    {isAr ? "المخاطر وضريبة القيمة المضافة في نظرة واحدة" : "Risk and VAT at a glance"}
+                                  </p>
+                                  <p className="text-[11px] text-slate-500 leading-relaxed mt-0.5">
+                                    {isAr
+                                      ? "رصد مؤشرات المخاطر والموردين غير الموثقين وضريبة المدخلات التي تتطلب مراجعة."
+                                      : "Spot risk indicators, unverified suppliers and input VAT needing attention."}
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className="flex items-start gap-2.5 border-b border-dashed border-slate-200 pb-3">
+                                <Check className="w-3.5 h-3.5 text-gold-600 shrink-0 mt-0.5" />
+                                <div>
+                                  <p className="font-display font-bold text-xs text-navy-950">
+                                    {isAr ? "متابعة مستمرة لتجديد التحقق" : "Stay on top of verification"}
+                                  </p>
+                                  <p className="text-[11px] text-slate-500 leading-relaxed mt-0.5">
+                                    {isAr
+                                      ? "تنبيهات تلقائية عند حلول موعد تجديد التحقق من بيانات الموردين."
+                                      : "Get reminders when supplier verification is due for renewal."}
+                                  </p>
+                                </div>
+                              </div>
+
+                              <div className="flex items-start gap-2.5 pt-0.5">
+                                <Check className="w-3.5 h-3.5 text-gold-600 shrink-0 mt-0.5" />
+                                <div>
+                                  <p className="font-display font-bold text-xs text-navy-950">
+                                    {isAr ? "السياسة وسجل التدقيق جاهزان" : "Policy and audit trail, ready"}
+                                  </p>
+                                  <p className="text-[11px] text-slate-500 leading-relaxed mt-0.5">
+                                    {isAr
+                                      ? "توقيع إلكتروني لسياسة KYS وحفظ الفحوصات والإقرارات والموافقات في مكان واحد."
+                                      : "E-sign your KYS policy and keep checks, declarations and approvals together."}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
 
                     <a
