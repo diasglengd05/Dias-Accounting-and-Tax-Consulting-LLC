@@ -39,19 +39,24 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
   };
 
   return (
-    <section id="blogs" className="py-20 bg-slate-50/50 border-t border-slate-100 scroll-mt-20 sm:scroll-mt-24">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+    <section id="blogs" className="py-20 sm:py-24 bg-slate-50 border-t border-slate-200/80 scroll-mt-20 sm:scroll-mt-24">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         
         {/* Section Header */}
-        <div className="text-center space-y-3 max-w-2xl mx-auto">
-          <span className="text-xs text-gold-600 font-bold uppercase tracking-widest block">
-            UAE Corporate Finance &amp; Tax Intelligence
-          </span>
-          <h2 className="font-display text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight">
-            Insights &amp; Updates
-          </h2>
-          <p className="text-slate-500 text-sm sm:text-base leading-relaxed">
-            Navigating UAE corporate finance, Federal Tax Authority compliance, VAT procedures, and small business tax exemptions with executive clarity.
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="space-y-2.5 max-w-2xl">
+            <div className="flex items-center gap-3">
+              <span className="w-8 h-[2px] bg-gold-500" />
+              <span className="text-[11px] font-mono text-gold-600 font-bold uppercase tracking-[0.18em]">
+                UAE Corporate Finance &amp; Tax Intelligence
+              </span>
+            </div>
+            <h2 className="font-display text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight">
+              Regulatory Insights &amp; Briefings
+            </h2>
+          </div>
+          <p className="text-slate-600 text-sm leading-relaxed max-w-md">
+            Navigating UAE corporate finance, Federal Tax Authority compliance, VAT procedures, and Free Zone tax structures with executive clarity.
           </p>
         </div>
 
@@ -62,7 +67,7 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
           <div className="lg:col-span-8 space-y-6">
             
             {sortedBlogs.length === 0 ? (
-              <div className="bg-white rounded-3xl border border-dashed border-slate-200 p-12 text-center space-y-3 shadow-sm">
+              <div className="bg-white rounded-2xl border border-dashed border-slate-200 p-12 text-center space-y-3 shadow-xs">
                 <BookOpen className="w-10 h-10 text-slate-300 mx-auto" />
                 <h3 className="font-display text-lg font-bold text-navy-950">No articles available</h3>
                 <p className="text-slate-500 text-xs sm:text-sm max-w-md mx-auto">
@@ -71,106 +76,95 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {sortedBlogs.map((blog, idx) => (
-                  <div
-                    key={blog.id}
-                    onClick={() => onSelectBlog(blog)}
-                    className={`bg-white border ${
-                      idx === 0
-                        ? "border-gold-400/80 shadow-md ring-1 ring-gold-400/20"
-                        : "border-slate-200/80 shadow-sm"
-                    } rounded-3xl overflow-hidden hover:shadow-xl hover:border-gold-400 transition-all hover:-translate-y-1 flex flex-col group cursor-pointer text-left`}
-                  >
-                    {/* Visual Card Top */}
-                    <div className="bg-gradient-to-br from-navy-900 via-navy-950 to-slate-900 p-6 flex flex-col justify-between h-48 relative overflow-hidden">
-                      <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none">
-                        <BookOpen className="w-40 h-40 transform translate-x-10 translate-y-10 text-gold-400" />
-                      </div>
-                      
-                      {/* Top Badges */}
-                      <div className="flex items-center justify-between z-10 w-full">
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] bg-white/15 text-gold-300 font-bold uppercase tracking-widest px-2.5 py-1 rounded-full border border-white/10 backdrop-blur-md">
-                            {blog.tag}
-                          </span>
-                          {blog.isAiGenerated ? (
-                            <span className="text-[10px] bg-gradient-to-r from-emerald-500 to-teal-400 text-white font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full shadow-sm flex items-center gap-1">
-                              <Sparkles className="w-2.5 h-2.5" />
-                              Live Update
-                            </span>
-                          ) : idx === 0 ? (
-                            <span className="text-[10px] bg-gradient-to-r from-amber-400 to-gold-400 text-navy-950 font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full shadow-sm">
-                              Featured Post
-                            </span>
-                          ) : null}
-                        </div>
-
-                        {/* Direct new tab shortcut indicator */}
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (typeof window !== "undefined") {
-                              window.open(`/blog.html#${blog.id}`, "_blank", "noopener,noreferrer");
-                            }
-                          }}
-                          className="p-1.5 text-slate-400 group-hover:text-gold-300 group-hover:bg-white/10 rounded-full transition-colors flex items-center justify-center cursor-pointer"
-                          title="Open article in a new tab"
-                          aria-label="Open article in a new tab"
-                        >
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-
-                      {/* Date & Read Time */}
-                      <div className="text-xs text-slate-400 font-medium flex justify-between items-center z-10">
-                        <span className="flex items-center gap-1.5 font-semibold text-slate-300">
-                          <Calendar className="w-3 h-3 text-gold-400" />
-                          <span>{blog.date}</span>
-                        </span>
-                        <span>•</span>
-                        <span>{blog.readTime}</span>
-                      </div>
-                    </div>
-
-                    {/* Card Body */}
-                    <div className="p-6 flex-grow flex flex-col justify-between space-y-4">
-                      <div className="space-y-2">
-                        <h3 className="font-display text-base sm:text-lg font-bold text-navy-950 group-hover:text-gold-600 transition-colors line-clamp-2 leading-snug">
-                          {blog.title}
-                        </h3>
-                        <p className="text-slate-500 text-xs sm:text-sm leading-relaxed line-clamp-3">
-                          {blog.summary}
-                        </p>
-                      </div>
-
-                      {/* Author detail & Read More CTA */}
-                      <div className="flex items-center justify-between border-t border-slate-100 pt-4 mt-auto">
-                        <div className="flex items-center gap-2.5">
-                          <img
-                            src={blog.author.avatar}
-                            alt={blog.author.name}
-                            width={32}
-                            height={32}
-                            loading="lazy"
-                            decoding="async"
-                            className="w-8 h-8 rounded-full object-cover border border-slate-200"
-                          />
-                          <div className="leading-tight">
-                            <span className="block text-[11px] font-bold text-navy-900">{blog.author.name}</span>
-                            <span className="text-[9px] text-slate-400 font-medium">{blog.author.role}</span>
+                {sortedBlogs.map((blog, idx) => {
+                  const initials = blog.author.name
+                    .split(" ")
+                    .map((n) => n[0])
+                    .join("")
+                    .slice(0, 2)
+                    .toUpperCase();
+                  return (
+                    <div
+                      key={blog.id}
+                      onClick={() => onSelectBlog(blog)}
+                      className={`bg-white border ${
+                        idx === 0
+                          ? "border-gold-400 shadow-sm"
+                          : "border-slate-200/80 shadow-xs"
+                      } rounded-2xl overflow-hidden hover:shadow-md hover:border-gold-400 transition-all duration-200 flex flex-col group cursor-pointer text-left`}
+                    >
+                      {/* Architectural Editorial Card Top */}
+                      <div className="bg-navy-950 px-6 py-5 flex flex-col justify-between border-b border-slate-800 relative overflow-hidden">
+                        <div className="flex items-center justify-between z-10 w-full mb-3">
+                          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.15em]">
+                            <span className="text-gold-400 font-bold">{blog.tag}</span>
+                            {idx === 0 && (
+                              <>
+                                <span className="text-slate-600">·</span>
+                                <span className="text-emerald-400 font-bold">Latest Briefing</span>
+                              </>
+                            )}
                           </div>
+
+                          {/* Direct new tab shortcut indicator */}
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (typeof window !== "undefined") {
+                                window.open(`/blog.html#${blog.id}`, "_blank", "noopener,noreferrer");
+                              }
+                            }}
+                            className="p-1.5 text-slate-400 group-hover:text-gold-400 rounded-lg transition-colors flex items-center justify-center cursor-pointer"
+                            title="Open article in a new tab"
+                            aria-label="Open article in a new tab"
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </button>
                         </div>
-                        <span
-                          className="text-xs font-display font-bold text-gold-600 group-hover:text-gold-700 transition-all flex items-center gap-1.5 group-hover:translate-x-1"
-                        >
-                          <span>Read More</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </span>
+
+                        {/* Date & Read Time */}
+                        <div className="text-[11px] font-mono text-slate-400 flex items-center gap-2 z-10">
+                          <Calendar className="w-3 h-3 text-gold-400 shrink-0" />
+                          <span>{blog.date}</span>
+                          <span>·</span>
+                          <span>{blog.readTime}</span>
+                        </div>
+                      </div>
+
+                      {/* Card Body */}
+                      <div className="p-6 flex-grow flex flex-col justify-between space-y-5">
+                        <div className="space-y-2.5">
+                          <h3 className="font-display text-base sm:text-lg font-bold text-navy-950 group-hover:text-gold-600 transition-colors line-clamp-2 leading-snug">
+                            {blog.title}
+                          </h3>
+                          <p className="text-slate-600 text-xs sm:text-sm leading-relaxed line-clamp-3">
+                            {blog.summary}
+                          </p>
+                        </div>
+
+                        {/* Author detail & Read More CTA */}
+                        <div className="flex items-center justify-between border-t border-slate-100 pt-4 mt-auto">
+                          <div className="flex items-center gap-2.5">
+                            <div className="w-8 h-8 rounded-lg bg-navy-950 border border-gold-500/30 text-gold-400 font-mono text-xs font-bold flex items-center justify-center shrink-0">
+                              {initials}
+                            </div>
+                            <div className="leading-tight">
+                              <span className="block text-xs font-bold text-navy-950">{blog.author.name}</span>
+                              <span className="text-[10px] text-slate-500 font-medium">{blog.author.role}</span>
+                            </div>
+                          </div>
+                          <span
+                            className="text-xs font-display font-bold text-navy-950 group-hover:text-gold-600 transition-all flex items-center gap-1.5 group-hover:translate-x-0.5"
+                          >
+                            <span>Read</span>
+                            <ArrowRight className="w-3.5 h-3.5 text-gold-500" />
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </div>

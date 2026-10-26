@@ -25,9 +25,27 @@ export class ErrorBoundary extends Component<Props, State> {
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("Uncaught application error:", error, errorInfo);
+    
+    // Auto-recover from dynamic module chunk fetch failures (e.g., dev server restarts or network disconnects)
+    const isDynamicImportError =
+      /failed to fetch dynamically imported module|dynamically imported module|loading chunk/i.test(
+        error?.message || ""
+      );
+
+    if (isDynamicImportError && typeof window !== "undefined") {
+      const retryKey = "dynamic_import_recovery_attempt";
+      const hasRetried = sessionStorage.getItem(retryKey);
+      if (!hasRetried) {
+        sessionStorage.setItem(retryKey, Date.now().toString());
+        window.location.reload();
+      }
+    }
   }
 
   private handleReload = () => {
+    if (typeof window !== "undefined") {
+      sessionStorage.removeItem("dynamic_import_recovery_attempt");
+    }
     window.location.reload();
   };
 

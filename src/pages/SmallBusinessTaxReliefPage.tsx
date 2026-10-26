@@ -22,18 +22,44 @@ interface PageProps {
 
 export const SmallBusinessTaxReliefPage: React.FC<PageProps> = ({ onNavigate }) => {
   useEffect(() => {
-    document.title = "Small Business Corporate Tax Relief Dubai | Dias UAE";
+    const pageTitle = "Small Business Corporate Tax Relief Dubai | Corporate Tax Advisory UAE | Dias UAE";
+    const pageDesc =
+      "Expert Corporate Tax Advisory & Tax Consulting Services in UAE on Small Business Relief (SBR) under Ministerial Decision No. 73/2023. Claim 0% corporate tax on revenue up to AED 3M, VAT compliance, and EmaraTax filing in Dubai.";
+    const pageUrl = "https://diasuae.ae/small-business-tax-relief";
 
-    let metaDesc = document.querySelector('meta[name="description"]');
-    if (!metaDesc) {
-      metaDesc = document.createElement("meta");
-      metaDesc.setAttribute("name", "description");
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.setAttribute(
-      "content",
-      "Comprehensive advisory on UAE Small Business Relief (SBR) under Ministerial Decision No. 73/2023. SBR extended through Dec 31, 2029 for businesses with gross revenue up to AED 3M, 0% corporate tax rate, and EmaraTax registration support."
+    document.title = pageTitle;
+
+    const upsertMeta = (attr: "name" | "property", key: string, content: string) => {
+      let el = document.querySelector(`meta[${attr}="${key}"]`);
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute(attr, key);
+        document.head.appendChild(el);
+      }
+      el.setAttribute("content", content);
+    };
+
+    upsertMeta("name", "title", pageTitle);
+    upsertMeta("name", "description", pageDesc);
+    upsertMeta(
+      "name",
+      "keywords",
+      "Small Business Corporate Tax Relief Dubai, corporate tax advisory Dubai, tax consulting services in UAE, tax advisory services in Dubai, 0% corporate tax UAE, Ministerial Decision 73 of 2023"
     );
+    upsertMeta("property", "og:title", pageTitle);
+    upsertMeta("property", "og:description", pageDesc);
+    upsertMeta("property", "og:url", pageUrl);
+    upsertMeta("property", "og:type", "article");
+    upsertMeta("name", "twitter:title", pageTitle);
+    upsertMeta("name", "twitter:description", pageDesc);
+
+    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.setAttribute("rel", "canonical");
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute("href", pageUrl);
 
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);

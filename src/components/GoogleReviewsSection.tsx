@@ -252,26 +252,18 @@ export default function GoogleReviewsSection({ testimonials = [] }: GoogleReview
                   <div>
                     {/* Card Header: Reviewer Profile + Google Verified Badge */}
                     <div className="flex items-start justify-between gap-3 mb-3.5">
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        {item.avatarUrl ? (
-                          <img
-                            src={item.avatarUrl}
-                            alt={item.authorName}
-                            width={44}
-                            height={44}
-                            loading="lazy"
-                            decoding="async"
-                            className="w-11 h-11 rounded-full object-cover border-2 border-white shadow-xs shrink-0 ring-1 ring-slate-200/80"
-                            referrerPolicy="no-referrer"
-                          />
-                        ) : (
-                          <div className="w-11 h-11 rounded-full bg-gradient-to-br from-navy-900 to-slate-800 text-gold-400 font-display font-bold flex items-center justify-center text-sm shrink-0 shadow-xs ring-1 ring-slate-200">
-                            {item.authorName.charAt(0)}
-                          </div>
-                        )}
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-10 h-10 rounded-xl bg-navy-950 text-gold-400 font-mono font-bold flex items-center justify-center text-xs shrink-0 border border-gold-500/30">
+                          {item.authorName
+                            .split(" ")
+                            .map((part) => part[0])
+                            .join("")
+                            .slice(0, 2)
+                            .toUpperCase()}
+                        </div>
 
                         <div className="min-w-0">
-                          <div className="flex items-center gap-1">
+                          <div className="flex items-center gap-1.5">
                             <h3 className="font-display text-sm font-bold text-navy-950 truncate">
                               {item.authorName}
                             </h3>
@@ -301,14 +293,14 @@ export default function GoogleReviewsSection({ testimonials = [] }: GoogleReview
                         href={GOOGLE_BUSINESS_URL}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-1.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200/80 text-slate-500 hover:text-navy-950 transition-colors shrink-0 shadow-2xs group/glink"
+                        className="p-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200/80 text-slate-500 hover:text-navy-950 transition-colors shrink-0"
                         title="Verified on Google Reviews"
                       >
                         <GoogleLogo className="w-4 h-4" />
                       </a>
                     </div>
 
-                    {/* Rating & Service Chip Row */}
+                    {/* Rating & Service Metadata Row */}
                     <div className="flex items-center justify-between flex-wrap gap-2 pb-3 mb-3 border-b border-slate-100">
                       <div className="flex items-center gap-1.5">
                         <div className="flex gap-0.5">
@@ -318,15 +310,14 @@ export default function GoogleReviewsSection({ testimonials = [] }: GoogleReview
                         </div>
                         {item.relativeTime && (
                           <span className="text-[10.5px] text-slate-400 font-medium">
-                            • {item.relativeTime}
+                            · {item.relativeTime}
                           </span>
                         )}
                       </div>
 
                       {item.serviceTag && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-gold-500/15 border border-gold-500/30 text-[10px] font-bold text-gold-800 uppercase tracking-wide font-mono">
-                          <Sparkles className="w-2.5 h-2.5 text-gold-600" />
-                          <span>{item.serviceTag}</span>
+                        <span className="text-[10px] font-mono font-bold text-gold-700 uppercase tracking-wider">
+                          {item.serviceTag}
                         </span>
                       )}
                     </div>

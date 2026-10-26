@@ -25,18 +25,44 @@ interface PageProps {
 
 export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
   useEffect(() => {
-    document.title = "Tax and Accounting Services in DIFC & DTEC | Dias UAE";
+    const pageTitle = "Tax & Accounting Services in DIFC & DTEC Dubai | Tax Advisory UAE | Dias UAE";
+    const pageDesc =
+      "Specialized Corporate Tax Advisory, VAT Compliance, and IFRS Accounting Services for DIFC and DTEC Free Zone entities in Dubai. 0% Qualifying Free Zone Person (QFZP) substance advisory and DFSA audit preparation.";
+    const pageUrl = "https://diasuae.ae/difc-dtec-accounting";
 
-    let metaDesc = document.querySelector('meta[name="description"]');
-    if (!metaDesc) {
-      metaDesc = document.createElement("meta");
-      metaDesc.setAttribute("name", "description");
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.setAttribute(
-      "content",
-      "Specialized accounting, tax compliance, and audit readiness for DIFC and DTEC free zone entities. 0% Qualifying Free Zone Person (QFZP) substance advisory and DFSA audit preparation."
+    document.title = pageTitle;
+
+    const upsertMeta = (attr: "name" | "property", key: string, content: string) => {
+      let el = document.querySelector(`meta[${attr}="${key}"]`);
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute(attr, key);
+        document.head.appendChild(el);
+      }
+      el.setAttribute("content", content);
+    };
+
+    upsertMeta("name", "title", pageTitle);
+    upsertMeta("name", "description", pageDesc);
+    upsertMeta(
+      "name",
+      "keywords",
+      "DIFC accounting services, DTEC tax consultant Dubai, tax consulting services in UAE, tax advisory services in Dubai, 0% QFZP free zone corporate tax, VAT compliance Dubai"
     );
+    upsertMeta("property", "og:title", pageTitle);
+    upsertMeta("property", "og:description", pageDesc);
+    upsertMeta("property", "og:url", pageUrl);
+    upsertMeta("property", "og:type", "article");
+    upsertMeta("name", "twitter:title", pageTitle);
+    upsertMeta("name", "twitter:description", pageDesc);
+
+    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.setAttribute("rel", "canonical");
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute("href", pageUrl);
 
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);

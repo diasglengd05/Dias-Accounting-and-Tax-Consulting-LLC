@@ -15,92 +15,106 @@ export interface SEOConfig {
 // Master English SEO Metadata Dictionary
 export const SECTION_SEO_MAP_EN: Record<string, SEOConfig> = {
   home: {
-    title: "Best Accounting Firm in Dubai UAE | Dias Tax Consulting",
-    description: "Best Accounting Firms in Dubai UAE. Top-rated FTA tax consultants & accountants in Dubai. Instant Free 60s Penalty Risk Audit, FTA audit defense, 0% Corporate Tax relief & monthly bookkeeping across all 7 Emirates.",
-    keywords: "Best Accounting Firms in Dubai UAE, Best Accounting Firm in Dubai, Top CA Firms in Dubai, Top Tax Consultant in Dubai, Best Tax Consultants in UAE, FTA Registered Tax Agency Dubai, FTA Certified Tax Agent UAE, Chartered Accountants in Dubai Business Bay, Corporate Tax Consultant Dubai, UAE Corporate Tax 9%, Corporate Tax Filing 2026, EmaraTax Return Filing, Small Business Relief UAE AED 3M, Qualifying Free Zone Person 0%, QFZP Corporate Tax Compliance, VAT Registration Dubai, VAT Filing UAE 5%, VAT Voluntary Disclosure Form 211, Transfer Pricing Services Dubai, Audited Financial Statements Free Zone UAE, Bookkeeping Services Dubai, Outsource Accounting UAE, Business Setup Dubai Mainland, how to file corporate tax in uae without penalty, who is the best tax consultant in dubai",
+    title: "Tax Consulting Services in UAE & Tax Advisory Dubai | Dias UAE",
+    description: "Premier tax consulting services in UAE and tax advisory services in Dubai. FTA-certified Corporate Tax advisory (9% & 0% QFZP), VAT compliance, IFRS accounting services, backlog accounting, and Free Zone support.",
+    keywords: "tax consulting services in uae, tax advisory services in dubai, corporate tax advisory dubai, vat compliance uae, accounting services in dubai, tax consulting in uae, FTA registered tax agency dubai, corporate tax filing uae 9%, small business relief uae aed 3m, qualifying free zone person 0% qfzp, backlog accounting dubai, ifrs bookkeeping uae, shams free zone company setup, dmcc ifza difc tax consultant",
     hash: "#home",
-    ogImage: "/api/og?title=Best+Accounting+Firms+in+Dubai+UAE&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=UAE+Tax+Compliance&readTime=FTA+Certified",
+    ogImage: "/api/og?title=Tax+Consulting+Services+in+UAE+%26+Tax+Advisory+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Corporate+Tax+%26+VAT+Advisory&readTime=FTA+Certified",
   },
   services: {
-    title: "Corporate Tax, VAT Compliance & Bookkeeping Services | Dias Accounting Dubai",
-    description: "Explore our FTA-certified accounting services: UAE Corporate Tax Filing (9%), VAT Returns & Disclosures, Free Zone QFZP 0% Tax Structuring, Cloud Bookkeeping, and Fractional CFO Advisory in Dubai.",
-    keywords: "UAE corporate tax return, VAT voluntary disclosure, qualifying free zone person 0%, Xero bookkeeping Dubai, Zoho Books accountant UAE, audit financial statement Dubai, corporate tax advisory Business Bay",
+    title: "Corporate Tax Advisory, VAT Compliance & Accounting Services | Dias UAE",
+    description: "Comprehensive tax consulting in UAE & Dubai: Corporate Tax Advisory (9% & 0% SBR/QFZP), Value Added Tax (5% VAT) compliance, IFRS Accounting Services, Backlog Accounting, and Free Zone business support.",
+    keywords: "corporate tax advisory uae, vat compliance dubai, accounting services uae, tax consulting services in uae, tax advisory services in dubai, qualifying free zone person 0%, backlog accounting dubai, statutory audit free zone uae",
     hash: "#services",
-    ogImage: "/api/og?title=Corporate+Tax%2C+VAT+Filing+%26+Bookkeeping+Services&author=Glen+Dias&role=Senior+Tax+Consultant&tag=FTA+Certified+Services&readTime=Full+Service",
+    ogImage: "/api/og?title=Corporate+Tax+Advisory%2C+VAT+Compliance+%26+Accounting+Services&author=Glen+Dias&role=Senior+Tax+Consultant&tag=FTA+Certified+Services&readTime=Full+Service",
+  },
+  "company-setup": {
+    title: "UAE Free Zone & Mainland Business Setup & Tax Structuring | Dias UAE",
+    description: "Turnkey company incorporation and tax advisory services in Dubai Mainland (DET), SHAMS Free Zone, DMCC, IFZA, Meydan, and DIFC with 0% QFZP corporate tax structuring.",
+    keywords: "free zone business setup uae, shams free zone company formation, dubai mainland det license, tax structuring dubai, 0% free zone corporate tax uae",
+    hash: "#company-setup",
+    ogImage: "/api/og?title=UAE+Free+Zone+%26+Mainland+Company+Setup+%26+Tax+Structuring&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Business+Incorporation&readTime=Turnkey+Setup",
+  },
+  "why-choose-us": {
+    title: "Why Choose Dias Accounting | Tax Advisory Services in Dubai & UAE",
+    description: "Discover why 500+ UAE enterprises trust Dias Accounting for FTA-accredited tax consulting services in UAE, IFRS accuracy, and cloud accounting automation.",
+    keywords: "why choose dias accounting, best tax advisory services in dubai, fta certified tax consultants uae, ifrs accounting firm dubai",
+    hash: "#why-choose-us",
+    ogImage: "/api/og?title=6+Core+Pillars+of+Institutional+Tax+%26+Accounting+Excellence&author=Glen+Dias&role=Managing+Partner&tag=Why+Choose+Dias&readTime=100%25+Compliance",
   },
   about: {
-    title: "About Glen Dias & Our Certified Tax Team | Dias Accounting Dubai",
-    description: "Led by Senior Tax Consultant Glen Dias, Dias Accounting delivers high-precision, FTA-compliant accounting, IFRS reporting, and tax advisory across Dubai & UAE.",
-    keywords: "Glen Dias accountant, Dias Accounting LLC, certified tax consultant Dubai, FTA tax agent UAE, chartered accountants Business Bay Dubai, ACCA CPA accountants UAE",
+    title: "About Dias Accounting | Chartered Tax Consultants in Dubai & UAE",
+    description: "Led by Senior Tax Advisor Glen Dias, Dias Accounting delivers high-precision Corporate Tax advisory, VAT compliance, and IFRS accounting services across Dubai, Sharjah & UAE.",
+    keywords: "Glen Dias tax advisor, Dias Accounting LLC, certified tax consultant Dubai, tax consulting services in uae, tax advisory services in dubai",
     hash: "#about",
     ogImage: "/api/og?title=About+Glen+Dias+%26+Certified+Tax+Advisors+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Zero+Penalty+Guarantee&readTime=15%2B+Yrs+Exp",
   },
   pricing: {
-    title: "Affordable Accounting & Corporate Tax Packages Dubai | Dias Accounting UAE",
-    description: "Transparent, fixed-fee monthly bookkeeping and UAE corporate tax compliance packages starting from AED 500/mo for Mainland LLCs and Free Zone startups.",
-    keywords: "accounting cost Dubai, corporate tax filing fees UAE, monthly bookkeeping package Dubai, FTA VAT agent cost, affordable accountant Dubai, small business bookkeeping price UAE",
+    title: "Transparent Accounting & Corporate Tax Advisory Fees UAE | Dias UAE",
+    description: "Flat-fee monthly accounting services, VAT compliance, backlog accounting, and UAE Corporate Tax advisory packages starting from AED 500 for Mainland and Free Zone companies.",
+    keywords: "tax consulting fees uae, accounting services cost dubai, corporate tax filing fee uae, backlog accounting package dubai, monthly bookkeeping price uae",
     hash: "#pricing",
-    ogImage: "/api/og?title=Fixed-Fee+UAE+Accounting+%26+Corporate+Tax+Packages&author=Dias+Tax+Team&role=Affordable+SME+Packages&tag=From+AED+500%2Fmo&readTime=Transparent+Pricing",
+    ogImage: "/api/og?title=Fixed-Fee+UAE+Accounting+%26+Corporate+Tax+Packages&author=Dias+Tax+Team&role=Transparent+Fee+Schedule&tag=From+AED+500&readTime=Zero+Hidden+Fees",
   },
   jurisdictions: {
-    title: "Dubai & UAE Free Zone Tax Compliance | SHAMS, DMCC, IFZA, DED | Dias LLC",
-    description: "Specialized tax advisory and bookkeeping across Dubai Mainland (DET), SHAMS Sharjah, DMCC JLT, IFZA, Meydan, and DIFC. Ensure 0% QFZP tax and IFRS audit compliance.",
-    keywords: "tax consultant business bay dubai, accounting firm dmcc jlt, shams free zone tax agent sharjah, ifza corporate tax filing, meydan accounting services, free zone 0% qfzp dubai",
+    title: "Dubai & UAE Free Zone Tax Compliance | SHAMS, DMCC, IFZA, DIFC | Dias UAE",
+    description: "Specialized tax advisory services in Dubai Mainland (DET), SHAMS Sharjah, DMCC, IFZA, Meydan, and DIFC. Ensure 0% QFZP tax and IFRS audit compliance.",
+    keywords: "tax advisory services in dubai, shams free zone tax agent sharjah, dmcc accounting firm dubai, ifza corporate tax filing, difc tax compliance",
     hash: "#jurisdictions",
     ogImage: "/api/og?title=UAE+Jurisdictions+%26+Free+Zone+Tax+Authority&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=All+7+Emirates&readTime=Local+Compliance",
   },
   caseStudies: {
-    title: "Client Case Studies & Proven Tax Savings | Dias Accounting Dubai",
-    description: "Discover how Dias Accounting helps UAE companies save over AED 180,000 in corporate tax and waive penalties through FTA-certified voluntary disclosures and IFRS bookkeeping.",
-    keywords: "uae corporate tax case study, vat penalty waiver dubai, fta voluntary disclosure result, client reviews accounting dubai",
+    title: "Client Case Studies & Proven Tax Savings | Dias Accounting UAE",
+    description: "See how Dias Accounting helps UAE businesses optimize corporate tax, claim Small Business Relief, and clear historical accounting backlogs with zero FTA penalties.",
+    keywords: "uae corporate tax case study, vat compliance dubai results, backlog accounting case study uae",
     hash: "#case-studies",
     ogImage: "/api/og?title=Proven+UAE+Tax+Savings+%26+Client+Case+Studies&author=Dias+Tax+Team&role=E-E-A-T+Verified&tag=AED+180k%2B+Saved&readTime=Case+Studies",
   },
   calculator: {
-    title: "UAE Corporate Tax Calculator 2026 | Free 9% Tax & Small Business Relief Tool",
-    description: "Calculate your UAE Corporate Tax liability instantly. Accurately estimate 9% tax above AED 375,000 threshold and verify Small Business Relief (AED 3M) eligibility.",
-    keywords: "UAE corporate tax calculator, 9 percent tax calculator Dubai, small business relief calculator UAE, calculate corporate tax UAE 2026, EmaraTax tax estimator",
+    title: "UAE Corporate Tax Calculator 2026 | 9% Tax & 0% Relief Estimator | Dias UAE",
+    description: "Calculate your UAE Corporate Tax liability instantly. Estimate 9% corporate tax above AED 375,000 and verify 0% Small Business Relief (AED 3M) or Free Zone QFZP eligibility.",
+    keywords: "UAE corporate tax calculator, 9 percent tax calculator Dubai, small business relief calculator UAE, calculate corporate tax UAE 2026",
     hash: "#calculator",
     ogImage: "/api/og?title=UAE+Corporate+Tax+Calculator+2026+(Free+9%25+Tool)&author=Glen+Dias&role=FTA+Tax+Agent&tag=Free+Interactive+Tool&readTime=Instant+Estimate",
   },
   testimonials: {
-    title: "Client Reviews & Testimonials 5.0★ | Dias Accounting Dubai",
-    description: "Read genuine 5-star reviews from Dubai CEOs, founders, and finance directors who trust Dias Accounting for penalty-free corporate tax, VAT, and bookkeeping.",
-    keywords: "Dias Accounting reviews, best tax consultant Dubai review, top rated accountant Dubai, corporate tax testimonials UAE, customer feedback Dias Accounting",
+    title: "Verified Client Reviews (5.0★ Google Rating) | Dias Tax Consulting UAE",
+    description: "Read verified 5.0-star Google reviews from UAE managing directors and founders who rely on Dias Accounting for Corporate Tax advisory, VAT compliance, and backlog accounting.",
+    keywords: "Dias Accounting reviews, tax consultant Dubai reviews, corporate tax advisory testimonials UAE",
     hash: "#testimonials",
-    ogImage: "/api/og?title=Client+Reviews+%26+5.0-Star+Ratings+Dubai+UAE&author=Verified+Clients&role=Google+Reviews+5.0%E2%98%85&tag=Trusted+by+120%2B+SMEs&readTime=Verified+Feedback",
+    ogImage: "/api/og?title=Client+Reviews+%26+5.0-Star+Ratings+Dubai+UAE&author=Verified+Clients&role=Google+Reviews+5.0%E2%98%85&tag=Trusted+by+500%2B+SMEs&readTime=Verified+Feedback",
   },
   faqs: {
-    title: "UAE Corporate Tax & VAT FAQ 2026 | FTA Compliance Answers | Dias Accounting",
-    description: "Get expert answers to common UAE Corporate Tax questions: 9% threshold, EmaraTax deadlines, Free Zone 0% qualification, and AED 10,000 late registration penalties.",
-    keywords: "UAE corporate tax FAQ, corporate tax deadline UAE, Freezone 0 percent tax rules, FTA late registration penalty, VAT threshold UAE, Small Business Relief FAQ",
+    title: "UAE Corporate Tax, VAT Compliance & Accounting FAQ | Dias UAE",
+    description: "Expert answers to UAE Corporate Tax (9%), 0% Free Zone QFZP rules, Small Business Relief (AED 3M), mandatory VAT registration, and backlog accounting deadlines.",
+    keywords: "UAE corporate tax FAQ, VAT compliance rules UAE, Freezone 0 percent tax rules, FTA late registration penalty",
     hash: "#faqs",
     ogImage: "/api/og?title=UAE+Corporate+Tax+%26+VAT+Compliance+FAQ+2026&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=FTA+Regulations&readTime=Comprehensive+Guide",
   },
   blogs: {
-    title: "UAE Tax Insights & Corporate Tax Compliance Guides | Dias Accounting Dubai",
-    description: "Stay ahead of FTA regulations with expert articles on UAE Corporate Tax filing, VAT compliance, Small Business Relief, and audited financial statements.",
-    keywords: "UAE tax news, corporate tax guide Dubai, FTA ministerial decisions, UAE VAT recovery rules, IFRS accounting Dubai, EmaraTax filing updates",
+    title: "UAE Corporate Tax, VAT & Free Zone Regulatory Insights | Dias UAE",
+    description: "Authoritative regulatory briefings on UAE Corporate Tax, VAT compliance, IFRS accounting services, and Free Zone company formation by Senior Tax Advisor Glen Dias.",
+    keywords: "UAE tax insights, corporate tax guide Dubai, FTA ministerial decisions, SHAMS free zone tax guide, accounting and bookkeeping UAE",
     hash: "#blogs",
     ogImage: "/api/og?title=UAE+Tax+Insights%2C+FTA+Guides+%26+Regulatory+Updates&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=UAE+Tax+Articles&readTime=Weekly+Insights",
   },
   contact: {
-    title: "Contact Dias Accounting Dubai | Book a Free 15-Min Tax Consultation",
-    description: "Contact FTA-certified tax consultant Glen Dias. Located in Business Bay, Dubai. Instant WhatsApp support (+971 52 922 6958) or book a free 15-minute consultation.",
-    keywords: "contact accountant Dubai, tax consultant phone number Dubai, Glen Dias WhatsApp, accounting office Business Bay Dubai, book tax consultation UAE",
+    title: "Book a Free Tax Consultation | Tax Advisory Services in Dubai & UAE | Dias",
+    description: "Schedule a complimentary consultation with Dias Accounting & Tax Consulting. Serving Dubai, Sharjah (SHAMS), Abu Dhabi, and all UAE Emirates (+971 52 922 6958).",
+    keywords: "contact tax consultant Dubai, book tax consultation UAE, tax advisory services in dubai contact, Dias Accounting phone number",
     hash: "#contact",
-    ogImage: "/api/og?title=Book+Free+15-Min+UAE+Tax+Consultation+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Free+Assessment&readTime=Call+%2B971-52-922-6958",
+    ogImage: "/api/og?title=Book+Free+UAE+Tax+%26+Accounting+Consultation&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Free+Assessment&readTime=Call+%2B971-52-922-6958",
   },
 };
 
 // Master Arabic SEO Metadata Dictionary
 export const SECTION_SEO_MAP_AR: Record<string, SEOConfig> = {
   home: {
-    title: "أفضل مكتب محاسبة في الإمارات | تدقيق مخاطر الغرامات في 60 ثانية | دياز للمحاسبة",
-    description: "أفضل مكتب محاسبة في الإمارات. تدقيق مخاطر الغرامات في 60 ثانية وتمثيل دفاعي أمام الهيئة الاتحادية للضرائب. احسب ضريبة الشركات واكتشف خيارات الإعفاء 0% في دبي وكافة الإمارات.",
-    keywords: "أفضل مكتب محاسبة في الإمارات, تدقيق مخاطر الغرامات 60 ثانية, تمثيل دفاعي الهيئة الاتحادية للضرائب, خيارات إعفاء ضريبة الشركات 0%, تسهيلات الأعمال الصغيرة 3 مليون, أفضل شركات المحاسبة في دبي, كبرى مكاتب المحاسبين القانونيين في دبي, الاستعانة بمصادر خارجية للمحاسبة ومسك الدفاتر, مستشار ضريبي معتمد, ضريبة الشركات دبي 9%, تسجيل ضريبة القيمة المضافة, وكيل ضريبي معتمد دبي, محاسبة الشركات في دبي, تسعير المعاملات الإمارات, تأسيس شركات الإمارات",
+    title: "خدمات الاستشارات الضريبية في الإمارات ودبي | دياس للمحاسبة والاستشارات الضريبية",
+    description: "أفضل خدمات الاستشارات الضريبية في الإمارات ودبي. استشارات ضريبة الشركات (9% وإعفاء 0% للمناطق الحرة)، الامتثال لضريبة القيمة المضافة، مسك الدفاتر، وإغلاق المتأخرات المحاسبية.",
+    keywords: "خدمات الاستشارات الضريبية في الإمارات, استشارات ضريبية في دبي, ضريبة الشركات الإمارات, الامتثال لضريبة القيمة المضافة, خدمات المحاسبة ومسك الدفاتر دبي, تأسيس شركات المنطقة الحرة شمس",
     hash: "#home",
-    ogImage: "/api/og?title=Best+Accounting+firm+in+UAE&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=UAE+Tax+Compliance&readTime=FTA+Certified",
+    ogImage: "/api/og?title=Tax+Consulting+Services+in+UAE+%26+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=UAE+Tax+Compliance&readTime=FTA+Certified",
   },
   services: {
     title: "خدمات ضريبة الشركات والقيمة المضافة ومسك الدفاتر | دياز للمحاسبة دبي",
@@ -293,6 +307,10 @@ export function useDynamicSEO({
     }
 
     const fullUrl = seoConfig.hash === "#home" ? `${baseUrl}/` : `${baseUrl}/${seoConfig.hash}`;
+    const cleanPath = typeof window !== "undefined" && window.location.pathname && window.location.pathname !== "/"
+      ? window.location.pathname
+      : "/";
+    const canonicalUrl = `${baseUrl}${cleanPath}`;
 
     // 1. Update Document Title
     document.title = seoConfig.title;
@@ -305,8 +323,8 @@ export function useDynamicSEO({
     // 3. Open Graph Tags
     setMetaTag("property", "og:title", seoConfig.title);
     setMetaTag("property", "og:description", seoConfig.description);
-    setMetaTag("property", "og:url", fullUrl);
-    setMetaTag("property", "og:type", seoConfig.ogType || "business.business");
+    setMetaTag("property", "og:url", canonicalUrl);
+    setMetaTag("property", "og:type", seoConfig.ogType || "website");
     setMetaTag("property", "og:site_name", "Dias Accounting & Tax Consulting LLC");
     setMetaTag("property", "og:locale", isAr ? "ar_AE" : "en_US");
     setMetaTag("property", "og:locale:alternate", isAr ? "en_US" : "ar_AE");
@@ -351,7 +369,7 @@ export function useDynamicSEO({
     setMetaTag("name", "twitter:domain", "diasuae.ae");
     setMetaTag("name", "twitter:title", seoConfig.title);
     setMetaTag("name", "twitter:description", seoConfig.description);
-    setMetaTag("name", "twitter:url", fullUrl);
+    setMetaTag("name", "twitter:url", canonicalUrl);
     setMetaTag("name", "twitter:image", resolvedOgImage);
     setMetaTag("name", "twitter:image:alt", seoConfig.title);
 
@@ -360,8 +378,8 @@ export function useDynamicSEO({
     setMetaTag("name", "googlebot", "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1");
     setMetaTag("name", "bingbot", "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1");
 
-    // 6. Canonical URL
-    setCanonical(fullUrl);
+    // 6. Canonical URL (Clean preferred domain URL without hash fragment)
+    setCanonical(canonicalUrl);
 
     // 7. Dynamic JSON-LD Structured Data Schema for Rich Results
     if (typeof document !== "undefined") {

@@ -25,18 +25,44 @@ interface PageProps {
 
 export const DividendsAuditPage: React.FC<PageProps> = ({ onNavigate }) => {
   useEffect(() => {
-    document.title = "Dividend Audit & Distribution Advisory Dubai | Dias UAE";
+    const pageTitle = "Dividend Audit & Corporate Tax Advisory Dubai | Tax Consulting UAE | Dias UAE";
+    const pageDesc =
+      "Authoritative Dividend Audit, Distribution Advisory, and Corporate Tax Consulting Services in Dubai, UAE. Ensure Commercial Companies Law compliance, distributable profit certification, and 0% dividend tax optimization.";
+    const pageUrl = "https://diasuae.ae/dividends-audit";
 
-    let metaDesc = document.querySelector('meta[name="description"]');
-    if (!metaDesc) {
-      metaDesc = document.createElement("meta");
-      metaDesc.setAttribute("name", "description");
-      document.head.appendChild(metaDesc);
-    }
-    metaDesc.setAttribute(
-      "content",
-      "Expert dividend audit and distribution advisory in Dubai. Ensure commercial companies law compliance, distributable profits certification, and withholding tax optimization across the UAE."
+    document.title = pageTitle;
+
+    const upsertMeta = (attr: "name" | "property", key: string, content: string) => {
+      let el = document.querySelector(`meta[${attr}="${key}"]`);
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute(attr, key);
+        document.head.appendChild(el);
+      }
+      el.setAttribute("content", content);
+    };
+
+    upsertMeta("name", "title", pageTitle);
+    upsertMeta("name", "description", pageDesc);
+    upsertMeta(
+      "name",
+      "keywords",
+      "dividend audit Dubai, corporate tax advisory Dubai, tax consulting services in UAE, tax advisory services in Dubai, profit distribution UAE, accounting services Dubai"
     );
+    upsertMeta("property", "og:title", pageTitle);
+    upsertMeta("property", "og:description", pageDesc);
+    upsertMeta("property", "og:url", pageUrl);
+    upsertMeta("property", "og:type", "article");
+    upsertMeta("name", "twitter:title", pageTitle);
+    upsertMeta("name", "twitter:description", pageDesc);
+
+    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.setAttribute("rel", "canonical");
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute("href", pageUrl);
 
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
