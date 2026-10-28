@@ -1548,190 +1548,306 @@ function MainApp() {
       <section id="pricing" className="py-20 sm:py-24 bg-slate-50 border-t border-slate-200/80 scroll-mt-20 sm:scroll-mt-24">
         <AnimatedSection className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
-          {/* Section Header */}
-          <div className="text-center space-y-3 max-w-3xl mx-auto">
-            <span className="text-[11px] font-mono text-gold-600 font-bold uppercase tracking-[0.18em] block">
-              {t.pricing.badge}
-            </span>
-            <h2 className="font-display text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight">
-              {language === "ar" ? "أسعار واضحة وشفافة بدون مفاجآت" : "Transparent, Flat-Fee Pricing with Zero Surprises"}
-            </h2>
-            <p className="text-slate-600 text-sm sm:text-base max-w-2xl mx-auto leading-relaxed">
-              {language === "ar"
-                ? "اختر المسار الأنسب لاحتياجاتك: اشتراك شهري لمواكبة المستقبل، أو حزمة إغلاق المتأخرات للسنوات السابقة."
-                : "Choose your path: stay ahead with prospective ongoing compliance, or catch up on prior financial years for corporate tax."}
-            </p>
+          {/* BCL-Style Hero Banner: Unlimited Transactions */}
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-indigo-50/60 via-white to-slate-50 border border-slate-200/80 p-8 sm:p-12 text-center shadow-xs">
+            {/* Subtle flowing background wave effect */}
+            <div className="absolute inset-0 pointer-events-none opacity-40 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-100/50 via-transparent to-transparent" />
+            
+            <div className="relative z-10 max-w-3xl mx-auto space-y-4">
+              {/* Infinity Symbol & Title */}
+              <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+                <svg
+                  className="w-16 h-9 sm:w-20 sm:h-11 inline-block drop-shadow-sm"
+                  viewBox="0 0 140 70"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <defs>
+                    <linearGradient id="infMetallic" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#1e1b4b" />
+                      <stop offset="30%" stopColor="#4338ca" />
+                      <stop offset="60%" stopColor="#6366f1" />
+                      <stop offset="85%" stopColor="#3730a3" />
+                      <stop offset="100%" stopColor="#0f172a" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    d="M45 15 C26 15 12 24 12 35 C12 46 26 55 45 55 C62 55 70 35 70 35 C70 35 78 15 95 15 C114 15 128 24 128 35 C128 46 114 55 95 55 C78 55 70 35 70 35 C70 35 62 15 45 15 Z"
+                    stroke="url(#infMetallic)"
+                    strokeWidth="13"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M45 17 C28 17 16 25 16 35 C16 45 28 53 45 53 C60 53 68 36 70 35 C72 36 80 53 95 53 C112 53 124 45 124 35 C124 25 112 17 95 17 C80 17 72 34 70 35 C68 34 60 17 45 17 Z"
+                    stroke="rgba(255,255,255,0.55)"
+                    strokeWidth="2.5"
+                    fill="none"
+                  />
+                </svg>
 
-            {/* BCL-Style Pathway Selector Tabs */}
-            <div className="pt-4 flex justify-center">
-              <div className="inline-flex p-1.5 bg-white border border-slate-200 rounded-xl shadow-xs max-w-full overflow-x-auto">
+                <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-navy-950 tracking-tight leading-none">
+                  {language === "ar" ? "معاملات غير محدودة" : "Unlimited Transactions"}
+                </h2>
+              </div>
+
+              {/* Tagline */}
+              <p className="text-slate-600 text-sm sm:text-base font-medium max-w-xl mx-auto leading-relaxed">
+                {language === "ar"
+                  ? "نمو أعمالك بلا حدود، وكذلك يجب أن تكون معاملاتك."
+                  : "Your Business Growth Has No Limits. Neither Should Your Transactions."}
+              </p>
+
+              {/* Two Service Type Buttons */}
+              <div className="pt-3 flex flex-wrap items-center justify-center gap-3">
                 <button
                   type="button"
                   onClick={() => setPricingPath("prospective")}
-                  className={`px-5 py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex items-center gap-2 cursor-pointer ${
+                  className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold uppercase tracking-wider transition-all cursor-pointer shadow-xs ${
                     pricingPath === "prospective"
-                      ? "bg-navy-950 text-white shadow-xs"
-                      : "text-slate-600 hover:text-navy-950 hover:bg-slate-50"
+                      ? "bg-navy-950 text-white shadow-md ring-2 ring-navy-950/20"
+                      : "bg-white text-slate-700 hover:text-navy-950 hover:bg-slate-100 border border-slate-200"
                   }`}
                 >
-                  <span className={`w-2 h-2 rounded-full ${pricingPath === "prospective" ? "bg-gold-400" : "bg-slate-300"}`} />
-                  <span>{language === "ar" ? "1. مواكبة المستقبل (مستمر)" : "Staying ahead going forward"}</span>
+                  {language === "ar" ? "باقات الخدمات الشاملة" : "COMPREHENSIVE SERVICE PACKAGES"}
                 </button>
-
                 <button
                   type="button"
                   onClick={() => setPricingPath("retrospective")}
-                  className={`px-5 py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-all whitespace-nowrap flex items-center gap-2 cursor-pointer ${
+                  className={`px-5 py-2.5 rounded-full text-xs sm:text-sm font-bold uppercase tracking-wider transition-all cursor-pointer shadow-xs ${
                     pricingPath === "retrospective"
-                      ? "bg-navy-950 text-white shadow-xs"
-                      : "text-slate-600 hover:text-navy-950 hover:bg-slate-50"
+                      ? "bg-navy-950 text-white shadow-md ring-2 ring-navy-950/20"
+                      : "bg-white text-slate-700 hover:text-navy-950 hover:bg-slate-100 border border-slate-200"
                   }`}
                 >
-                  <span className={`w-2 h-2 rounded-full ${pricingPath === "retrospective" ? "bg-gold-400" : "bg-slate-300"}`} />
-                  <span>{language === "ar" ? "2. إغلاق متأخرات السنوات السابقة" : "Catching up on the past (Backlog)"}</span>
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-amber-600 font-bold ml-1">
-                    · {language === "ar" ? "عاجل" : "Prior FYs"}
+                  {language === "ar" ? "الخدمات المهنية المستقلة" : "STANDALONE PROFESSIONAL SERVICES"}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Section Heading: Comprehensive Service Packages */}
+          <div className="text-center pt-2">
+            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-navy-950 tracking-tight">
+              {pricingPath === "prospective"
+                ? (language === "ar" ? "باقات الخدمات الشاملة" : "Comprehensive Service Packages")
+                : (language === "ar" ? "إغلاق متأخرات السنوات السابقة (خدمات مستقلة)" : "Standalone Professional Services & Backlog Accounting")}
+            </h2>
+          </div>
+
+          {/* Two-Column Value Proposition & Comparison Table Block */}
+          {pricingPath === "prospective" && (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center max-w-6xl mx-auto">
+              {/* Left Column: Simple, Transparent Pricing + Guarantee Pills */}
+              <div className="lg:col-span-6 space-y-4 text-left rtl:text-right">
+                <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-navy-950 tracking-tight">
+                  {language === "ar" ? "تسعير بسيط وشفاف" : "Simple, Transparent Pricing"}
+                </h3>
+                <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+                  {language === "ar"
+                    ? "كل ما تحتاجه أعمالك — محاسبة، ضرائب، تدقيق وأكثر"
+                    : "Everything Your Business Needs — Accounting, Tax, Audit & Beyond"}
+                </p>
+
+                <div className="pt-2">
+                  {/* Purple/Navy Pill: Accounting & Book-keeping FREE */}
+                  <div className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-navy-950 text-white text-xs sm:text-sm font-semibold shadow-xs">
+                    <Sparkles className="w-4 h-4 text-gold-400 shrink-0" />
+                    <span>
+                      {language === "ar"
+                        ? "المحاسبة ومسك الدفاتر مشمولة مجاناً في جميع الباقات"
+                        : "✦ Accounting & Book-keeping is included FREE in all packages"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: Why Dias Accounting? — how we compare Card Table */}
+              <div className="lg:col-span-6">
+                <div className="bg-white border border-slate-200/90 rounded-2xl shadow-sm overflow-hidden">
+                  <div className="py-3 px-6 text-center border-b border-slate-100 bg-slate-50/70">
+                    <h4 className="font-display font-bold text-sm sm:text-base text-navy-950">
+                      {language === "ar" ? "لماذا دياس للمحاسبة؟ — كيف نقارن" : "Why Dias Accounting? — how we compare"}
+                    </h4>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left rtl:text-right text-xs">
+                      <thead>
+                        <tr className="border-b border-slate-100 text-[10px] font-mono font-bold uppercase tracking-wider text-slate-500 bg-slate-50/40">
+                          <th className="py-3 px-4">{language === "ar" ? "الميزة" : "FEATURE"}</th>
+                          <th className="py-3 px-4 text-center">{language === "ar" ? "الآخرون" : "OTHERS"}</th>
+                          <th className="py-3 px-4 text-center bg-emerald-50/80 text-navy-950 font-bold border-l rtl:border-l-0 rtl:border-r border-slate-100">
+                            {language === "ar" ? "دياس للمحاسبة" : "Dias Accounting"}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100 text-xs">
+                        <tr className="hover:bg-slate-50/50 transition-colors">
+                          <td className="py-3 px-4 font-semibold text-slate-800">
+                            {language === "ar" ? "رسوم المحاسبة" : "Accounting fees"}
+                          </td>
+                          <td className="py-3 px-4 text-center text-slate-500">
+                            {language === "ar" ? "رسوم إضافية" : "Extra charge"}
+                          </td>
+                          <td className="py-3 px-4 text-center font-bold text-emerald-600 bg-emerald-50/80 uppercase tracking-wider border-l rtl:border-l-0 rtl:border-r border-slate-100">
+                            {language === "ar" ? "مجاناً" : "FREE"}
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-slate-50/50 transition-colors">
+                          <td className="py-3 px-4 font-semibold text-slate-800">
+                            {language === "ar" ? "حدود المعاملات" : "Transaction limits"}
+                          </td>
+                          <td className="py-3 px-4 text-center text-slate-500">
+                            {language === "ar" ? "نعم (سقف محدد)" : "Yes (capped)"}
+                          </td>
+                          <td className="py-3 px-4 text-center font-bold text-navy-950 bg-emerald-50/80 border-l rtl:border-l-0 rtl:border-r border-slate-100">
+                            {language === "ar" ? "غير محدودة" : "Unlimited"}
+                          </td>
+                        </tr>
+                        <tr className="hover:bg-slate-50/50 transition-colors">
+                          <td className="py-3 px-4 font-semibold text-slate-800">
+                            {language === "ar" ? "سقف الإيرادات" : "Revenue cap"}
+                          </td>
+                          <td className="py-3 px-4 text-center text-slate-500">
+                            {language === "ar" ? "نعم" : "Yes"}
+                          </td>
+                          <td className="py-3 px-4 text-center font-bold text-navy-950 bg-emerald-50/80 border-l rtl:border-l-0 rtl:border-r border-slate-100">
+                            {language === "ar" ? "بدون سقف" : "No cap"}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Billing Toggle (Shown when on prospective pathway) */}
+          {pricingPath === "prospective" && (
+            <div className="pt-2 flex justify-center">
+              <div className="inline-flex items-center p-1 bg-white border border-slate-200 rounded-xl shadow-xs">
+                <button
+                  onClick={() => setBillingPeriod("monthly")}
+                  className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
+                    billingPeriod === "monthly"
+                      ? "bg-navy-900 text-white shadow-xs"
+                      : "text-slate-500 hover:text-slate-800"
+                  }`}
+                >
+                  {t.pricing.monthly}
+                </button>
+                <button
+                  onClick={() => setBillingPeriod("annual")}
+                  className={`relative px-4 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+                    billingPeriod === "annual"
+                      ? "bg-navy-900 text-white shadow-xs"
+                      : "text-slate-500 hover:text-slate-800"
+                  }`}
+                >
+                  <span>{t.pricing.annual}</span>
+                  <span className="text-emerald-500 font-mono text-[10px] font-bold">
+                    ({t.pricing.annualSavingsBadge})
                   </span>
                 </button>
               </div>
             </div>
-
-            {/* Billing Toggle (Shown when on prospective pathway) */}
-            {pricingPath === "prospective" && (
-              <div className="pt-2">
-                <div className="inline-flex items-center p-1 bg-white border border-slate-200 rounded-xl">
-                  <button
-                    onClick={() => setBillingPeriod("monthly")}
-                    className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                      billingPeriod === "monthly"
-                        ? "bg-navy-900 text-white shadow-xs"
-                        : "text-slate-500 hover:text-slate-800"
-                    }`}
-                  >
-                    {t.pricing.monthly}
-                  </button>
-                  <button
-                    onClick={() => setBillingPeriod("annual")}
-                    className={`relative px-4 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
-                      billingPeriod === "annual"
-                        ? "bg-navy-900 text-white shadow-xs"
-                        : "text-slate-500 hover:text-slate-800"
-                    }`}
-                  >
-                    <span>{t.pricing.annual}</span>
-                    <span className="text-emerald-500 font-mono text-[10px] font-bold">
-                      ({t.pricing.annualSavingsBadge})
-                    </span>
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* BCL 3 Core Guarantees Strip */}
-          <div className="bg-white border border-slate-200/80 rounded-2xl p-6 shadow-xs max-w-6xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left rtl:text-right">
-              <div className="flex items-start gap-3.5">
-                <div className="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center text-gold-600 shrink-0">
-                  <CheckCircle2 className="w-4 h-4" />
-                </div>
-                <div>
-                  <h4 className="font-display font-bold text-sm text-navy-950">
-                    {language === "ar" ? "معاملات غير محدودة" : "Unlimited Transactions"}
-                  </h4>
-                  <p className="text-xs text-slate-500 leading-relaxed mt-0.5">
-                    {language === "ar"
-                      ? "لا رسوم مفاجئة على عدد الفواتير أو قيود اليومية."
-                      : "No invoice penalties or sudden surprise fees for scaling transactions."}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3.5 border-t md:border-t-0 md:border-l rtl:md:border-l-0 rtl:md:border-r border-slate-200/70 pt-4 md:pt-0 md:pl-6 rtl:md:pl-0 rtl:md:pr-6">
-                <div className="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center text-gold-600 shrink-0">
-                  <Shield className="w-4 h-4" />
-                </div>
-                <div>
-                  <h4 className="font-display font-bold text-sm text-navy-950">
-                    {language === "ar" ? "بدون سقف للإيرادات" : "No Revenue Cap"}
-                  </h4>
-                  <p className="text-xs text-slate-500 leading-relaxed mt-0.5">
-                    {language === "ar"
-                      ? "تسعير شفاف وثابت لا يعاقب شركتك على نمو مبيعاتها."
-                      : "Transparent fixed pricing that doesn't penalize business revenue growth."}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3.5 border-t md:border-t-0 md:border-l rtl:md:border-l-0 rtl:md:border-r border-slate-200/70 pt-4 md:pt-0 md:pl-6 rtl:md:pl-0 rtl:md:pr-6">
-                <div className="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center text-gold-600 shrink-0">
-                  <Award className="w-4 h-4" />
-                </div>
-                <div>
-                  <h4 className="font-display font-bold text-sm text-navy-950">
-                    {language === "ar" ? "ضمان الرضا والامتثال 100%" : "100% Satisfaction Guarantee"}
-                  </h4>
-                  <p className="text-xs text-slate-500 leading-relaxed mt-0.5">
-                    {language === "ar"
-                      ? "دفاتر مطابقة لمعايير IFRS وخالية تماماً من غرامات الهيئة."
-                      : "Zero FTA audit penalty guarantee with rigorous peer-reviewed compliance."}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+          )}
 
           {/* Prospective Pathway: Ongoing Monthly / Annual Pricing Cards */}
           {pricingPath === "prospective" && (
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto">
-              {(t.pricing.tiers || pricingTiers || []).map((tier, tierIdx) => {
-                const displayPrice = billingPeriod === "annual" ? tier.annualPrice : tier.price;
-                const isAr = language === "ar";
-                const periodLabel = billingPeriod === "annual"
-                  ? (isAr ? "سنوياً (خصم 20%)" : "year (Annual Billing)")
-                  : (isAr ? "شهرياً" : "month (Monthly Billing)");
-                const whatsappMessage = isAr
-                  ? `مرحباً دياس للمحاسبة، أود اختيار باقة "${tier.name}" بسعر ${displayPrice} درهم / ${periodLabel}. يرجى تزويدي بالخطوات والمستندات المطلوبة للبدء.`
-                  : `Hello Dias Accounting, I would like to choose the "${tier.name}" plan (${displayPrice} AED / ${periodLabel}). Please assist me with getting started and onboarding.`;
-                const whatsappUrl = `https://wa.me/971529226958?text=${encodeURIComponent(whatsappMessage)}`;
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch max-w-4xl mx-auto">
+              {(t.pricing.tiers || pricingTiers || [])
+                .filter((tier) => tier.id !== "enterprise")
+                .map((tier, tierIdx) => {
+                  const displayPrice = billingPeriod === "annual" ? tier.annualPrice : tier.price;
+                  const displayOriginalPrice = billingPeriod === "annual"
+                    ? (tier.annualOriginalPrice || (tier.id === "starter" ? "6,000" : tier.id === "growth" ? "9,000" : "15,000"))
+                    : (tier.originalPrice || (tier.id === "starter" ? "500" : tier.id === "growth" ? "750" : "1,250"));
+                  const isAr = language === "ar";
+                  const periodLabel = billingPeriod === "annual"
+                    ? (isAr ? "سنوياً (خصم 33.33%)" : "year (Annual Billing - 33.33% OFF)")
+                    : (isAr ? "شهرياً" : "month (Monthly Billing)");
+                  const whatsappMessage = isAr
+                    ? `مرحباً دياس للمحاسبة، أود اختيار باقة "${tier.name}" بسعر ${displayPrice} درهم / ${periodLabel}. يرجى تزويدي بالخطوات والمستندات المطلوبة للبدء.`
+                    : `Hello Dias Accounting, I would like to choose the "${tier.name}" plan (${displayPrice} AED / ${periodLabel}). Please assist me with getting started and onboarding.`;
+                  const whatsappUrl = `https://wa.me/971529226958?text=${encodeURIComponent(whatsappMessage)}`;
 
-                return (
-                  <div
-                    key={tier.id}
-                    className={`bg-white border rounded-2xl p-8 flex flex-col relative transition-all duration-200 ${
-                      tier.popular
-                        ? "border-gold-500 ring-1 ring-gold-500 shadow-lg"
-                        : "border-slate-200/90 shadow-xs hover:border-slate-300 hover:shadow-md"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-xs font-mono font-bold text-slate-400">
-                        0{tierIdx + 1}.
-                      </span>
-                      {tier.popular && (
-                        <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-gold-700 bg-gold-50 border border-gold-200 px-2.5 py-0.5 rounded-md">
-                          {t.pricing.popularBadge}
+                  return (
+                    <div
+                      key={tier.id}
+                      className={`bg-white border rounded-2xl p-8 flex flex-col relative transition-all duration-200 ${
+                        tier.popular
+                          ? "border-gold-500 ring-1 ring-gold-500 shadow-lg"
+                          : "border-slate-200/90 shadow-xs hover:border-slate-300 hover:shadow-md"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="text-xs font-mono font-bold text-slate-400">
+                          0{tierIdx + 1}.
                         </span>
-                      )}
-                    </div>
+                        {tier.popular && (
+                          <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-gold-700 bg-gold-50 border border-gold-200 px-2.5 py-0.5 rounded-md">
+                            {t.pricing.popularBadge}
+                          </span>
+                        )}
+                      </div>
 
-                    <div className="space-y-1.5 mb-6">
-                      <h3 className="font-display text-xl font-bold text-navy-950">
-                        {tier.name}
-                      </h3>
-                      <p className="text-slate-500 text-xs min-h-[36px] leading-relaxed">
-                        {tier.description}
+                      <div className="mb-4">
+                        <h3 className="font-display text-xl font-bold text-navy-950">
+                          {tier.name}
+                        </h3>
+                      </div>
+
+                      {/* WHO IS THIS FOR Card as in screenshot */}
+                      <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 mb-5 text-left rtl:text-right">
+                        <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-navy-900 block mb-1">
+                          {isAr ? "لمن هذه الباقة؟" : "WHO IS THIS FOR"}
+                        </span>
+                        <p className="text-xs text-slate-600 leading-relaxed">
+                          {tier.whoIsThisFor || tier.description}
+                        </p>
+                      </div>
+
+                    {/* Price Section with Original Price & 33.33% OFF / 20% Off Strikethrough as in screenshot */}
+                    <div className="border-t border-slate-100 pt-5 pb-5 text-left rtl:text-right">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="line-through text-slate-400 font-semibold text-sm">
+                          AED {displayOriginalPrice}
+                        </span>
+                        <span className="px-2 py-0.5 rounded-full bg-gold-500/15 text-gold-700 border border-gold-400/30 text-[10px] font-bold">
+                          {billingPeriod === "annual"
+                            ? (isAr ? "خصم 33.33%" : "33.33% OFF")
+                            : (isAr ? "خصم 20%" : "20% Off")}
+                        </span>
+                      </div>
+
+                      <div className="flex items-baseline gap-1.5">
+                        <span className="text-sm text-navy-950 font-bold uppercase tracking-wider">AED</span>
+                        <span className="text-4xl font-extrabold font-mono tabular-nums text-navy-950 tracking-tight">
+                          {displayPrice}
+                        </span>
+                      </div>
+
+                      <p className="text-[11px] text-slate-500 font-medium mt-1 mb-5">
+                        {isAr
+                          ? `+ 5% ضريبة القيمة المضافة · ${billingPeriod === "annual" ? "سنوياً، تدفع سنوياً" : "شهرياً، تدفع شهرياً"}`
+                          : `+ 5% VAT · ${billingPeriod === "annual" ? "Per Year, Billed Annually" : "Per month, billed monthly"}`}
                       </p>
-                    </div>
 
-                    <div className="flex items-baseline gap-1.5 border-y border-slate-100 py-6 mb-6">
-                      <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">AED</span>
-                      <span className="text-4xl font-extrabold font-mono tabular-nums text-navy-950 tracking-tight">
-                        {displayPrice}
-                      </span>
-                      <span className="text-xs text-slate-400 font-medium">
-                        {billingPeriod === "annual" ? "/ year" : "/ month"}
-                      </span>
+                      <a
+                        href={whatsappUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`w-full py-3 px-4 rounded-xl font-display font-bold text-xs text-center transition-all cursor-pointer flex items-center justify-center gap-2 shadow-xs active:scale-[0.98] ${
+                          tier.popular
+                            ? "bg-gold-500 hover:bg-gold-400 text-navy-950 shadow-md shadow-gold-500/10"
+                            : "bg-white hover:bg-navy-950 text-navy-950 hover:text-white border-2 border-navy-950"
+                        }`}
+                      >
+                        <MessageCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <span>{isAr ? "ابدأ الآن" : "Get Started"}</span>
+                      </a>
                     </div>
 
                     <div className="space-y-3 flex-grow mb-8 text-left rtl:text-right">

@@ -204,8 +204,11 @@ export const pricingTiers: PricingTier[] = [
   {
     id: "starter",
     name: "Business Starter",
-    price: "500",
-    annualPrice: "5,000",
+    price: "400",
+    annualPrice: "4,000",
+    originalPrice: "500",
+    annualOriginalPrice: "6,000",
+    whoIsThisFor: "Startups and new businesses setting up corporate tax compliance for the first time.",
     period: "month",
     description: "Essential accounting, bookkeeping, and basic compliance for growing startups and small companies.",
     features: [
@@ -219,8 +222,11 @@ export const pricingTiers: PricingTier[] = [
   {
     id: "growth",
     name: "Corporate Growth",
-    price: "800",
-    annualPrice: "8,000",
+    price: "600",
+    annualPrice: "6,000",
+    originalPrice: "750",
+    annualOriginalPrice: "9,000",
+    whoIsThisFor: "Growing businesses that need corporate tax and VAT compliance handled together.",
     period: "month",
     description: "Full-service accounting, proactive tax management, and quarterly VAT compliance for scaling businesses.",
     features: [
@@ -239,6 +245,9 @@ export const pricingTiers: PricingTier[] = [
     name: "Enterprise Premium",
     price: "1,000",
     annualPrice: "10,000",
+    originalPrice: "1,250",
+    annualOriginalPrice: "15,000",
+    whoIsThisFor: "Established enterprises requiring end-to-end accounting, tax planning, and CFO advisory.",
     period: "month",
     description: "Enterprise-grade financial intelligence, tax planning, and strategic advisory for large-scale operations.",
     features: [

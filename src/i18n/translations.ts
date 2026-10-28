@@ -500,7 +500,7 @@ export const translations: Record<Language, Translations> = {
       subtitle: "Fixed monthly fees designed to give Dubai startups and enterprises full financial compliance without unexpected billing.",
       monthly: "Monthly Billing",
       annual: "Annual Billing",
-      annualSavingsBadge: "Save 20% + Free Tax Setup",
+      annualSavingsBadge: "Save 33.33% + Free Tax Setup",
       popularBadge: "Most Popular",
       getStartedBtn: "Choose This Plan",
       customAdvisoryTitle: "Need Custom Enterprise or Backlog Reconstruction?",
@@ -510,8 +510,11 @@ export const translations: Record<Language, Translations> = {
         {
           id: "starter",
           name: "Business Starter",
-          price: "500",
-          annualPrice: "5,000",
+          price: "400",
+          annualPrice: "4,000",
+          originalPrice: "500",
+          annualOriginalPrice: "6,000",
+          whoIsThisFor: "Startups and new businesses setting up corporate tax compliance for the first time.",
           period: "month",
           description: "Essential accounting, bookkeeping, and basic compliance for growing startups and small companies.",
           features: [
@@ -525,8 +528,11 @@ export const translations: Record<Language, Translations> = {
         {
           id: "growth",
           name: "Corporate Growth",
-          price: "800",
-          annualPrice: "8,000",
+          price: "600",
+          annualPrice: "6,000",
+          originalPrice: "750",
+          annualOriginalPrice: "9,000",
+          whoIsThisFor: "Growing businesses that need corporate tax and VAT compliance handled together.",
           period: "month",
           description: "Full-service accounting, proactive tax management, and quarterly VAT compliance for scaling businesses.",
           features: [
@@ -545,6 +551,9 @@ export const translations: Record<Language, Translations> = {
           name: "Enterprise Premium",
           price: "1,000",
           annualPrice: "10,000",
+          originalPrice: "1,250",
+          annualOriginalPrice: "15,000",
+          whoIsThisFor: "Established enterprises requiring end-to-end accounting, tax planning, and CFO advisory.",
           period: "month",
           description: "Enterprise-grade financial intelligence, tax planning, and strategic advisory for large-scale operations.",
           features: [
@@ -1019,7 +1028,7 @@ export const translations: Record<Language, Translations> = {
       subtitle: "رسوم شهرية محددة تمنح الشركات الناشئة والمتوسطة في دبي امتثالاً مالياً كاملاً بدون تكاليف إضافية غير متوقعة.",
       monthly: "الدفع الشهري",
       annual: "الدفع السنوي",
-      annualSavingsBadge: "وفر 20% + إعداد ضريبي مجاني",
+      annualSavingsBadge: "وفر 33.33% + إعداد ضريبي مجاني",
       popularBadge: "الأكثر طلباً",
       getStartedBtn: "اختر هذه الباقة",
       customAdvisoryTitle: "هل تحتاج لمعالجة قيود متراكمة (Backlog) أو باقة خاصة؟",
@@ -1029,8 +1038,11 @@ export const translations: Record<Language, Translations> = {
         {
           id: "starter",
           name: "باقة البداية (Starter)",
-          price: "500",
-          annualPrice: "5,000",
+          price: "400",
+          annualPrice: "4,000",
+          originalPrice: "500",
+          annualOriginalPrice: "6,000",
+          whoIsThisFor: "الشركات الناشئة والجديدة التي تؤسس امتثالها لضريبة الشركات لأول مرة.",
           period: "شهر",
           description: "خدمات المحاسبة الأساسية ومسك الدفاتر والامتثال الأولي للشركات الناشئة والصغيرة.",
           features: [
@@ -1044,8 +1056,11 @@ export const translations: Record<Language, Translations> = {
         {
           id: "growth",
           name: "باقة نمو الشركات (Growth)",
-          price: "800",
-          annualPrice: "8,000",
+          price: "600",
+          annualPrice: "6,000",
+          originalPrice: "750",
+          annualOriginalPrice: "9,000",
+          whoIsThisFor: "الشركات النامية التي تحتاج إلى إدارة ضريبة الشركات وضريبة القيمة المضافة معاً.",
           period: "شهر",
           description: "محاسبة شاملة وإدارة ضريبية استباقية وإقرارات ضريبة القيمة المضافة للشركات المتوسعة.",
           features: [
@@ -1064,6 +1079,9 @@ export const translations: Record<Language, Translations> = {
           name: "باقة كبار الأعمال (Enterprise)",
           price: "1,000",
           annualPrice: "10,000",
+          originalPrice: "1,250",
+          annualOriginalPrice: "15,000",
+          whoIsThisFor: "المؤسسات القائمة التي تحتاج إلى حلول محاسبية وضريبية واستشارات مالية تنفيذية شاملة.",
           period: "شهر",
           description: "ذكاء مالي مؤسسي، تخطيط ضريبي متقدم، واستشارات المدير المالي الاستراتيجي (CFO).",
           features: [

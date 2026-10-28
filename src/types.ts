@@ -34,6 +34,9 @@ export interface PricingTier {
   name: string;
   price: string;
   annualPrice: string;
+  originalPrice?: string;
+  annualOriginalPrice?: string;
+  whoIsThisFor?: string;
   period: string;
   description: string;
   features: string[];
