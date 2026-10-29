@@ -806,7 +806,7 @@ At **Dias Accounting**, our FTA-registered tax agents and chartered accountants 
 * **Free Zone 0% Tax Optimization:** Substance audits and Qualifying Income structuring for DMCC, DIFC, Meydan, SHAMS, and IFZA entities.
 * **Transfer Pricing Benchmarking:** Comprehensive salary and intercompany transaction studies.
 
-*Book a confidential 30-minute Corporate Tax Strategy Consultation with Glen Dias today or connect with our rapid advisory desk on WhatsApp at +971 50 256 0990.*`,
+*Book a confidential 30-minute Corporate Tax Strategy Consultation with Glen Dias today or connect with our rapid advisory desk on WhatsApp at +971 52 922 6958.*`,
     date: "October 2, 2026",
     readTime: "7 min read",
     tag: "2026 Tax Update",
@@ -899,7 +899,7 @@ Whether you need to submit an urgent late corporate tax return, file an FTA Volu
 *   **Direct FTA Representation:** Official submission of penalty waiver petitions and audit defense.
 *   **Fixed-Fee Monthly Bookkeeping:** Transparent packages starting at **AED 500/month** to keep your company audit-ready year-round.
 
-*Contact Glen Dias and our senior corporate tax advisory desk today on WhatsApp at +971 50 256 0990 or book a confidential consultation.*`,
+*Contact Glen Dias and our senior corporate tax advisory desk today on WhatsApp at +971 52 922 6958 or book a confidential consultation.*`,
     date: "October 1, 2026",
     readTime: "6 min read",
     tag: "Corporate Tax Regularization",
@@ -1072,7 +1072,7 @@ As you complete your corporate tax return, be aware of the next major compliance
 ### Need Emergency Corporate Tax Filing or Relief Review?
 At **Dias Accounting & Tax Consulting**, our FTA-certified chartered accountants and senior tax consultants represent UAE businesses across Dubai Mainland, Abu Dhabi, and all UAE Free Zones. We review your books, identify every legal deduction, file your EmaraTax return, and secure your Small Business Relief or 0% Free Zone status before the September 30 cutoff.
 
-*Book an expedited 1-on-1 Corporate Tax consultation with Glen Dias or contact our rapid advisory desk on WhatsApp at +971 50 256 0990.*`,
+*Book an expedited 1-on-1 Corporate Tax consultation with Glen Dias or contact our rapid advisory desk on WhatsApp at +971 52 922 6958.*`,
     date: "September 15, 2026",
     readTime: "6 min read",
     tag: "Corporate Tax Deadline",

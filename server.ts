@@ -245,7 +245,6 @@ const SecureStorageService = {
 };
 
 const app = express();
-const PORT = 3000;
 
 // Security: Disable X-Powered-By header to prevent fingerprinting
 app.disable("x-powered-by");
@@ -1899,7 +1898,7 @@ app.post("/api/admin/trigger-daily-blog", verifyAdminToken, async (req, res) => 
 async function bootstrap() {
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: { middlewareMode: true, hmr: false },
       appType: "spa",
     });
 
@@ -1982,16 +1981,20 @@ async function bootstrap() {
 
   // Server Port & Host Configuration:
   // In Firebase App Hosting & Cloud Run container environments, process.env.PORT is defined (e.g. 8080).
-  // In local development, the runner supplies --port 3000 to process.argv.
+  // In local development, the runner supplies --port 3000 --host 0.0.0.0.
   const portArgIndex = process.argv.indexOf("--port");
   const cliPort = portArgIndex !== -1 ? parseInt(process.argv[portArgIndex + 1], 10) : undefined;
-  // In production containers (Firebase App Hosting, Cloud Run), strictly listen on process.env.PORT || 8080
+  const hostArgIndex = process.argv.indexOf("--host");
+  const cliHost = hostArgIndex !== -1 ? process.argv[hostArgIndex + 1] : undefined;
+
+  // In production containers (Firebase App Hosting, Cloud Run), strictly listen on process.env.PORT || 8080.
+  // In local development, default to port 3000 as required by the dev environment.
   const PORT = process.env.NODE_ENV === "production"
     ? (process.env.PORT ? parseInt(process.env.PORT, 10) : 8080)
-    : (cliPort || (process.env.PORT ? parseInt(process.env.PORT, 10) : 8080));
-  const HOST = "0.0.0.0";
+    : (cliPort || (process.env.PORT ? parseInt(process.env.PORT, 10) : 3000));
+  const HOST = cliHost || "0.0.0.0";
 
-  app.listen(PORT, HOST, () => {
+  const server = app.listen(PORT, HOST, () => {
     console.log(`Server listening on http://${HOST}:${PORT}`);
 
     // In-process autonomous semi-weekly scheduler (Tuesday & Friday at 06:00 GST)
@@ -2009,6 +2012,16 @@ async function bootstrap() {
     // Recurring check every 15 minutes to evaluate Tuesday and Friday 06:00 GST trigger
     setInterval(checkScheduledBlogSchedule, 15 * 60 * 1000);
   });
+
+  server.on("error", (err: any) => {
+    if (err.code === "EADDRINUSE") {
+      console.warn(`[Server] Port ${PORT} is in use; retrying or waiting for release...`);
+    } else {
+      console.error("[Server] Listen error:", err);
+    }
+  });
 }
 
-bootstrap();
+bootstrap().catch((err) => {
+  console.error("[Bootstrap] Server failed to start:", err);
+});

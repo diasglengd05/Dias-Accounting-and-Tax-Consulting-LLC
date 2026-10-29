@@ -557,3 +557,4 @@ export const ServiceComparisonTable: React.FC<ServiceComparisonTableProps> = ({ 
   );
 };
 
+export default ServiceComparisonTable;

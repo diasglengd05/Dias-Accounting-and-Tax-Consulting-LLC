@@ -274,6 +274,90 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     };
   }
 
+  if (pathname === "/services") {
+    return {
+      title: "Accounting, Corporate Tax & VAT Practice in UAE | Dias UAE",
+      description: "Explore Dias Accounting's 8 comprehensive practice areas across UAE Corporate Tax (9% & 0% QFZP), VAT compliance, IFRS bookkeeping, backlog reconstruction, and E-Invoicing Phase 1 ASP onboarding.",
+      keywords: "tax consulting services in uae, tax advisory services in dubai, corporate tax registration, vat returns dubai, ifrs bookkeeping uae",
+      url: `${baseUrl}/services`,
+      ogImage: `${baseUrl}/api/og?title=UAE+Tax+Consulting+%26+Accounting+Services&author=Glen+Dias&tag=8+Practice+Areas`,
+      ogType: "website",
+      isArabic,
+    };
+  }
+
+  if (pathname === "/company-setup") {
+    return {
+      title: "Company Setup in Dubai & UAE Free Zones | Dias UAE",
+      description: "Turnkey UAE business incorporation across SHAMS, DMCC, IFZA, DTEC, Meydan, and Dubai Mainland (DET). 100% foreign ownership, 0% QFZP tax structuring, and corporate bank accounts.",
+      keywords: "company setup dubai, free zone license uae, shams incorporation, dmcc company formation, ifza visa setup",
+      url: `${baseUrl}/company-setup`,
+      ogImage: `${baseUrl}/api/og?title=UAE+Company+Setup+%26+Free+Zone+Hub&author=Dias+Corporate+Desk&tag=Turnkey+Incorporation`,
+      ogType: "website",
+      isArabic,
+    };
+  }
+
+  if (pathname === "/why-choose-us" || pathname === "/about") {
+    return {
+      title: "Why Dias Accounting | FTA Certified Tax Agency Dubai | Dias UAE",
+      description: "Discover the 6 foundational pillars that make Dias Accounting the trusted choice for 500+ UAE enterprises: FTA certified agents, unlimited transactions, and direct client WhatsApp channels.",
+      keywords: "why dias accounting, fta registered tax agency, certified tax agent glen dias, corporate tax advisory firm dubai",
+      url: `${baseUrl}/why-choose-us`,
+      ogImage: `${baseUrl}/api/og?title=Why+Dias+Accounting+%26+Tax+Consulting&author=Glen+Dias&tag=6+Core+Pillars`,
+      ogType: "website",
+      isArabic,
+    };
+  }
+
+  if (pathname === "/blogs" || pathname === "/insights") {
+    return {
+      title: "UAE Tax & Corporate Regulatory Insights | Dias UAE",
+      description: "Authoritative legal interpretations, FTA decisions, and compliance checklists on UAE Corporate Tax, VAT, and Phase 1 E-Invoicing prepared by registered tax agents.",
+      keywords: "uae tax blog, fta updates 2026, corporate tax guidelines, e-invoicing peppol mandate dubai",
+      url: `${baseUrl}/blogs`,
+      ogImage: `${baseUrl}/api/og?title=UAE+Tax+%26+Regulatory+Insights+Hub&author=Glen+Dias&tag=Official+Briefings`,
+      ogType: "website",
+      isArabic,
+    };
+  }
+
+  if (pathname === "/testimonials" || pathname === "/reviews") {
+    return {
+      title: "Client Reviews & Verified 5.0★ Feedback | Dias UAE",
+      description: "Verified 5.0★ Google Reviews and measurable case study outcomes from 500+ UAE mainland LLCs and free zone enterprises managed by Dias Accounting.",
+      keywords: "dias accounting reviews, google reviews tax consultant dubai, fta tax agent testimonials uae",
+      url: `${baseUrl}/testimonials`,
+      ogImage: `${baseUrl}/api/og?title=Client+Reviews+%26+5.0+Star+Feedback&author=Dias+Accounting&tag=500%2B+Clients`,
+      ogType: "website",
+      isArabic,
+    };
+  }
+
+  if (pathname === "/faqs" || pathname === "/faq") {
+    return {
+      title: "UAE Tax & Accounting FAQs | Dias UAE",
+      description: "Instant, authoritative answers to top questions on the 9% UAE Corporate Tax, AED 3M Small Business Relief, 0% QFZP Free Zone conditions, and VAT201 filing.",
+      keywords: "uae tax faqs, corporate tax questions dubai, small business relief faq, vat compliance answers",
+      url: `${baseUrl}/faqs`,
+      ogImage: `${baseUrl}/api/og?title=UAE+Tax+%26+Accounting+FAQs&author=Glen+Dias&tag=Authoritative+Answers`,
+      ogType: "website",
+      isArabic,
+    };
+  }
+
+  if (pathname === "/contact" || pathname === "/book-consultation") {
+    return {
+      title: "Book Tax Consultation & Office Desk | Dias UAE",
+      description: "Schedule a confidential consultation with Glen Dias, FTA Registered Tax Agent. Office location in SHAMS Business Center & Dubai with direct WhatsApp advisory.",
+      keywords: "contact tax consultant dubai, book tax consultation uae, fta tax agent phone number, dias accounting office",
+      url: `${baseUrl}/contact`,
+      ogImage: `${baseUrl}/api/og?title=Schedule+Confidential+Tax+Consultation&author=Glen+Dias&tag=FTA+Registered+Agent`,
+      ogType: "website",
+      isArabic,
+    };
+  }
+
   // 6. Default Fallback
   return {
     title: isArabic

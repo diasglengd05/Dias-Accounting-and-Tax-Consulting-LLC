@@ -47,6 +47,8 @@ import {
 import { Service, BlogPost, PricingTier, Testimonial, FAQItem } from "./types";
 import { servicesData, pricingTiers, testimonialsData, faqsData, GOOGLE_BUSINESS_URL, GOOGLE_RATING_STATS } from "./data/staticData";
 import { blogsData } from "./data/blogsData";
+import PageNavigation from "./components/PageNavigation";
+import PageFooter from "./components/PageFooter";
 import DiasLogo from "./components/DiasLogo";
 import { GoogleLogo } from "./components/GoogleLogo";
 import ComplianceAlertBanner from "./components/ComplianceAlertBanner";
@@ -85,6 +87,17 @@ const SeoEngineDashboardModal = React.lazy(() => import("./components/SeoEngineD
 const SmallBusinessTaxReliefPage = React.lazy(() => import("./pages/SmallBusinessTaxReliefPage").then(m => ({ default: m.SmallBusinessTaxReliefPage })));
 const DifcDtecAccountingPage = React.lazy(() => import("./pages/DifcDtecAccountingPage").then(m => ({ default: m.DifcDtecAccountingPage })));
 const DividendsAuditPage = React.lazy(() => import("./pages/DividendsAuditPage").then(m => ({ default: m.DividendsAuditPage })));
+const ServicesPage = React.lazy(() => import("./pages/ServicesPage"));
+const CompanySetupPage = React.lazy(() => import("./pages/CompanySetupPage"));
+const PricingPage = React.lazy(() => import("./pages/PricingPage"));
+const WhyChooseUsPage = React.lazy(() => import("./pages/WhyChooseUsPage"));
+const BlogsPage = React.lazy(() => import("./pages/BlogsPage"));
+const TestimonialsPage = React.lazy(() => import("./pages/TestimonialsPage"));
+const FaqsPage = React.lazy(() => import("./pages/FaqsPage"));
+const ContactPage = React.lazy(() => import("./pages/ContactPage"));
+const TaxPlannerPage = React.lazy(() => import("./pages/TaxPlannerPage"));
+const ServiceDetailPage = React.lazy(() => import("./pages/ServiceDetailPage"));
+const CorporateTaxSavingsPage = React.lazy(() => import("./pages/CorporateTaxSavingsPage"));
 
 // Framer Motion variants for staggered sequential reveal in Services section
 const servicesContainerVariants: Variants = {
@@ -451,6 +464,151 @@ function MainApp() {
     );
   }
 
+  if (currentPath === "/services") {
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading Services Hub...</div>}>
+        <ServicesPage
+          onNavigate={navigateTo}
+          onOpenAudit={() => setTaxHealthModalOpen(true)}
+          onOpenPrivacy={() => setPrivacyOpen(true)}
+          onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+        />
+      </Suspense>
+    );
+  }
+
+  if (currentPath.startsWith("/services/") || currentPath.startsWith("/service/")) {
+    const rawServiceId = currentPath.replace(/^\/(services|service)\//, "").split("/")[0].split("?")[0].split("#")[0];
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading Service Practice Hub...</div>}>
+        <ServiceDetailPage
+          serviceId={rawServiceId}
+          onNavigate={navigateTo}
+          onOpenAudit={() => setTaxHealthModalOpen(true)}
+          onOpenPrivacy={() => setPrivacyOpen(true)}
+          onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+        />
+      </Suspense>
+    );
+  }
+
+  if (currentPath === "/company-setup") {
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading Company Setup Hub...</div>}>
+        <CompanySetupPage
+          onNavigate={navigateTo}
+          onOpenAudit={() => setTaxHealthModalOpen(true)}
+          onOpenPrivacy={() => setPrivacyOpen(true)}
+          onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+        />
+      </Suspense>
+    );
+  }
+
+  if (currentPath === "/pricing") {
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading Pricing Hub...</div>}>
+        <PricingPage
+          onNavigate={navigateTo}
+          onOpenAudit={() => setTaxHealthModalOpen(true)}
+          onOpenPrivacy={() => setPrivacyOpen(true)}
+          onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+        />
+      </Suspense>
+    );
+  }
+
+  if (currentPath === "/uae-tax-planner" || currentPath === "/tax-planner" || currentPath === "/tax-calculator" || currentPath === "/calculator") {
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading UAE Tax Planner...</div>}>
+        <TaxPlannerPage
+          onNavigate={navigateTo}
+          onOpenAudit={() => setTaxHealthModalOpen(true)}
+          onOpenPrivacy={() => setPrivacyOpen(true)}
+          onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+        />
+      </Suspense>
+    );
+  }
+
+  if (currentPath === "/corporate-tax-calculator" || currentPath === "/tax-savings" || currentPath === "/tax-savings-assessment") {
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading Corporate Tax Savings Assessment...</div>}>
+        <CorporateTaxSavingsPage
+          onNavigate={navigateTo}
+          onOpenAudit={() => setTaxHealthModalOpen(true)}
+          onOpenPrivacy={() => setPrivacyOpen(true)}
+          onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+        />
+      </Suspense>
+    );
+  }
+
+  if (currentPath === "/why-choose-us" || currentPath === "/about") {
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading Why Dias Hub...</div>}>
+        <WhyChooseUsPage
+          onNavigate={navigateTo}
+          onOpenAudit={() => setTaxHealthModalOpen(true)}
+          onOpenPrivacy={() => setPrivacyOpen(true)}
+          onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+        />
+      </Suspense>
+    );
+  }
+
+  if (currentPath === "/blogs" || currentPath === "/insights" || currentPath.startsWith("/blog/")) {
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading Insights Hub...</div>}>
+        <BlogsPage
+          onNavigate={navigateTo}
+          onOpenAudit={() => setTaxHealthModalOpen(true)}
+          onOpenPrivacy={() => setPrivacyOpen(true)}
+          onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+        />
+      </Suspense>
+    );
+  }
+
+  if (currentPath === "/testimonials" || currentPath === "/reviews") {
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading Reviews Hub...</div>}>
+        <TestimonialsPage
+          onNavigate={navigateTo}
+          onOpenAudit={() => setTaxHealthModalOpen(true)}
+          onOpenPrivacy={() => setPrivacyOpen(true)}
+          onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+        />
+      </Suspense>
+    );
+  }
+
+  if (currentPath === "/faqs" || currentPath === "/faq") {
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading FAQs Hub...</div>}>
+        <FaqsPage
+          onNavigate={navigateTo}
+          onOpenAudit={() => setTaxHealthModalOpen(true)}
+          onOpenPrivacy={() => setPrivacyOpen(true)}
+          onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+        />
+      </Suspense>
+    );
+  }
+
+  if (currentPath === "/contact" || currentPath === "/book-consultation") {
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading Contact Desk...</div>}>
+        <ContactPage
+          onNavigate={navigateTo}
+          onOpenAudit={() => setTaxHealthModalOpen(true)}
+          onOpenPrivacy={() => setPrivacyOpen(true)}
+          onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+        />
+      </Suspense>
+    );
+  }
+
   if (currentPath === "/admin" || currentPath === "/inquiry-sheet" || currentPath === "/admin/sheet" || currentPath === "/inquiries") {
     return (
       <div className="min-h-screen bg-navy-950 flex flex-col items-center justify-center text-white p-6 space-y-6 text-center">
@@ -509,234 +667,12 @@ function MainApp() {
         Skip to main content
       </a>
       
-      {/* 0. Top FTA Compliance Alert Banner */}
-      <ComplianceAlertBanner onOpenAudit={() => setTaxHealthModalOpen(true)} />
-
-      {/* 1. Header / Navigation - Clean 3-Zone BCL.ae Architectural Top Bar */}
-      <header role="banner" className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 transition-all duration-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-6">
-          
-          {/* Zone 1: Brand Wordmark & Logo */}
-          <div className="flex items-center shrink-0">
-            <a
-              href="#home"
-              className="group flex items-center gap-3 cursor-pointer select-none transition-opacity duration-150 hover:opacity-90"
-              aria-label="Dias Accounting Home"
-            >
-              <DiasLogo className="w-10 h-10" showText={true} textSize="text-xl sm:text-2xl" textColor="text-navy-950" />
-            </a>
-          </div>
-
-          {/* Zone 2: Clean Typographic Navigation Links (No Pill Enclosures) */}
-          <nav aria-label="Main Navigation" className="hidden lg:flex items-center gap-6 xl:gap-7">
-            {[
-              { id: "services", label: t.nav.services },
-              { id: "company-setup", label: language === "ar" ? "تأسيس الشركات" : "Company Setup" },
-              { id: "pricing", label: t.nav.pricing },
-              { id: "why-choose-us", label: language === "ar" ? "لماذا دياس؟" : "Why Dias" },
-              { id: "blogs", label: language === "ar" ? "الرؤى والمدونة" : "Insights" },
-              { id: "testimonials", label: t.nav.reviews },
-              { id: "faqs", label: t.nav.faq },
-            ].map((link) => {
-              const isActive = activeSection === link.id;
-              return (
-                <a
-                  key={link.id}
-                  href={`#${link.id}`}
-                  className={`relative py-2 text-xs font-semibold tracking-tight whitespace-nowrap shrink-0 transition-colors duration-150 border-b-2 ${
-                    isActive
-                      ? "text-navy-950 border-gold-500 font-bold"
-                      : "text-slate-600 border-transparent hover:text-navy-950 hover:border-gold-400/60"
-                  }`}
-                >
-                  {link.label}
-                </a>
-              );
-            })}
-
-            {/* Dedicated SEO Advisory Hubs Dropdown */}
-            <div className="relative group">
-              <button
-                type="button"
-                className="py-2 text-xs font-semibold tracking-tight whitespace-nowrap shrink-0 flex items-center gap-1 text-slate-600 hover:text-navy-950 border-b-2 border-transparent hover:border-gold-400/60 transition-colors duration-150 cursor-pointer"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                <span>{language === "ar" ? "المراكز المتخصصة" : "Practice Hubs"}</span>
-                <ChevronDown className="w-3.5 h-3.5 text-gold-600 transition-transform duration-150 group-hover:rotate-180" />
-              </button>
-              <div className="absolute top-full right-0 pt-2 w-64 hidden group-hover:block z-50">
-                <div className="bg-white rounded-xl shadow-lg border border-slate-200/90 p-2 space-y-1">
-                  <a
-                    href="/small-business-tax-relief"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      navigateTo("/small-business-tax-relief");
-                    }}
-                    className="flex flex-col p-2.5 rounded-lg hover:bg-slate-50 transition-colors group/item"
-                  >
-                    <span className="text-xs font-bold text-navy-950 group-hover/item:text-gold-600 transition-colors">
-                      {language === "ar" ? "تسهيلات الأعمال الصغيرة (0%)" : "Small Business Tax Relief"}
-                    </span>
-                    <span className="text-[11px] text-slate-500 mt-0.5">
-                      {language === "ar" ? "إعفاء حتى 2029 (3 ملايين درهم)" : "AED 3M SBR extended to 2029"}
-                    </span>
-                  </a>
-                  <a
-                    href="/difc-dtec-accounting"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      navigateTo("/difc-dtec-accounting");
-                    }}
-                    className="flex flex-col p-2.5 rounded-lg hover:bg-slate-50 transition-colors group/item"
-                  >
-                    <span className="text-xs font-bold text-navy-950 group-hover/item:text-gold-600 transition-colors">
-                      {language === "ar" ? "محاسبة وتدقيق DIFC و DTEC" : "DIFC & DTEC Accounting"}
-                    </span>
-                    <span className="text-[11px] text-slate-500 mt-0.5">
-                      {language === "ar" ? "امتثال 0% QFZP وتدقيق DFSA" : "0% QFZP & DFSA audit readiness"}
-                    </span>
-                  </a>
-                  <a
-                    href="/dividends-audit"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      navigateTo("/dividends-audit");
-                    }}
-                    className="flex flex-col p-2.5 rounded-lg hover:bg-slate-50 transition-colors group/item"
-                  >
-                    <span className="text-xs font-bold text-navy-950 group-hover/item:text-gold-600 transition-colors">
-                      {language === "ar" ? "تدقيق وتوزيع الأرباح" : "Dividend Audit & Distribution"}
-                    </span>
-                    <span className="text-[11px] text-slate-500 mt-0.5">
-                      {language === "ar" ? "شهادة الأرباح وقانون الشركات" : "IFRS & Commercial Companies Law"}
-                    </span>
-                  </a>
-                </div>
-              </div>
-            </div>
-          </nav>
-
-          {/* Zone 3: Language Switcher & Primary Consultation CTA */}
-          <div className="hidden lg:flex items-center gap-3 shrink-0">
-            <LanguageToggle variant="desktop" />
-
-            <a
-              href="#contact"
-              className="bg-navy-950 hover:bg-navy-900 text-white font-display font-semibold py-2.5 px-5 rounded-xl text-xs tracking-tight transition-all duration-150 border border-gold-500/40 hover:border-gold-400 flex items-center gap-2 whitespace-nowrap shrink-0 cursor-pointer shadow-xs"
-            >
-              <span>{t.nav.bookConsultation}</span>
-              <ArrowRight className="w-3.5 h-3.5 text-gold-400 rtl:rotate-180" />
-            </a>
-          </div>
-
-          {/* Mobile Controls */}
-          <div className="flex lg:hidden items-center gap-2">
-            <a
-              href="tel:+971529226958"
-              className="w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-navy-950 hover:border-gold-400 transition-colors"
-              aria-label="Direct Phone Advisory Call"
-            >
-              <Phone className="w-4 h-4 text-gold-600" />
-            </a>
-
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center text-navy-950 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-500 cursor-pointer transition-colors"
-              aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-              aria-expanded={mobileMenuOpen}
-              aria-controls="mobile-nav-menu"
-            >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Navigation Drawer */}
-        <div
-          id="mobile-nav-menu"
-          className={`lg:hidden absolute top-20 left-0 w-full bg-white border-b border-slate-200 shadow-xl z-50 overflow-hidden flex flex-col transition-all duration-200 ease-out origin-top ${
-            mobileMenuOpen
-              ? "opacity-100 max-h-[calc(100vh-5rem)] pointer-events-auto visible"
-              : "opacity-0 max-h-0 pointer-events-none invisible"
-          }`}
-          aria-hidden={!mobileMenuOpen}
-        >
-          <div className="px-4 sm:px-6 pt-4 pb-5 space-y-3 overflow-y-auto flex-1">
-            <div className="pb-3 border-b border-slate-100 flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500">
-                {language === "ar" ? "اللغة" : "Language"}
-              </span>
-              <LanguageToggle variant="mobile" />
-            </div>
-
-            <div className="divide-y divide-slate-100">
-              {[
-                { id: "home", label: t.nav.home },
-                { id: "services", label: t.nav.services },
-                { id: "company-setup", label: language === "ar" ? "تأسيس الشركات في دبي والإمارات" : "Company Setup (Mainland & Free Zone)" },
-                { id: "pricing", label: t.nav.pricing },
-                { id: "why-choose-us", label: language === "ar" ? "لماذا تختار دياس؟" : "Why Choose Dias (6 Pillars)" },
-                { id: "case-studies", label: language === "ar" ? "دراسات حالة العملاء" : "Client Case Studies" },
-                { id: "blogs", label: language === "ar" ? "الرؤى والمدونة" : "Insights & Regulatory Guides" },
-                { id: "testimonials", label: t.nav.reviews },
-                { id: "faqs", label: t.nav.faq },
-                { id: "contact", label: t.nav.contact },
-              ].map((link) => (
-                <a
-                  key={link.id}
-                  href={`#${link.id}`}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center justify-between py-3 text-sm font-semibold transition-colors ${
-                    activeSection === link.id
-                      ? "text-gold-600 font-bold"
-                      : "text-navy-950 hover:text-gold-600"
-                  }`}
-                >
-                  <span>{link.label}</span>
-                  <ChevronRight className="w-4 h-4 text-slate-400 rtl:rotate-180" />
-                </a>
-              ))}
-            </div>
-
-            <div className="pt-3 border-t border-slate-100 space-y-1.5">
-              <span className="text-xs font-semibold text-slate-400 block">
-                {language === "ar" ? "مراكز استشارية متخصصة" : "Specialized Practice Hubs"}
-              </span>
-              {[
-                { path: "/small-business-tax-relief", label: language === "ar" ? "تسهيلات الأعمال الصغيرة (0% حتى 2029)" : "Small Business Tax Relief (AED 3M SBR)" },
-                { path: "/difc-dtec-accounting", label: language === "ar" ? "محاسبة وتدقيق DIFC و DTEC" : "DIFC & DTEC Accounting & Audit" },
-                { path: "/dividends-audit", label: language === "ar" ? "تدقيق وتوزيع الأرباح" : "Dividend Audit & Distribution" },
-              ].map((hub) => (
-                <a
-                  key={hub.path}
-                  href={hub.path}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    setMobileMenuOpen(false);
-                    navigateTo(hub.path);
-                  }}
-                  className="flex items-center justify-between py-2 text-xs font-semibold text-slate-600 hover:text-navy-950 transition-colors"
-                >
-                  <span>{hub.label}</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-gold-600 rtl:rotate-180" />
-                </a>
-              ))}
-            </div>
-          </div>
-
-          <div className="p-4 bg-slate-50 border-t border-slate-200">
-            <a
-              href="#contact"
-              onClick={() => setMobileMenuOpen(false)}
-              className="w-full bg-navy-950 hover:bg-navy-900 text-white font-display font-bold py-3.5 px-5 rounded-xl text-center text-sm flex items-center justify-center gap-2 border border-gold-500/40"
-            >
-              <span>{t.nav.bookConsultation}</span>
-              <ArrowRight className="w-4 h-4 text-gold-400 rtl:rotate-180" />
-            </a>
-          </div>
-        </div>
-      </header>
+      {/* Unified Multi-Page Header & Navigation */}
+      <PageNavigation
+        currentPath={currentPath}
+        onNavigate={navigateTo}
+        onOpenAudit={() => setTaxHealthModalOpen(true)}
+      />
 
       {/* Main Landmark for Accessibility & SEO */}
       <main id="main-content" role="main">
@@ -940,10 +876,14 @@ function MainApp() {
                       {language === "ar" ? "معاملات غير محدودة · بدون رسوم مخفية" : "Unlimited transactions · Zero hidden fees"}
                     </span>
                     <a
-                      href="#calculator"
-                      className="text-xs font-display font-bold text-gold-400 hover:text-gold-300 flex items-center gap-1 whitespace-nowrap shrink-0 transition-colors"
+                      href="/uae-tax-planner"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigateTo("/uae-tax-planner");
+                      }}
+                      className="text-xs font-display font-bold text-gold-400 hover:text-gold-300 flex items-center gap-1 whitespace-nowrap shrink-0 transition-colors cursor-pointer"
                     >
-                      <span>{language === "ar" ? "حاسبة الضرائب" : "Tax Calculator"}</span>
+                      <span>{language === "ar" ? "حاسبة وخطط الضرائب" : "UAE Tax Planner"}</span>
                       <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
                     </a>
                   </div>
@@ -1115,7 +1055,7 @@ function MainApp() {
                   key={service.id}
                   id={service.id}
                   variants={serviceCardVariants}
-                  onClick={() => setSelectedService(service)}
+                  onClick={() => navigateTo(`/services/${service.id}`)}
                   className="bg-white border border-slate-200/90 hover:border-gold-500 rounded-2xl p-7 flex flex-col justify-between group transition-all duration-200 hover:shadow-md cursor-pointer scroll-mt-24"
                 >
                   <div>
@@ -1143,7 +1083,7 @@ function MainApp() {
                     type="button"
                     onClick={(e) => {
                       e.stopPropagation();
-                      setSelectedService(service);
+                      navigateTo(`/services/${service.id}`);
                     }}
                     className="w-full pt-4 border-t border-slate-100 text-navy-950 group-hover:text-gold-600 font-display font-semibold text-xs transition-colors flex items-center justify-between cursor-pointer"
                   >
@@ -1277,74 +1217,109 @@ function MainApp() {
           </div>
         </section>
 
-        {/* 3.5 Interactive Corporate Tax & 0% Relief Calculator Section */}
-        <section id="calculator" className="py-16 sm:py-20 bg-navy-950 border-y border-navy-800 text-white relative overflow-hidden scroll-mt-20">
+        {/* 3.5 High-Converting Corporate Tax & 0% Relief Calculator Section */}
+        <section id="calculator" className="py-20 sm:py-24 bg-gradient-to-b from-[#040914] via-navy-950 to-[#040914] border-y border-gold-500/30 text-white relative overflow-hidden scroll-mt-20">
+          {/* Subtle Ambient Gold Lighting Effects */}
+          <div className="absolute -top-32 right-0 w-[550px] h-[550px] bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute bottom-0 -left-20 w-[450px] h-[450px] bg-gold-600/5 rounded-full blur-3xl pointer-events-none" />
+
           <AnimatedSection className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
               
-              {/* Left Explanatory Column */}
-              <div className="lg:col-span-5 space-y-5 text-left rtl:text-right">
-                <span className="text-xs font-mono text-gold-400 font-semibold uppercase tracking-wider block">
-                  {language === "ar" ? "حاسبة ضريبة الشركات في الإمارات" : "UAE Corporate Tax Estimator"}
-                </span>
+              {/* Left Explanatory & Lead Generation Column */}
+              <div className="lg:col-span-5 space-y-6 text-left rtl:text-right">
+                <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gold-500/15 border border-gold-400/40 text-gold-300 text-xs font-semibold uppercase tracking-wider">
+                  <Sparkles className="w-3.5 h-3.5 text-gold-400 shrink-0" />
+                  <span>{language === "ar" ? "تدقيق وتوفير ضرائب الشركات" : "Corporate Tax Savings Assessment"}</span>
+                </div>
                 
-                <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight leading-snug">
+                <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-snug">
                   {language === "ar" 
-                    ? "احسب ضريبة شركتك وتحقق من إعفاء الـ 0%" 
-                    : "Calculate Corporate Tax & Verify 0% Relief"}
+                    ? "وفر حتى 270,000 درهم قانونياً وتحقق من إعفاء الـ 0%" 
+                    : "Stop Overpaying UAE Corporate Tax: Claim Up to AED 270,000 in Legal Savings"}
                 </h2>
                 
                 <p className="text-slate-300 text-sm leading-relaxed">
                   {language === "ar"
-                    ? "تقدير فوري لضريبة الـ 9%، والتحقق من أهلية تسهيلات الأعمال الصغيرة (SBR حتى 3M درهم) ودخل المناطق الحرة المؤهل."
-                    : "Estimate your 9% corporate tax liability and verify 0% statutory relief under Small Business Relief (revenue ≤ AED 3M) or Qualifying Free Zone Person rules."}
+                    ? "تحقق فوراً من أهلية شركتك لتسهيلات الأعمال الصغيرة (0% حتى 3M درهم إيرادات) أو إعفاء المناطق الحرة المؤهلة، مع ضمان الحماية من غرامة التأخير البالغة 10,000 درهم."
+                    : "Evaluate your eligibility for 0% Small Business Relief (SBR up to AED 3,000,000 turnover) or Free Zone QFZP status. Eliminate the mandatory AED 10,000 FTA late registration penalty."}
                 </p>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-                  <div className="bg-navy-900/90 border border-white/10 rounded-xl p-4">
-                    <div className="text-xs font-bold text-gold-400">
-                      {language === "ar" ? "تسهيلات حتى 3M درهم" : "Small Business Relief"}
-                    </div>
-                    <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                      {language === "ar" ? "0% ضريبة للإيرادات السنوية دون 3M" : "0% tax under AED 3M gross revenue"}
+                {/* 2 High-Impact Metric Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-1">
+                  <div className="bg-navy-900/90 border border-gold-500/25 rounded-2xl p-4 shadow-inner">
+                    <span className="text-[11px] font-mono text-gold-400 font-bold uppercase tracking-wider block">
+                      {language === "ar" ? "تسهيلات SBR حتى 3M" : "0% Small Business Relief"}
+                    </span>
+                    <span className="text-xl font-mono font-extrabold text-white block mt-1">
+                      AED 0 Tax
+                    </span>
+                    <p className="text-[11px] text-slate-300 mt-1 leading-relaxed">
+                      {language === "ar" ? "للشركات بإيرادات سنوية حتى 3 ملايين" : "On gross revenues up to AED 3,000,000"}
                     </p>
                   </div>
 
-                  <div className="bg-navy-900/90 border border-white/10 rounded-xl p-4">
-                    <div className="text-xs font-bold text-gold-400">
-                      {language === "ar" ? "المناطق الحرة 0% QFZP" : "0% Free Zone QFZP"}
-                    </div>
-                    <p className="text-xs text-slate-300 mt-1 leading-relaxed">
-                      {language === "ar" ? "إعفاء ضريبي على الدخل المؤهل" : "0% rate on qualifying free zone income"}
+                  <div className="bg-navy-900/90 border border-gold-500/25 rounded-2xl p-4 shadow-inner">
+                    <span className="text-[11px] font-mono text-emerald-400 font-bold uppercase tracking-wider block">
+                      {language === "ar" ? "المناطق الحرة المؤهلة" : "0% Free Zone QFZP"}
+                    </span>
+                    <span className="text-xl font-mono font-extrabold text-white block mt-1">
+                      0% Rate
+                    </span>
+                    <p className="text-[11px] text-slate-300 mt-1 leading-relaxed">
+                      {language === "ar" ? "على الدخل المؤهل للدول والشركات" : "On qualifying foreign and B2B income"}
                     </p>
                   </div>
                 </div>
 
-                <div className="pt-2 flex flex-wrap items-center gap-3">
+                {/* Action Funnel Buttons */}
+                <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() => navigateTo("/corporate-tax-calculator")}
+                    className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold py-3.5 px-6 rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-lg shadow-gold-500/20 cursor-pointer text-center"
+                  >
+                    <span>{language === "ar" ? "فتح حاسبة التوفير الكاملة" : "Open Tax Savings Hub & Report"}</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+
                   <button
                     type="button"
                     onClick={() => setTaxHealthModalOpen(true)}
-                    className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold py-3 px-5 rounded-xl text-xs flex items-center gap-2 transition-colors cursor-pointer"
+                    className="border border-white/20 hover:border-gold-400 text-white font-display font-semibold py-3.5 px-5 rounded-xl text-xs flex items-center justify-center gap-2 transition-colors cursor-pointer text-center"
                   >
-                    <ShieldCheck className="w-4 h-4" />
-                    <span>{language === "ar" ? "افحص مخاطر الامتثال" : "Run 60s Penalty Risk Audit"}</span>
+                    <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                    <span>{language === "ar" ? "فحص مخاطر الغرامات (60 ثانية)" : "Run 60s Penalty Audit"}</span>
                   </button>
-                  <a
-                    href="#pricing"
-                    className="border border-white/20 hover:border-gold-400 text-white font-display font-semibold py-3 px-5 rounded-xl text-xs transition-colors"
-                  >
-                    {language === "ar" ? "عرض باقات الأسعار" : "View Flat-Fee Packages"}
-                  </a>
                 </div>
               </div>
 
               {/* Right Interactive Tax Calculator */}
-              <div className="lg:col-span-7 w-full max-w-xl mx-auto">
+              <div className="lg:col-span-7 w-full max-w-xl mx-auto space-y-3">
                 <LazyMount minHeight={400} sectionId="calculator">
                   <React.Suspense fallback={<div className="bg-white/95 rounded-2xl border border-slate-200 shadow-xl min-h-[400px] p-6 flex flex-col justify-center items-center text-slate-400 text-xs">Loading Tax Estimator...</div>}>
                     <TaxCalculator />
                   </React.Suspense>
                 </LazyMount>
+
+                {/* Direct High-Value CTA Card below widget */}
+                <div className="p-4 rounded-2xl bg-gold-500/10 border border-gold-400/30 flex items-center justify-between gap-4">
+                  <div className="text-xs">
+                    <span className="font-bold text-white block">
+                      {language === "ar" ? "هل ترغب في تقرير ضريبي رسمي معتمد؟" : "Want an official certified tax assessment?"}
+                    </span>
+                    <span className="text-slate-300 text-[11px]">
+                      {language === "ar" ? "يقوم الشريك الإداري غلين دياس بمراجعة ميزان المراجعة وتأكيد الإعفاء." : "Glen Dias reviews your trial balance and certifies your SBR status."}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => navigateTo("/corporate-tax-calculator")}
+                    className="px-3.5 py-2 rounded-xl bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold text-xs shrink-0 cursor-pointer transition-colors"
+                  >
+                    {language === "ar" ? "طلب التقرير" : "Claim Report"}
+                  </button>
+                </div>
               </div>
 
             </div>
@@ -1549,9 +1524,9 @@ function MainApp() {
         <AnimatedSection className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           
           {/* BCL-Style Hero Banner: Unlimited Transactions */}
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-indigo-50/60 via-white to-slate-50 border border-slate-200/80 p-8 sm:p-12 text-center shadow-xs">
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-slate-100/80 via-white to-slate-50 border border-slate-200/90 p-8 sm:p-12 text-center shadow-xs">
             {/* Subtle flowing background wave effect */}
-            <div className="absolute inset-0 pointer-events-none opacity-40 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-100/50 via-transparent to-transparent" />
+            <div className="absolute inset-0 pointer-events-none opacity-40 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gold-100/30 via-transparent to-transparent" />
             
             <div className="relative z-10 max-w-3xl mx-auto space-y-4">
               {/* Infinity Symbol & Title */}
@@ -1564,11 +1539,11 @@ function MainApp() {
                 >
                   <defs>
                     <linearGradient id="infMetallic" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#1e1b4b" />
-                      <stop offset="30%" stopColor="#4338ca" />
-                      <stop offset="60%" stopColor="#6366f1" />
-                      <stop offset="85%" stopColor="#3730a3" />
-                      <stop offset="100%" stopColor="#0f172a" />
+                      <stop offset="0%" stopColor="#040914" />
+                      <stop offset="35%" stopColor="#0a1736" />
+                      <stop offset="65%" stopColor="#c5a059" />
+                      <stop offset="85%" stopColor="#d4af37" />
+                      <stop offset="100%" stopColor="#040914" />
                     </linearGradient>
                   </defs>
                   <path
@@ -2932,156 +2907,12 @@ function MainApp() {
       </section>
       </main>
 
-      {/* 9. Footer */}
-      <footer role="contentinfo" className="bg-navy-950 text-white border-t border-white/10 pt-16 pb-10">
-        <AnimatedSection className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
-            
-            {/* Bio Column */}
-            <div className="md:col-span-4 space-y-4 text-center md:text-left">
-              <DiasLogo className="w-12 h-12" showText={true} textSize="text-2xl" textColor="text-white" />
-              <p className="text-slate-400 text-xs leading-relaxed max-w-sm mx-auto md:mx-0">
-                Dias Accounting and Tax Consulting delivers IFRS-compliant corporate bookkeeping, FTA VAT compliance, Corporate Tax registration &amp; filing, and UAE Free Zone &amp; Mainland company formation.
-              </p>
-              <div className="text-[11px] text-slate-400 font-mono">
-                <span>SHAMS Licence No: </span>
-                <span className="text-gold-400 font-semibold">2646813.01</span>
-              </div>
-              {/* Social Connections & Google Profile */}
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-2.5 pt-2">
-                <a
-                  href={GOOGLE_BUSINESS_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:border-gold-400/50 hover:text-gold-400 flex items-center gap-1.5 text-xs text-slate-300 transition-colors"
-                  title="Dias Accounting Google Business Profile"
-                >
-                  <GoogleLogo className="w-3.5 h-3.5" />
-                  <span className="font-mono font-bold text-gold-400">5.0 ★</span>
-                  <span className="text-[11px] text-slate-400">Google Reviews</span>
-                </a>
-                <a
-                  href="https://www.linkedin.com/company/diasaccounting/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 hover:border-gold-400/50 hover:text-gold-400 flex items-center justify-center text-slate-400 transition-colors"
-                  aria-label="LinkedIn Profile"
-                >
-                  <Linkedin className="w-4 h-4" />
-                </a>
-                <a
-                  href="https://www.instagram.com/diasuae.ae/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 hover:border-gold-400/50 hover:text-gold-400 flex items-center justify-center text-slate-400 transition-colors"
-                  aria-label="Instagram Profile"
-                >
-                  <Instagram className="w-4 h-4" />
-                </a>
-                <a
-                  href="https://www.facebook.com/diasuae"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 hover:border-gold-400/50 hover:text-gold-400 flex items-center justify-center text-slate-400 transition-colors"
-                  aria-label="Facebook Profile"
-                >
-                  <Facebook className="w-4 h-4" />
-                </a>
-              </div>
-
-              {/* Add to Preferred Sources Badge */}
-              <div className="pt-2 flex justify-center md:justify-start">
-                <AddToPreferredSources onClick={() => setGooglePreferredModalOpen(true)} />
-              </div>
-            </div>
-
-            {/* Quick Links Column */}
-            <div className="md:col-span-2 space-y-4">
-              <h4 className="font-mono font-bold text-[11px] uppercase tracking-[0.16em] text-slate-300">
-                Navigation
-              </h4>
-              <ul className="space-y-2.5 text-xs text-slate-400 font-medium">
-                <li><a href="#home" className="hover:text-gold-400 transition-colors">Overview</a></li>
-                <li><a href="#services" className="hover:text-gold-400 transition-colors">Services &amp; Expertise</a></li>
-                <li><a href="#about" className="hover:text-gold-400 transition-colors">Why Dias</a></li>
-                <li><a href="#pricing" className="hover:text-gold-400 transition-colors">Fee Schedule</a></li>
-                <li><a href="#blogs" className="hover:text-gold-400 transition-colors">Regulatory Insights</a></li>
-                <li><a href="#contact" className="hover:text-gold-400 transition-colors">Book Consultation</a></li>
-              </ul>
-            </div>
-
-            {/* Services Links Column */}
-            <div className="md:col-span-3 space-y-4">
-              <h4 className="font-mono font-bold text-[11px] uppercase tracking-[0.16em] text-slate-300">
-                Advisory Practices
-              </h4>
-              <ul className="space-y-2.5 text-xs text-slate-400">
-                <li><a href="/small-business-tax-relief" onClick={(e) => { e.preventDefault(); navigateTo("/small-business-tax-relief"); }} className="hover:text-gold-300 transition-colors block text-gold-400 font-semibold">Small Business Tax Relief (AED 3M SBR)</a></li>
-                <li><a href="/difc-dtec-accounting" onClick={(e) => { e.preventDefault(); navigateTo("/difc-dtec-accounting"); }} className="hover:text-gold-300 transition-colors block text-gold-400 font-semibold">DIFC &amp; DTEC Accounting &amp; Audit</a></li>
-                <li><a href="/dividends-audit" onClick={(e) => { e.preventDefault(); navigateTo("/dividends-audit"); }} className="hover:text-gold-300 transition-colors block text-gold-400 font-semibold">Dividend Audit &amp; Distribution Advisory</a></li>
-                <li><a href="#services" className="hover:text-gold-400 transition-colors block">Corporate Tax Registration &amp; Filing (9%)</a></li>
-                <li><a href="#services" className="hover:text-gold-400 transition-colors block">FTA VAT Return Preparation (5%)</a></li>
-                <li><a href="#services" className="hover:text-gold-400 transition-colors block">IFRS Double-Entry Bookkeeping</a></li>
-                <li><a href="#services" className="hover:text-gold-400 transition-colors block">SHAMS &amp; UAE Free Zone Formation</a></li>
-              </ul>
-            </div>
-
-            {/* Legal compliance / Address Column */}
-            <div className="md:col-span-3 space-y-4">
-              <h4 className="font-mono font-bold text-[11px] uppercase tracking-[0.16em] text-slate-300">
-                Corporate Desk
-              </h4>
-              <div className="space-y-2.5 text-xs text-slate-400">
-                <p className="leading-relaxed">
-                  Sharjah Media City (Shams),<br />
-                  Al Messaned, Sharjah,<br />
-                  United Arab Emirates
-                </p>
-                <div className="pt-2 space-y-1.5 font-mono text-xs text-slate-300">
-                  <span className="block">+971 52 922 6958</span>
-                  <span className="block">info@diasuae.ae</span>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-          {/* Bottom Copyright & Terms block */}
-          <div className="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] text-slate-500 font-medium">
-            <p>© {new Date().getFullYear()} Dias Accounting and Tax Consulting. All rights reserved.</p>
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <a href="#faqs" className="hover:text-slate-300 transition-colors">Regulatory Disclaimers</a>
-              <span>·</span>
-              <button
-                onClick={(e) => {
-                  e.preventDefault();
-                  setPrivacyOpen(true);
-                }}
-                className="hover:text-slate-300 transition-colors cursor-pointer focus:outline-none"
-              >
-                Privacy Policy
-              </button>
-              <span>·</span>
-              <a href="#contact" className="hover:text-slate-300 transition-colors">FTA Compliance Terms</a>
-              <span>·</span>
-              <a
-                href="/admin"
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigateTo("/admin");
-                }}
-                className="opacity-40 hover:opacity-100 transition-opacity hover:text-gold-400 inline-flex items-center gap-1 cursor-pointer"
-                title="Advisor Portal (Authorized Personnel Only)"
-              >
-                <Lock className="w-2.5 h-2.5" />
-                <span>Advisor Portal</span>
-              </a>
-            </div>
-          </div>
-
-        </AnimatedSection>
-      </footer>
+      {/* 9. Unified Footer */}
+      <PageFooter
+        onNavigate={navigateTo}
+        onOpenPrivacy={() => setPrivacyOpen(true)}
+        onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+      />
 
       {/* 10. Global WhatsApp & Google Reviews Floating Widget */}
       <div className="fixed bottom-[88px] right-[34px] md:right-8 z-40 flex flex-col gap-2.5 items-center">
@@ -3160,17 +2991,12 @@ function MainApp() {
 
       {/* Sticky Side Quick Action Tabs (Book Free Consultation & View Pricing) */}
       <FloatingSideTabs
+        onNavigate={navigateTo}
         onBookConsultation={() => {
-          const el = document.getElementById("contact");
-          if (el) {
-            el.scrollIntoView({ behavior: "smooth" });
-          }
+          navigateTo("/contact");
         }}
         onViewPricing={() => {
-          const el = document.getElementById("pricing");
-          if (el) {
-            el.scrollIntoView({ behavior: "smooth" });
-          }
+          navigateTo("/pricing");
         }}
       />
 

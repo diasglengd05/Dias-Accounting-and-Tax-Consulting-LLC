@@ -141,7 +141,7 @@ export async function generateCompliancePlaybookPdf(recipient: PlaybookRecipient
   doc.setFont("helvetica", "normal");
   doc.setFontSize(8);
   doc.setTextColor(180, 190, 205);
-  doc.text("FTA Registered Consultants | Dubai, United Arab Emirates | +971 50 256 0990", pageWidth / 2, 274, { align: "center" });
+  doc.text("FTA Registered Consultants | Dubai, United Arab Emirates | +971 52 922 6958", pageWidth / 2, 274, { align: "center" });
 
   // ==========================================
   // PAGE 2: CORPORATE TAX & DEADLINES
@@ -380,7 +380,7 @@ export async function generateCompliancePlaybookPdf(recipient: PlaybookRecipient
   doc.setFontSize(8);
   doc.setTextColor(...darkSlate);
   doc.text("• Lead Consultant: Glen Dias, Founder & Managing Partner", margin + 12, y + 49);
-  doc.text("• Phone / WhatsApp: +971 50 256 0990", margin + 12, y + 54);
+  doc.text("• Phone / WhatsApp: +971 52 922 6958", margin + 12, y + 54);
   doc.text("• Email: diasglen.gd@gmail.com | contact@diasaccounting.ae", margin + 12, y + 59);
   doc.text("• Location: Dubai, United Arab Emirates | Website: https://diasaccounting.ae", margin + 12, y + 64);
 
