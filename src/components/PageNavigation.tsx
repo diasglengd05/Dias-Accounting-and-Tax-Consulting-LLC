@@ -128,10 +128,34 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
                     className="flex flex-col p-2.5 rounded-lg hover:bg-slate-50 transition-colors group/item"
                   >
                     <span className="text-xs font-bold text-navy-950 group-hover/item:text-gold-600 transition-colors">
-                      {language === "ar" ? "تقييم توفير الضرائب وإعفاء 0%" : "Tax Savings & 0% Relief Audit"}
+                      {language === "ar" ? "حاسبة ضريبة الشركات وتوفير 0%" : "Corporate Tax Calculator (9%)"}
                     </span>
                     <span className="text-[11px] text-slate-500 mt-0.5">
                       {language === "ar" ? "وفر حتى 270,000 درهم قانونياً" : "Claim up to AED 270K in tax relief"}
+                    </span>
+                  </a>
+                  <a
+                    href="/uae-vat-calculator"
+                    onClick={(e) => handleLinkClick(e, "/uae-vat-calculator")}
+                    className="flex flex-col p-2.5 rounded-lg hover:bg-slate-50 transition-colors group/item"
+                  >
+                    <span className="text-xs font-bold text-navy-950 group-hover/item:text-emerald-600 transition-colors">
+                      {language === "ar" ? "حاسبة ضريبة القيمة المضافة 5%" : "UAE VAT Calculator & 5% Hub"}
+                    </span>
+                    <span className="text-[11px] text-slate-500 mt-0.5">
+                      {language === "ar" ? "إقرار 201 واسترداد الضريبة" : "Form 201 & Input Tax Recovery"}
+                    </span>
+                  </a>
+                  <a
+                    href="/fta-deadlines"
+                    onClick={(e) => handleLinkClick(e, "/fta-deadlines")}
+                    className="flex flex-col p-2.5 rounded-lg hover:bg-slate-50 transition-colors group/item"
+                  >
+                    <span className="text-xs font-bold text-navy-950 group-hover/item:text-gold-600 transition-colors">
+                      {language === "ar" ? "تقويم مواعيد ومهل الضرائب FTA" : "FTA Deadlines & Penalty Calendar"}
+                    </span>
+                    <span className="text-[11px] text-slate-500 mt-0.5">
+                      {language === "ar" ? "حماية من غرامة 10,000 درهم" : "AED 10,000 Penalty Shield (9 Months)"}
                     </span>
                   </a>
                   <a
@@ -270,6 +294,9 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
                 {language === "ar" ? "مراكز استشارية متخصصة" : "Specialized Practice Hubs"}
               </span>
               {[
+                { path: "/corporate-tax-calculator", label: language === "ar" ? "حاسبة ضريبة الشركات 9% (صفحة مخصصة)" : "Corporate Tax Calculator (9% Landing Page)" },
+                { path: "/uae-vat-calculator", label: language === "ar" ? "حاسبة ضريبة القيمة المضافة 5% (صفحة مخصصة)" : "UAE VAT 5% Calculator (Landing Page)" },
+                { path: "/fta-deadlines", label: language === "ar" ? "تقويم مواعيد ومهل الضرائب FTA (صفحة مخصصة)" : "FTA Deadlines & Penalties (Landing Page)" },
                 { path: "/small-business-tax-relief", label: language === "ar" ? "تسهيلات الأعمال الصغيرة (0% حتى 2029)" : "Small Business Tax Relief (AED 3M SBR)" },
                 { path: "/difc-dtec-accounting", label: language === "ar" ? "محاسبة وتدقيق DIFC و DTEC" : "DIFC & DTEC Accounting & Audit" },
                 { path: "/dividends-audit", label: language === "ar" ? "تدقيق وتوزيع الأرباح" : "Dividend Audit & Distribution" },

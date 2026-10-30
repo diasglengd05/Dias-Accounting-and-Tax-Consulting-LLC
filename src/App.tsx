@@ -98,6 +98,8 @@ const ContactPage = React.lazy(() => import("./pages/ContactPage"));
 const TaxPlannerPage = React.lazy(() => import("./pages/TaxPlannerPage"));
 const ServiceDetailPage = React.lazy(() => import("./pages/ServiceDetailPage"));
 const CorporateTaxSavingsPage = React.lazy(() => import("./pages/CorporateTaxSavingsPage"));
+const VatPlannerPage = React.lazy(() => import("./pages/VatPlannerPage"));
+const FtaDeadlinesPage = React.lazy(() => import("./pages/FtaDeadlinesPage"));
 
 // Framer Motion variants for staggered sequential reveal in Services section
 const servicesContainerVariants: Variants = {
@@ -448,7 +450,11 @@ function MainApp() {
     );
   }
 
-  if (currentPath === "/difc-dtec-accounting") {
+  if (
+    currentPath === "/difc-dtec-accounting" ||
+    currentPath === "/dtec-accounting" ||
+    currentPath === "/accounting-services-in-dtec"
+  ) {
     return (
       <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading DIFC &amp; DTEC Hub...</div>}>
         <DifcDtecAccountingPage onNavigate={navigateTo} />
@@ -456,10 +462,31 @@ function MainApp() {
     );
   }
 
-  if (currentPath === "/dividends-audit") {
+  if (
+    currentPath === "/dividends-audit" ||
+    currentPath === "/dividends-audit-dubai" ||
+    currentPath === "/dividends-audit-uae"
+  ) {
     return (
       <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading Dividend Audit Hub...</div>}>
         <DividendsAuditPage onNavigate={navigateTo} />
+      </Suspense>
+    );
+  }
+
+  if (
+    currentPath === "/business-incorporation-services" ||
+    currentPath === "/business-incorporation"
+  ) {
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading Business Incorporation Services Hub...</div>}>
+        <ServiceDetailPage
+          serviceId="business-incorporation-services"
+          onNavigate={navigateTo}
+          onOpenAudit={() => setTaxHealthModalOpen(true)}
+          onOpenPrivacy={() => setPrivacyOpen(true)}
+          onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+        />
       </Suspense>
     );
   }
@@ -535,6 +562,32 @@ function MainApp() {
     return (
       <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading Corporate Tax Savings Assessment...</div>}>
         <CorporateTaxSavingsPage
+          onNavigate={navigateTo}
+          onOpenAudit={() => setTaxHealthModalOpen(true)}
+          onOpenPrivacy={() => setPrivacyOpen(true)}
+          onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+        />
+      </Suspense>
+    );
+  }
+
+  if (currentPath === "/uae-vat-calculator" || currentPath === "/vat-calculator" || currentPath === "/vat-planner") {
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading UAE VAT Calculator...</div>}>
+        <VatPlannerPage
+          onNavigate={navigateTo}
+          onOpenAudit={() => setTaxHealthModalOpen(true)}
+          onOpenPrivacy={() => setPrivacyOpen(true)}
+          onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+        />
+      </Suspense>
+    );
+  }
+
+  if (currentPath === "/fta-deadlines" || currentPath === "/tax-deadlines" || currentPath === "/deadline-calculator") {
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading FTA Deadlines Calendar...</div>}>
+        <FtaDeadlinesPage
           onNavigate={navigateTo}
           onOpenAudit={() => setTaxHealthModalOpen(true)}
           onOpenPrivacy={() => setPrivacyOpen(true)}
@@ -2761,11 +2814,8 @@ function MainApp() {
           <BlogSection
             blogs={allBlogs || []}
             onSelectBlog={(blog) => {
-              setSelectedBlog(blog);
               if (typeof window !== "undefined") {
-                try {
-                  window.history.pushState(null, "", `#blog-${blog.id}`);
-                } catch (e) {}
+                window.open(`/blog.html#${blog.id}`, "_blank", "noopener,noreferrer");
               }
             }}
             onOpenSeoEngine={() => setSeoDashboardOpen(true)}

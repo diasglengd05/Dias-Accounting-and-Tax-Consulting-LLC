@@ -9,6 +9,7 @@ import {
   ArrowRight,
   Tag,
   Share2,
+  ExternalLink,
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
@@ -149,10 +150,12 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
           {/* Articles Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredPosts.map((post) => (
-              <article
+              <a
                 key={post.id}
-                className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl hover:border-gold-400/60 transition-all duration-300 flex flex-col justify-between group cursor-pointer"
-                onClick={() => setSelectedPost(post)}
+                href={`/blog.html#${post.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl hover:border-gold-400/60 transition-all duration-300 flex flex-col justify-between group cursor-pointer block no-underline text-left"
               >
                 <div>
                   <div className="p-6">
@@ -181,11 +184,12 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
                     <User className="w-3.5 h-3.5 text-gold-600" />
                     <span>{typeof post.author === "string" ? post.author : (post.author?.name || "Glen Dias")}</span>
                   </div>
-                  <span className="font-bold text-navy-950 group-hover:text-gold-600 flex items-center gap-1 transition-colors">
-                    Read Article →
+                  <span className="font-bold text-navy-950 group-hover:text-gold-600 flex items-center gap-1.5 transition-colors">
+                    <span>Read Article</span>
+                    <ExternalLink className="w-3.5 h-3.5 text-gold-500" />
                   </span>
                 </div>
-              </article>
+              </a>
             ))}
           </div>
 

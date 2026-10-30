@@ -25,9 +25,9 @@ interface PageProps {
 
 export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
   useEffect(() => {
-    const pageTitle = "Tax & Accounting Services in DIFC & DTEC Dubai | Tax Advisory UAE | Dias UAE";
+    const pageTitle = "Accounting Services in DTEC & DIFC Dubai | Tax Consultant & Virtual Accounting | Dias UAE";
     const pageDesc =
-      "Specialized Corporate Tax Advisory, VAT Compliance, and IFRS Accounting Services for DIFC and DTEC Free Zone entities in Dubai. 0% Qualifying Free Zone Person (QFZP) substance advisory and DFSA audit preparation.";
+      "Premier accounting services in DTEC and tax consultant in DIFC Dubai. Expert FTA tax advisory, virtual accounting services in DIFC, 0% QFZP corporate tax compliance, and tech startup bookkeeping in Dubai Silicon Oasis.";
     const pageUrl = "https://diasuae.ae/difc-dtec-accounting";
 
     document.title = pageTitle;
@@ -47,7 +47,7 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
     upsertMeta(
       "name",
       "keywords",
-      "DIFC accounting services, DTEC tax consultant Dubai, tax consulting services in UAE, tax advisory services in Dubai, 0% QFZP free zone corporate tax, VAT compliance Dubai"
+      "accounting services in dtec, tax consultant in difc, tax and accounting services in difc, accounting services in difc, tax services for difc companies, virtual accounting services in difc, difc tax services in dubai, corporate tax consultants in difc, DTEC accounting dubai, dubai silicon oasis accounting, 0% QFZP free zone corporate tax, DFSA audit readiness"
     );
     upsertMeta("property", "og:title", pageTitle);
     upsertMeta("property", "og:description", pageDesc);
@@ -64,7 +64,44 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
     }
     canonical.setAttribute("href", pageUrl);
 
+    // Inject dedicated JSON-LD Schema for DTEC & DIFC
+    const scriptId = "schema-difc-dtec";
+    let scriptEl = document.getElementById(scriptId) as HTMLScriptElement | null;
+    if (!scriptEl) {
+      scriptEl = document.createElement("script");
+      scriptEl.id = scriptId;
+      scriptEl.type = "application/ld+json";
+      scriptEl.text = JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": ["AccountingService", "ProfessionalService"],
+        "name": "Dias Accounting - DTEC & DIFC Tax & Accounting Services",
+        "url": pageUrl,
+        "description": pageDesc,
+        "telephone": "+971-52-922-6958",
+        "email": "info@diasuae.ae",
+        "priceRange": "AED 500 - AED 4,500",
+        "areaServed": ["DTEC Dubai Silicon Oasis", "DIFC Dubai", "Dubai"],
+        "knowsAbout": [
+          "Accounting services in DTEC",
+          "Tax consultant in DIFC",
+          "Tax and accounting services in DIFC",
+          "Virtual accounting services in DIFC",
+          "DIFC tax services in Dubai",
+          "Qualifying Free Zone Person 0% Corporate Tax",
+          "DFSA Statutory Audits and Financial Reporting"
+        ]
+      });
+      document.head.appendChild(scriptEl);
+    }
+
     window.scrollTo({ top: 0, behavior: "instant" });
+
+    return () => {
+      const el = document.getElementById(scriptId);
+      if (el && el.parentNode) {
+        el.parentNode.removeChild(el);
+      }
+    };
   }, []);
 
   const handleBackHome = (e: React.MouseEvent) => {
@@ -142,7 +179,7 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
           </div>
 
           <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight max-w-4xl leading-tight">
-            Tax and Accounting Services in DIFC & DTEC: <span className="text-gold-400">0% QFZP Compliance</span> & Audit Readiness
+            Accounting Services in DTEC &amp; Tax Consultant in DIFC Dubai: <span className="text-gold-400">0% QFZP Compliance</span> &amp; Virtual Accounting
           </h1>
 
           <p className="text-slate-300 text-base sm:text-lg max-w-3xl leading-relaxed">

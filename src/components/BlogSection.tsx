@@ -84,14 +84,16 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
                     .slice(0, 2)
                     .toUpperCase();
                   return (
-                    <div
+                    <a
                       key={blog.id}
-                      onClick={() => onSelectBlog(blog)}
+                      href={`/blog.html#${blog.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className={`bg-white border ${
                         idx === 0
                           ? "border-gold-400 shadow-sm"
                           : "border-slate-200/80 shadow-xs"
-                      } rounded-2xl overflow-hidden hover:shadow-md hover:border-gold-400 transition-all duration-200 flex flex-col group cursor-pointer text-left`}
+                      } rounded-2xl overflow-hidden hover:shadow-md hover:border-gold-400 transition-all duration-200 flex flex-col group cursor-pointer text-left block no-underline`}
                     >
                       {/* Architectural Editorial Card Top */}
                       <div className="bg-navy-950 px-6 py-5 flex flex-col justify-between border-b border-slate-800 relative overflow-hidden">
@@ -107,20 +109,13 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
                           </div>
 
                           {/* Direct new tab shortcut indicator */}
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (typeof window !== "undefined") {
-                                window.open(`/blog.html#${blog.id}`, "_blank", "noopener,noreferrer");
-                              }
-                            }}
-                            className="p-1.5 text-slate-400 group-hover:text-gold-400 rounded-lg transition-colors flex items-center justify-center cursor-pointer"
-                            title="Open article in a new tab"
-                            aria-label="Open article in a new tab"
+                          <div
+                            className="p-1.5 text-slate-400 group-hover:text-gold-400 rounded-lg transition-colors flex items-center justify-center"
+                            title="Opens in a new browser tab"
+                            aria-label="Opens in a new tab"
                           >
                             <ExternalLink className="w-3.5 h-3.5" />
-                          </button>
+                          </div>
                         </div>
 
                         {/* Date & Read Time */}
@@ -157,12 +152,12 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
                           <span
                             className="text-xs font-display font-bold text-navy-950 group-hover:text-gold-600 transition-all flex items-center gap-1.5 group-hover:translate-x-0.5"
                           >
-                            <span>Read</span>
-                            <ArrowRight className="w-3.5 h-3.5 text-gold-500" />
+                            <span>Read Article</span>
+                            <ExternalLink className="w-3.5 h-3.5 text-gold-500" />
                           </span>
                         </div>
                       </div>
-                    </div>
+                    </a>
                   );
                 })}
               </div>

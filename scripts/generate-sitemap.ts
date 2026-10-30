@@ -86,6 +86,41 @@ export function generateSitemapXml(domain = "https://www.diasuae.ae"): string {
     },
     // Dedicated High-Authority SEO Service Landing Pages
     {
+      loc: `${domain}/pricing`,
+      lastmod: today,
+      changefreq: "weekly",
+      priority: "0.98",
+      comment: "Pricing & Tax Solutions in UAE (Fixed-Fee Bookkeeping, CT & VAT)",
+    },
+    {
+      loc: `${domain}/uae-tax-planner`,
+      lastmod: today,
+      changefreq: "weekly",
+      priority: "0.96",
+      comment: "UAE Tax Planner & Comprehensive Compliance Hub 2026",
+    },
+    {
+      loc: `${domain}/corporate-tax-calculator`,
+      lastmod: today,
+      changefreq: "weekly",
+      priority: "0.96",
+      comment: "UAE Corporate Tax Calculator (9%) & Tax Savings Assessment",
+    },
+    {
+      loc: `${domain}/uae-vat-calculator`,
+      lastmod: today,
+      changefreq: "weekly",
+      priority: "0.96",
+      comment: "UAE VAT Calculator & 5% Compliance Planner (Form 201)",
+    },
+    {
+      loc: `${domain}/fta-deadlines`,
+      lastmod: today,
+      changefreq: "weekly",
+      priority: "0.96",
+      comment: "FTA Tax Deadlines & Statutory Penalty Calendar (Cabinet Decision 75/2023)",
+    },
+    {
       loc: `${domain}/small-business-tax-relief`,
       lastmod: today,
       changefreq: "weekly",

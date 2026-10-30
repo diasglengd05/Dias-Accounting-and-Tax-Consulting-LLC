@@ -98,6 +98,22 @@ const JURISDICTIONS: JurisdictionInfo[] = [
     coverageAreas: ["Jumeirah Lakes Towers (JLT)", "DMCC Crypto Centre", "Uptown Dubai", "One JLT"]
   },
   {
+    id: "dtec-dso",
+    name: "DTEC & Dubai Silicon Oasis (DSO)",
+    nameAr: "مركز دبي للتكنولوجيا وريادة الأعمال (DTEC) وواحة دبي للسيليكون",
+    category: "Dubai Free Zones",
+    categoryAr: "المناطق الحرة في دبي",
+    taxRate: "0% QFZP Qualifying Tech Activities | SBR 0% up to AED 3,000,000",
+    auditRequirement: "Mandatory annual audit for license renewal & 0% Corporate Tax exemption",
+    auditRequirementAr: "تدقيق سنوي إلزامي لتجديد الرخصة والاستفادة من إعفاء ضريبة الشركات 0%",
+    qfzpEligible: true,
+    keyHighlight: "The UAE's premier technology entrepreneurship campus for AI startups, SaaS platforms, and tech scaleups.",
+    keyHighlightAr: "أكبر مركز تكنولوجي للشركات الناشئة ومنصات البرمجيات والذكاء الاصطناعي في الإمارات.",
+    description: "Dias Accounting provides premier accounting services in DTEC and tax consultancy across Dubai Silicon Oasis. We handle R&D accounting, double-entry cloud bookkeeping, 0% QFZP substance verification, and EmaraTax Corporate Tax filings.",
+    descriptionAr: "توفر دياس خدمات محاسبية متخصصة لشركات DTEC وواحة دبي للسيليكون، تشمل مسك الدفاتر السحابية، وتقديم إقرارات ضريبة الشركات بنسبة 0%.",
+    coverageAreas: ["DTEC Technohub", "Dubai Silicon Oasis", "Silicon Park", "Academic City Tech Corridors"]
+  },
+  {
     id: "ifza-meydan",
     name: "IFZA Dubai, Meydan & DAFZA",
     nameAr: "إفزا دبي، ميدان، والمنطقة الحرة بمطار دبي (DAFZA)",

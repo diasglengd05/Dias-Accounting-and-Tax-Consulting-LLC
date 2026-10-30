@@ -22,6 +22,7 @@ import {
   Info,
   Clock,
   Briefcase,
+  ExternalLink,
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
@@ -291,44 +292,121 @@ export const TaxPlannerPage: React.FC<TaxPlannerPageProps> = ({
 
         {/* 2. Interactive Tax Planner Suite */}
         <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Tool Navigation Tabs */}
-          <div className="flex flex-wrap justify-center gap-2 p-1.5 bg-slate-200/80 rounded-2xl max-w-2xl mx-auto mb-12 shadow-inner">
-            <button
-              type="button"
-              onClick={() => setActiveTab("corporate-tax")}
-              className={`flex-1 min-w-[130px] py-3 px-4 rounded-xl text-xs sm:text-sm font-display font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${
-                activeTab === "corporate-tax"
-                  ? "bg-navy-950 text-white shadow-md"
-                  : "text-slate-700 hover:text-navy-950 hover:bg-slate-300/40"
-              }`}
-            >
-              <Calculator className="w-4 h-4 text-gold-400" />
-              <span>Corporate Tax (9%)</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("vat-planner")}
-              className={`flex-1 min-w-[130px] py-3 px-4 rounded-xl text-xs sm:text-sm font-display font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${
-                activeTab === "vat-planner"
-                  ? "bg-navy-950 text-white shadow-md"
-                  : "text-slate-700 hover:text-navy-950 hover:bg-slate-300/40"
-              }`}
-            >
-              <Percent className="w-4 h-4 text-emerald-500" />
-              <span>VAT (5%)</span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setActiveTab("deadline-calculator")}
-              className={`flex-1 min-w-[130px] py-3 px-4 rounded-xl text-xs sm:text-sm font-display font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${
-                activeTab === "deadline-calculator"
-                  ? "bg-navy-950 text-white shadow-md"
-                  : "text-slate-700 hover:text-navy-950 hover:bg-slate-300/40"
-              }`}
-            >
-              <Calendar className="w-4 h-4 text-gold-500" />
-              <span>FTA Deadlines</span>
-            </button>
+          {/* Tool Navigation Tabs with Dedicated Landing Page Direct Links */}
+          <div className="max-w-4xl mx-auto mb-10">
+            {/* Top Selector Container */}
+            <div className="flex flex-wrap items-center justify-center gap-2 p-2 bg-slate-200/90 rounded-2xl shadow-inner border border-slate-300/60">
+              {/* Tab 1: Corporate Tax */}
+              <div className="flex-1 min-w-[200px] flex items-center bg-white/60 rounded-xl p-1 shadow-xs border border-slate-200/50">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("corporate-tax")}
+                  className={`flex-1 py-2.5 px-3 rounded-lg text-xs sm:text-sm font-display font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                    activeTab === "corporate-tax"
+                      ? "bg-navy-950 text-white shadow-md"
+                      : "text-slate-700 hover:text-navy-950 hover:bg-white"
+                  }`}
+                >
+                  <Calculator className="w-4 h-4 text-gold-400" />
+                  <span>Corporate Tax (9%)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onNavigate("/corporate-tax-calculator")}
+                  title="Open Dedicated Corporate Tax Savings Landing Page"
+                  className="px-2 py-2 text-[10px] font-mono font-bold text-navy-950 hover:text-gold-600 hover:bg-gold-50 rounded-md transition-colors cursor-pointer flex items-center gap-0.5 ml-1 border-l border-slate-200"
+                >
+                  <span>Page</span>
+                  <ExternalLink className="w-3 h-3 text-gold-500" />
+                </button>
+              </div>
+
+              {/* Tab 2: VAT Planner */}
+              <div className="flex-1 min-w-[200px] flex items-center bg-white/60 rounded-xl p-1 shadow-xs border border-slate-200/50">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("vat-planner")}
+                  className={`flex-1 py-2.5 px-3 rounded-lg text-xs sm:text-sm font-display font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                    activeTab === "vat-planner"
+                      ? "bg-navy-950 text-white shadow-md"
+                      : "text-slate-700 hover:text-navy-950 hover:bg-white"
+                  }`}
+                >
+                  <Percent className="w-4 h-4 text-emerald-500" />
+                  <span>VAT (5%)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onNavigate("/uae-vat-calculator")}
+                  title="Open Dedicated UAE VAT Calculator Landing Page"
+                  className="px-2 py-2 text-[10px] font-mono font-bold text-navy-950 hover:text-emerald-600 hover:bg-emerald-50 rounded-md transition-colors cursor-pointer flex items-center gap-0.5 ml-1 border-l border-slate-200"
+                >
+                  <span>Page</span>
+                  <ExternalLink className="w-3 h-3 text-emerald-500" />
+                </button>
+              </div>
+
+              {/* Tab 3: FTA Deadlines */}
+              <div className="flex-1 min-w-[200px] flex items-center bg-white/60 rounded-xl p-1 shadow-xs border border-slate-200/50">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("deadline-calculator")}
+                  className={`flex-1 py-2.5 px-3 rounded-lg text-xs sm:text-sm font-display font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                    activeTab === "deadline-calculator"
+                      ? "bg-navy-950 text-white shadow-md"
+                      : "text-slate-700 hover:text-navy-950 hover:bg-white"
+                  }`}
+                >
+                  <Calendar className="w-4 h-4 text-gold-500" />
+                  <span>FTA Deadlines</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onNavigate("/fta-deadlines")}
+                  title="Open Dedicated FTA Deadlines & Penalties Landing Page"
+                  className="px-2 py-2 text-[10px] font-mono font-bold text-navy-950 hover:text-gold-600 hover:bg-gold-50 rounded-md transition-colors cursor-pointer flex items-center gap-0.5 ml-1 border-l border-slate-200"
+                >
+                  <span>Page</span>
+                  <ExternalLink className="w-3 h-3 text-gold-500" />
+                </button>
+              </div>
+            </div>
+
+            {/* Standalone Landing Page Quick-Hub */}
+            <div className="mt-4 p-3.5 bg-navy-950 text-white rounded-2xl border border-gold-500/30 flex flex-col md:flex-row items-center justify-between gap-3 text-xs shadow-md">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-gold-400 shrink-0" />
+                <span className="text-slate-300">
+                  <strong className="text-gold-400 font-semibold">Separate Landing Pages Available:</strong> Each tax tool has its own dedicated, full-screen portal with downloadable summaries and direct WhatsApp booking.
+                </span>
+              </div>
+              <div className="flex flex-wrap items-center gap-2 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => onNavigate("/corporate-tax-calculator")}
+                  className="px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-gold-500 hover:text-navy-950 text-gold-300 font-semibold text-[11px] transition-colors cursor-pointer flex items-center gap-1 border border-gold-500/30"
+                >
+                  <span>Corporate Tax Page</span>
+                  <ArrowRight className="w-3 h-3" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onNavigate("/uae-vat-calculator")}
+                  className="px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-emerald-500 hover:text-navy-950 text-emerald-300 font-semibold text-[11px] transition-colors cursor-pointer flex items-center gap-1 border border-emerald-500/30"
+                >
+                  <span>VAT 5% Page</span>
+                  <ArrowRight className="w-3 h-3" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => onNavigate("/fta-deadlines")}
+                  className="px-2.5 py-1.5 rounded-lg bg-white/10 hover:bg-gold-500 hover:text-navy-950 text-gold-300 font-semibold text-[11px] transition-colors cursor-pointer flex items-center gap-1 border border-gold-500/30"
+                >
+                  <span>FTA Deadlines Page</span>
+                  <ArrowRight className="w-3 h-3" />
+                </button>
+              </div>
+            </div>
           </div>
 
           {/* TAB 1: Corporate Tax Estimator */}

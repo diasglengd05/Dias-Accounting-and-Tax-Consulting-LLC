@@ -52,16 +52,43 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
   // Match the current service or fallback to first
   const currentService: Service = useMemo(() => {
     if (!serviceId) return servicesData[0];
+    const normalized = serviceId.toLowerCase();
+    if (normalized === "business-incorporation-services" || normalized.includes("incorporation")) {
+      const inc = servicesData.find((s) => s.id === "business-incorporation");
+      if (inc) return inc;
+    }
     const found = servicesData.find(
-      (s) => s.id === serviceId || s.id.toLowerCase() === serviceId.toLowerCase()
+      (s) => s.id === serviceId || s.id.toLowerCase() === normalized
     );
     return found || servicesData[0];
   }, [serviceId]);
 
   useEffect(() => {
-    document.title = `${currentService.title} in Dubai & UAE | Dias Accounting & Tax`;
+    let title = `${currentService.title} in Dubai & UAE | Dias Accounting & Tax`;
+    let desc = currentService.shortDesc;
+    if (currentService.id === "business-incorporation" || serviceId?.includes("incorporation")) {
+      title = "Business Incorporation Services UAE | Company Setup Dubai & Free Zones | Dias UAE";
+      desc = "Premier business incorporation services in UAE. 100% foreign ownership company setup in Dubai Mainland (DET) and top Free Zones (SHAMS, DMCC, IFZA, DTEC). Fast-track licensing & bank accounts.";
+    }
+    document.title = title;
+
+    const upsertMeta = (attr: "name" | "property", key: string, content: string) => {
+      let el = document.querySelector(`meta[${attr}="${key}"]`);
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute(attr, key);
+        document.head.appendChild(el);
+      }
+      el.setAttribute("content", content);
+    };
+
+    upsertMeta("name", "title", title);
+    upsertMeta("name", "description", desc);
+    if (currentService.id === "business-incorporation") {
+      upsertMeta("name", "keywords", "business incorporation services uae, business incorporation services in uae, company setup dubai, business setup uae, commercial license dubai, professional license uae, free zone company formation, mainland DET incorporation");
+    }
     window.scrollTo({ top: 0, behavior: "instant" });
-  }, [currentService]);
+  }, [currentService, serviceId]);
 
   const getIcon = (iconName: string) => {
     switch (iconName) {

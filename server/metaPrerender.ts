@@ -22,6 +22,22 @@ export interface MetaOverride {
 }
 
 const KNOWN_BLOGS: Record<string, { title: string; summary: string; author: string; role: string; tag: string; date: string }> = {
+  "accounting-services-dtec-difc-dividends-audit-dubai-guide": {
+    title: "Accounting Services in DTEC & DIFC: 2026 Founder's Guide to Double-Entry Compliance, Dividends Audit & Corporate Tax in Dubai & Sharjah",
+    summary: "Authoritative guide to accounting services in DTEC, tax consultant in DIFC, double-entry tax consultant offices in Dubai and Sharjah, and statutory Dividends Audit certification.",
+    author: "Glen Dias",
+    role: "Managing Director & FTA Registered Tax Agent",
+    tag: "DTEC & DIFC Accounting",
+    date: "2026-10-30",
+  },
+  "pricing-and-tax-solutions-uae-2026-executive-guide": {
+    title: "Pricing & Tax Solutions in UAE: The 2026 Executive Guide to Fixed-Fee Accounting, Corporate Tax (9%), VAT & Backlog Bookkeeping Costs in Dubai",
+    summary: "The definitive 2026 executive blueprint to transparent Pricing & Tax Solutions in the United Arab Emirates. Detailed fee schedules for monthly bookkeeping from AED 400/mo and backlog clean-ups from AED 2,500.",
+    author: "Glen Dias",
+    role: "Managing Director & FTA Registered Tax Agent",
+    tag: "Pricing & Tax Solutions",
+    date: "2026-10-30",
+  },
   "fta-mandatory-e-invoicing-phase-1-peppol-readiness-muut": {
     title: "FTA Mandatory E-Invoicing Phase 1: Technical Readiness, Peppol Network, and UAE Business Checklist",
     summary: "Strategic action plan for UAE enterprises navigating Ministry of Finance e-invoicing mandates, Peppol decentralized exchange standards, and ERP integration requirements.",
@@ -250,25 +266,49 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     };
   }
 
-  if (pathname === "/difc-dtec-accounting") {
+  if (
+    pathname === "/difc-dtec-accounting" ||
+    pathname === "/dtec-accounting" ||
+    pathname === "/accounting-services-in-dtec"
+  ) {
     return {
-      title: "Tax and Accounting Services in DIFC & DTEC | Dias UAE",
-      description: "Specialized accounting, tax compliance, and audit readiness for DIFC and DTEC free zone entities. 0% Qualifying Free Zone Person (QFZP) substance advisory and DFSA audit preparation.",
-      keywords: "DIFC accounting services, DTEC accounting dubai, DIFC DFSA tax audit, QFZP 0% corporate tax, Dubai Silicon Oasis tech accounting, free zone audit readiness UAE",
+      title: "Accounting Services in DTEC & DIFC Dubai | Tax Consultant & Virtual Accounting | Dias UAE",
+      description: "Premier accounting services in DTEC and tax consultant in DIFC Dubai. Expert FTA tax advisory, virtual accounting services in DIFC, 0% QFZP corporate tax compliance, and tech startup bookkeeping in Dubai Silicon Oasis.",
+      keywords: "accounting services in dtec, tax consultant in difc, tax and accounting services in difc, accounting services in difc, virtual accounting services in difc, difc tax services in dubai, DTEC accounting dubai, 0% QFZP free zone corporate tax",
       url: `${baseUrl}/difc-dtec-accounting`,
-      ogImage: `${baseUrl}/api/og?title=Tax+%26+Accounting+Services+in+DIFC+%26+DTEC&author=Glen+Dias&tag=Free+Zone+0%25+QFZP+Advisory`,
+      ogImage: `${baseUrl}/api/og?title=Accounting+Services+in+DTEC+%26+Tax+Consultant+in+DIFC&author=Glen+Dias&tag=Free+Zone+0%25+QFZP+Advisory`,
       ogType: "website",
       isArabic,
     };
   }
 
-  if (pathname === "/dividends-audit") {
+  if (
+    pathname === "/dividends-audit" ||
+    pathname === "/dividends-audit-dubai" ||
+    pathname === "/dividends-audit-uae"
+  ) {
     return {
-      title: "Dividend Audit & Distribution Advisory Dubai | Dias UAE",
-      description: "Expert dividend audit and distribution advisory in Dubai. Ensure commercial companies law compliance, distributable profits certification, and withholding tax optimization across the UAE.",
-      keywords: "dividend audit dubai, profit distribution advisory UAE, commercial companies law dividends, article 23 participation exemption, 0% withholding tax dividends dubai",
+      title: "Dividends Audit Dubai & UAE | Statutory Audit Services for Dividends | Dias UAE",
+      description: "Statutory dividends audit Dubai and UAE. Licensed audit services for dividends under UAE Commercial Companies Law, distributable profit certification, 0% tax dividend distribution, and corporate tax compliance.",
+      keywords: "dividends audit dubai, dividends audit uae, audit services for dividends uae, dividend audit Dubai, dividend distribution certification, commercial companies law dividends, 0% dividend tax UAE",
       url: `${baseUrl}/dividends-audit`,
-      ogImage: `${baseUrl}/api/og?title=Dividend+Audit+%26+Distribution+Advisory+Dubai&author=Glen+Dias&tag=Commercial+Companies+Law`,
+      ogImage: `${baseUrl}/api/og?title=Dividends+Audit+Dubai+%26+UAE+(Statutory+Certification)&author=Glen+Dias&tag=Commercial+Companies+Law`,
+      ogType: "website",
+      isArabic,
+    };
+  }
+
+  if (
+    pathname === "/services/business-incorporation-services" ||
+    pathname === "/services/business-incorporation" ||
+    pathname === "/business-incorporation-services"
+  ) {
+    return {
+      title: "Business Incorporation Services UAE | Company Setup Dubai & Free Zones | Dias UAE",
+      description: "Premier business incorporation services in UAE. 100% foreign ownership company setup in Dubai Mainland (DET) and top Free Zones (SHAMS, DMCC, IFZA, DTEC). Fast-track trade licenses and corporate bank accounts.",
+      keywords: "business incorporation services uae, business incorporation services in uae, company setup dubai, business setup uae, commercial license dubai, free zone company setup",
+      url: `${baseUrl}/services/business-incorporation-services`,
+      ogImage: `${baseUrl}/api/og?title=Business+Incorporation+Services+in+UAE&author=Dias+Corporate+Desk&tag=100%25+Foreign+Ownership`,
       ogType: "website",
       isArabic,
     };

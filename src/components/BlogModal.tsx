@@ -119,11 +119,11 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact }
                 href={standaloneBlogUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden sm:inline-flex px-3 py-1.5 text-xs font-medium text-slate-200 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-all cursor-pointer min-h-[34px] items-center gap-1.5 active:scale-95"
+                className="inline-flex px-3 py-1.5 text-xs font-semibold text-slate-200 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-all cursor-pointer min-h-[34px] items-center gap-1.5 active:scale-95 border border-white/10"
                 title="Open full article in a new browser tab"
                 aria-label="Open article in a new tab"
               >
-                <ExternalLink className="w-3.5 h-3.5" />
+                <ExternalLink className="w-3.5 h-3.5 text-gold-400" />
                 <span>New Tab</span>
               </a>
 
@@ -150,10 +150,28 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact }
                 <CheckCircle2 className="w-2.5 h-2.5 text-blue-400" />
                 Google Schema (JSON-LD) Active
               </span>
+              <a
+                href={standaloneBlogUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[10px] text-gold-400 hover:text-gold-300 ml-auto inline-flex items-center gap-1 underline underline-offset-2"
+              >
+                <span>Read in New Tab</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
             </div>
-            <h3 id="blog-modal-title" className="font-display text-lg sm:text-xl md:text-3xl font-bold tracking-tight">
-              {blog.title}
-            </h3>
+            <a
+              href={standaloneBlogUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group/title block text-white hover:text-gold-400 transition-colors"
+              title="Open article in a new tab"
+            >
+              <h3 id="blog-modal-title" className="font-display text-lg sm:text-xl md:text-3xl font-bold tracking-tight inline-flex items-center gap-2 flex-wrap">
+                <span>{blog.title}</span>
+                <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5 text-gold-400 shrink-0 opacity-70 group-hover/title:opacity-100 transition-opacity" />
+              </h3>
+            </a>
             <div className="flex flex-wrap gap-2 sm:gap-4 text-xs text-slate-400 font-medium">
               <span>Published: {blog.date}</span>
               <span>•</span>
@@ -204,13 +222,29 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact }
               <span className="font-display font-bold text-navy-950 text-sm">Need regulatory support?</span>
               <p className="text-slate-500 text-xs">Our senior team helps companies avoid hefty administrative penalties.</p>
             </div>
-            <a
-              href="#contact"
-              onClick={onClose}
-              className="bg-navy-900 hover:bg-navy-950 text-white font-display font-bold py-3 px-6 rounded-xl text-xs sm:text-sm transition-colors min-h-[44px] flex items-center justify-center cursor-pointer"
-            >
-              Book Professional Assessment
-            </a>
+            <div className="flex flex-col sm:flex-row items-center gap-2.5 w-full sm:w-auto">
+              <a
+                href={standaloneBlogUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 bg-white hover:bg-slate-100 text-navy-950 border border-slate-300 font-display font-bold py-3 px-5 rounded-xl text-xs sm:text-sm transition-colors min-h-[44px]"
+              >
+                <ExternalLink className="w-4 h-4 text-gold-500" />
+                <span>Open in New Tab</span>
+              </a>
+              <a
+                href="#contact"
+                onClick={() => {
+                  if (onContact) {
+                    onContact();
+                  }
+                  onClose();
+                }}
+                className="w-full sm:w-auto bg-navy-900 hover:bg-navy-950 text-white font-display font-bold py-3 px-6 rounded-xl text-xs sm:text-sm transition-colors min-h-[44px] flex items-center justify-center cursor-pointer shadow-sm"
+              >
+                Book Professional Assessment
+              </a>
+            </div>
           </div>
         </div>
       </div>

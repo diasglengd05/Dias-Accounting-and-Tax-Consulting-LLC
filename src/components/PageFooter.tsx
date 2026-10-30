@@ -3,7 +3,7 @@ import DiasLogo from "./DiasLogo";
 import { GoogleLogo } from "./GoogleLogo";
 import AddToPreferredSources from "./AddToPreferredSources";
 import { GOOGLE_BUSINESS_URL } from "../data/staticData";
-import { Linkedin, Instagram, Facebook, ShieldCheck } from "lucide-react";
+import { Linkedin, Instagram, Facebook, ShieldCheck, ExternalLink } from "lucide-react";
 
 interface PageFooterProps {
   onNavigate: (path: string) => void;
@@ -137,8 +137,14 @@ export const PageFooter: React.FC<PageFooterProps> = ({
                 </a>
               </li>
               <li>
-                <a href="/blogs" onClick={(e) => handleLink(e, "/blogs")} className="hover:text-gold-400 transition-colors">
-                  Tax Insights &amp; Articles
+                <a
+                  href="/blog.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5"
+                >
+                  <span>Tax Insights &amp; Articles</span>
+                  <ExternalLink className="w-3 h-3 text-gold-400" />
                 </a>
               </li>
               <li>

@@ -25,9 +25,9 @@ interface PageProps {
 
 export const DividendsAuditPage: React.FC<PageProps> = ({ onNavigate }) => {
   useEffect(() => {
-    const pageTitle = "Dividend Audit & Corporate Tax Advisory Dubai | Tax Consulting UAE | Dias UAE";
+    const pageTitle = "Dividends Audit Dubai & UAE | Audit Services for Dividends | Dias UAE";
     const pageDesc =
-      "Authoritative Dividend Audit, Distribution Advisory, and Corporate Tax Consulting Services in Dubai, UAE. Ensure Commercial Companies Law compliance, distributable profit certification, and 0% dividend tax optimization.";
+      "Statutory dividends audit Dubai and UAE. Licensed audit services for dividends under UAE Commercial Companies Law, distributable profit certification, 0% tax dividend distribution, and corporate tax compliance.";
     const pageUrl = "https://diasuae.ae/dividends-audit";
 
     document.title = pageTitle;
@@ -47,7 +47,7 @@ export const DividendsAuditPage: React.FC<PageProps> = ({ onNavigate }) => {
     upsertMeta(
       "name",
       "keywords",
-      "dividend audit Dubai, corporate tax advisory Dubai, tax consulting services in UAE, tax advisory services in Dubai, profit distribution UAE, accounting services Dubai"
+      "dividends audit dubai, dividends audit uae, audit services for dividends uae, dividend audit Dubai, dividend distribution certification, commercial companies law dividend audit, corporate tax advisory Dubai, tax consulting services in UAE, tax advisory services in Dubai"
     );
     upsertMeta("property", "og:title", pageTitle);
     upsertMeta("property", "og:description", pageDesc);
@@ -64,7 +64,43 @@ export const DividendsAuditPage: React.FC<PageProps> = ({ onNavigate }) => {
     }
     canonical.setAttribute("href", pageUrl);
 
+    // Inject dedicated JSON-LD Schema for Dividends Audit
+    const scriptId = "schema-dividends-audit";
+    let scriptEl = document.getElementById(scriptId) as HTMLScriptElement | null;
+    if (!scriptEl) {
+      scriptEl = document.createElement("script");
+      scriptEl.id = scriptId;
+      scriptEl.type = "application/ld+json";
+      scriptEl.text = JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": ["AccountingService", "ProfessionalService"],
+        "name": "Dias Accounting - Dividends Audit & Assurance Dubai",
+        "url": pageUrl,
+        "description": pageDesc,
+        "telephone": "+971-52-922-6958",
+        "email": "info@diasuae.ae",
+        "priceRange": "AED 1,500 - AED 6,000",
+        "areaServed": ["Dubai", "Sharjah", "Abu Dhabi", "United Arab Emirates"],
+        "knowsAbout": [
+          "Dividends audit Dubai",
+          "Dividends audit UAE",
+          "Audit services for dividends UAE",
+          "Distributable profits audit certification",
+          "Federal Decree-Law No. 32 of 2021 Commercial Companies Law",
+          "Corporate Tax 0% dividend exemption"
+        ]
+      });
+      document.head.appendChild(scriptEl);
+    }
+
     window.scrollTo({ top: 0, behavior: "instant" });
+
+    return () => {
+      const el = document.getElementById(scriptId);
+      if (el && el.parentNode) {
+        el.parentNode.removeChild(el);
+      }
+    };
   }, []);
 
   const handleBackHome = (e: React.MouseEvent) => {
@@ -142,7 +178,7 @@ export const DividendsAuditPage: React.FC<PageProps> = ({ onNavigate }) => {
           </div>
 
           <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight max-w-4xl leading-tight">
-            Dividend Audit & Distribution Advisory Dubai: <span className="text-gold-400">Lawful Profit Extraction</span> & Tax Optimization
+            Dividends Audit Dubai &amp; UAE: <span className="text-gold-400">Audit Services for Dividends</span> &amp; Lawful Profit Certification
           </h1>
 
           <p className="text-slate-300 text-base sm:text-lg max-w-3xl leading-relaxed">
