@@ -249,13 +249,13 @@ export const translations: Record<Language, Translations> = {
       dismiss: "Dismiss alert",
     },
     hero: {
-      badge: "FTA-Aligned Tax Consultants • Dubai & Sharjah, UAE",
+      badge: "FTA-Registered Tax Firm • Dubai & Sharjah, UAE",
       googleRatingText: "5.0 ★★★★★ (48 Verified Google Reviews)",
       companyTitle: "Dias Accounting",
-      subheadline1: "Tax Advisory Services in Dubai, Corporate Tax & VAT Compliance",
-      subheadline2: "Financial Clarity, Engineered for Your Growth",
+      subheadline1: "Tax and Accounting Services in Dubai & UAE | Corporate Tax, VAT & Planning",
+      subheadline2: "Premier Tax Firm & Certified FTA Consultants • Financial Clarity for Growth",
       description:
-        "Dias Accounting provides premier tax consulting services in UAE and tax advisory services in Dubai. We manage Corporate Tax Advisory (9% & 0% Free Zone QFZP), Value Added Tax (5% VAT) compliance, IFRS Accounting Services, Backlog Accounting, and Free Zone business support to keep your enterprise 100% FTA audit-ready.",
+        "Dias Accounting is a leading tax firm delivering professional tax and accounting services in Dubai and across the UAE. We specialize in Corporate Tax Advisory (9% & 0% Free Zone QFZP), Value Added Tax (5% VAT) compliance, tax preparation and planning services, accounting consultancy, and backlog bookkeeping to keep your business 100% FTA compliant.",
       ctaConsultation: "Calculate Your UAE Corporate Tax & Discover 0% Relief Options",
       ctaConsultationSubtext: "Verify Small Business Relief (< AED 3M) & 0% Free Zone Exemption",
       ctaRiskAudit: "Free 60s Penalty Risk Audit",
@@ -280,9 +280,9 @@ export const translations: Record<Language, Translations> = {
     },
     services: {
       badge: "UAE Regulatory & Tax Compliance",
-      title: "Corporate Tax Advisory, VAT Compliance & Accounting Services in UAE",
+      title: "Tax and Accounting Services, Corporate Tax Advisory & VAT in UAE",
       subtitle:
-        "Authoritative tax consulting services in UAE and tax advisory services in Dubai—delivering Corporate Tax registration, 5% VAT compliance, backlog accounting cleanup, and Free Zone business support.",
+        "Authoritative tax and accounting services in Dubai and UAE—delivering tax preparation and financial planning, Corporate Tax registration (9%), 5% VAT compliance, accounting consultancy, and Free Zone business support.",
       readMore: "Read More",
       bookServiceCall: "Book Strategy Call for this Service",
       items: [

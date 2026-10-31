@@ -398,19 +398,19 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     };
   }
 
-  // 6. Default Fallback
+  // 6. Default Fallback (Optimized for #1 Ranking on "tax and accounting services", "tax firms in uae", "tax preparation and planning services")
   return {
     title: isArabic
-      ? "أفضل مكاتب المحاسبة في دبي الإمارات | دياز للمحاسبة والاستشارات الضريبية"
-      : "Best Accounting Firm in Dubai UAE | Dias Tax Consulting",
+      ? "خدمات المحاسبة والضرائب في دبي والإمارات | مكاتب المحاسبة والضرائب المعتمدة | دياز"
+      : "Tax and Accounting Services in Dubai & UAE | Premier Tax Firm | Dias UAE",
     description: isArabic
-      ? "أفضل مكاتب المحاسبة في دبي الإمارات. استشارات ضريبية معتمدة ومسك الدفاتر وحساب ضريبة الشركات وتدقيق مخاطر الغرامات في 60 ثانية لكافة الإمارات."
-      : "Best Accounting Firms in Dubai UAE. Top-rated FTA tax consultants & accountants in Dubai. Instant Free 60s Penalty Risk Audit, FTA audit defense, 0% Corporate Tax relief & monthly bookkeeping across all 7 Emirates.",
+      ? "أفضل خدمات المحاسبة والضرائب في دبي والإمارات. استشارات ضريبية معتمدة، مسك الدفاتر المحاسبية، ضريبة الشركات (9%) وتسهيلات الأعمال الصغيرة (0%)، وإعداد وتخطيط الضرائب لكافة الإمارات."
+      : "Top-ranked tax and accounting services in Dubai & UAE. Leading tax firm providing Corporate Tax (9%), 0% Small Business Relief, VAT compliance, tax preparation & planning services, and accounting consultancy across all 7 Emirates.",
     keywords: isArabic
-      ? "أفضل مكتب محاسبة في الإمارات, تدقيق مخاطر الغرامات 60 ثانية, تمثيل دفاعي الهيئة الاتحادية للضرائب, خيارات إعفاء ضريبة الشركات 0%, تسهيلات الأعمال الصغيرة 3 مليون, أفضل شركات المحاسبة في دبي, كبرى مكاتب المحاسبين القانونيين في دبي, الاستعانة بمصادر خارجية للمحاسبة ومسك الدفاتر, مستشار ضريبي معتمد, ضريبة الشركات دبي 9%, تسجيل ضريبة القيمة المضافة, وكيل ضريبي معتمد دبي, محاسبة الشركات في دبي, تسعير المعاملات الإمارات, تأسيس شركات الإمارات"
-      : "Best Accounting Firms in Dubai UAE, Best Accounting Firm in Dubai, Top CA Firms in Dubai, Top Tax Consultant in Dubai, Best Tax Consultants in UAE, FTA Registered Tax Agency Dubai, FTA Certified Tax Agent UAE, Chartered Accountants in Dubai Business Bay, Corporate Tax Consultant Dubai, UAE Corporate Tax 9%, Corporate Tax Filing 2026, EmaraTax Return Filing, Small Business Relief UAE AED 3M, Qualifying Free Zone Person 0%, QFZP Corporate Tax Compliance, VAT Registration Dubai, VAT Filing UAE 5%, VAT Voluntary Disclosure Form 211, Transfer Pricing Services Dubai, Audited Financial Statements Free Zone UAE, Bookkeeping Services Dubai, Outsource Accounting UAE, Business Setup Dubai Mainland, how to file corporate tax in uae without penalty, who is the best tax consultant in dubai",
+      ? "خدمات المحاسبة والضرائب في دبي, شركات الضرائب في الإمارات, خدمات إعداد وتخطيط الضرائب, أفضل مكتب محاسبة في الإمارات, تدقيق مخاطر الغرامات 60 ثانية, تمثيل دفاعي الهيئة الاتحادية للضرائب, خيارات إعفاء ضريبة الشركات 0%, تسهيلات الأعمال الصغيرة 3 مليون, أفضل شركات المحاسبة في دبي, مستشار ضريبي معتمد, ضريبة الشركات دبي 9%, تسجيل ضريبة القيمة المضافة"
+      : "tax and accounting services, tax accounting services, accounting services uae, tax firms in uae, tax services in dubai, tax and financial planning services, tax preparation and planning services, what tax advisory and accounting packages are available in dubai, accounting consultancy in dubai, taxation services dubai, accounting advisory services uae, accounting services for consultants dubai, tax accounting services in dubai, audit tax & pro in uae, tax and accounting services in uae, online accounting services in uae, auditing firms in sharjah, dental tax consultants, Best Accounting Firms in Dubai UAE, Best Accounting Firm in Dubai, FTA Registered Tax Agency Dubai, Chartered Accountants in Dubai",
     url: `${baseUrl}/`,
-    ogImage: `${baseUrl}/api/og?title=Best+Accounting+Firms+in+Dubai+UAE&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=UAE+Tax+Compliance&readTime=FTA+Certified`,
+    ogImage: `${baseUrl}/api/og?title=Tax+and+Accounting+Services+in+Dubai+%26+UAE&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Premier+Tax+Firm&readTime=FTA+Certified`,
     ogType: "business.business",
     isArabic,
   };

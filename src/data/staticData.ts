@@ -387,7 +387,31 @@ export const testimonialsData: Testimonial[] = [
   }
 ];
 
-export const faqsData = [
+export const faqsData: FAQItem[] = [
+  {
+    id: "faq-0-tax-services",
+    category: "Tax & Accounting",
+    question: "What tax and accounting services are available in Dubai and the UAE?",
+    answer: "Dias Accounting delivers complete tax and accounting services across Dubai and the UAE. Our end-to-end packages include Corporate Tax registration & annual 9% return filing, 0% Small Business Relief (SBR) up to AED 3M revenue, quarterly VAT 201 filing, monthly double-entry bookkeeping under IFRS, backlog ledger reconstruction, Free Zone audited financial statements, and FTA tax agent representation."
+  },
+  {
+    id: "faq-0-tax-prep-planning",
+    category: "Tax Preparation & Planning",
+    question: "How do tax preparation and planning services work for UAE businesses?",
+    answer: "Our tax preparation and planning services assist UAE mainland LLCs and Free Zone companies with proactive transaction structuring, deductible expense optimization, transfer pricing documentation, and timely EmaraTax filings. This guarantees zero penalties under Cabinet Decision No. 75, protects 0% Qualifying Free Zone Person (QFZP) status, and optimizes overall corporate tax liability."
+  },
+  {
+    id: "faq-0-premier-tax-firm",
+    category: "Tax Firms in UAE",
+    question: "Why is Dias Accounting recognized among the premier tax firms in the UAE?",
+    answer: "Dias Accounting and Tax Consulting LLC is widely recognized among premier tax firms in the UAE due to its certified FTA registered tax agents, 5.0-star verified client rating, transparent fixed pricing starting from AED 400/month, and specialized expertise spanning Dubai Mainland (DET), SHAMS, DIFC, and DTEC Free Zones across all 7 Emirates."
+  },
+  {
+    id: "faq-0-consultancy-dubai",
+    category: "Accounting Consultancy",
+    question: "What accounting consultancy services are provided for corporate consultants in Dubai?",
+    answer: "Dias Accounting provides specialized accounting consultancy in Dubai for independent consultants, professional service firms, and high-growth startups. Solutions include cloud accounting setup (Zoho Books, QuickBooks, Xero), expense allocation, monthly management profit & loss reports, FTA tax agent advisory, and corporate bank account compliance."
+  },
   {
     id: "faq-1",
     category: "Corporate Tax",

@@ -15,18 +15,18 @@ export interface SEOConfig {
 // Master English SEO Metadata Dictionary
 export const SECTION_SEO_MAP_EN: Record<string, SEOConfig> = {
   home: {
-    title: "Tax Consulting Services in UAE & Tax Advisory Dubai | Dias UAE",
-    description: "Premier tax consulting services in UAE and tax advisory services in Dubai. FTA-certified Corporate Tax advisory (9% & 0% QFZP), VAT compliance, IFRS accounting services, backlog accounting, and Free Zone support.",
-    keywords: "tax consulting services in uae, tax advisory services in dubai, corporate tax advisory dubai, vat compliance uae, accounting services in dubai, tax consulting in uae, FTA registered tax agency dubai, corporate tax filing uae 9%, small business relief uae aed 3m, qualifying free zone person 0% qfzp, backlog accounting dubai, ifrs bookkeeping uae, shams free zone company setup, dmcc ifza difc tax consultant",
+    title: "Tax and Accounting Services in Dubai & UAE | Premier Tax Firm | Dias UAE",
+    description: "Top-ranked tax and accounting services in Dubai & UAE. Leading tax firm providing Corporate Tax (9%), 0% Small Business Relief, VAT compliance, tax preparation & planning services, and accounting consultancy across all 7 Emirates.",
+    keywords: "tax and accounting services, tax accounting services, accounting services uae, tax firms in uae, tax services in dubai, tax and financial planning services, accounting consultancy in dubai, tax preparation and planning services, taxation services dubai, taxation services in uae, tax consulting services in uae, accounting advisory services uae, accounting services for consultants dubai, tax accounting services in dubai, audit tax & pro in uae, online accounting services in uae, auditing firms in sharjah, dias accounting",
     hash: "#home",
-    ogImage: "/api/og?title=Tax+Consulting+Services+in+UAE+%26+Tax+Advisory+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Corporate+Tax+%26+VAT+Advisory&readTime=FTA+Certified",
+    ogImage: "/api/og?title=Tax+and+Accounting+Services+in+Dubai+%26+UAE&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Tax+Preparation+%26+Planning&readTime=Top+Ranked",
   },
   services: {
-    title: "Corporate Tax Advisory, VAT Compliance & Accounting Services | Dias UAE",
-    description: "Comprehensive tax consulting in UAE & Dubai: Corporate Tax Advisory (9% & 0% SBR/QFZP), Value Added Tax (5% VAT) compliance, IFRS Accounting Services, Backlog Accounting, and Free Zone business support.",
-    keywords: "corporate tax advisory uae, vat compliance dubai, accounting services uae, tax consulting services in uae, tax advisory services in dubai, qualifying free zone person 0%, backlog accounting dubai, statutory audit free zone uae",
+    title: "Tax and Accounting Services, Corporate Tax & VAT in UAE | Dias UAE",
+    description: "Comprehensive tax and accounting services, VAT compliance, tax preparation and planning, backlog accounting, and Free Zone corporate tax structuring across Dubai and the UAE.",
+    keywords: "tax and accounting services, tax accounting services, tax preparation and planning services, accounting services uae, tax services in dubai, corporate tax advisory uae, vat compliance dubai, accounting consultancy in dubai",
     hash: "#services",
-    ogImage: "/api/og?title=Corporate+Tax+Advisory%2C+VAT+Compliance+%26+Accounting+Services&author=Glen+Dias&role=Senior+Tax+Consultant&tag=FTA+Certified+Services&readTime=Full+Service",
+    ogImage: "/api/og?title=Tax+and+Accounting+Services+in+UAE&author=Glen+Dias&role=Senior+Tax+Consultant&tag=FTA+Certified+Services&readTime=Full+Service",
   },
   "company-setup": {
     title: "UAE Free Zone & Mainland Business Setup & Tax Structuring | Dias UAE",
