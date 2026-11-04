@@ -66,9 +66,24 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
   useEffect(() => {
     let title = `${currentService.title} in Dubai & UAE | Dias Accounting & Tax`;
     let desc = currentService.shortDesc;
-    if (currentService.id === "business-incorporation" || serviceId?.includes("incorporation")) {
+    let keywords = `${currentService.title.toLowerCase()} dubai, ${currentService.title.toLowerCase()} uae, fta tax agent`;
+
+    if (currentService.id === "corporate-tax-advisory" || serviceId?.includes("corporate-tax")) {
+      title = "Corporate Tax Filing UAE | Tax Advisory Dubai | Dias UAE";
+      desc = "Certified Corporate Tax filing services in UAE. 9% return submission on EmaraTax, Small Business Relief (AED 3M) & 0% Free Zone advisory. Book review today!";
+      keywords = "corporate tax filing uae, tax advisory services in dubai, tax filing services uae, tax planning services in dubai, corporate tax return emaratax, small business relief 0%, fta audit defense";
+    } else if (currentService.id === "accounting-bookkeeping" || serviceId?.includes("accounting")) {
+      title = "Accounting Services UAE | Bookkeeping Dubai | Dias UAE";
+      desc = "IFRS-compliant accounting services in the UAE. Dedicated senior accountants, monthly P&L reporting, bank reconciliations & software setup. Request a quote!";
+      keywords = "accounting services uae, accounting consulting dubai, accounting service in uae, accounting solutions in uae, bookkeeping dubai, chartered accountants dubai, outsourced accounting uae";
+    } else if (currentService.id === "vat-compliance" || serviceId?.includes("vat")) {
+      title = "VAT Compliance & Filing Dubai | FTA Tax Agent | Dias UAE";
+      desc = "Quarterly VAT 201 return filing, input VAT recovery, and FTA audit defense in Dubai & UAE. Eliminate fine risks with certified tax agents. Consult for free!";
+      keywords = "vat compliance dubai, taxation services dubai, vat 201 return filing, vat consulting services uae, fta voluntary disclosure 211, input vat recovery, vat refund dubai";
+    } else if (currentService.id === "business-incorporation" || serviceId?.includes("incorporation")) {
       title = "Business Incorporation Services UAE | Company Setup Dubai & Free Zones | Dias UAE";
       desc = "Premier business incorporation services in UAE. 100% foreign ownership company setup in Dubai Mainland (DET) and top Free Zones (SHAMS, DMCC, IFZA, DTEC). Fast-track licensing & bank accounts.";
+      keywords = "business incorporation services uae, business incorporation services in uae, company setup dubai, business setup uae, commercial license dubai, professional license uae, free zone company formation, mainland DET incorporation";
     }
     document.title = title;
 
@@ -84,9 +99,12 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
 
     upsertMeta("name", "title", title);
     upsertMeta("name", "description", desc);
-    if (currentService.id === "business-incorporation") {
-      upsertMeta("name", "keywords", "business incorporation services uae, business incorporation services in uae, company setup dubai, business setup uae, commercial license dubai, professional license uae, free zone company formation, mainland DET incorporation");
-    }
+    upsertMeta("name", "keywords", keywords);
+    upsertMeta("property", "og:title", title);
+    upsertMeta("property", "og:description", desc);
+    upsertMeta("name", "twitter:title", title);
+    upsertMeta("name", "twitter:description", desc);
+
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [currentService, serviceId]);
 

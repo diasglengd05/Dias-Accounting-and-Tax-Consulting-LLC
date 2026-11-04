@@ -79,8 +79,8 @@ const KNOWN_BLOGS: Record<string, { title: string; summary: string; author: stri
     date: "2026-07-02",
   },
   "vat-compliance-checklist": {
-    title: "The Ultimate VAT Compliance Checklist for UAE Businesses",
-    summary: "Avoid severe FTA fines. Review our actionable checklist covering tax invoices, output VAT, input VAT recoveries, and record keeping rules.",
+    title: "Top Tax Advisory & VAT Compliance Checklist for UAE SMEs and Free Zone Companies",
+    summary: "Authoritative tax advisory and VAT compliance checklist for UAE SMEs and Free Zones. Actionable guidance on tax invoices, input VAT recoveries, 5% return filing, and eliminating FTA fines.",
     author: "Glen Dias",
     role: "Senior Tax Consultant",
     tag: "VAT Compliance",
@@ -96,18 +96,36 @@ const KNOWN_BLOGS: Record<string, { title: string; summary: string; author: stri
   },
 };
 
-const KNOWN_SERVICES: Record<string, { title: string; desc: string }> = {
+const KNOWN_SERVICES: Record<string, { title: string; desc: string; keywords?: string }> = {
   "accounting-bookkeeping": {
-    title: "Accounting & Bookkeeping Services Dubai",
-    desc: "IFRS-compliant monthly bookkeeping, financial statement preparation, and account reconciliation for UAE businesses.",
+    title: "Accounting Services UAE | Bookkeeping Dubai | Dias UAE",
+    desc: "IFRS-compliant accounting services in the UAE. Dedicated senior accountants, monthly P&L reporting, bank reconciliations & software setup. Request a quote!",
+    keywords: "accounting services uae, accounting consulting dubai, accounting service in uae, accounting solutions in uae, bookkeeping dubai, chartered accountants dubai, outsourced accounting uae",
   },
   "corporate-tax-advisory": {
-    title: "UAE Corporate Tax Advisory & Return Filing",
-    desc: "Corporate tax impact assessments, EmaraTax registration, 0% QFZP Free Zone structuring, and annual tax return filing.",
+    title: "Corporate Tax Filing UAE | Tax Advisory Dubai | Dias UAE",
+    desc: "Certified Corporate Tax filing services in UAE. 9% return submission on EmaraTax, Small Business Relief (AED 3M) & 0% Free Zone advisory. Book review today!",
+    keywords: "corporate tax filing uae, tax advisory services in dubai, tax filing services uae, tax planning services in dubai, corporate tax return emaratax, small business relief 0%, fta audit defense",
   },
   "vat-compliance": {
-    title: "VAT Registration & Compliance Dubai",
-    desc: "Full VAT advisory, quarterly return filing, voluntary disclosures, and FTA tax audit representation in the UAE.",
+    title: "VAT Compliance & Filing Dubai | FTA Tax Agent | Dias UAE",
+    desc: "Quarterly VAT 201 return filing, input VAT recovery, and FTA audit defense in Dubai & UAE. Eliminate fine risks with certified tax agents. Consult for free!",
+    keywords: "vat compliance dubai, taxation services dubai, vat 201 return filing, vat consulting services uae, fta voluntary disclosure 211, input vat recovery, vat refund dubai",
+  },
+  "auditing-assurance": {
+    title: "Auditing Firms in Sharjah & Dubai | Statutory Audit UAE",
+    desc: "Approved statutory audit services for Dubai Mainland and Free Zones (DMCC, SHAMS, IFZA, Meydan). IFRS financial verification and corporate tax audit defense.",
+    keywords: "auditing firms in sharjah, audit services in dubai, statutory audit uae, free zone approved auditor, dmcc approved auditor",
+  },
+  "backlog-accounting": {
+    title: "Backlog Accounting & Cleanup Dubai | Reconcile Fast | Dias UAE",
+    desc: "Fast historical bookkeeping reconstruction, missing invoice reconciliations, and opening balance sheets for overdue Corporate Tax & VAT filings in the UAE.",
+    keywords: "backlog accounting dubai, financial record cleanup uae, historical bookkeeping reconstruction, overdue corporate tax filing",
+  },
+  "transfer-pricing": {
+    title: "Transfer Pricing Services UAE | Local & Master File Dubai",
+    desc: "Complete transfer pricing documentation, OECD benchmark studies, and EmaraTax TP Disclosure Form filing under FTA Ministerial Decision No. 97 of 2023.",
+    keywords: "transfer pricing services uae, transfer pricing local file dubai, related party benchmarking, connected persons remuneration, emaratax tp disclosure",
   },
 };
 
@@ -219,10 +237,10 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     const encodedTitle = encodeURIComponent(s.title);
     const ogImg = `${baseUrl}/api/og?title=${encodedTitle}&author=Glen+Dias&tag=FTA+Certified+Services`;
     return {
-      title: `${s.title} | Dias Accounting & Tax Consulting Dubai`,
+      title: s.title,
       description: s.desc,
-      keywords: `${s.title.toLowerCase()}, accounting Dubai, corporate tax UAE, FTA tax agent`,
-      url: `${baseUrl}/#services-${serviceId}`,
+      keywords: s.keywords || `${s.title.toLowerCase()}, accounting Dubai, corporate tax UAE, FTA tax agent`,
+      url: `${baseUrl}/services/${serviceId}`,
       ogImage: ogImg,
       ogType: "business.business",
       isArabic,
@@ -244,10 +262,11 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
   // 4. Pricing route
   if (pathname === "/pricing" || searchParams.get("section") === "pricing") {
     return {
-      title: "Affordable Accounting & Corporate Tax Packages Dubai | Dias Accounting UAE",
-      description: "Transparent, fixed-fee monthly bookkeeping and UAE corporate tax compliance packages starting from AED 500/mo for Mainland LLCs and Free Zone startups.",
-      url: `${baseUrl}/#pricing`,
-      ogImage: `${baseUrl}/api/og?title=Fixed-Fee+UAE+Accounting+%26+Corporate+Tax+Packages&author=Dias+Tax+Team&tag=From+AED+500%2Fmo`,
+      title: "Transparent Accounting Packages Dubai | From AED 400/mo",
+      description: "No hidden fees. Fixed-price monthly accounting, Corporate Tax (9%) & VAT compliance packages for UAE Mainland & Free Zone businesses. View all pricing tiers!",
+      keywords: "accounting solutions in uae, transparent pricing tax solutions uae, monthly accounting package dubai, fixed fee bookkeeping uae, corporate tax return fee",
+      url: `${baseUrl}/pricing`,
+      ogImage: `${baseUrl}/api/og?title=Fixed-Fee+UAE+Accounting+%26+Corporate+Tax+Packages&author=Dias+Tax+Team&tag=From+AED+400%2Fmo`,
       ogType: "website",
       isArabic,
     };

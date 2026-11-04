@@ -36,7 +36,28 @@ export const PricingPage: React.FC<PricingPageProps> = ({
   const [openAddons, setOpenAddons] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    document.title = "Accounting & Corporate Tax Pricing Dubai | Dias UAE";
+    const title = "Transparent Accounting Packages Dubai | From AED 400/mo";
+    const desc = "No hidden fees. Fixed-price monthly accounting, Corporate Tax (9%) & VAT compliance packages for UAE Mainland & Free Zone businesses. View all pricing tiers!";
+    document.title = title;
+
+    const upsertMeta = (attr: "name" | "property", key: string, content: string) => {
+      let el = document.querySelector(`meta[${attr}="${key}"]`);
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute(attr, key);
+        document.head.appendChild(el);
+      }
+      el.setAttribute("content", content);
+    };
+
+    upsertMeta("name", "title", title);
+    upsertMeta("name", "description", desc);
+    upsertMeta("name", "keywords", "accounting solutions in uae, transparent pricing tax solutions uae, monthly accounting package dubai, fixed fee bookkeeping uae, corporate tax return fee");
+    upsertMeta("property", "og:title", title);
+    upsertMeta("property", "og:description", desc);
+    upsertMeta("name", "twitter:title", title);
+    upsertMeta("name", "twitter:description", desc);
+
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
 

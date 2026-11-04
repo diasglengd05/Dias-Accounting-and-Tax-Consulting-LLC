@@ -1557,8 +1557,8 @@ All taxable entities (including Free Zone companies) **MUST** register for Corpo
   },
   {
     id: "vat-compliance-checklist",
-    title: "The Ultimate VAT Compliance Checklist for UAE Businesses",
-    summary: "Avoid severe FTA fines. Review our actionable checklist covering tax invoices, output VAT, input VAT recoveries, and record keeping rules.",
+    title: "Top Tax Advisory & VAT Compliance Checklist for UAE SMEs and Free Zone Companies",
+    summary: "Authoritative tax advisory and VAT compliance checklist for UAE SMEs and Free Zones. Actionable guidance on tax invoices, input VAT recoveries, 5% return filing, and eliminating FTA fines.",
     content: `Since its implementation in 2018, the UAE Value Added Tax (VAT) of 5% has been a standard element of business. However, the Federal Tax Authority (FTA) has recently increased audits and strict penalties for clerical mistakes. 
 
 Review this comprehensive checklist to ensure your business remains fully compliant.

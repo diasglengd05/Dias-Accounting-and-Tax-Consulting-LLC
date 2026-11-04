@@ -41,7 +41,28 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
   const [selectedService, setSelectedService] = useState<Service | null>(null);
 
   useEffect(() => {
-    document.title = "Accounting, Corporate Tax & VAT Services Dubai | Dias UAE";
+    const title = "Tax & Accounting Services Dubai | FTA Tax Firm | Dias UAE";
+    const desc = "Premier tax and accounting services in Dubai & UAE. Certified FTA tax agents for Corporate Tax (9%), VAT & bookkeeping. Schedule your free consultation!";
+    document.title = title;
+
+    const upsertMeta = (attr: "name" | "property", key: string, content: string) => {
+      let el = document.querySelector(`meta[${attr}="${key}"]`);
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute(attr, key);
+        document.head.appendChild(el);
+      }
+      el.setAttribute("content", content);
+    };
+
+    upsertMeta("name", "title", title);
+    upsertMeta("name", "description", desc);
+    upsertMeta("name", "keywords", "tax and accounting services, tax accounting services, accounting services uae, tax firms in uae, tax services in dubai, corporate tax advisory uae, vat compliance dubai");
+    upsertMeta("property", "og:title", title);
+    upsertMeta("property", "og:description", desc);
+    upsertMeta("name", "twitter:title", title);
+    upsertMeta("name", "twitter:description", desc);
+
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
 

@@ -50,11 +50,11 @@ export const SECTION_SEO_MAP_EN: Record<string, SEOConfig> = {
     ogImage: "/api/og?title=About+Glen+Dias+%26+Certified+Tax+Advisors+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Zero+Penalty+Guarantee&readTime=15%2B+Yrs+Exp",
   },
   pricing: {
-    title: "Transparent Accounting & Corporate Tax Advisory Fees UAE | Dias UAE",
-    description: "Flat-fee monthly accounting services, VAT compliance, backlog accounting, and UAE Corporate Tax advisory packages starting from AED 500 for Mainland and Free Zone companies.",
-    keywords: "tax consulting fees uae, accounting services cost dubai, corporate tax filing fee uae, backlog accounting package dubai, monthly bookkeeping price uae",
+    title: "Transparent Accounting Packages Dubai | From AED 400/mo",
+    description: "No hidden fees. Fixed-price monthly accounting, Corporate Tax (9%) & VAT compliance packages for UAE Mainland & Free Zone businesses. View all pricing tiers!",
+    keywords: "accounting solutions in uae, transparent pricing tax solutions uae, monthly accounting package dubai, fixed fee bookkeeping uae, corporate tax return fee, accounting services cost dubai",
     hash: "#pricing",
-    ogImage: "/api/og?title=Fixed-Fee+UAE+Accounting+%26+Corporate+Tax+Packages&author=Dias+Tax+Team&role=Transparent+Fee+Schedule&tag=From+AED+500&readTime=Zero+Hidden+Fees",
+    ogImage: "/api/og?title=Fixed-Fee+UAE+Accounting+%26+Corporate+Tax+Packages&author=Dias+Tax+Team&role=Transparent+Fee+Schedule&tag=From+AED+400&readTime=Zero+Hidden+Fees",
   },
   jurisdictions: {
     title: "Dubai & UAE Free Zone Tax Compliance | SHAMS, DMCC, IFZA, DIFC | Dias UAE",

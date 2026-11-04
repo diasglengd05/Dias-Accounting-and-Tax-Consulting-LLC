@@ -1155,8 +1155,11 @@ function MainApp() {
                     Specialized Regulatory Practice Areas
                   </span>
                   <h2 className="font-display text-2xl sm:text-3xl font-bold text-navy-950 tracking-tight mt-1">
-                    Tax Consulting Services in UAE &amp; Tax Advisory Services in Dubai
+                    Professional Tax and Accounting Services in Dubai &amp; UAE
                   </h2>
+                  <p className="text-slate-600 text-xs sm:text-sm mt-2 max-w-3xl leading-relaxed">
+                    Navigating the UAE&apos;s financial landscape requires certified expertise. Dias Accounting and Tax Consulting LLC provides end-to-end accounting services, statutory bookkeeping, and FTA-accredited tax advisory to keep your business fully compliant with Federal Decree-Law No. 47 of 2022 (Corporate Tax) and Federal Decree-Law No. 8 of 2017 (VAT).
+                  </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
                   <a
@@ -1189,6 +1192,16 @@ function MainApp() {
                   >
                     Dividend Audit &amp; Profit Extraction →
                   </a>
+                  <a
+                    href="/pricing"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigateTo("/pricing");
+                    }}
+                    className="px-3 py-1.5 rounded-lg bg-gold-500/10 border border-gold-400 text-navy-950 hover:bg-gold-500 hover:text-navy-950 transition-colors"
+                  >
+                    Fixed-Fee Packages from AED 400/mo →
+                  </a>
                 </div>
               </div>
 
@@ -1201,10 +1214,10 @@ function MainApp() {
                     <span className="text-xs font-mono text-slate-400">Pillar 01</span>
                   </div>
                   <h3 className="font-display text-lg font-bold text-navy-950">
-                    Corporate Tax Advisory &amp; 0% Free Zone QFZP Structuring in Dubai
+                    Corporate Tax Advisory, Tax Planning &amp; Tax Filing Services in UAE
                   </h3>
                   <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
-                    Our <strong>tax advisory services in Dubai</strong> guide mainland LLCs and Free Zone enterprises through every phase of the UAE 9% Corporate Tax regime. We manage timely EmaraTax registration to eliminate AED 10,000 late penalties, evaluate <strong>Small Business Relief (0% tax on revenue up to AED 3,000,000 through 2026)</strong>, and structure <strong>Qualifying Free Zone Person (QFZP)</strong> substance, de-minimis thresholds, and Arm&apos;s Length Transfer Pricing documentation.
+                    As one of the premier <strong>tax firms in UAE</strong>, our <strong>tax advisory services in Dubai</strong> guide mainland LLCs and Free Zone enterprises through every phase of the UAE 9% Corporate Tax regime. We provide certified <strong>tax filing services in UAE</strong> on EmaraTax to eliminate the AED 10,000 late registration penalty under Cabinet Decision No. 75, provide strategic <strong>tax planning services in Dubai</strong>, evaluate <strong>Small Business Relief (0% tax on revenue up to AED 3,000,000)</strong>, and structure <strong>Qualifying Free Zone Person (QFZP)</strong> substance and Transfer Pricing documentation.
                   </p>
                 </article>
 
@@ -1216,10 +1229,10 @@ function MainApp() {
                     <span className="text-xs font-mono text-slate-400">Pillar 02</span>
                   </div>
                   <h3 className="font-display text-lg font-bold text-navy-950">
-                    Value Added Tax (5% VAT) Compliance, Refunds &amp; Voluntary Disclosures
+                    Taxation Services in Dubai &amp; VAT 201 Return Compliance UAE
                   </h3>
                   <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
-                    Comprehensive <strong>VAT compliance in UAE</strong> covering mandatory (AED 375,000) and voluntary (AED 187,500) TRN registration, quarterly and monthly <strong>VAT 201 return filing</strong>, Reverse Charge Mechanism (RCM) verification on imports, Designated Zone cross-border supply rules, FTA Voluntary Disclosures (Form 211), and penalty reconsideration submissions.
+                    Our full-suite <strong>taxation services in Dubai</strong> cover mandatory (AED 375,000) and voluntary (AED 187,500) TRN registration, quarterly <strong>VAT 201 return filing</strong>, input VAT recovery maximization, Reverse Charge Mechanism (RCM) on cross-border services, FTA Voluntary Disclosures (Form 211), and penalty reconsideration submissions under certified <strong>tax consulting services in UAE</strong>.
                   </p>
                 </article>
 
@@ -1231,10 +1244,10 @@ function MainApp() {
                     <span className="text-xs font-mono text-slate-400">Pillar 03</span>
                   </div>
                   <h3 className="font-display text-lg font-bold text-navy-950">
-                    IFRS Accounting Services &amp; Forensic Backlog Accounting in UAE
+                    Accounting Services UAE &amp; Tax Accounting Services in Dubai
                   </h3>
                   <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
-                    Whether your company needs ongoing monthly bookkeeping on Zoho Books, Xero, QuickBooks, or TallyPrime, or rapid <strong>backlog accounting</strong> to reconstruct 1 to 5+ years of historical ledgers, our certified accountants deliver FTA-compliant Trial Balances, Profit &amp; Loss statements, Balance Sheets, and audit-ready schedules within 7 to 14 business days.
+                    Top-tier <strong>accounting services in UAE</strong> and specialized <strong>tax accounting services</strong> for corporate consultants, commercial companies, and tech startups. Whether your enterprise needs ongoing monthly bookkeeping on Zoho Books, Xero, QuickBooks, or Wafeq, or rapid <strong>backlog accounting</strong> to reconstruct historical ledgers, our certified accountants deliver audit-ready Trial Balances, P&amp;L reports, and Balance Sheets.
                   </p>
                 </article>
 
@@ -1246,10 +1259,10 @@ function MainApp() {
                     <span className="text-xs font-mono text-slate-400">Pillar 04</span>
                   </div>
                   <h3 className="font-display text-lg font-bold text-navy-950">
-                    Free Zone Business Support, Licensing &amp; Statutory Audit Readiness
+                    Accounting Consulting in Dubai &amp; Free Zone Business Incorporation
                   </h3>
                   <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
-                    End-to-end <strong>Free Zone business support</strong> across SHAMS, IFZA, DMCC, Meydan, JAFZA, DIFC, DTEC, ADGM, and RAKEZ, alongside Dubai DET Mainland entities. We handle trade license incorporation, corporate bank account onboarding, Golden Visa &amp; investor residency processing, and statutory financial audit coordination.
+                    Strategic <strong>accounting consulting in Dubai</strong> and turnkey company setup across SHAMS, IFZA, DMCC, Meydan, DIFC, DTEC, and Dubai Mainland (DET). We handle trade licenses, corporate bank account onboarding, investor visa processing, and statutory financial audit coordination with transparent retainers starting from AED 400/month.
                   </p>
                 </article>
               </div>
