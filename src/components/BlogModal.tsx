@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { X, ExternalLink, Sparkles, Globe, CheckCircle2, PhoneCall } from "lucide-react";
+import { X, ExternalLink, Sparkles, Globe, CheckCircle2, PhoneCall, Video, FileText, Download, Play } from "lucide-react";
 import { BlogPost } from "../types";
 import { ArticleContentRenderer } from "./ArticleContentRenderer";
 
@@ -198,6 +198,70 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact }
                   <li key={idx} className="leading-normal">{trend}</li>
                 ))}
               </ul>
+            </div>
+          )}
+
+          {/* Official Video Broadcast Player (YouTube & Meta) */}
+          {blog.videoUrl && (
+            <div className="mb-8 rounded-2xl overflow-hidden border border-slate-200 bg-navy-950 shadow-lg">
+              <div className="bg-navy-900 px-4 py-2.5 border-b border-navy-800 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
+                  <span className="text-xs font-display font-bold text-white tracking-wide">
+                    {blog.videoTitle || "Executive Video Briefing (YouTube & Meta) | Glen Dias"}
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono text-gold-400 bg-gold-500/10 border border-gold-400/30 px-2 py-0.5 rounded-full">
+                  Official Broadcast
+                </span>
+              </div>
+              <div className="p-3 sm:p-4 bg-slate-900/60">
+                <video
+                  src={blog.videoUrl}
+                  controls
+                  playsInline
+                  preload="metadata"
+                  className="w-full max-h-[440px] rounded-xl bg-black object-contain mx-auto shadow-md"
+                />
+              </div>
+              <div className="px-4 py-2.5 bg-navy-950 text-slate-400 text-xs flex items-center justify-between">
+                <span>Glen Dias, Managing Director &amp; Certified Tax Advisor</span>
+                <span className="text-gold-400 font-medium">Dias Accounting &amp; Tax Consulting LLC</span>
+              </div>
+            </div>
+          )}
+
+          {/* LinkedIn Executive Presentation Slides Card */}
+          {blog.slidesUrl && (
+            <div className="mb-8 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-slate-50 via-amber-50/40 to-slate-50 border border-gold-300/60 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3.5">
+                <div className="w-12 h-12 rounded-xl bg-[#0077b5]/10 border border-[#0077b5]/20 flex items-center justify-center shrink-0">
+                  <FileText className="w-6 h-6 text-[#0077b5]" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#0077b5] bg-[#0077b5]/10 px-2 py-0.5 rounded">
+                      LinkedIn Carousel
+                    </span>
+                    <span className="text-xs text-slate-400">•</span>
+                    <span className="text-xs text-slate-500 font-medium">Executive Slide Deck</span>
+                  </div>
+                  <h4 className="font-display text-sm font-bold text-navy-950 mt-0.5">
+                    {blog.slidesTitle || "UAE Tax Deadlines Approaching: 9% Corporate Tax Readiness & Bookkeeping"}
+                  </h4>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                <a
+                  href={blog.slidesUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-navy-950 hover:bg-navy-900 text-white font-display font-semibold text-xs transition-colors shadow-xs"
+                >
+                  <ExternalLink className="w-3.5 h-3.5 text-gold-400" />
+                  <span>View Slides (PDF)</span>
+                </a>
+              </div>
             </div>
           )}
 

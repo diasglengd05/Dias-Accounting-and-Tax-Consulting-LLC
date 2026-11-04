@@ -27,6 +27,10 @@ export interface BlogPost {
   isAiGenerated?: boolean;
   generatedAt?: string;
   sourceTrends?: string[];
+  videoUrl?: string;
+  slidesUrl?: string;
+  videoTitle?: string;
+  slidesTitle?: string;
 }
 
 export interface PricingTier {
