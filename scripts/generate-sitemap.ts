@@ -16,7 +16,7 @@ interface SitemapUrl {
   comment?: string;
 }
 
-export function generateSitemapXml(domain = "https://www.diasuae.ae"): string {
+export function generateSitemapXml(domain = "https://diasuae.ae"): string {
   const today = new Date().toISOString().split("T")[0];
 
   const urls: SitemapUrl[] = [
@@ -85,6 +85,34 @@ export function generateSitemapXml(domain = "https://www.diasuae.ae"): string {
       comment: "Consultation Scheduler & Lead Capture",
     },
     // Dedicated High-Authority SEO Service Landing Pages
+    {
+      loc: `${domain}/tax-services-dubai`,
+      lastmod: today,
+      changefreq: "weekly",
+      priority: "0.99",
+      comment: "Dedicated Page: Expert Tax Services in Dubai (VAT & Corporate Tax Agency)",
+    },
+    {
+      loc: `${domain}/accounting-services-uae`,
+      lastmod: today,
+      changefreq: "weekly",
+      priority: "0.99",
+      comment: "Dedicated Page: Trusted Accounting Services UAE (Expert Bookkeeping)",
+    },
+    {
+      loc: `${domain}/tax-planning-difc`,
+      lastmod: today,
+      changefreq: "weekly",
+      priority: "0.99",
+      comment: "Dedicated Page: DIFC Tax Planning Services (Strategic Financial Advisory)",
+    },
+    {
+      loc: `${domain}/blog.html`,
+      lastmod: today,
+      changefreq: "daily",
+      priority: "0.90",
+      comment: "UAE Accounting, Corporate Tax & VAT Knowledge Hub",
+    },
     {
       loc: `${domain}/pricing`,
       lastmod: today,

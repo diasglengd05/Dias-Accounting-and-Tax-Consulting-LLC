@@ -1,12 +1,26 @@
 {
   "hosting": {
     "public": "dist",
+    "cleanUrls": true,
+    "trailingSlash": false,
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
     ],
     "rewrites": [
+      {
+        "source": "/tax-services-dubai",
+        "destination": "/tax-services-dubai.html"
+      },
+      {
+        "source": "/accounting-services-uae",
+        "destination": "/accounting-services-uae.html"
+      },
+      {
+        "source": "/tax-planning-difc",
+        "destination": "/tax-planning-difc.html"
+      },
       {
         "source": "/blog",
         "destination": "/blog.html"
@@ -18,11 +32,33 @@
     ],
     "headers": [
       {
-        "source": "/blog.html",
+        "source": "**/*.html",
         "headers": [
           {
             "key": "Cache-Control",
             "value": "public, max-age=0, must-revalidate"
+          }
+        ]
+      },
+      {
+        "source": "/sitemap.xml",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=3600"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/xml; charset=utf-8"
+          }
+        ]
+      },
+      {
+        "source": "/robots.txt",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=3600"
           }
         ]
       }

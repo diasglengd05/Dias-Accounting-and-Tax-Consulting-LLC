@@ -1896,6 +1896,35 @@ app.post("/api/admin/trigger-daily-blog", verifyAdminToken, async (req, res) => 
 // ==================== VITE & STATIC SERVING ====================
 
 async function bootstrap() {
+  // Serve Dedicated Local SEO Service HTML Landing Pages cleanly
+  app.get(["/tax-services-dubai", "/tax-services-dubai.html"], (_req, res) => {
+    const file = path.join(process.cwd(), "public", "tax-services-dubai.html");
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
+    return res.sendFile(file);
+  });
+
+  app.get(["/accounting-services-uae", "/accounting-services-uae.html"], (_req, res) => {
+    const file = path.join(process.cwd(), "public", "accounting-services-uae.html");
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
+    return res.sendFile(file);
+  });
+
+  app.get(["/tax-planning-difc", "/tax-planning-difc.html"], (_req, res) => {
+    const file = path.join(process.cwd(), "public", "tax-planning-difc.html");
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
+    return res.sendFile(file);
+  });
+
+  app.get(["/blog", "/blog.html"], (_req, res) => {
+    const file = path.join(process.cwd(), "public", "blog.html");
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
+    return res.sendFile(file);
+  });
+
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true, hmr: false },

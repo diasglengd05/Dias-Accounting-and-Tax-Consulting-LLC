@@ -173,6 +173,36 @@ export const PageFooter: React.FC<PageFooterProps> = ({
             <ul className="space-y-2 text-xs text-slate-400">
               <li>
                 <a
+                  href="/tax-services-dubai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-gold-300 transition-colors block text-gold-400 font-semibold"
+                >
+                  Expert Tax Services Dubai ↗
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/accounting-services-uae"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-gold-300 transition-colors block text-gold-400 font-semibold"
+                >
+                  Trusted Accounting Services UAE ↗
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/tax-planning-difc"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-gold-300 transition-colors block text-gold-400 font-semibold"
+                >
+                  DIFC Tax Planning Services ↗
+                </a>
+              </li>
+              <li>
+                <a
                   href="/small-business-tax-relief"
                   onClick={(e) => handleLink(e, "/small-business-tax-relief")}
                   className="hover:text-gold-300 transition-colors block text-gold-400 font-semibold"

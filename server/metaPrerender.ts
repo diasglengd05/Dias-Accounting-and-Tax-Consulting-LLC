@@ -281,6 +281,42 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
   }
 
   // 5. Dedicated SEO Service Landing Pages
+  if (pathname === "/tax-services-dubai" || pathname === "/tax-services-dubai.html") {
+    return {
+      title: "Expert Tax Services in Dubai | VAT & Corporate Tax Agency",
+      description: "Avoid penalties and stay compliant with expert tax services in Dubai. Dias Accounting and Tax Consulting LLC provides corporate tax, VAT, and tax preparation services.",
+      keywords: "tax services in dubai, corporate tax agency dubai, vat compliance dubai, tax preparation services uae, fta tax agent dubai, emaratax corporate tax filing",
+      url: `${baseUrl}/tax-services-dubai`,
+      ogImage: `${baseUrl}/api/og?title=Expert+Tax+Services+in+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Tax+Agency+Dubai`,
+      ogType: "website",
+      isArabic,
+    };
+  }
+
+  if (pathname === "/accounting-services-uae" || pathname === "/accounting-services-uae.html") {
+    return {
+      title: "Trusted Accounting Services UAE | Expert Bookkeeping",
+      description: "Scale your business with premier accounting services in the UAE. From DTEC startups to established mainland firms, get accurate bookkeeping and financial reporting.",
+      keywords: "accounting services uae, bookkeeping dubai, chartered accountants dubai, outsourced accounting uae, ifrs financial statements dubai, dtec accounting",
+      url: `${baseUrl}/accounting-services-uae`,
+      ogImage: `${baseUrl}/api/og?title=Trusted+Accounting+Services+UAE&author=Glen+Dias&role=Senior+Accounting+Advisor&tag=Bookkeeping+UAE`,
+      ogType: "website",
+      isArabic,
+    };
+  }
+
+  if (pathname === "/tax-planning-difc" || pathname === "/tax-planning-difc.html") {
+    return {
+      title: "DIFC Tax Planning Services | Strategic Financial Advisory",
+      description: "Optimize your corporate structure with specialized DIFC tax planning services. We provide strategic financial and tax advisory for businesses operating in Dubai.",
+      keywords: "difc tax planning services, tax consultant in difc, qualifying free zone person difc, qfzp 0% tax dubai, transfer pricing difc, holding company tax uae",
+      url: `${baseUrl}/tax-planning-difc`,
+      ogImage: `${baseUrl}/api/og?title=DIFC+Tax+Planning+Services&author=Glen+Dias&role=Senior+Tax+Advisor&tag=DIFC+Advisory`,
+      ogType: "website",
+      isArabic,
+    };
+  }
+
   if (pathname === "/small-business-tax-relief") {
     return {
       title: "Small Business Corporate Tax Relief Dubai | Dias UAE",

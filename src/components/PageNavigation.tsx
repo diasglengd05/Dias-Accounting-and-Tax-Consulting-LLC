@@ -183,6 +183,48 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
                     </span>
                   </a>
                   <a
+                    href="/tax-services-dubai"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col p-2.5 rounded-lg hover:bg-slate-50 transition-colors group/item"
+                  >
+                    <span className="text-xs font-bold text-navy-950 group-hover/item:text-gold-600 transition-colors flex items-center justify-between">
+                      <span>{language === "ar" ? "خدمات الضرائب في دبي" : "Tax Services Dubai"}</span>
+                      <span className="text-[10px] text-gold-600 font-mono font-bold">New Tab ↗</span>
+                    </span>
+                    <span className="text-[11px] text-slate-500 mt-0.5">
+                      {language === "ar" ? "ضريبة الشركات والـ VAT ووكيل ضريبي معتمد" : "Corporate Tax, VAT & FTA Registration"}
+                    </span>
+                  </a>
+                  <a
+                    href="/accounting-services-uae"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col p-2.5 rounded-lg hover:bg-slate-50 transition-colors group/item"
+                  >
+                    <span className="text-xs font-bold text-navy-950 group-hover/item:text-gold-600 transition-colors flex items-center justify-between">
+                      <span>{language === "ar" ? "خدمات المحاسبة في الإمارات" : "Accounting Services UAE"}</span>
+                      <span className="text-[10px] text-gold-600 font-mono font-bold">New Tab ↗</span>
+                    </span>
+                    <span className="text-[11px] text-slate-500 mt-0.5">
+                      {language === "ar" ? "مسك الدفاتر IFRS وتقارير مالية شهرية" : "IFRS Double-Entry Bookkeeping & Reporting"}
+                    </span>
+                  </a>
+                  <a
+                    href="/tax-planning-difc"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col p-2.5 rounded-lg hover:bg-slate-50 transition-colors group/item"
+                  >
+                    <span className="text-xs font-bold text-navy-950 group-hover/item:text-gold-600 transition-colors flex items-center justify-between">
+                      <span>{language === "ar" ? "تخطيط الضرائب في مركز دبي المالي DIFC" : "DIFC Tax Planning"}</span>
+                      <span className="text-[10px] text-gold-600 font-mono font-bold">New Tab ↗</span>
+                    </span>
+                    <span className="text-[11px] text-slate-500 mt-0.5">
+                      {language === "ar" ? "استشارات 0% QFZP وهيكلة الشركات" : "0% QFZP Advisory & Corporate Structuring"}
+                    </span>
+                  </a>
+                  <a
                     href="/dividends-audit"
                     onClick={(e) => handleLinkClick(e, "/dividends-audit")}
                     className="flex flex-col p-2.5 rounded-lg hover:bg-slate-50 transition-colors group/item"
@@ -298,6 +340,9 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
                 { path: "/uae-vat-calculator", label: language === "ar" ? "حاسبة ضريبة القيمة المضافة 5% (صفحة مخصصة)" : "UAE VAT 5% Calculator (Landing Page)" },
                 { path: "/fta-deadlines", label: language === "ar" ? "تقويم مواعيد ومهل الضرائب FTA (صفحة مخصصة)" : "FTA Deadlines & Penalties (Landing Page)" },
                 { path: "/small-business-tax-relief", label: language === "ar" ? "تسهيلات الأعمال الصغيرة (0% حتى 2029)" : "Small Business Tax Relief (AED 3M SBR)" },
+                { path: "/tax-services-dubai", label: language === "ar" ? "خدمات الضرائب في دبي (صفحة مخصصة)" : "Tax Services Dubai (Dedicated Page ↗)" },
+                { path: "/accounting-services-uae", label: language === "ar" ? "خدمات المحاسبة في الإمارات (صفحة مخصصة)" : "Accounting Services UAE (Dedicated Page ↗)" },
+                { path: "/tax-planning-difc", label: language === "ar" ? "تخطيط الضرائب DIFC (صفحة مخصصة)" : "DIFC Tax Planning (Dedicated Page ↗)" },
                 { path: "/difc-dtec-accounting", label: language === "ar" ? "محاسبة وتدقيق DIFC و DTEC" : "DIFC & DTEC Accounting & Audit" },
                 { path: "/dividends-audit", label: language === "ar" ? "تدقيق وتوزيع الأرباح" : "Dividend Audit & Distribution" },
               ].map((hub) => (
