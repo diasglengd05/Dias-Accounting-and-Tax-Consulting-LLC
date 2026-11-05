@@ -461,19 +461,19 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     };
   }
 
-  // 6. Default Fallback (Optimized for #1 Ranking on "tax and accounting services", "tax firms in uae", "tax preparation and planning services")
+  // 6. Default Fallback (Optimized for Homepage)
   return {
     title: isArabic
-      ? "خدمات المحاسبة والضرائب في دبي والإمارات | مكاتب المحاسبة والضرائب المعتمدة | دياز"
-      : "Tax and Accounting Services in Dubai & UAE | Premier Tax Firm | Dias UAE",
+      ? "أفضل شركة استشارات ضريبية ومحاسبة في الإمارات | دياز للمحاسبة"
+      : "Best Tax Consulting & Accounting Firm UAE | Dias Accounting",
     description: isArabic
-      ? "أفضل خدمات المحاسبة والضرائب في دبي والإمارات. استشارات ضريبية معتمدة، مسك الدفاتر المحاسبية، ضريبة الشركات (9%) وتسهيلات الأعمال الصغيرة (0%)، وإعداد وتخطيط الضرائب لكافة الإمارات."
-      : "Top-ranked tax and accounting services in Dubai & UAE. Leading tax firm providing Corporate Tax (9%), 0% Small Business Relief, VAT compliance, tax preparation & planning services, and accounting consultancy across all 7 Emirates.",
+      ? "استشارات ضريبية متخصصة للشركات، وامتثال لضريبة القيمة المضافة، وخدمات محاسبية لشركات البر الرئيسي والمناطق الحرة في الإمارات. احجز استشارتك المجانية."
+      : "Expert corporate tax consulting, VAT compliance, and accounting services for UAE mainland & Free Zone businesses. Ensure FTA compliance. Book a free consult.",
     keywords: isArabic
       ? "خدمات المحاسبة والضرائب في دبي, شركات الضرائب في الإمارات, خدمات إعداد وتخطيط الضرائب, أفضل مكتب محاسبة في الإمارات, تدقيق مخاطر الغرامات 60 ثانية, تمثيل دفاعي الهيئة الاتحادية للضرائب, خيارات إعفاء ضريبة الشركات 0%, تسهيلات الأعمال الصغيرة 3 مليون, أفضل شركات المحاسبة في دبي, مستشار ضريبي معتمد, ضريبة الشركات دبي 9%, تسجيل ضريبة القيمة المضافة"
       : "tax and accounting services, tax accounting services, accounting services uae, tax firms in uae, tax services in dubai, tax and financial planning services, tax preparation and planning services, what tax advisory and accounting packages are available in dubai, accounting consultancy in dubai, taxation services dubai, accounting advisory services uae, accounting services for consultants dubai, tax accounting services in dubai, audit tax & pro in uae, tax and accounting services in uae, online accounting services in uae, auditing firms in sharjah, dental tax consultants, Best Accounting Firms in Dubai UAE, Best Accounting Firm in Dubai, FTA Registered Tax Agency Dubai, Chartered Accountants in Dubai",
     url: `${baseUrl}/`,
-    ogImage: `${baseUrl}/api/og?title=Tax+and+Accounting+Services+in+Dubai+%26+UAE&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Premier+Tax+Firm&readTime=FTA+Certified`,
+    ogImage: `${baseUrl}/api/og?title=Best+Tax+Consulting+%26+Accounting+Firm+UAE&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Dias+Accounting&readTime=FTA+Certified`,
     ogType: "business.business",
     isArabic,
   };
