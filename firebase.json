@@ -10,6 +10,10 @@
     ],
     "rewrites": [
       {
+        "source": "/corporate-tax-consulting-dubai",
+        "destination": "/corporate-tax-consulting-dubai.html"
+      },
+      {
         "source": "/tax-services-dubai",
         "destination": "/tax-services-dubai.html"
       },

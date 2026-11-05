@@ -1897,6 +1897,13 @@ app.post("/api/admin/trigger-daily-blog", verifyAdminToken, async (req, res) => 
 
 async function bootstrap() {
   // Serve Dedicated Local SEO Service HTML Landing Pages cleanly
+  app.get(["/corporate-tax-consulting-dubai", "/corporate-tax-consulting-dubai.html"], (_req, res) => {
+    const file = path.join(process.cwd(), "public", "corporate-tax-consulting-dubai.html");
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
+    return res.sendFile(file);
+  });
+
   app.get(["/tax-services-dubai", "/tax-services-dubai.html"], (_req, res) => {
     const file = path.join(process.cwd(), "public", "tax-services-dubai.html");
     res.setHeader("Content-Type", "text/html; charset=utf-8");

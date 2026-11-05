@@ -107,6 +107,13 @@ export function generateSitemapXml(domain = "https://diasuae.ae"): string {
       comment: "Dedicated Page: DIFC Tax Planning Services (Strategic Financial Advisory)",
     },
     {
+      loc: `${domain}/corporate-tax-consulting-dubai`,
+      lastmod: today,
+      changefreq: "weekly",
+      priority: "0.99",
+      comment: "Dedicated Page: Corporate Tax Services UAE Mainland & Free Zone",
+    },
+    {
       loc: `${domain}/blog.html`,
       lastmod: today,
       changefreq: "daily",

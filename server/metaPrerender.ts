@@ -317,6 +317,18 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     };
   }
 
+  if (pathname === "/corporate-tax-consulting-dubai" || pathname === "/corporate-tax-consulting-dubai.html") {
+    return {
+      title: "Corporate Tax Services UAE Mainland & Free Zone | Dias Accounting",
+      description: "Navigate the UAE 9% corporate tax regime with confidence. From registration to QFZP assessments and return filing, ensure 100% FTA compliance.",
+      keywords: "corporate tax consulting dubai, corporate tax uae, qfzp assessment 0% tax, uae corporate tax registration, emaratax corporate tax filing, shams free zone tax consultant",
+      url: `${baseUrl}/corporate-tax-consulting-dubai`,
+      ogImage: `${baseUrl}/api/og?title=Corporate+Tax+Services+UAE+Mainland+%26+Free+Zone&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Corporate+Tax`,
+      ogType: "website",
+      isArabic,
+    };
+  }
+
   if (pathname === "/small-business-tax-relief") {
     return {
       title: "Small Business Corporate Tax Relief Dubai | Dias UAE",

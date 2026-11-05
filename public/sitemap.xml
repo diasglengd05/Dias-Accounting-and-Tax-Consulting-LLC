@@ -87,6 +87,13 @@
     <changefreq>weekly</changefreq>
     <priority>0.99</priority>
   </url>
+  <!-- Dedicated Page: Corporate Tax Services UAE Mainland & Free Zone -->
+  <url>
+    <loc>https://diasuae.ae/corporate-tax-consulting-dubai</loc>
+    <lastmod>2026-11-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.99</priority>
+  </url>
   <!-- UAE Accounting, Corporate Tax & VAT Knowledge Hub -->
   <url>
     <loc>https://diasuae.ae/blog.html</loc>

@@ -183,6 +183,16 @@ export const PageFooter: React.FC<PageFooterProps> = ({
               </li>
               <li>
                 <a
+                  href="/corporate-tax-consulting-dubai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-gold-300 transition-colors block text-gold-400 font-semibold"
+                >
+                  Corporate Tax Services UAE (Mainland &amp; Free Zone) ↗
+                </a>
+              </li>
+              <li>
+                <a
                   href="/accounting-services-uae"
                   target="_blank"
                   rel="noopener noreferrer"
