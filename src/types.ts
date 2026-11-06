@@ -31,6 +31,7 @@ export interface BlogPost {
   slidesUrl?: string;
   videoTitle?: string;
   slidesTitle?: string;
+  imageUrl?: string;
 }
 
 export interface PricingTier {

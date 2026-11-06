@@ -22,6 +22,22 @@ export interface MetaOverride {
 }
 
 const KNOWN_BLOGS: Record<string, { title: string; summary: string; author: string; role: string; tag: string; date: string }> = {
+  "dias-accounting-uae-financial-compliance-excellence": {
+    title: "The Gold Standard in UAE Financial Compliance | Dias Accounting Dubai",
+    summary: "Partner with Dias Accounting & Tax Consulting LLC, an FTA Registered Tax Agency in Dubai & Sharjah. Fixed-fee SME accounting, VAT & 9% Corporate Tax compliance.",
+    author: "Glen Dias",
+    role: "Managing Director & FTA Registered Tax Agent",
+    tag: "Corporate Excellence & Compliance",
+    date: "2026-11-06",
+  },
+  "fixed-fee-accounting-packages-uae-sme-pricing": {
+    title: "Fixed-Fee Accounting for UAE SMEs: Complete Tax & Bookkeeping Packages from AED 500/Month",
+    summary: "No hidden fees. Fixed-fee UAE SME accounting from AED 500/mo. Backlog books, VAT & 9% Corporate Tax by an FTA Registered Tax Agency. See plans at diasuae.ae/pricing!",
+    author: "Glen Dias",
+    role: "Managing Director & FTA Registered Tax Agent",
+    tag: "Fixed-Fee Accounting & Pricing",
+    date: "2026-11-06",
+  },
   "uae-tax-deadlines-corporate-tax-vat-bookkeeping-guide-2026": {
     title: "UAE Tax Deadlines Approaching: The 2026 Executive Guide to 9% Corporate Tax Readiness, VAT Filing & Bookkeeping in Dubai & UAE",
     summary: "Struggling with UAE Tax Deadlines? From quarterly VAT returns to the 9% Corporate Tax, compliance is critical. Learn how to maintain audit-ready bookkeeping under IFRS, execute seamless EmaraTax registration, claim 0% Small Business Relief, and avoid severe FTA penalties with Glen Dias.",
