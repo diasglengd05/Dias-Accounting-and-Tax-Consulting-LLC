@@ -65,11 +65,11 @@ export const AnimatedSection: React.FC<AnimatedSectionProps> = ({
       }}
       viewport={{
         once: true,
-        amount,
-        margin: "-10px 0px -10px 0px",
+        amount: typeof amount === "number" ? Math.min(amount, 0.05) : amount,
+        margin: "80px 0px 80px 0px",
       }}
       transition={{
-        duration: 0.45,
+        duration: 0.35,
         delay,
         ease: [0.16, 1, 0.3, 1],
       }}

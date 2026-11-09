@@ -4,8 +4,8 @@ import {
   X,
   Phone,
   ArrowRight,
-  ChevronDown,
   ChevronRight,
+  MessageCircle,
 } from "lucide-react";
 import DiasLogo from "./DiasLogo";
 import ComplianceAlertBanner from "./ComplianceAlertBanner";
@@ -26,36 +26,38 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
   const { t, language } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const navLinks = [
-    { path: "/services", label: t.nav.services },
-    { path: "/company-setup", label: language === "ar" ? "تأسيس الشركات" : "Company Setup" },
-    { path: "/pricing", label: t.nav.pricing },
-    { path: "/uae-tax-planner", label: language === "ar" ? "حاسبة الضرائب" : "Tax Planner" },
-    { path: "/why-choose-us", label: language === "ar" ? "لماذا دياس؟" : "Why Dias" },
-    { path: "/blogs", label: language === "ar" ? "الرؤى والمدونة" : "Insights" },
-    { path: "/testimonials", label: t.nav.reviews },
-    { path: "/faqs", label: t.nav.faq },
-  ];
-
   const handleLinkClick = (e: React.MouseEvent, path: string) => {
     e.preventDefault();
     setMobileMenuOpen(false);
     onNavigate(path);
   };
 
+  // Exactly requested nav order: Home, Services, Tax Planner, Pricing, About, Testimonials, Blog, FAQs, Contact
+  const navItems = [
+    { path: "/", label: t.nav.home || "Home" },
+    { path: "/services", label: t.nav.services || "Services" },
+    { path: "/uae-tax-planner", label: language === "ar" ? "حاسبة الضرائب" : "Tax Planner" },
+    { path: "/pricing", label: t.nav.pricing || "Pricing" },
+    { path: "/about", label: language === "ar" ? "من نحن" : "About" },
+    { path: "/testimonials", label: t.nav.reviews || "Testimonials" },
+    { path: "/blogs", label: language === "ar" ? "المدونة" : "Blog" },
+    { path: "/faqs", label: t.nav.faq || "FAQs" },
+    { path: "/contact", label: language === "ar" ? "تواصل معنا" : "Contact" },
+  ];
+
   return (
     <>
       {/* 0. Top FTA Compliance Alert Banner */}
       <ComplianceAlertBanner onOpenAudit={onOpenAudit} />
 
-      {/* 1. Header / Navigation - Architectural Top Bar */}
+      {/* 1. Header / Navigation - Sticky on Desktop & Mobile */}
       <header
         role="banner"
         className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 transition-all duration-200"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4 lg:gap-6">
           
-          {/* Zone 1: Brand Wordmark & Logo */}
+          {/* Zone 1: Brand Logo */}
           <div className="flex items-center shrink-0">
             <a
               href="/"
@@ -73,216 +75,77 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
           </div>
 
           {/* Zone 2: Navigation Links */}
-          <nav aria-label="Main Navigation" className="hidden lg:flex items-center gap-5 xl:gap-6">
-            {navLinks.map((link) => {
+          <nav aria-label="Main Navigation" className="hidden xl:flex items-center gap-4 xl:gap-5">
+            {navItems.map((item) => {
               const isActive =
-                currentPath === link.path ||
-                (link.path === "/services" && currentPath.startsWith("/service")) ||
-                (link.path === "/blogs" && currentPath.startsWith("/blog")) ||
-                (link.path === "/testimonials" && currentPath === "/reviews");
+                currentPath === item.path ||
+                (item.path === "/services" && currentPath.startsWith("/service")) ||
+                (item.path === "/blogs" && currentPath.startsWith("/blog")) ||
+                (item.path === "/about" && currentPath === "/why-choose-us");
 
               return (
                 <a
-                  key={link.path}
-                  href={link.path}
-                  onClick={(e) => handleLinkClick(e, link.path)}
+                  key={item.path}
+                  href={item.path}
+                  onClick={(e) => handleLinkClick(e, item.path)}
                   className={`relative py-2 text-xs font-semibold tracking-tight whitespace-nowrap shrink-0 transition-colors duration-150 border-b-2 ${
                     isActive
                       ? "text-navy-950 border-gold-500 font-bold"
                       : "text-slate-600 border-transparent hover:text-navy-950 hover:border-gold-400/60"
                   }`}
                 >
-                  {link.label}
+                  {item.label}
                 </a>
               );
             })}
-
-            {/* Dedicated SEO Advisory Hubs Dropdown */}
-            <div className="relative group">
-              <button
-                type="button"
-                className="py-2 text-xs font-semibold tracking-tight whitespace-nowrap shrink-0 flex items-center gap-1 text-slate-600 hover:text-navy-950 border-b-2 border-transparent hover:border-gold-400/60 transition-colors duration-150 cursor-pointer"
-                aria-haspopup="true"
-                aria-expanded="false"
-              >
-                <span>{language === "ar" ? "المراكز المتخصصة" : "Practice Hubs"}</span>
-                <ChevronDown className="w-3.5 h-3.5 text-gold-600 transition-transform duration-150 group-hover:rotate-180" />
-              </button>
-              <div className="absolute top-full right-0 pt-2 w-64 hidden group-hover:block z-50">
-                <div className="bg-white rounded-xl shadow-lg border border-slate-200/90 p-2 space-y-1">
-                  <a
-                    href="/uae-tax-planner"
-                    onClick={(e) => handleLinkClick(e, "/uae-tax-planner")}
-                    className="flex flex-col p-2.5 rounded-lg hover:bg-slate-50 transition-colors group/item"
-                  >
-                    <span className="text-xs font-bold text-navy-950 group-hover/item:text-gold-600 transition-colors">
-                      {language === "ar" ? "حاسبة وخطط الضرائب 2026" : "UAE Tax Planner 2026"}
-                    </span>
-                    <span className="text-[11px] text-slate-500 mt-0.5">
-                      {language === "ar" ? "حساب ضريبة الشركات والـ VAT والمواعيد" : "Corporate Tax, VAT & SBR Estimator"}
-                    </span>
-                  </a>
-                  <a
-                    href="/corporate-tax-calculator"
-                    onClick={(e) => handleLinkClick(e, "/corporate-tax-calculator")}
-                    className="flex flex-col p-2.5 rounded-lg hover:bg-slate-50 transition-colors group/item"
-                  >
-                    <span className="text-xs font-bold text-navy-950 group-hover/item:text-gold-600 transition-colors">
-                      {language === "ar" ? "حاسبة ضريبة الشركات وتوفير 0%" : "Corporate Tax Calculator (9%)"}
-                    </span>
-                    <span className="text-[11px] text-slate-500 mt-0.5">
-                      {language === "ar" ? "وفر حتى 270,000 درهم قانونياً" : "Claim up to AED 270K in tax relief"}
-                    </span>
-                  </a>
-                  <a
-                    href="/uae-vat-calculator"
-                    onClick={(e) => handleLinkClick(e, "/uae-vat-calculator")}
-                    className="flex flex-col p-2.5 rounded-lg hover:bg-slate-50 transition-colors group/item"
-                  >
-                    <span className="text-xs font-bold text-navy-950 group-hover/item:text-emerald-600 transition-colors">
-                      {language === "ar" ? "حاسبة ضريبة القيمة المضافة 5%" : "UAE VAT Calculator & 5% Hub"}
-                    </span>
-                    <span className="text-[11px] text-slate-500 mt-0.5">
-                      {language === "ar" ? "إقرار 201 واسترداد الضريبة" : "Form 201 & Input Tax Recovery"}
-                    </span>
-                  </a>
-                  <a
-                    href="/fta-deadlines"
-                    onClick={(e) => handleLinkClick(e, "/fta-deadlines")}
-                    className="flex flex-col p-2.5 rounded-lg hover:bg-slate-50 transition-colors group/item"
-                  >
-                    <span className="text-xs font-bold text-navy-950 group-hover/item:text-gold-600 transition-colors">
-                      {language === "ar" ? "تقويم مواعيد ومهل الضرائب FTA" : "FTA Deadlines & Penalty Calendar"}
-                    </span>
-                    <span className="text-[11px] text-slate-500 mt-0.5">
-                      {language === "ar" ? "حماية من غرامة 10,000 درهم" : "AED 10,000 Penalty Shield (9 Months)"}
-                    </span>
-                  </a>
-                  <a
-                    href="/small-business-tax-relief"
-                    onClick={(e) => handleLinkClick(e, "/small-business-tax-relief")}
-                    className="flex flex-col p-2.5 rounded-lg hover:bg-slate-50 transition-colors group/item"
-                  >
-                    <span className="text-xs font-bold text-navy-950 group-hover/item:text-gold-600 transition-colors">
-                      {language === "ar" ? "تسهيلات الأعمال الصغيرة (0%)" : "Small Business Tax Relief"}
-                    </span>
-                    <span className="text-[11px] text-slate-500 mt-0.5">
-                      {language === "ar" ? "إعفاء حتى 2029 (3 ملايين درهم)" : "AED 3M SBR extended to 2029"}
-                    </span>
-                  </a>
-                  <a
-                    href="/difc-dtec-accounting"
-                    onClick={(e) => handleLinkClick(e, "/difc-dtec-accounting")}
-                    className="flex flex-col p-2.5 rounded-lg hover:bg-slate-50 transition-colors group/item"
-                  >
-                    <span className="text-xs font-bold text-navy-950 group-hover/item:text-gold-600 transition-colors">
-                      {language === "ar" ? "محاسبة وتدقيق DIFC و DTEC" : "DIFC & DTEC Accounting"}
-                    </span>
-                    <span className="text-[11px] text-slate-500 mt-0.5">
-                      {language === "ar" ? "امتثال 0% QFZP وتدقيق DFSA" : "0% QFZP & DFSA audit readiness"}
-                    </span>
-                  </a>
-                  <a
-                    href="/tax-services-dubai"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex flex-col p-2.5 rounded-lg hover:bg-slate-50 transition-colors group/item"
-                  >
-                    <span className="text-xs font-bold text-navy-950 group-hover/item:text-gold-600 transition-colors flex items-center justify-between">
-                      <span>{language === "ar" ? "خدمات الضرائب في دبي" : "Tax Services Dubai"}</span>
-                      <span className="text-[10px] text-gold-600 font-mono font-bold">New Tab ↗</span>
-                    </span>
-                    <span className="text-[11px] text-slate-500 mt-0.5">
-                      {language === "ar" ? "ضريبة الشركات والـ VAT ووكيل ضريبي معتمد" : "Corporate Tax, VAT & FTA Registration"}
-                    </span>
-                  </a>
-                  <a
-                    href="/corporate-tax-consulting-dubai"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex flex-col p-2.5 rounded-lg hover:bg-slate-50 transition-colors group/item"
-                  >
-                    <span className="text-xs font-bold text-navy-950 group-hover/item:text-gold-600 transition-colors flex items-center justify-between">
-                      <span>{language === "ar" ? "استشارات ضريبة الشركات دبي" : "Corporate Tax Dubai"}</span>
-                      <span className="text-[10px] text-gold-600 font-mono font-bold">New Tab ↗</span>
-                    </span>
-                    <span className="text-[11px] text-slate-500 mt-0.5">
-                      {language === "ar" ? "خدمات ضريبة الشركات 9% والمناطق الحرة QFZP" : "Mainland & Free Zone 9% CT & QFZP 0%"}
-                    </span>
-                  </a>
-                  <a
-                    href="/accounting-services-uae"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex flex-col p-2.5 rounded-lg hover:bg-slate-50 transition-colors group/item"
-                  >
-                    <span className="text-xs font-bold text-navy-950 group-hover/item:text-gold-600 transition-colors flex items-center justify-between">
-                      <span>{language === "ar" ? "خدمات المحاسبة في الإمارات" : "Accounting Services UAE"}</span>
-                      <span className="text-[10px] text-gold-600 font-mono font-bold">New Tab ↗</span>
-                    </span>
-                    <span className="text-[11px] text-slate-500 mt-0.5">
-                      {language === "ar" ? "مسك الدفاتر IFRS وتقارير مالية شهرية" : "IFRS Double-Entry Bookkeeping & Reporting"}
-                    </span>
-                  </a>
-                  <a
-                    href="/tax-planning-difc"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex flex-col p-2.5 rounded-lg hover:bg-slate-50 transition-colors group/item"
-                  >
-                    <span className="text-xs font-bold text-navy-950 group-hover/item:text-gold-600 transition-colors flex items-center justify-between">
-                      <span>{language === "ar" ? "تخطيط الضرائب في مركز دبي المالي DIFC" : "DIFC Tax Planning"}</span>
-                      <span className="text-[10px] text-gold-600 font-mono font-bold">New Tab ↗</span>
-                    </span>
-                    <span className="text-[11px] text-slate-500 mt-0.5">
-                      {language === "ar" ? "استشارات 0% QFZP وهيكلة الشركات" : "0% QFZP Advisory & Corporate Structuring"}
-                    </span>
-                  </a>
-                  <a
-                    href="/dividends-audit"
-                    onClick={(e) => handleLinkClick(e, "/dividends-audit")}
-                    className="flex flex-col p-2.5 rounded-lg hover:bg-slate-50 transition-colors group/item"
-                  >
-                    <span className="text-xs font-bold text-navy-950 group-hover/item:text-gold-600 transition-colors">
-                      {language === "ar" ? "تدقيق وتوزيع الأرباح" : "Dividend Audit & Distribution"}
-                    </span>
-                    <span className="text-[11px] text-slate-500 mt-0.5">
-                      {language === "ar" ? "شهادة الأرباح وقانون الشركات" : "IFRS & Commercial Companies Law"}
-                    </span>
-                  </a>
-                </div>
-              </div>
-            </div>
           </nav>
 
-          {/* Zone 3: Language Switcher & Consultation CTA */}
+          {/* Zone 3: Sticky "Book a Free Consultation" CTA + Controls */}
           <div className="hidden lg:flex items-center gap-3 shrink-0">
             <LanguageToggle variant="desktop" />
 
-            <a
-              href="/contact"
-              onClick={(e) => handleLinkClick(e, "/contact")}
-              className={`font-display font-semibold py-2.5 px-5 rounded-xl text-xs tracking-tight transition-all duration-150 flex items-center gap-2 whitespace-nowrap shrink-0 cursor-pointer shadow-xs ${
-                currentPath === "/contact"
-                  ? "bg-gold-500 text-navy-950 hover:bg-gold-400 font-bold border border-gold-400"
-                  : "bg-navy-950 hover:bg-navy-900 text-white border border-gold-500/40 hover:border-gold-400"
-              }`}
-            >
-              <span>{t.nav.bookConsultation}</span>
-              <ArrowRight className="w-3.5 h-3.5 text-gold-400 rtl:rotate-180" />
-            </a>
-          </div>
-
-          {/* Mobile Controls */}
-          <div className="flex lg:hidden items-center gap-2">
+            {/* Tap-to-call link */}
             <a
               href="tel:+971529226958"
-              className="w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-navy-950 hover:border-gold-400 transition-colors"
-              aria-label="Direct Phone Advisory Call"
+              className="p-2 text-slate-700 hover:text-gold-600 transition-colors"
+              title="Call Dias Accounting: +971 52 922 6958"
+              aria-label="Direct Phone Line"
             >
               <Phone className="w-4 h-4 text-gold-600" />
             </a>
 
+            {/* Sticky "Book a Free Consultation" Button on Desktop */}
+            <a
+              href="/contact"
+              onClick={(e) => handleLinkClick(e, "/contact")}
+              className="font-display font-bold py-2.5 px-5 rounded-xl text-xs tracking-tight bg-gradient-to-r from-gold-500 via-amber-400 to-gold-500 hover:from-gold-400 hover:to-gold-500 text-navy-950 border border-gold-400/80 shadow-sm hover:shadow-md transition-all flex items-center gap-2 whitespace-nowrap shrink-0 cursor-pointer active:scale-95"
+            >
+              <span>{language === "ar" ? "احجز استشارة مجانية" : "Book a Free Consultation"}</span>
+              <ArrowRight className="w-3.5 h-3.5 text-navy-950 rtl:rotate-180" />
+            </a>
+          </div>
+
+          {/* Mobile Controls (with Sticky "Book a Free Consultation" button) */}
+          <div className="flex xl:hidden items-center gap-2">
+            {/* Mobile Sticky Book a Free Consultation Button */}
+            <a
+              href="/contact"
+              onClick={(e) => handleLinkClick(e, "/contact")}
+              className="text-[11px] font-bold py-2 px-3 rounded-lg bg-gold-500 hover:bg-gold-400 text-navy-950 flex items-center gap-1.5 shadow-xs cursor-pointer whitespace-nowrap"
+            >
+              <span>{language === "ar" ? "استشارة مجانية" : "Free Consultation"}</span>
+            </a>
+
+            {/* Mobile Tap-to-Call */}
+            <a
+              href="tel:+971529226958"
+              className="w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-navy-950 hover:border-gold-400 transition-colors"
+              aria-label="Direct Phone Call"
+            >
+              <Phone className="w-4 h-4 text-gold-600" />
+            </a>
+
+            {/* Hamburger Button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center text-navy-950 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-500 cursor-pointer transition-colors"
@@ -298,80 +161,66 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
         {/* Mobile Navigation Drawer */}
         <div
           id="mobile-nav-menu"
-          className={`lg:hidden absolute top-20 left-0 w-full bg-white border-b border-slate-200 shadow-xl z-50 overflow-hidden flex flex-col transition-all duration-200 ease-out origin-top ${
+          className={`xl:hidden absolute top-20 left-0 w-full bg-white border-b border-slate-200 shadow-xl z-50 overflow-hidden flex flex-col transition-all duration-200 ease-out origin-top ${
             mobileMenuOpen
               ? "opacity-100 max-h-[calc(100vh-5rem)] pointer-events-auto visible"
               : "opacity-0 max-h-0 pointer-events-none invisible"
           }`}
           aria-hidden={!mobileMenuOpen}
         >
-          <div className="px-4 sm:px-6 pt-4 pb-5 space-y-3 overflow-y-auto flex-1">
+          <div className="px-4 sm:px-6 pt-4 pb-6 space-y-4 overflow-y-auto flex-1">
+            
+            {/* Top Bar with Language Toggle */}
             <div className="pb-3 border-b border-slate-100 flex items-center justify-between">
               <span className="text-xs font-semibold text-slate-500">
-                {language === "ar" ? "اللغة" : "Language"}
+                {language === "ar" ? "اللغة / Language" : "Language"}
               </span>
               <LanguageToggle variant="mobile" />
             </div>
 
+            {/* Primary Mobile CTA */}
+            <a
+              href="/contact"
+              onClick={(e) => handleLinkClick(e, "/contact")}
+              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-gold-500 to-amber-400 text-navy-950 font-display font-extrabold text-sm flex items-center justify-center gap-2 shadow-md cursor-pointer text-center"
+            >
+              <span>{language === "ar" ? "احجز استشارة مجانية" : "Book a Free Consultation"}</span>
+              <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+            </a>
+
+            {/* Main Navigation Links */}
             <div className="divide-y divide-slate-100">
-              {[
-                { path: "/", label: t.nav.home },
-                { path: "/services", label: t.nav.services },
-                { path: "/company-setup", label: language === "ar" ? "تأسيس الشركات في دبي والإمارات" : "Company Setup (Mainland & Free Zone)" },
-                { path: "/pricing", label: t.nav.pricing },
-                { path: "/uae-tax-planner", label: language === "ar" ? "حاسبة وخطط الضرائب 2026" : "UAE Tax Planner & 2026 Calculator" },
-                { path: "/why-choose-us", label: language === "ar" ? "لماذا تختار دياس؟" : "Why Choose Dias" },
-                { path: "/blogs", label: language === "ar" ? "الرؤى والمدونة" : "Insights & Regulatory Guides" },
-                { path: "/testimonials", label: t.nav.reviews },
-                { path: "/faqs", label: t.nav.faq },
-                { path: "/contact", label: t.nav.bookConsultation },
-              ].map((link) => {
-                const isActive = currentPath === link.path;
+              {navItems.map((item) => {
+                const isActive = currentPath === item.path;
                 return (
                   <a
-                    key={link.path}
-                    href={link.path}
-                    onClick={(e) => handleLinkClick(e, link.path)}
+                    key={item.path}
+                    href={item.path}
+                    onClick={(e) => handleLinkClick(e, item.path)}
                     className={`flex items-center justify-between py-3 text-sm font-semibold transition-colors ${
                       isActive
                         ? "text-gold-600 font-bold bg-gold-50/50 px-2 rounded-lg"
                         : "text-navy-950 hover:text-gold-600"
                     }`}
                   >
-                    <span>{link.label}</span>
+                    <span>{item.label}</span>
                     <ChevronRight className="w-4 h-4 text-slate-400 rtl:rotate-180" />
                   </a>
                 );
               })}
             </div>
 
-            <div className="pt-3 border-t border-slate-100 space-y-1.5">
-              <span className="text-xs font-semibold text-slate-400 block">
-                {language === "ar" ? "مراكز استشارية متخصصة" : "Specialized Practice Hubs"}
-              </span>
-              {[
-                { path: "/corporate-tax-calculator", label: language === "ar" ? "حاسبة ضريبة الشركات 9% (صفحة مخصصة)" : "Corporate Tax Calculator (9% Landing Page)" },
-                { path: "/uae-vat-calculator", label: language === "ar" ? "حاسبة ضريبة القيمة المضافة 5% (صفحة مخصصة)" : "UAE VAT 5% Calculator (Landing Page)" },
-                { path: "/fta-deadlines", label: language === "ar" ? "تقويم مواعيد ومهل الضرائب FTA (صفحة مخصصة)" : "FTA Deadlines & Penalties (Landing Page)" },
-                { path: "/small-business-tax-relief", label: language === "ar" ? "تسهيلات الأعمال الصغيرة (0% حتى 2029)" : "Small Business Tax Relief (AED 3M SBR)" },
-                { path: "/tax-services-dubai", label: language === "ar" ? "خدمات الضرائب في دبي (صفحة مخصصة)" : "Tax Services Dubai (Dedicated Page ↗)" },
-                { path: "/corporate-tax-consulting-dubai", label: language === "ar" ? "استشارات ضريبة الشركات دبي (صفحة مخصصة)" : "Corporate Tax Services Dubai (Dedicated Page ↗)" },
-                { path: "/accounting-services-uae", label: language === "ar" ? "خدمات المحاسبة في الإمارات (صفحة مخصصة)" : "Accounting Services UAE (Dedicated Page ↗)" },
-                { path: "/tax-planning-difc", label: language === "ar" ? "تخطيط الضرائب DIFC (صفحة مخصصة)" : "DIFC Tax Planning (Dedicated Page ↗)" },
-                { path: "/difc-dtec-accounting", label: language === "ar" ? "محاسبة وتدقيق DIFC و DTEC" : "DIFC & DTEC Accounting & Audit" },
-                { path: "/dividends-audit", label: language === "ar" ? "تدقيق وتوزيع الأرباح" : "Dividend Audit & Distribution" },
-              ].map((hub) => (
-                <a
-                  key={hub.path}
-                  href={hub.path}
-                  onClick={(e) => handleLinkClick(e, hub.path)}
-                  className="flex items-center justify-between py-2 text-xs font-semibold text-slate-600 hover:text-navy-950 transition-colors"
-                >
-                  <span>{hub.label}</span>
-                  <ChevronRight className="w-3.5 h-3.5 text-slate-400 rtl:rotate-180" />
-                </a>
-              ))}
+            {/* Tap-to-call link on Mobile */}
+            <div className="pt-2">
+              <a
+                href="tel:+971529226958"
+                className="w-full py-3 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-navy-950 font-bold text-xs flex items-center justify-center gap-2 transition-colors"
+              >
+                <Phone className="w-4 h-4 text-gold-600" />
+                <span>Call Advisory Desk: +971 52 922 6958</span>
+              </a>
             </div>
+
           </div>
         </div>
       </header>

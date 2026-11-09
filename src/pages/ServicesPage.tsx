@@ -16,13 +16,12 @@ import {
   ChevronRight,
   Shield,
   PhoneCall,
+  MessageCircle,
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
 import { servicesData } from "../data/staticData";
 import { Service } from "../types";
-import ServiceComparisonTable from "../components/ServiceComparisonTable";
-import TaxCalculator from "../components/TaxCalculator";
 import ServiceModal from "../components/ServiceModal";
 
 interface ServicesPageProps {
@@ -123,14 +122,17 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
                 From monthly IFRS bookkeeping on Zoho Books to 9% Corporate Tax returns, 0% Qualifying Free Zone Person (QFZP) structuring, and mandatory E-Invoicing Phase 1 ASP onboarding, Dias delivers senior-led financial clarity.
               </p>
               <div className="flex flex-wrap gap-4">
-                <button
-                  type="button"
-                  onClick={() => onNavigate("/contact")}
+                <a
+                  href={`https://wa.me/971529226958?text=${encodeURIComponent(
+                    "Hi, I'd like to consult with a Dias Accounting advisor regarding your UAE tax and accounting services."
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold px-6 py-3.5 rounded-xl text-sm transition-all shadow-lg shadow-gold-500/20 cursor-pointer flex items-center gap-2"
                 >
-                  <span>Book Free Practice Consultation</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
+                  <MessageCircle className="w-4 h-4 text-emerald-800 shrink-0" />
+                  <span>WhatsApp Advisor</span>
+                </a>
                 <button
                   type="button"
                   onClick={() => onNavigate("/pricing")}
@@ -143,108 +145,170 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
           </div>
         </section>
 
-        {/* 8 Core Services Grid */}
-        <section className="py-16 lg:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-navy-950 mb-3">
-              Specialized Accounting &amp; Tax Solutions
-            </h2>
-            <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-              Every practice area is led by Glen Dias (FTA Registered Tax Agent) ensuring zero penalty liability, airtight audit defense, and maximum legitimate savings.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {servicesData.map((service) => (
-              <div
-                key={service.id}
-                className="bg-white rounded-2xl border border-slate-200/90 p-7 shadow-xs hover:shadow-xl hover:border-gold-400/60 transition-all duration-300 flex flex-col justify-between group"
-              >
-                <div>
-                  <button
-                    type="button"
-                    onClick={() => onNavigate(`/services/${service.id}`)}
-                    className="w-12 h-12 rounded-xl bg-gold-500/10 border border-gold-500/30 flex items-center justify-center mb-5 group-hover:scale-105 transition-transform cursor-pointer text-left"
-                  >
-                    {getIcon(service.iconName)}
-                  </button>
-                  <h3
-                    onClick={() => onNavigate(`/services/${service.id}`)}
-                    className="font-display text-xl font-bold text-navy-950 mb-2.5 hover:text-gold-600 transition-colors cursor-pointer"
-                  >
-                    {service.title}
-                  </h3>
-                  <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-6">
-                    {service.shortDesc}
-                  </p>
-
-                  <div className="space-y-2 mb-6">
-                    <span className="font-mono text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
-                      Core Inclusions:
-                    </span>
-                    {service.inclusions.slice(0, 3).map((item, idx) => (
-                      <div key={idx} className="flex items-start gap-2 text-xs text-slate-700">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
-                        <span>{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-2">
-                  <button
-                    type="button"
-                    onClick={() => onNavigate(`/services/${service.id}`)}
-                    className="text-xs font-bold text-navy-950 hover:text-gold-600 flex items-center gap-1.5 transition-colors cursor-pointer"
-                  >
-                    <span>View Service Page</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => onNavigate("/contact")}
-                    className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-navy-950 text-white hover:bg-gold-500 hover:text-navy-950 transition-colors cursor-pointer"
-                  >
-                    Book Consultation
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Interactive Tax Calculator Widget */}
-        <section className="bg-slate-100/80 py-16 lg:py-24 border-y border-slate-200">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-2xl mx-auto mb-10">
-              <span className="font-mono text-xs font-bold text-gold-600 uppercase tracking-widest block mb-2">
-                Interactive Estimation
+        {/* Services & Practice Areas Grid */}
+        <section className="py-16 lg:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+          
+          {/* 1. Core Practice Areas (Matching Homepage) */}
+          <div className="space-y-8">
+            <div className="text-center max-w-2xl mx-auto">
+              <span className="text-xs font-mono text-gold-600 font-bold uppercase tracking-wider block mb-2">
+                CORE PRACTICE AREAS
               </span>
               <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-navy-950 mb-3">
-                Calculate Your UAE Corporate Tax &amp; SBR Exemption
+                Services at a Glance
               </h2>
-              <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
-                Estimate 9% tax liability above the AED 375,000 threshold and check eligibility for Small Business Relief up to AED 3,000,000 gross revenue.
+              <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+                Our four core disciplines tailored to keep UAE Mainland and Free Zone companies fully compliant, penalty-free, and audit-ready under the leadership of Senior Tax Advisor Glen Dias.
               </p>
             </div>
-            <TaxCalculator />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {servicesData.slice(0, 4).map((service, idx) => (
+                <div
+                  key={service.id}
+                  className="bg-white rounded-2xl border border-slate-200/90 p-7 shadow-xs hover:shadow-xl hover:border-gold-400 transition-all duration-300 flex flex-col justify-between group"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-5">
+                      <span className="text-xs font-mono font-bold text-slate-400 group-hover:text-gold-600 transition-colors">
+                        0{idx + 1}.
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => onNavigate(`/services/${service.id}`)}
+                        className="w-11 h-11 rounded-xl bg-gold-500/10 border border-gold-500/30 flex items-center justify-center group-hover:bg-navy-950 group-hover:border-navy-950 transition-colors cursor-pointer text-left"
+                      >
+                        {getIcon(service.iconName)}
+                      </button>
+                    </div>
+                    <h3
+                      onClick={() => onNavigate(`/services/${service.id}`)}
+                      className="font-display text-lg font-bold text-navy-950 mb-2.5 hover:text-gold-600 transition-colors cursor-pointer"
+                    >
+                      {service.title}
+                    </h3>
+                    <p className="text-slate-600 text-xs leading-relaxed mb-6">
+                      {service.shortDesc}
+                    </p>
+
+                    <div className="space-y-2 mb-6">
+                      <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                        Core Inclusions:
+                      </span>
+                      {service.inclusions.slice(0, 3).map((item, i) => (
+                        <div key={i} className="flex items-start gap-2 text-xs text-slate-700">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                          <span>{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-2">
+                    <button
+                      type="button"
+                      onClick={() => onNavigate(`/services/${service.id}`)}
+                      className="text-xs font-bold text-navy-950 hover:text-gold-600 flex items-center gap-1.5 transition-colors cursor-pointer"
+                    >
+                      <span>Learn More</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                    <a
+                      href={`https://wa.me/971529226958?text=${encodeURIComponent(
+                        `Hi, I'd like to consult with Dias Accounting regarding ${service.title}.`
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-navy-950 text-white hover:bg-gold-500 hover:text-navy-950 transition-colors cursor-pointer flex items-center gap-1.5"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Consult</span>
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
+
+          {/* 2. Specialized & Corporate Solutions */}
+          <div className="pt-12 border-t border-slate-200 space-y-8">
+            <div className="text-center max-w-2xl mx-auto">
+              <span className="text-xs font-mono text-gold-600 font-bold uppercase tracking-wider block mb-2">
+                SPECIALIZED PRACTICE AREAS
+              </span>
+              <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-navy-950 mb-3">
+                Corporate Setup, Transfer Pricing &amp; CFO Advisory
+              </h2>
+              <p className="text-slate-600 text-sm leading-relaxed">
+                Advanced structural compliance, trade licensing, historical backlog cleanups, and regulatory frameworks for expanding enterprises.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {servicesData.slice(4).map((service) => (
+                <div
+                  key={service.id}
+                  className="bg-white rounded-2xl border border-slate-200/90 p-7 shadow-xs hover:shadow-xl hover:border-gold-400/60 transition-all duration-300 flex flex-col justify-between group"
+                >
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => onNavigate(`/services/${service.id}`)}
+                      className="w-11 h-11 rounded-xl bg-gold-500/10 border border-gold-500/30 flex items-center justify-center mb-5 group-hover:scale-105 transition-transform cursor-pointer text-left"
+                    >
+                      {getIcon(service.iconName)}
+                    </button>
+                    <h3
+                      onClick={() => onNavigate(`/services/${service.id}`)}
+                      className="font-display text-lg font-bold text-navy-950 mb-2.5 hover:text-gold-600 transition-colors cursor-pointer"
+                    >
+                      {service.title}
+                    </h3>
+                    <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-6">
+                      {service.shortDesc}
+                    </p>
+
+                    <div className="space-y-2 mb-6">
+                      <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
+                        Key Deliverables:
+                      </span>
+                      {service.inclusions.slice(0, 3).map((item, idx) => (
+                        <div key={idx} className="flex items-start gap-2 text-xs text-slate-700">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                          <span>{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-slate-100 flex items-center justify-between gap-2">
+                    <button
+                      type="button"
+                      onClick={() => onNavigate(`/services/${service.id}`)}
+                      className="text-xs font-bold text-navy-950 hover:text-gold-600 flex items-center gap-1.5 transition-colors cursor-pointer"
+                    >
+                      <span>View Service Page</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                    <a
+                      href={`https://wa.me/971529226958?text=${encodeURIComponent(
+                        `Hi, I'd like to consult with Dias Accounting regarding ${service.title}.`
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-navy-950 text-white hover:bg-gold-500 hover:text-navy-950 transition-colors cursor-pointer flex items-center gap-1.5"
+                    >
+                      <MessageCircle className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Consult</span>
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
         </section>
 
-        {/* Service Comparison Matrix */}
-        <section className="py-16 lg:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-navy-950 mb-3">
-              Detailed Scope Comparison
-            </h2>
-            <p className="text-slate-600 text-sm">
-              See how our core accounting, tax, and audit compliance scopes stack up.
-            </p>
-          </div>
-          <ServiceComparisonTable onSelectTier={() => {
-            onNavigate("/pricing");
-          }} />
-        </section>
 
         {/* CTA Banner */}
         <section className="bg-navy-950 text-white py-14 border-t border-slate-800">
@@ -269,7 +333,8 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
                 rel="noopener noreferrer"
                 className="bg-emerald-600 hover:bg-emerald-500 text-white font-display font-semibold px-6 py-3.5 rounded-xl text-sm transition-all inline-flex items-center gap-2"
               >
-                <span>WhatsApp Advisor (+971 52 922 6958)</span>
+                <MessageCircle className="w-4 h-4 shrink-0" />
+                <span>WhatsApp Advisor</span>
               </a>
             </div>
           </div>

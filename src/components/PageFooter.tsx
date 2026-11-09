@@ -3,7 +3,20 @@ import DiasLogo from "./DiasLogo";
 import { GoogleLogo } from "./GoogleLogo";
 import AddToPreferredSources from "./AddToPreferredSources";
 import { GOOGLE_BUSINESS_URL } from "../data/staticData";
-import { Linkedin, Instagram, Facebook, ShieldCheck, ExternalLink } from "lucide-react";
+import {
+  Linkedin,
+  Instagram,
+  Facebook,
+  ShieldCheck,
+  ExternalLink,
+  Lock,
+  Phone,
+  Mail,
+  MapPin,
+  Clock,
+  CheckCircle2,
+  MessageSquare,
+} from "lucide-react";
 
 interface PageFooterProps {
   onNavigate: (path: string) => void;
@@ -21,9 +34,38 @@ export const PageFooter: React.FC<PageFooterProps> = ({
     onNavigate(path);
   };
 
+  const handleWhatsApp = () => {
+    const defaultMsg = encodeURIComponent("Hi, I'd like to know more about your tax services.");
+    window.open(`https://wa.me/971529226958?text=${defaultMsg}`, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <footer className="bg-navy-950 text-white border-t border-slate-800 pt-16 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Top Trust & Security Certification Banner */}
+        <div className="mb-12 p-4 sm:p-5 rounded-2xl bg-white/[0.03] border border-white/10 grid grid-cols-1 md:grid-cols-2 gap-4 text-xs text-slate-300">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+              <Lock className="w-4 h-4" />
+            </div>
+            <div>
+              <span className="font-bold text-white block">256-Bit SSL Encrypted</span>
+              <span className="text-[11px] text-slate-400">Bank-grade data security &amp; encryption</span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-blue-500/15 border border-blue-400/30 flex items-center justify-center text-blue-400 shrink-0">
+              <CheckCircle2 className="w-4 h-4" />
+            </div>
+            <div>
+              <span className="font-bold text-white block">UAE PDPL &amp; IFRS Compliant</span>
+              <span className="text-[11px] text-slate-400">Federal Decree-Law No. 45/2021 Data Protection</span>
+            </div>
+          </div>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 pb-12 border-b border-white/10">
           
           {/* Brand Info Column */}
@@ -42,9 +84,22 @@ export const PageFooter: React.FC<PageFooterProps> = ({
                 />
               </a>
             </div>
+
+            {/* Business Registration Details */}
+            <div className="space-y-1 text-xs text-slate-300">
+              <p className="font-bold text-white text-sm">Dias Accounting &amp; Tax Consulting LLC</p>
+              <p className="text-slate-400 text-xs">
+                Trade Licence No: <span className="text-gold-400 font-mono">SHAMS 2646813.01</span>
+              </p>
+              <p className="text-slate-400 text-xs">
+                FTA Registration: <span className="text-gold-400 font-mono">FTA Registered Tax Agency (UAE)</span>
+              </p>
+            </div>
+
             <p className="text-xs text-slate-400 leading-relaxed max-w-sm mx-auto md:mx-0">
-              FTA-registered tax consulting and accounting firm in Dubai &amp; Sharjah. Providing certified Corporate Tax advisory (9% &amp; 0% QFZP), VAT compliance, IFRS accounting, and business incorporation across the UAE.
+              Corporate tax consulting, VAT compliance, IFRS bookkeeping, and business incorporation for UAE mainland &amp; Free Zone businesses.
             </p>
+
             <div className="flex items-center justify-center md:justify-start gap-2 text-xs text-gold-400 font-medium">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
               <span>Federal Tax Authority Registered Agency</span>
@@ -60,8 +115,7 @@ export const PageFooter: React.FC<PageFooterProps> = ({
                 title="Dias Accounting Google Business Profile"
               >
                 <GoogleLogo className="w-3.5 h-3.5" />
-                <span className="font-mono font-bold text-gold-400">5.0 ★</span>
-                <span className="text-[11px] text-slate-400">Google Reviews</span>
+                <span className="font-mono font-bold text-gold-400">5.0 ★ (48 Reviews)</span>
               </a>
               <a
                 href="https://www.linkedin.com/company/diasaccounting/"
@@ -92,7 +146,6 @@ export const PageFooter: React.FC<PageFooterProps> = ({
               </a>
             </div>
 
-            {/* Add to Preferred Sources Badge */}
             {onOpenGooglePreferred && (
               <div className="pt-2 flex justify-center md:justify-start">
                 <AddToPreferredSources onClick={onOpenGooglePreferred} />
@@ -100,203 +153,204 @@ export const PageFooter: React.FC<PageFooterProps> = ({
             )}
           </div>
 
-          {/* Navigation Pages Column */}
+          {/* Site Navigation Links */}
           <div className="md:col-span-2 space-y-4">
             <h4 className="font-mono font-bold text-[11px] uppercase tracking-[0.16em] text-slate-300">
-              Site Pages
+              Site Navigation
             </h4>
             <ul className="space-y-2 text-xs text-slate-400 font-medium">
               <li>
                 <a href="/" onClick={(e) => handleLink(e, "/")} className="hover:text-gold-400 transition-colors">
-                  Home Overview
+                  Home
                 </a>
               </li>
               <li>
                 <a href="/services" onClick={(e) => handleLink(e, "/services")} className="hover:text-gold-400 transition-colors">
-                  Our Services
-                </a>
-              </li>
-              <li>
-                <a href="/company-setup" onClick={(e) => handleLink(e, "/company-setup")} className="hover:text-gold-400 transition-colors">
-                  Free Zone &amp; Mainland Setup
-                </a>
-              </li>
-              <li>
-                <a href="/pricing" onClick={(e) => handleLink(e, "/pricing")} className="hover:text-gold-400 transition-colors">
-                  Transparent Pricing
+                  Services
                 </a>
               </li>
               <li>
                 <a href="/uae-tax-planner" onClick={(e) => handleLink(e, "/uae-tax-planner")} className="hover:text-gold-400 transition-colors text-gold-300 font-medium">
-                  UAE Tax Planner 2026
+                  Tax Planner
                 </a>
               </li>
               <li>
-                <a href="/why-choose-us" onClick={(e) => handleLink(e, "/why-choose-us")} className="hover:text-gold-400 transition-colors">
-                  Why Choose Dias
+                <a href="/pricing" onClick={(e) => handleLink(e, "/pricing")} className="hover:text-gold-400 transition-colors">
+                  Pricing
                 </a>
               </li>
               <li>
-                <a
-                  href="/blog.html"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-gold-400 transition-colors inline-flex items-center gap-1.5"
-                >
-                  <span>Tax Insights &amp; Articles</span>
-                  <ExternalLink className="w-3 h-3 text-gold-400" />
+                <a href="/about" onClick={(e) => handleLink(e, "/about")} className="hover:text-gold-400 transition-colors">
+                  About Us
                 </a>
               </li>
               <li>
                 <a href="/testimonials" onClick={(e) => handleLink(e, "/testimonials")} className="hover:text-gold-400 transition-colors">
-                  Client Reviews (5.0★)
+                  Testimonials
+                </a>
+              </li>
+              <li>
+                <a href="/blogs" onClick={(e) => handleLink(e, "/blogs")} className="hover:text-gold-400 transition-colors">
+                  Blog / Insights
                 </a>
               </li>
               <li>
                 <a href="/faqs" onClick={(e) => handleLink(e, "/faqs")} className="hover:text-gold-400 transition-colors">
-                  Frequently Asked Questions
+                  FAQs
                 </a>
               </li>
               <li>
                 <a href="/contact" onClick={(e) => handleLink(e, "/contact")} className="hover:text-gold-400 transition-colors font-semibold text-gold-400">
-                  Book Free Consultation
+                  Contact
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* Specialized Practice Hubs Column */}
+          {/* Dedicated Services Links */}
           <div className="md:col-span-3 space-y-4">
             <h4 className="font-mono font-bold text-[11px] uppercase tracking-[0.16em] text-slate-300">
-              Specialized Hubs
+              Core Services
             </h4>
             <ul className="space-y-2 text-xs text-slate-400">
               <li>
                 <a
-                  href="/tax-services-dubai"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/services/corporate-tax"
+                  onClick={(e) => handleLink(e, "/services/corporate-tax")}
                   className="hover:text-gold-300 transition-colors block text-gold-400 font-semibold"
                 >
-                  Expert Tax Services Dubai ↗
+                  Corporate Tax Registration &amp; Filing
                 </a>
               </li>
               <li>
                 <a
-                  href="/corporate-tax-consulting-dubai"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/services/vat-compliance"
+                  onClick={(e) => handleLink(e, "/services/vat-compliance")}
                   className="hover:text-gold-300 transition-colors block text-gold-400 font-semibold"
                 >
-                  Corporate Tax Services UAE (Mainland &amp; Free Zone) ↗
+                  VAT Registration &amp; Returns
                 </a>
               </li>
               <li>
                 <a
-                  href="/accounting-services-uae"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/services/accounting-bookkeeping"
+                  onClick={(e) => handleLink(e, "/services/accounting-bookkeeping")}
                   className="hover:text-gold-300 transition-colors block text-gold-400 font-semibold"
                 >
-                  Trusted Accounting Services UAE ↗
+                  Monthly Bookkeeping &amp; Ledgers
                 </a>
               </li>
               <li>
                 <a
-                  href="/tax-planning-difc"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  href="/services/audit-readiness"
+                  onClick={(e) => handleLink(e, "/services/audit-readiness")}
                   className="hover:text-gold-300 transition-colors block text-gold-400 font-semibold"
                 >
-                  DIFC Tax Planning Services ↗
+                  Audit Readiness &amp; Advisory
                 </a>
               </li>
               <li>
                 <a
                   href="/small-business-tax-relief"
                   onClick={(e) => handleLink(e, "/small-business-tax-relief")}
-                  className="hover:text-gold-300 transition-colors block text-gold-400 font-semibold"
+                  className="hover:text-gold-300 transition-colors block text-slate-300"
                 >
-                  Small Business Tax Relief (AED 3M SBR)
+                  Small Business Relief (AED 3M SBR)
                 </a>
               </li>
               <li>
                 <a
-                  href="/difc-dtec-accounting"
-                  onClick={(e) => handleLink(e, "/difc-dtec-accounting")}
-                  className="hover:text-gold-300 transition-colors block text-gold-400 font-semibold"
+                  href="/corporate-tax-calculator"
+                  onClick={(e) => handleLink(e, "/corporate-tax-calculator")}
+                  className="hover:text-gold-300 transition-colors block text-slate-300"
                 >
-                  DIFC &amp; DTEC Accounting &amp; Audit
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/dividends-audit"
-                  onClick={(e) => handleLink(e, "/dividends-audit")}
-                  className="hover:text-gold-300 transition-colors block text-gold-400 font-semibold"
-                >
-                  Dividend Audit &amp; Distribution Advisory
-                </a>
-              </li>
-              <li>
-                <a href="/services" onClick={(e) => handleLink(e, "/services")} className="hover:text-gold-400 transition-colors block">
-                  Corporate Tax Registration &amp; Filing (9%)
-                </a>
-              </li>
-              <li>
-                <a href="/services" onClick={(e) => handleLink(e, "/services")} className="hover:text-gold-400 transition-colors block">
-                  FTA VAT Return Preparation (5%)
-                </a>
-              </li>
-              <li>
-                <a href="/services" onClick={(e) => handleLink(e, "/services")} className="hover:text-gold-400 transition-colors block">
-                  IFRS Double-Entry Bookkeeping
+                  Corporate Tax Calculator (9%)
                 </a>
               </li>
             </ul>
           </div>
 
-          {/* Corporate Desk Column */}
+          {/* Contact & Address Column with tap-to-call, mailto, and placeholders */}
           <div className="md:col-span-3 space-y-4">
             <h4 className="font-mono font-bold text-[11px] uppercase tracking-[0.16em] text-slate-300">
-              Corporate Desk
+              Office &amp; Contacts
             </h4>
-            <div className="space-y-2.5 text-xs text-slate-400">
-              <p className="leading-relaxed">
-                Sharjah Media City (SHAMS),<br />
-                Al Messaned, Sharjah &amp; Dubai,<br />
-                United Arab Emirates
-              </p>
-              <div className="pt-2 space-y-1 font-mono text-xs text-slate-300">
-                <a href="tel:+971529226958" className="block hover:text-gold-400 transition-colors">
-                  +971 52 922 6958
-                </a>
-                <a href="mailto:info@diasuae.ae" className="block hover:text-gold-400 transition-colors">
-                  info@diasuae.ae
-                </a>
+            
+            <div className="space-y-3 text-xs text-slate-400">
+              <div>
+                <span className="text-[10px] font-mono text-gold-400 uppercase tracking-wider block font-bold">
+                  Registered Office Address
+                </span>
+                <p className="leading-relaxed mt-0.5">
+                  Business Center, Sharjah Media City (SHAMS),<br />
+                  Al Messaned, Sharjah (P.O. Box 515000)<br />
+                  <span className="text-slate-300">Dubai Suite:</span> Al Saada Tower, Business Bay, Dubai, UAE
+                </p>
               </div>
-              <p className="text-[11px] text-slate-500 pt-1">
-                Mon - Sat: 9:00 AM – 6:00 PM (GST)
-              </p>
+
+              {/* Tap-to-call, Mailto & WhatsApp Links */}
+              <div className="pt-2 space-y-2 border-t border-white/10">
+                <a
+                  href="tel:+971529226958"
+                  className="flex items-center gap-2 hover:text-gold-400 transition-colors font-mono text-xs text-slate-200"
+                >
+                  <Phone className="w-3.5 h-3.5 text-gold-400 shrink-0" />
+                  <span>+971 52 922 6958 (Tap to Call)</span>
+                </a>
+
+                <a
+                  href="mailto:info@diasuae.ae"
+                  className="flex items-center gap-2 hover:text-gold-400 transition-colors font-mono text-xs text-slate-200"
+                >
+                  <Mail className="w-3.5 h-3.5 text-gold-400 shrink-0" />
+                  <span>info@diasuae.ae</span>
+                </a>
+
+                <button
+                  type="button"
+                  onClick={handleWhatsApp}
+                  className="flex items-center gap-2 hover:text-emerald-400 transition-colors font-mono text-xs text-emerald-400 cursor-pointer"
+                >
+                  <MessageSquare className="w-3.5 h-3.5 shrink-0" />
+                  <span>Chat on WhatsApp</span>
+                </button>
+              </div>
+
+              <div className="pt-2 border-t border-white/10 flex items-start gap-2 text-[11px] text-slate-400">
+                <Clock className="w-3.5 h-3.5 text-gold-400 shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-semibold text-slate-300 block">Working Hours:</span>
+                  <span>Mon – Fri: 9:00 AM – 6:00 PM | Sat: 10:00 AM – 2:00 PM (GST)</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Bottom Bar */}
+        {/* Bottom Bar with Privacy Policy & Terms Links */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <p>© {new Date().getFullYear()} Dias Accounting and Tax Consulting LLC. All rights reserved.</p>
-          <div className="flex items-center gap-4">
-            {onOpenPrivacy && (
-              <button
-                type="button"
-                onClick={onOpenPrivacy}
-                className="hover:text-slate-300 transition-colors cursor-pointer"
-              >
-                Privacy Policy
-              </button>
-            )}
-            <a href="/contact" onClick={(e) => handleLink(e, "/contact")} className="hover:text-slate-300 transition-colors">
-              Contact Us
+          <p>© {new Date().getFullYear()} Dias Accounting &amp; Tax Consulting LLC. All rights reserved.</p>
+          <div className="flex flex-wrap items-center gap-5">
+            <a
+              href="/privacy-policy"
+              onClick={(e) => handleLink(e, "/privacy-policy")}
+              className="hover:text-gold-400 transition-colors underline underline-offset-2"
+            >
+              Privacy Policy
+            </a>
+            <a
+              href="/terms"
+              onClick={(e) => handleLink(e, "/terms")}
+              className="hover:text-gold-400 transition-colors underline underline-offset-2"
+            >
+              Terms of Engagement
+            </a>
+            <a
+              href="/contact"
+              onClick={(e) => handleLink(e, "/contact")}
+              className="hover:text-slate-300 transition-colors"
+            >
+              Contact Desk
             </a>
           </div>
         </div>

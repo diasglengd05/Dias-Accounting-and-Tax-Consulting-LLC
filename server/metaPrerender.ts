@@ -22,6 +22,14 @@ export interface MetaOverride {
 }
 
 const KNOWN_BLOGS: Record<string, { title: string; summary: string; author: string; role: string; tag: string; date: string }> = {
+  "uae-corporate-tax-2026-sbr-relief-penalty-shield-guide": {
+    title: "UAE Corporate Tax 2026: 9% Rates, Small Business Relief & Penalty Shield | Dias UAE",
+    summary: "Master UAE Corporate Tax 2026. Learn 9% thresholds, Small Business Relief (0% to 2029), and avoid the AED 10,000 FTA fine with the free Dias UAE Tax Planner.",
+    author: "Glen Dias",
+    role: "Managing Director & FTA Registered Tax Agent",
+    tag: "Corporate Tax 2026",
+    date: "2026-11-08",
+  },
   "dias-accounting-uae-financial-compliance-excellence": {
     title: "The Gold Standard in UAE Financial Compliance | Dias Accounting Dubai",
     summary: "Partner with Dias Accounting & Tax Consulting LLC, an FTA Registered Tax Agency in Dubai & Sharjah. Fixed-fee SME accounting, VAT & 9% Corporate Tax compliance.",

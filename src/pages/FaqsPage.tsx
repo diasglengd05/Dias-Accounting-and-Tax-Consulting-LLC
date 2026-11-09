@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import {
   HelpCircle,
   ChevronRight,
@@ -7,17 +7,26 @@ import {
   MessageCircle,
   Phone,
   ArrowRight,
-  ShieldAlert,
+  ShieldCheck,
+  Building,
+  CheckCircle2,
+  FileCheck,
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
-import { faqsData } from "../data/staticData";
 
 interface FaqsPageProps {
   onNavigate: (path: string) => void;
   onOpenAudit?: () => void;
   onOpenPrivacy?: () => void;
   onOpenGooglePreferred?: () => void;
+}
+
+interface StructuredFaq {
+  id: string;
+  category: "Corporate Tax" | "VAT" | "Bookkeeping" | "Pricing" | "Getting Started";
+  question: string;
+  answer: string;
 }
 
 export const FaqsPage: React.FC<FaqsPageProps> = ({
@@ -27,23 +36,154 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
   onOpenGooglePreferred,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [openFaq, setOpenFaq] = useState<string | null>(faqsData[0]?.id || null);
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [openFaq, setOpenFaq] = useState<string | null>("ct-1");
+
+  const faqs: StructuredFaq[] = [
+    // 1. Corporate Tax
+    {
+      id: "ct-1",
+      category: "Corporate Tax",
+      question: "Who is subject to UAE Corporate Tax, and what is the rate?",
+      answer: "Effective for financial years starting on or after June 1, 2023, UAE Corporate Tax applies to all businesses and commercial activities conducted by legal entities (LLCs, PJSCs, PSCs) and sole establishments. The standard rate is 0% on taxable net profit up to AED 375,000, and 9% on taxable net profit exceeding AED 375,000. All businesses must register on the EmaraTax portal regardless of whether their profit exceeds the threshold.",
+    },
+    {
+      id: "ct-2",
+      category: "Corporate Tax",
+      question: "What is Small Business Relief (SBR) and who qualifies in 2026?",
+      answer: "Under UAE Ministerial Decision No. 73 of 2023 (extended through December 31, 2029), UAE resident taxable persons with gross business revenue of AED 3,000,000 or less in a given tax period can elect for Small Business Relief. Under SBR, the entity's taxable income is treated as AED 0, resulting in zero corporate tax liability. However, you must still maintain IFRS-compliant books and submit your annual return.",
+    },
+    {
+      id: "ct-3",
+      category: "Corporate Tax",
+      question: "Are UAE Free Zone companies completely exempt from Corporate Tax?",
+      answer: "No. 100% of UAE Free Zone companies are legally required to register for Corporate Tax and file an annual tax return. To benefit from 0% Corporate Tax on Qualifying Income (QFZP status), you must maintain adequate economic substance in the Free Zone, derive qualifying income, obtain audited accounts, and comply with transfer pricing rules.",
+    },
+    {
+      id: "ct-4",
+      category: "Corporate Tax",
+      question: "What is the penalty for missing the Corporate Tax registration deadline?",
+      answer: "Under Cabinet Decision No. 75 of 2023, the Federal Tax Authority (FTA) enforces a mandatory administrative fine of AED 10,000 for failing to submit a Corporate Tax registration application within the designated timeframe.",
+    },
+
+    // 2. VAT
+    {
+      id: "vat-1",
+      category: "VAT",
+      question: "When is a UAE business required to register for Value Added Tax (VAT)?",
+      answer: "Mandatory VAT registration (5%) applies when a business's taxable supplies and imports exceed AED 375,000 over the preceding 12 months or are anticipated to exceed that amount in the next 30 days. Voluntary registration is available at AED 187,500. Operating above the mandatory threshold without registering attracts an immediate AED 10,000 penalty.",
+    },
+    {
+      id: "vat-2",
+      category: "VAT",
+      question: "What is the filing deadline for UAE VAT 201 returns?",
+      answer: "VAT returns and payments must be submitted electronically via the EmaraTax portal no later than the 28th day following the end of your assigned tax period (typically quarterly for most SMEs). Late filing or late payment incurs progressive percentage fines.",
+    },
+    {
+      id: "vat-3",
+      category: "VAT",
+      question: "Can our business recover VAT paid on foreign software and cloud services?",
+      answer: "Yes, under the Reverse Charge Mechanism (RCM), if foreign SaaS providers (e.g. AWS, Google, Microsoft, Adobe) do not charge UAE VAT directly, you declare the 5% output tax and simultaneously claim the corresponding 5% input tax recovery on your return, assuming the software is used for taxable business purposes.",
+    },
+
+    // 3. Bookkeeping
+    {
+      id: "bk-1",
+      category: "Bookkeeping",
+      question: "Is bookkeeping mandatory for UAE companies even if they make no profit?",
+      answer: "Yes. Under both UAE Commercial Companies Law (Federal Decree-Law No. 32 of 2021) and the Tax Procedures Law, all businesses must keep proper, audited, or double-entry financial accounting records for a minimum of 5 years (and 7 years for corporate tax records). Failure to keep records attracts substantial FTA fines.",
+    },
+    {
+      id: "bk-2",
+      category: "Bookkeeping",
+      question: "What is Backlog Bookkeeping and how quickly can Dias clean up our past books?",
+      answer: "Backlog Bookkeeping involves extracting past bank statements, sales receipts, vendor invoices, and card statements for months or years where books were not maintained. Dias reconstructs your ledgers, reconciles balances, and delivers audit-ready financial statements within 5 to 7 business days.",
+    },
+    {
+      id: "bk-3",
+      category: "Bookkeeping",
+      question: "Which accounting software do you support?",
+      answer: "We support and integrate with all major cloud accounting software, including Zoho Books, QuickBooks Online, Xero, and Wafeq. If you do not have software yet, we set up your chart of accounts and invoicing templates as part of our onboarding.",
+    },
+
+    // 4. Pricing
+    {
+      id: "pr-1",
+      category: "Pricing",
+      question: "How do your fixed-fee accounting packages work?",
+      answer: "We offer transparent fixed-fee monthly packages starting at AED 500/month. There are no hidden fees, unexpected hourly invoices, or transaction surcharges. Final pricing depends on your business activity, transaction volume, and filing requirements. Book a free consultation for an accurate quote.",
+    },
+    {
+      id: "pr-2",
+      category: "Pricing",
+      question: "Are there any hidden cancellation fees or long-term lock-in contracts?",
+      answer: "No. Our monthly packages operate with total transparency. We believe in earning your trust month after month through impeccable service quality, proactive communication, and zero-penalty track records.",
+    },
+
+    // 5. Getting Started
+    {
+      id: "gs-1",
+      category: "Getting Started",
+      question: "How do we get started with Dias Accounting?",
+      answer: "Getting started takes just 3 simple steps: 1) Schedule a free 30-minute consultation or WhatsApp chat; 2) Share your trade license and recent bank statements for a quick diagnostic; 3) We set up your compliance schedule and assign your dedicated senior accountant.",
+    },
+    {
+      id: "gs-2",
+      category: "Getting Started",
+      question: "What documents do we need to provide to begin our tax compliance?",
+      answer: "To start, we typically require: a copy of your valid Trade License, Memorandum of Association (MOA), passport and Emirates ID of authorized signatories, recent 12-month bank statements, and any existing FTA login details or VAT/Corporate Tax TRN certificates.",
+    },
+  ];
+
+  const categoryList = [
+    { id: "all", label: "All Questions" },
+    { id: "Corporate Tax", label: "Corporate Tax" },
+    { id: "VAT", label: "VAT" },
+    { id: "Bookkeeping", label: "Bookkeeping" },
+    { id: "Pricing", label: "Pricing" },
+    { id: "Getting Started", label: "Getting Started" },
+  ];
+
+  const filteredFaqs = useMemo(() => {
+    return faqs.filter((faq) => {
+      const matchesSearch =
+        faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        faq.answer.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory =
+        selectedCategory === "all" || faq.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [faqs, searchQuery, selectedCategory]);
+
+  // Generate FAQPage JSON-LD Schema
+  const faqPageSchema = useMemo(() => {
+    return {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": faqs.map((f) => ({
+        "@type": "Question",
+        "name": f.question,
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": f.answer,
+        },
+      })),
+    };
+  }, [faqs]);
 
   useEffect(() => {
-    document.title = "UAE Tax & Accounting FAQs | Dias Accounting Dubai";
+    document.title = "Frequently Asked Questions (FAQ) | Dias Accounting & Tax Dubai";
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
 
-  const filteredFaqs = faqsData.filter((faq) => {
-    return (
-      faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      faq.answer.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      faq.category.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  });
-
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-800 antialiased">
+    <div className="min-h-screen bg-slate-50 font-sans text-slate-800 antialiased selection:bg-gold-500/30 selection:text-navy-950">
+      {/* FAQPage JSON-LD Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqPageSchema) }}
+      />
+
       <PageNavigation
         currentPath="/faqs"
         onNavigate={onNavigate}
@@ -52,8 +192,9 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
 
       <main id="main-content">
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-b from-navy-950 via-navy-900 to-navy-950 text-white py-16 lg:py-24 border-b border-white/10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section className="relative bg-gradient-to-b from-navy-950 via-navy-900 to-navy-950 text-white py-16 lg:py-24 border-b border-gold-500/20 overflow-hidden">
+          <div className="absolute -top-32 right-0 w-[500px] h-[500px] bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="flex items-center gap-2 text-xs font-mono text-gold-400 mb-4">
               <button
                 type="button"
@@ -75,7 +216,7 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
                 UAE Corporate Tax, VAT &amp; Bookkeeping FAQs
               </h1>
               <p className="text-slate-300 text-base sm:text-lg leading-relaxed mb-8">
-                Clear, definitive answers to the most common tax registration, 0% relief eligibility, audit filing, and penalty prevention questions faced by UAE businesses.
+                Clear, definitive answers to the most common tax registration, 0% Small Business Relief eligibility, audit filing, and pricing questions faced by UAE businesses.
               </p>
 
               {/* Search Bar */}
@@ -83,7 +224,7 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
                 <Search className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
-                  placeholder="Type a question or topic (e.g. 9% threshold, SBR, audit)..."
+                  placeholder="Type a question or topic (e.g. SBR, 9% threshold, pricing, penalties)..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-xl pl-12 pr-4 py-3.5 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-gold-500"
@@ -93,8 +234,28 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
           </div>
         </section>
 
-        {/* FAQs Accordion Grid */}
-        <section className="py-16 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Content Section */}
+        <section className="py-12 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          
+          {/* Category Filter Tabs */}
+          <div className="flex flex-wrap items-center gap-2 mb-10 pb-4 border-b border-slate-200">
+            {categoryList.map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`py-2 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
+                  selectedCategory === cat.id
+                    ? "bg-navy-950 text-white font-bold shadow-xs"
+                    : "bg-white text-slate-600 hover:text-navy-950 border border-slate-200 hover:border-slate-300"
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Accordion List */}
           <div className="space-y-4">
             {filteredFaqs.map((faq) => {
               const isOpen = openFaq === faq.id;
@@ -136,55 +297,54 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
           </div>
 
           {filteredFaqs.length === 0 && (
-            <div className="text-center py-16 bg-white rounded-2xl border border-slate-200">
+            <div className="text-center py-16 bg-white rounded-2xl border border-slate-200 p-8">
               <HelpCircle className="w-12 h-12 text-slate-300 mx-auto mb-3" />
               <h3 className="font-display text-lg font-bold text-navy-950 mb-1">
                 No matching answers found
               </h3>
               <p className="text-slate-500 text-xs max-w-sm mx-auto mb-4">
-                Ask our senior tax advisor directly for custom advice tailored to your company.
+                Ask our senior tax advisors directly for personalized answers to your questions.
               </p>
               <button
                 type="button"
                 onClick={() => onNavigate("/contact")}
                 className="bg-gold-500 text-navy-950 font-bold px-5 py-2.5 rounded-xl text-xs hover:bg-gold-400 cursor-pointer"
               >
-                Ask Glen Dias Directly
+                Ask a Question Directly
               </button>
             </div>
           )}
-        </section>
 
-        {/* Still Have Questions Box */}
-        <section className="py-12 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-r from-navy-950 to-navy-900 rounded-3xl p-8 sm:p-10 text-white border border-gold-500/30 flex flex-col sm:flex-row items-center justify-between gap-6">
-            <div className="space-y-2 text-center sm:text-left">
+          {/* Bottom Help Desk Card */}
+          <div className="mt-14 p-8 rounded-3xl bg-navy-950 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
+            <div className="space-y-1 text-center md:text-left">
               <h3 className="font-display text-xl font-bold">
-                Have a specific tax scenario or deadline?
+                Have a specific question not covered here?
               </h3>
-              <p className="text-slate-300 text-xs sm:text-sm max-w-md">
-                Our FTA registered agents provide confidential 1-on-1 consultations via Zoom, phone, or in person in Dubai.
+              <p className="text-xs text-slate-300">
+                Contact Glen Dias and our FTA registered tax agents for a direct consultation.
               </p>
             </div>
-            <div className="flex flex-wrap gap-3 shrink-0">
+            <div className="flex flex-wrap gap-3">
               <a
-                href="https://wa.me/971529226958"
+                href="https://wa.me/971529226958?text=Hi,%20I'd%20like%20to%20know%20more%20about%20your%20tax%20services."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-emerald-600 hover:bg-emerald-500 text-white font-display font-bold px-5 py-3 rounded-xl text-xs flex items-center gap-2 transition-colors"
+                className="bg-emerald-600 hover:bg-emerald-500 text-white font-display font-bold px-5 py-3 rounded-xl text-xs flex items-center gap-2 shadow-md"
               >
                 <MessageCircle className="w-4 h-4" />
-                <span>WhatsApp Advisor (+971 52 922 6958)</span>
+                <span>Chat on WhatsApp</span>
               </a>
               <button
                 type="button"
                 onClick={() => onNavigate("/contact")}
-                className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold px-5 py-3 rounded-xl text-xs transition-colors cursor-pointer"
+                className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold px-5 py-3 rounded-xl text-xs cursor-pointer"
               >
-                Book Free Call
+                Schedule Consultation
               </button>
             </div>
           </div>
+
         </section>
       </main>
 

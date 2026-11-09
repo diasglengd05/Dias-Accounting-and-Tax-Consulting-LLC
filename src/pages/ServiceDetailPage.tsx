@@ -357,7 +357,7 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
                     onClick={openWhatsApp}
                     className="bg-emerald-600 hover:bg-emerald-500 text-white font-display font-semibold px-6 py-3.5 rounded-xl text-sm transition-all cursor-pointer flex items-center gap-2 shadow-lg"
                   >
-                    <span>WhatsApp Advisor (+971 52 922 6958)</span>
+                    <span>WhatsApp Advisor</span>
                   </button>
                   <button
                     type="button"

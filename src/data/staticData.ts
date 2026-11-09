@@ -2,61 +2,39 @@ import { Service, BlogPost, PricingTier, Testimonial, FAQItem } from "../types";
 
 export const servicesData: Service[] = [
   {
-    id: "accounting-bookkeeping",
-    title: "Accounting & Bookkeeping",
-    iconName: "Calculator",
-    shortDesc: "Complete financial record keeping, monthly ledger reconciliation, and IFRS-compliant reporting.",
-    longDesc: "Dias Accounting provides robust accounting and bookkeeping solutions designed to keep your business's financial health in perfect order. Our expert services ensure full compliance with the UAE's federal regulations and international standard accounting methodologies (IFRS).",
-    inclusions: [
-      "Dedicated, certified Senior Accountant",
-      "Monthly financial reports (Profit & Loss, Balance Sheet, Cash Flow)",
-      "Bank, credit card, and corporate wallet reconciliation",
-      "Accounts Payable & Receivable tracking and management",
-      "Fixed Assets Registry maintenance and depreciation schedules",
-      "Regular monthly strategic advisory and financial health meetings"
-    ],
-    regulatoryDeadlines: "Monthly or quarterly closure reports, prepared in audit-ready format.",
-    benefits: [
-      "Complete peace of mind to focus on scaling your business operations",
-      "Accurate, audit-ready financial records and statements",
-      "Timely tracking of profitability and real-time cash flow visibility",
-      "Full compliance with the UAE Commercial Companies Law requirements"
-    ]
-  },
-  {
     id: "corporate-tax-advisory",
-    title: "Corporate Tax Advisory & SBR",
+    title: "Corporate Tax Registration and Filing",
     iconName: "TrendingUp",
-    shortDesc: "Comprehensive strategy, EmaraTax registration, 0% Free Zone QFZP structuring, and 9% tax filing.",
-    longDesc: "With the introduction of the 9% Federal Corporate Tax on businesses in the UAE, proper tax planning is more critical than ever. Dias Accounting provides expert guidance to structure your transactions, determine corporate tax liabilities, register your business, and submit timely tax returns.",
+    shortDesc: "Complete UAE Corporate Tax compliance for mainland LLCs and Free Zone entities. We manage EmaraTax registration, 0% Small Business Relief (SBR) elections up to AED 3M, and accurate 9% corporate return submissions.",
+    longDesc: "With the introduction of the 9% Federal Corporate Tax on businesses in the UAE, proper tax planning is more critical than ever. Dias Accounting provides expert guidance to structure your transactions, determine corporate tax liabilities, register your business on EmaraTax, and submit timely tax returns.",
     inclusions: [
       "Corporate Tax registration with the Federal Tax Authority (FTA) via EmaraTax",
       "Detailed Corporate Tax impact assessment & structural advisory",
+      "Small Business Relief (SBR up to AED 3M revenue at 0%) qualification and filing",
+      "Qualifying Free Zone Person (QFZP 0%) substance & de minimis verification",
       "Transfer Pricing (TP) policy analysis and documentation",
-      "Exemption and relief optimization (including Small Business Relief up to AED 3M)",
-      "Qualifying Free Zone Person (QFZP) 0% treaty eligibility assessments",
       "Preparation, verification, and timely filing of annual Corporate Tax returns"
     ],
     regulatoryDeadlines: "Corporate Tax returns and payment must be submitted within 9 months from the end of the tax period.",
     benefits: [
       "Legally optimized tax structure minimizing overall corporate liability",
-      "Protection from substantial non-filing or late-registration penalties",
+      "Protection from the mandatory AED 10,000 late-registration penalty",
       "Maximum utilization of tax groups, transfer benefits, and Free Zone perks",
       "Audit-defensible tax positioning supported by official legislative references"
     ]
   },
   {
     id: "vat-compliance",
-    title: "VAT Compliance & Refunds",
+    title: "VAT Registration and Returns",
     iconName: "Percent",
-    shortDesc: "Hassle-free VAT registration, quarterly 5% filing, input tax recovery, and FTA audit representation.",
+    shortDesc: "End-to-end Value Added Tax compliance under FTA regulations. We handle timely quarterly VAT 201 filing, optimize legal input tax recovery, and safeguard against late registration penalties.",
     longDesc: "The UAE's 5% Value Added Tax (VAT) demands precise transaction classification, invoice compliance, and timely tax returns. We manage your end-to-end VAT cycle to guarantee compliance, maximize legal input tax recovery, and avoid severe FTA penalties.",
     inclusions: [
       "End-to-end VAT Registration and Deregistration with the FTA",
-      "Quarterly or monthly VAT return preparation and electronic filing",
+      "Quarterly or monthly VAT return preparation and electronic filing (Form VAT 201)",
       "Comprehensive tax invoice auditing (compliance checks on formatting and data)",
       "Input VAT recovery optimization to claim back every eligible dirham",
-      "Assistance with VAT voluntary disclosures and refund applications",
+      "Assistance with VAT voluntary disclosures (Form 211) and refund applications",
       "Representation during FTA audits and preparation of required documentation"
     ],
     regulatoryDeadlines: "VAT returns and payments are due within 28 days following the end of the tax period.",
@@ -68,16 +46,38 @@ export const servicesData: Service[] = [
     ]
   },
   {
-    id: "auditing-assurance",
-    title: "Auditing & Assurance Services",
-    iconName: "ShieldCheck",
-    shortDesc: "Statutory audits, Free Zone approved audits, internal controls, and IFRS financial verification.",
-    longDesc: "Independent auditing and assurance services for UAE Mainland and Free Zone companies. We verify financial statements according to International Financial Reporting Standards (IFRS) to satisfy bank covenants, licensing authorities, and corporate tax mandates.",
+    id: "accounting-bookkeeping",
+    title: "Bookkeeping",
+    iconName: "Calculator",
+    shortDesc: "IFRS-compliant double-entry monthly bookkeeping by dedicated chartered accountants. Get reconciled ledgers, monthly Profit & Loss statements, and clean opening balance sheets without hidden fees.",
+    longDesc: "Dias Accounting provides robust accounting and bookkeeping solutions designed to keep your business's financial health in perfect order. Our expert services ensure full compliance with the UAE's federal regulations and international standard accounting methodologies (IFRS).",
     inclusions: [
-      "Statutory annual financial statement audits for Mainland and Free Zone authorities",
-      "Approved auditor reporting for DMCC, Meydan, RAKEZ, IFZA, SHAMS, and DED",
+      "Dedicated, certified Senior Accountant",
+      "Monthly financial reports (Profit & Loss, Balance Sheet, Cash Flow)",
+      "Bank, credit card, and corporate wallet reconciliation",
+      "Accounts Payable & Receivable tracking and management",
+      "Fixed Assets Registry maintenance and depreciation schedules",
+      "Cloud software setup on Zoho Books, Xero, QuickBooks, or Wafeq"
+    ],
+    regulatoryDeadlines: "Monthly or quarterly closure reports, prepared in audit-ready format.",
+    benefits: [
+      "Complete peace of mind to focus on scaling your business operations",
+      "Accurate, audit-ready financial records and statements",
+      "Timely tracking of profitability and real-time cash flow visibility",
+      "Full compliance with the UAE Commercial Companies Law requirements"
+    ]
+  },
+  {
+    id: "auditing-assurance",
+    title: "Audit Readiness and Advisory",
+    iconName: "ShieldCheck",
+    shortDesc: "Pre-audit verification, balance sheet cleanup, and Free Zone renewal compliance. We prepare defensible audit files that satisfy external auditors, banks, and licensing authorities.",
+    longDesc: "Independent auditing readiness and assurance advisory for UAE Mainland and Free Zone companies. We verify financial statements according to International Financial Reporting Standards (IFRS) to satisfy bank covenants, licensing authorities, and corporate tax mandates.",
+    inclusions: [
+      "Statutory annual financial statement audit readiness for Mainland and Free Zones",
+      "Approved auditor coordination for DMCC, Meydan, RAKEZ, IFZA, SHAMS, and DED",
       "Internal audit reviews, fraud risk assessments, and internal controls testing",
-      "Special purpose audits, due diligence reviews, and investor financial verification",
+      "Dividends audit and solvency certification under UAE Commercial Companies Law",
       "Management letter highlighting key operational and accounting control recommendations"
     ],
     regulatoryDeadlines: "Annual audit submission required at commercial license renewal or Free Zone deadline.",

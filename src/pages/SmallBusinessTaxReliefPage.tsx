@@ -13,6 +13,7 @@ import {
   ChevronRight,
   Calculator,
   Award,
+  MessageCircle,
 } from "lucide-react";
 import DiasLogo from "../components/DiasLogo";
 
@@ -346,11 +347,15 @@ export const SmallBusinessTaxReliefPage: React.FC<PageProps> = ({ onNavigate }) 
 
           <div className="pt-4 flex flex-wrap items-center gap-4 relative z-10">
             <a
-              href="mailto:info@diasuae.ae?subject=Book%20Free%20SBR%20Eligibility%20Check"
+              href={`https://wa.me/971529226958?text=${encodeURIComponent(
+                "Hi Dias Accounting, I would like to consult regarding Small Business Relief (SBR) eligibility and corporate tax filing."
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-gold-500 hover:bg-gold-400 text-navy-950 font-bold px-6 py-3.5 rounded-xl text-sm transition-all active:scale-95 cursor-pointer"
             >
-              <Mail className="w-4 h-4" />
-              <span>Email Us: info@diasuae.ae</span>
+              <MessageCircle className="w-4 h-4 text-emerald-800" />
+              <span>WhatsApp Us: +971 52 922 6958</span>
             </a>
             <a
               href="tel:+971529226958"
