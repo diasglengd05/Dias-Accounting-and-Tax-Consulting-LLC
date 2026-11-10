@@ -389,6 +389,24 @@ export const testimonialsData: Testimonial[] = [
 
 export const faqsData: FAQItem[] = [
   {
+    id: "faq-cf-formation-dubai",
+    category: "Company Formation & Banking",
+    question: "How long does company formation take in Dubai and the UAE?",
+    answer: "With Dias Accounting, digital trade license issuance takes 3 to 5 business days for Free Zones (such as SHAMS, DMCC, or DTEC) and 5 to 7 business days for Dubai Mainland (DET). Total completion, including establishment card, investor residency visa, and corporate bank account pre-approval, typically concludes within 10 to 14 business days.",
+  },
+  {
+    id: "faq-cf-bank-approval",
+    category: "Company Formation & Banking",
+    question: "Why do new UAE companies struggle with corporate bank account opening?",
+    answer: "Central Bank of the UAE Anti-Money Laundering (AML) regulations require comprehensive proof of business substance, clear source-of-wealth documentation, customer/supplier counterpart contracts, and realistic cash-flow projections. Dias Accounting prepares bank-grade compliance dossiers to secure fast-track approvals with tier-one UAE commercial and digital banks (Emirates NBD, Wio Bank, Mashreq, FAB).",
+  },
+  {
+    id: "faq-cf-tax-window",
+    category: "Company Formation & Banking",
+    question: "When must a newly incorporated UAE company register for Corporate Tax?",
+    answer: "Under Federal Tax Authority Cabinet Decision No. 75 of 2023, juridical persons incorporated on or after March 1, 2024 must submit their Corporate Tax registration application within three (3) months from the date of incorporation or establishment. Failure to do so incurs an automatic AED 10,000 administrative penalty.",
+  },
+  {
     id: "faq-0-tax-services",
     category: "Tax & Accounting",
     question: "What tax and accounting services are available in Dubai and the UAE?",

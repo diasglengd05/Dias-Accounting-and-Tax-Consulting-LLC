@@ -24,7 +24,7 @@ interface FaqsPageProps {
 
 interface StructuredFaq {
   id: string;
-  category: "Corporate Tax" | "VAT" | "Bookkeeping" | "Pricing" | "Getting Started";
+  category: "Company Formation & Banking" | "Corporate Tax" | "VAT" | "Bookkeeping" | "Pricing" | "Getting Started";
   question: string;
   answer: string;
 }
@@ -37,10 +37,42 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [openFaq, setOpenFaq] = useState<string | null>("ct-1");
+  const [openFaq, setOpenFaq] = useState<string | null>("cf-1");
 
   const faqs: StructuredFaq[] = [
-    // 1. Corporate Tax
+    // 1. Company Formation & Banking (From Today's Official Broadcast & Carousel)
+    {
+      id: "cf-1",
+      category: "Company Formation & Banking",
+      question: "How long does company formation take in Dubai and the UAE?",
+      answer: "With Dias Accounting, digital trade license issuance takes 3 to 5 business days for Free Zones (such as SHAMS, DMCC, or DTEC) and 5 to 7 business days for Dubai Mainland (DET). Total completion, including establishment card, investor residency visa, and corporate bank account pre-approval, typically concludes within 10 to 14 business days.",
+    },
+    {
+      id: "cf-2",
+      category: "Company Formation & Banking",
+      question: "Can foreign nationals own 100% of a Dubai Mainland company in 2026?",
+      answer: "Yes. Following amendments to Federal Decree-Law No. 32 of 2021 on Commercial Companies, 100% foreign ownership is permitted across over 1,000 commercial and industrial mainland activities in Dubai, eliminating the historic requirement for a 51% local Emirati partner.",
+    },
+    {
+      id: "cf-3",
+      category: "Company Formation & Banking",
+      question: "When must a newly incorporated UAE company register for Corporate Tax?",
+      answer: "Under Federal Tax Authority Cabinet Decision No. 75 of 2023, juridical persons incorporated on or after March 1, 2024 must submit their Corporate Tax registration application within three (3) months from the date of incorporation or establishment. Failure to do so incurs an automatic AED 10,000 administrative penalty.",
+    },
+    {
+      id: "cf-4",
+      category: "Company Formation & Banking",
+      question: "Why do new UAE companies struggle with corporate bank account opening, and how does Dias UAE secure priority approvals?",
+      answer: "Central Bank of the UAE Anti-Money Laundering (AML) regulations require comprehensive proof of business substance, verified source-of-wealth documentation, customer/supplier counterpart contracts, and realistic cash-flow projections. Without professional financial structuring, DIY applications often face months of delays or rejection. Dias Accounting prepares bank-grade compliance dossiers to secure fast-track approvals with tier-one UAE commercial and digital banks (Emirates NBD, Wio Bank, Mashreq, FAB).",
+    },
+    {
+      id: "cf-5",
+      category: "Company Formation & Banking",
+      question: "What is the difference between Dubai Mainland (DET) and Free Zone (SHAMS, DMCC) trade licenses?",
+      answer: "Dubai Mainland licenses allow unrestricted commercial trading across all 7 Emirates and eligibility to bid on lucrative UAE government tenders. Free Zone licenses offer 100% foreign ownership and potential 0% Corporate Tax on Qualifying Income (QFZP), but require an onshore distributor or commercial branch to retail physical goods directly into mainland UAE.",
+    },
+
+    // 2. Corporate Tax
     {
       id: "ct-1",
       category: "Corporate Tax",
@@ -50,8 +82,8 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
     {
       id: "ct-2",
       category: "Corporate Tax",
-      question: "What is Small Business Relief (SBR) and who qualifies in 2026?",
-      answer: "Under UAE Ministerial Decision No. 73 of 2023 (extended through December 31, 2029), UAE resident taxable persons with gross business revenue of AED 3,000,000 or less in a given tax period can elect for Small Business Relief. Under SBR, the entity's taxable income is treated as AED 0, resulting in zero corporate tax liability. However, you must still maintain IFRS-compliant books and submit your annual return.",
+      question: "What is Small Business Relief (SBR) and has it been extended through 2029?",
+      answer: "Under UAE Ministerial Decision No. 73 of 2023 and Cabinet extensions through December 31, 2029, UAE resident taxable persons with gross business revenue of AED 3,000,000 or less in a given tax period can elect for Small Business Relief. Under SBR, your net taxable income is treated as AED 0, resulting in zero corporate tax liability. However, mandatory Corporate Tax registration and timely annual filing remain legally enforceable.",
     },
     {
       id: "ct-3",
@@ -65,8 +97,14 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
       question: "What is the penalty for missing the Corporate Tax registration deadline?",
       answer: "Under Cabinet Decision No. 75 of 2023, the Federal Tax Authority (FTA) enforces a mandatory administrative fine of AED 10,000 for failing to submit a Corporate Tax registration application within the designated timeframe.",
     },
+    {
+      id: "ct-5",
+      category: "Corporate Tax",
+      question: "What is the UAE E-Invoicing mandate (Peppol 5-corner model) and who does it affect?",
+      answer: "The Ministry of Finance and Federal Tax Authority are implementing a decentralized Continuous Transaction Controls (CTC) Peppol 5-corner e-invoicing model for all B2B and B2G transactions. Businesses must generate structured XML/UBL digital invoices transmitted in real time through Accredited Service Providers (ASPs) to the central tax authority portal.",
+    },
 
-    // 2. VAT
+    // 3. VAT
     {
       id: "vat-1",
       category: "VAT",
@@ -86,7 +124,7 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
       answer: "Yes, under the Reverse Charge Mechanism (RCM), if foreign SaaS providers (e.g. AWS, Google, Microsoft, Adobe) do not charge UAE VAT directly, you declare the 5% output tax and simultaneously claim the corresponding 5% input tax recovery on your return, assuming the software is used for taxable business purposes.",
     },
 
-    // 3. Bookkeeping
+    // 4. Bookkeeping & Audit
     {
       id: "bk-1",
       category: "Bookkeeping",
@@ -102,16 +140,22 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
     {
       id: "bk-3",
       category: "Bookkeeping",
+      question: "Do UAE companies require an external audit to distribute dividends to shareholders?",
+      answer: "Under Federal Decree-Law No. 32 of 2021 (Commercial Companies Law), dividend distributions must be made solely out of realized distributable net profits verified by balance sheets and profit & loss statements. Distributing dividends without proper accounting ledgers or while in negative equity violates statutory director fiduciary duties.",
+    },
+    {
+      id: "bk-4",
+      category: "Bookkeeping",
       question: "Which accounting software do you support?",
       answer: "We support and integrate with all major cloud accounting software, including Zoho Books, QuickBooks Online, Xero, and Wafeq. If you do not have software yet, we set up your chart of accounts and invoicing templates as part of our onboarding.",
     },
 
-    // 4. Pricing
+    // 5. Pricing
     {
       id: "pr-1",
       category: "Pricing",
       question: "How do your fixed-fee accounting packages work?",
-      answer: "We offer transparent fixed-fee monthly packages starting at AED 500/month. There are no hidden fees, unexpected hourly invoices, or transaction surcharges. Final pricing depends on your business activity, transaction volume, and filing requirements. Book a free consultation for an accurate quote.",
+      answer: "We offer transparent fixed-fee monthly packages starting at AED 500/month. There are no hidden fees, unexpected hourly invoices, or transaction surcharges. Final pricing depends on your business activity, transaction volume, and filing requirements. Book a free consultation on WhatsApp (+971 52 922 6958) for an accurate quote.",
     },
     {
       id: "pr-2",
@@ -120,12 +164,12 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
       answer: "No. Our monthly packages operate with total transparency. We believe in earning your trust month after month through impeccable service quality, proactive communication, and zero-penalty track records.",
     },
 
-    // 5. Getting Started
+    // 6. Getting Started
     {
       id: "gs-1",
       category: "Getting Started",
       question: "How do we get started with Dias Accounting?",
-      answer: "Getting started takes just 3 simple steps: 1) Schedule a free 30-minute consultation or WhatsApp chat; 2) Share your trade license and recent bank statements for a quick diagnostic; 3) We set up your compliance schedule and assign your dedicated senior accountant.",
+      answer: "Getting started takes just 3 simple steps: 1) Connect on WhatsApp (+971 52 922 6958) or schedule a call; 2) Share your trade license and recent bank statements for a quick diagnostic; 3) We set up your compliance schedule and assign your dedicated senior accountant.",
     },
     {
       id: "gs-2",
@@ -137,6 +181,7 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
 
   const categoryList = [
     { id: "all", label: "All Questions" },
+    { id: "Company Formation & Banking", label: "Company Formation & Banking" },
     { id: "Corporate Tax", label: "Corporate Tax" },
     { id: "VAT", label: "VAT" },
     { id: "Bookkeeping", label: "Bookkeeping" },
@@ -305,13 +350,17 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
               <p className="text-slate-500 text-xs max-w-sm mx-auto mb-4">
                 Ask our senior tax advisors directly for personalized answers to your questions.
               </p>
-              <button
-                type="button"
-                onClick={() => onNavigate("/contact")}
-                className="bg-gold-500 text-navy-950 font-bold px-5 py-2.5 rounded-xl text-xs hover:bg-gold-400 cursor-pointer"
+              <a
+                href={`https://wa.me/971529226958?text=${encodeURIComponent(
+                  "Hello Glen Dias, I have a specific question about UAE tax compliance and company formation that was not answered in your FAQ."
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold px-5 py-2.5 rounded-xl text-xs cursor-pointer inline-flex items-center gap-1.5 transition-all shadow-sm"
               >
-                Ask a Question Directly
-              </button>
+                <MessageCircle className="w-3.5 h-3.5" />
+                <span>Ask Question on WhatsApp</span>
+              </a>
             </div>
           )}
 
@@ -327,21 +376,27 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
             </div>
             <div className="flex flex-wrap gap-3">
               <a
-                href="https://wa.me/971529226958?text=Hi,%20I'd%20like%20to%20know%20more%20about%20your%20tax%20services."
+                href={`https://wa.me/971529226958?text=${encodeURIComponent(
+                  "Hello Dias UAE Advisory Team, I have a question regarding UAE Corporate Tax, VAT, or Company Formation and would like to chat."
+                )}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-emerald-600 hover:bg-emerald-500 text-white font-display font-bold px-5 py-3 rounded-xl text-xs flex items-center gap-2 shadow-md"
+                className="bg-emerald-600 hover:bg-emerald-500 text-white font-display font-bold px-5 py-3 rounded-xl text-xs flex items-center gap-2 shadow-md cursor-pointer transition-all"
               >
                 <MessageCircle className="w-4 h-4" />
                 <span>Chat on WhatsApp</span>
               </a>
-              <button
-                type="button"
-                onClick={() => onNavigate("/contact")}
-                className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold px-5 py-3 rounded-xl text-xs cursor-pointer"
+              <a
+                href={`https://wa.me/971529226958?text=${encodeURIComponent(
+                  "Hello Glen Dias, I would like to schedule a free 30-minute consultation regarding my UAE company setup and tax obligations."
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold px-5 py-3 rounded-xl text-xs cursor-pointer flex items-center gap-2 shadow-md transition-all"
               >
-                Schedule Consultation
-              </button>
+                <MessageCircle className="w-4 h-4 text-navy-950" />
+                <span>Schedule Consultation on WhatsApp</span>
+              </a>
             </div>
           </div>
 

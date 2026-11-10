@@ -320,13 +320,17 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
               Schedule a 30-minute confidential consultation with Glen Dias, FTA Registered Tax Agent. We analyze your corporate structure and provide an immediate compliance roadmap.
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-2">
-              <button
-                type="button"
-                onClick={() => onNavigate("/contact")}
-                className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold px-7 py-3.5 rounded-xl text-sm transition-all cursor-pointer shadow-lg"
+              <a
+                href={`https://wa.me/971529226958?text=${encodeURIComponent(
+                  "Hello Glen Dias, I would like to schedule a 30-minute confidential consultation regarding UAE tax and accounting compliance for my business."
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold px-7 py-3.5 rounded-xl text-sm transition-all cursor-pointer shadow-lg flex items-center gap-2"
               >
-                Schedule Consultation Now
-              </button>
+                <MessageCircle className="w-4 h-4 text-navy-950" />
+                <span>Schedule Consultation Now</span>
+              </a>
               <a
                 href="https://wa.me/971529226958"
                 target="_blank"

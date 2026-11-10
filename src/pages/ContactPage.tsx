@@ -55,7 +55,20 @@ export const ContactPage: React.FC<ContactPageProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate API lead transmission
+    const lines = [
+      "Hello Dias UAE Advisory Team,",
+      "",
+      "I would like to book a consultation:",
+      `• Name: ${name || "N/A"}`,
+      `• Company: ${companyName || "N/A"}`,
+      `• Business Email: ${email || "N/A"}`,
+      `• Phone: ${phone || "N/A"}`,
+      `• Service Interested In: ${serviceInterestedIn || "General Advisory"}`,
+      `• Message / Details: ${message || "N/A"}`,
+    ];
+    const text = lines.join("\n");
+    const waUrl = `https://wa.me/971529226958?text=${encodeURIComponent(text)}`;
+    window.open(waUrl, "_blank", "noopener,noreferrer");
     setSubmitted(true);
   };
 
@@ -181,16 +194,13 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                   </div>
                   <div className="text-xs text-slate-600 space-y-1">
                     <span className="text-[10px] font-mono text-slate-400 uppercase font-bold tracking-wider block">
-                      Registered Office &amp; Meeting Suites
+                      Registered Office
                     </span>
                     <p className="font-bold text-navy-950">
                       Dias Accounting &amp; Tax Consulting LLC
                     </p>
                     <p>
                       Business Center, Sharjah Media City (SHAMS), Al Messaned, Sharjah (P.O. Box 515000), UAE
-                    </p>
-                    <p className="text-slate-500">
-                      Dubai Client Office: Al Saada Tower, Business Bay, Dubai, UAE
                     </p>
                   </div>
                 </div>
@@ -220,17 +230,17 @@ export const ContactPage: React.FC<ContactPageProps> = ({
               {/* Google Maps Location Info */}
               <div className="rounded-2xl border border-slate-200 bg-white p-4 space-y-2">
                 <span className="text-[10px] font-mono text-slate-400 uppercase font-bold tracking-wider block">
-                  Office Locations (Sharjah &amp; Dubai)
+                  Office Location (Sharjah Media City)
                 </span>
                 <div className="aspect-video rounded-xl bg-navy-950 text-white border border-slate-800 flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
                   <div className="w-12 h-12 rounded-2xl bg-gold-500/20 text-gold-400 flex items-center justify-center mb-2">
                     <MapPin className="w-6 h-6" />
                   </div>
                   <span className="font-display font-bold text-sm text-white">
-                    Sharjah SHAMS &amp; Business Bay Dubai
+                    Sharjah Media City (SHAMS)
                   </span>
                   <span className="text-xs text-slate-400 mt-1 max-w-xs">
-                    Located centrally across both major UAE commercial centers to serve Mainland and Free Zone clients.
+                    Business Center, Sharjah Media City (SHAMS), serving UAE Mainland and Free Zone clients.
                   </span>
                   <a
                     href="https://maps.google.com/?q=Sharjah+Media+City+SHAMS"
@@ -266,9 +276,20 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                       Thank You! Your Inquiry Has Been Received.
                     </h3>
                     <p className="text-xs sm:text-sm text-slate-700 leading-relaxed max-w-md mx-auto">
-                      Thank you, <strong>{name}</strong>. Your consultation request for <strong>{serviceInterestedIn}</strong> has been received and routed directly to our advisory desk at <strong>info@diasuae.ae</strong>. We will contact you shortly via phone/WhatsApp.
+                      Thank you, <strong>{name}</strong>. Your consultation request for <strong>{serviceInterestedIn}</strong> has been prepared and opened in WhatsApp (+971 52 922 6958).
                     </p>
-                    <div className="pt-2">
+                    <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+                      <a
+                        href={`https://wa.me/971529226958?text=${encodeURIComponent(
+                          `Hello Dias UAE Advisory Team,\n\nFollowing up on my consultation inquiry:\n• Name: ${name || "Client"}\n• Company: ${companyName || "N/A"}\n• Service: ${serviceInterestedIn}\n• Phone: ${phone || "N/A"}`
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-emerald-600 hover:bg-emerald-500 text-white font-display font-bold px-6 py-2.5 rounded-xl text-xs flex items-center gap-2 cursor-pointer transition-colors shadow-sm"
+                      >
+                        <MessageCircle className="w-4 h-4" />
+                        <span>Re-open WhatsApp Message</span>
+                      </a>
                       <button
                         type="button"
                         onClick={() => setSubmitted(false)}
@@ -395,13 +416,13 @@ export const ContactPage: React.FC<ContactPageProps> = ({
 
                     <button
                       type="submit"
-                      className="w-full py-4 rounded-xl bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-extrabold text-xs uppercase tracking-wider transition-all shadow-md shadow-gold-500/20 cursor-pointer flex items-center justify-center gap-2"
+                      className="w-full py-4 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-500 hover:to-emerald-600 text-white font-display font-extrabold text-xs uppercase tracking-wider transition-all shadow-md shadow-emerald-600/25 cursor-pointer flex items-center justify-center gap-2 active:scale-[0.99]"
                     >
-                      <Send className="w-4 h-4" />
-                      <span>Submit Consultation Request</span>
+                      <MessageCircle className="w-4 h-4" />
+                      <span>Send Consultation Inquiry via WhatsApp</span>
                     </button>
-                    <p className="text-[11px] text-slate-400 text-center">
-                      Leads are securely routed to <strong>info@diasuae.ae</strong>. We strictly respect your privacy.
+                    <p className="text-[11px] text-slate-500 text-center">
+                      Opens WhatsApp message directly to our senior advisor at <strong>+971 52 922 6958</strong>.
                     </p>
                   </form>
                 )}

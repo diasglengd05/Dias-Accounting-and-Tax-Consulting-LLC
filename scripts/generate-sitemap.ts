@@ -178,13 +178,13 @@ export function generateSitemapXml(domain = "https://diasuae.ae"): string {
     },
   ];
 
-  // 2. Individual Service Sections & Anchors
+  // 2. Canonical Individual Service Landing Pages (Indexed by Google)
   servicesData.forEach((service) => {
     urls.push({
-      loc: `${domain}/#${service.id}`,
+      loc: `${domain}/services/${service.id}`,
       lastmod: today,
       changefreq: "weekly",
-      priority: "0.90",
+      priority: "0.92",
       comment: `Service: ${service.title}`,
     });
   });
@@ -215,11 +215,11 @@ export function generateSitemapXml(domain = "https://diasuae.ae"): string {
 
   combinedBlogs.forEach((blog) => {
     urls.push({
-      loc: `${domain}/#blog-${blog.id}`,
+      loc: `${domain}/blog/${blog.id}`,
       lastmod: today,
-      changefreq: blog.isAiGenerated ? "daily" : "monthly",
-      priority: blog.isAiGenerated ? "0.85" : "0.80",
-      comment: `Guide: ${blog.title}`,
+      changefreq: blog.isAiGenerated ? "daily" : "weekly",
+      priority: blog.isAiGenerated ? "0.85" : "0.88",
+      comment: `Article: ${blog.title}`,
     });
   });
 

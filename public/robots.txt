@@ -11,6 +11,9 @@ Allow: /#reviews
 Allow: /#faqs
 Allow: /#blogs
 Allow: /#contact
+Allow: /services/
+Allow: /company-setup
+Allow: /pricing
 Allow: /assets/
 Allow: /llms.txt
 Allow: /llms-full.txt
@@ -19,6 +22,7 @@ Allow: /sitemap.xml
 # AI & LLM Crawlers
 User-agent: Googlebot
 Allow: /
+Allow: /services/
 
 User-agent: Google-Extended
 Allow: /
@@ -36,5 +40,6 @@ User-agent: Applebot
 Allow: /
 
 # Host, Sitemap, and Agentic endpoints
-Host: https://www.diasuae.ae
+Host: https://diasuae.ae
+Sitemap: https://diasuae.ae/sitemap.xml
 Sitemap: https://www.diasuae.ae/sitemap.xml

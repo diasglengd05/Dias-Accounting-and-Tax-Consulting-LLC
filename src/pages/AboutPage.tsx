@@ -14,6 +14,7 @@ import {
   Phone,
   Mail,
   Lock,
+  MessageCircle,
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
@@ -112,7 +113,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                   <strong>Mission Statement:</strong> To empower UAE startups, SMEs, and international founders with audit-ready bookkeeping, proactive tax optimization, and bulletproof FTA compliance so they can scale profitably with complete peace of mind.
                 </p>
                 <p>
-                  <strong>Firm Background:</strong> Headquartered in Sharjah Media City (SHAMS) with branch advisory facilities in Al Saada Tower, Business Bay, Dubai, Dias Accounting provides dedicated bilingual advisory desks, senior chartered accountants, and accredited FTA tax agents across all 7 Emirates.
+                  <strong>Firm Background:</strong> Headquartered in Sharjah Media City (SHAMS), Dias Accounting provides dedicated bilingual advisory desks, senior chartered accountants, and accredited FTA tax agents across all 7 Emirates.
                 </p>
               </div>
 
@@ -337,14 +338,15 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                 <p className="text-xs text-slate-300 mt-1">Book a 30-minute discovery consultation with Glen Dias and our senior advisory team.</p>
               </div>
               <a
-                href="/contact"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onNavigate("/contact");
-                }}
-                className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold px-6 py-3 rounded-xl text-xs whitespace-nowrap transition-all shadow-md shrink-0 cursor-pointer"
+                href={`https://wa.me/971529226958?text=${encodeURIComponent(
+                  "Hello Glen Dias, I would like to schedule a free consultation with your senior tax advisory team regarding my UAE company."
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold px-6 py-3 rounded-xl text-xs whitespace-nowrap transition-all shadow-md shrink-0 cursor-pointer flex items-center gap-2"
               >
-                Schedule Free Consultation
+                <MessageCircle className="w-4 h-4 text-navy-950" />
+                <span>Schedule Free Consultation</span>
               </a>
             </div>
           </div>

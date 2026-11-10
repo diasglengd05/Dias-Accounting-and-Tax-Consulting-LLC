@@ -1932,6 +1932,46 @@ async function bootstrap() {
     return res.sendFile(file);
   });
 
+  app.get("/sitemap.xml", (_req, res) => {
+    const file = path.join(process.cwd(), "public", "sitemap.xml");
+    res.setHeader("Content-Type", "application/xml; charset=utf-8");
+    res.setHeader("Cache-Control", "public, max-age=3600");
+    return res.sendFile(file);
+  });
+
+  app.get("/robots.txt", (_req, res) => {
+    const file = path.join(process.cwd(), "public", "robots.txt");
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.setHeader("Cache-Control", "public, max-age=3600");
+    return res.sendFile(file);
+  });
+
+  // Dedicated Service Detail & Blog routes for SEO & Instant Googlebot & AI Agent crawling
+  app.get([
+    "/services/:serviceId",
+    "/services/:serviceId/",
+    "/business-incorporation",
+    "/business-incorporation-services",
+    "/blog/:blogId",
+    "/blogs/:blogId",
+  ], (req, res, next) => {
+    try {
+      const isProduction = process.env.NODE_ENV === "production";
+      const indexPath = isProduction ? path.join(process.cwd(), "dist", "index.html") : path.join(process.cwd(), "index.html");
+      if (fs.existsSync(indexPath)) {
+        let template = fs.readFileSync(indexPath, "utf-8");
+        const meta = resolveMetaForRequest(req.url, req.headers.host || "diasuae.ae");
+        const finalHtml = injectMetaIntoHtml(template, meta);
+        res.setHeader("Content-Type", "text/html; charset=utf-8");
+        res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
+        return res.status(200).send(finalHtml);
+      }
+    } catch {
+      // fallback
+    }
+    return next();
+  });
+
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
       server: { middlewareMode: true, hmr: false },

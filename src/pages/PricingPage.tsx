@@ -755,13 +755,17 @@ export const PricingPage: React.FC<PricingPageProps> = ({
               If your corporate group holds multiple trade licenses or cross-border entities, contact our senior tax consultants for tailored group fee schedules.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <button
-                type="button"
-                onClick={() => onNavigate("/contact")}
-                className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold px-7 py-3.5 rounded-xl text-sm transition-all cursor-pointer shadow-lg"
+              <a
+                href={`https://wa.me/971529226958?text=${encodeURIComponent(
+                  "Hello Dias Accounting, I would like to request a Custom Group Fee Proposal for our multi-entity UAE company."
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold px-7 py-3.5 rounded-xl text-sm transition-all cursor-pointer shadow-lg flex items-center gap-2"
               >
-                Request Custom Group Fee Proposal
-              </button>
+                <MessageCircle className="w-4 h-4 text-navy-950" />
+                <span>Request Custom Group Fee Proposal</span>
+              </a>
               <a
                 href="https://wa.me/971529226958?text=Hi,%20I'd%20like%20to%20know%20more%20about%20your%20tax%20services."
                 target="_blank"

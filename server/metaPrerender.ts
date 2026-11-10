@@ -22,6 +22,14 @@ export interface MetaOverride {
 }
 
 const KNOWN_BLOGS: Record<string, { title: string; summary: string; author: string; role: string; tag: string; date: string }> = {
+  "seamless-uae-company-formation-complete-setup-guide-2026": {
+    title: "Seamless UAE Company Formation 2026: Dubai Mainland & Free Zone Setup Guide | Dias UAE",
+    summary: "The definitive 2026 guide to seamless UAE company formation by Glen Dias, FTA Registered Tax Agent. Fast-track Mainland & Free Zone trade licenses, priority tier-1 corporate banking, and Day-1 EmaraTax compliance.",
+    author: "Glen Dias",
+    role: "Managing Director & FTA Registered Tax Agent",
+    tag: "Company Formation & Banking",
+    date: "2026-11-10",
+  },
   "uae-corporate-tax-2026-sbr-relief-penalty-shield-guide": {
     title: "UAE Corporate Tax 2026: 9% Rates, Small Business Relief & Penalty Shield | Dias UAE",
     summary: "Master UAE Corporate Tax 2026. Learn 9% thresholds, Small Business Relief (0% to 2029), and avoid the AED 10,000 FTA fine with the free Dias UAE Tax Planner.",
@@ -158,6 +166,21 @@ const KNOWN_SERVICES: Record<string, { title: string; desc: string; keywords?: s
     title: "Transfer Pricing Services UAE | Local & Master File Dubai",
     desc: "Complete transfer pricing documentation, OECD benchmark studies, and EmaraTax TP Disclosure Form filing under FTA Ministerial Decision No. 97 of 2023.",
     keywords: "transfer pricing services uae, transfer pricing local file dubai, related party benchmarking, connected persons remuneration, emaratax tp disclosure",
+  },
+  "business-incorporation": {
+    title: "Business Incorporation Services UAE | Company Setup Dubai & Free Zones | Dias UAE",
+    desc: "Premier business incorporation services in UAE. 100% foreign ownership company setup in Dubai Mainland (DET) and top Free Zones (SHAMS, DMCC, IFZA, DTEC). Fast-track trade licenses and corporate bank accounts.",
+    keywords: "business incorporation services uae, business incorporation services in uae, company setup dubai, business setup uae, commercial license dubai, professional license uae, free zone company setup, mainland DET incorporation",
+  },
+  "business-incorporation-services": {
+    title: "Business Incorporation Services UAE | Company Setup Dubai & Free Zones | Dias UAE",
+    desc: "Premier business incorporation services in UAE. 100% foreign ownership company setup in Dubai Mainland (DET) and top Free Zones (SHAMS, DMCC, IFZA, DTEC). Fast-track trade licenses and corporate bank accounts.",
+    keywords: "business incorporation services uae, business incorporation services in uae, company setup dubai, business setup uae, commercial license dubai, professional license uae, free zone company setup, mainland DET incorporation",
+  },
+  "cfo-advisory": {
+    title: "Outsourced CFO & Strategic Financial Advisory UAE | Dias UAE",
+    desc: "Strategic CFO advisory, cash flow forecasting, 0% QFZP free zone substantiation, and statutory audit file preparation for expanding UAE corporate groups.",
+    keywords: "fractional cfo dubai, outsourced cfo uae, virtual cfo services, strategic financial management dubai, cfo advisory uae",
   },
 };
 
@@ -400,15 +423,17 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
   if (
     pathname === "/services/business-incorporation-services" ||
     pathname === "/services/business-incorporation" ||
-    pathname === "/business-incorporation-services"
+    pathname === "/business-incorporation-services" ||
+    pathname === "/business-incorporation"
   ) {
+    const canonicalPath = pathname.startsWith("/services/") ? pathname : `/services/${pathname.replace("/", "")}`;
     return {
       title: "Business Incorporation Services UAE | Company Setup Dubai & Free Zones | Dias UAE",
       description: "Premier business incorporation services in UAE. 100% foreign ownership company setup in Dubai Mainland (DET) and top Free Zones (SHAMS, DMCC, IFZA, DTEC). Fast-track trade licenses and corporate bank accounts.",
-      keywords: "business incorporation services uae, business incorporation services in uae, company setup dubai, business setup uae, commercial license dubai, free zone company setup",
-      url: `${baseUrl}/services/business-incorporation-services`,
+      keywords: "business incorporation services uae, business incorporation services in uae, company setup dubai, business setup uae, commercial license dubai, professional license uae, free zone company setup, mainland DET incorporation",
+      url: `${baseUrl}${canonicalPath}`,
       ogImage: `${baseUrl}/api/og?title=Business+Incorporation+Services+in+UAE&author=Dias+Corporate+Desk&tag=100%25+Foreign+Ownership`,
-      ogType: "website",
+      ogType: "business.business",
       isArabic,
     };
   }

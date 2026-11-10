@@ -24,6 +24,7 @@ import {
   Users,
   Check,
   Award,
+  MessageCircle,
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
@@ -104,6 +105,47 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
     upsertMeta("property", "og:description", desc);
     upsertMeta("name", "twitter:title", title);
     upsertMeta("name", "twitter:description", desc);
+
+    // Update canonical link to match the exact clean service URL
+    const canonicalUrl = `https://diasuae.ae/services/${currentService.id}`;
+    let canonical = document.querySelector('link[rel="canonical"]');
+    if (!canonical) {
+      canonical = document.createElement("link");
+      canonical.setAttribute("rel", "canonical");
+      document.head.appendChild(canonical);
+    }
+    canonical.setAttribute("href", canonicalUrl);
+
+    // Inject Service Schema for Google Rich Results
+    let schemaScript = document.getElementById("service-schema-jsonld");
+    if (!schemaScript) {
+      schemaScript = document.createElement("script");
+      schemaScript.setAttribute("type", "application/ld+json");
+      schemaScript.setAttribute("id", "service-schema-jsonld");
+      document.head.appendChild(schemaScript);
+    }
+    schemaScript.textContent = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Service",
+      "name": currentService.title,
+      "description": desc,
+      "provider": {
+        "@type": "AccountingService",
+        "name": "Dias Accounting & Tax Consulting LLC",
+        "url": "https://diasuae.ae",
+        "telephone": "+971529226958",
+        "email": "info@diasuae.ae",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Business Center, Sharjah Media City (SHAMS)",
+          "addressLocality": "Dubai / Sharjah",
+          "addressRegion": "Dubai",
+          "addressCountry": "AE"
+        }
+      },
+      "areaServed": ["Dubai", "Sharjah", "Abu Dhabi", "United Arab Emirates"],
+      "url": canonicalUrl
+    });
 
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [currentService, serviceId]);
@@ -663,13 +705,17 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
               Schedule an executive consultation with Glen Dias to discuss your {currentService.title} requirements in full confidentiality.
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-2">
-              <button
-                type="button"
-                onClick={() => onNavigate("/contact")}
-                className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold px-7 py-3.5 rounded-xl text-sm transition-all cursor-pointer shadow-lg shadow-gold-500/20"
+              <a
+                href={`https://wa.me/971529226958?text=${encodeURIComponent(
+                  `Hello Glen Dias, I would like to schedule an executive consultation regarding ${currentService.title} for my UAE company.`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold px-7 py-3.5 rounded-xl text-sm transition-all cursor-pointer shadow-lg shadow-gold-500/20 flex items-center gap-2"
               >
-                Schedule Consultation
-              </button>
+                <MessageCircle className="w-4 h-4 text-navy-950" />
+                <span>Schedule Consultation</span>
+              </a>
               <button
                 type="button"
                 onClick={openWhatsApp}

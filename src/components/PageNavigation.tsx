@@ -100,8 +100,8 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
             })}
           </nav>
 
-          {/* Zone 3: Sticky "Book a Free Consultation" CTA + Controls */}
-          <div className="hidden lg:flex items-center gap-3 shrink-0">
+          {/* Zone 3: Sticky "Book a Free Consultation" CTA + Controls (Desktop >= xl) */}
+          <div className="hidden xl:flex items-center gap-3 shrink-0">
             <LanguageToggle variant="desktop" />
 
             {/* Tap-to-call link */}
@@ -125,13 +125,18 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
             </a>
           </div>
 
-          {/* Mobile Controls (with Sticky "Book a Free Consultation" button) */}
-          <div className="flex xl:hidden items-center gap-2">
+          {/* Mobile & Tablet Controls (< xl) */}
+          <div className="flex xl:hidden items-center gap-2 sm:gap-2.5">
+            {/* Tablet Quick Language Toggle */}
+            <div className="hidden sm:inline-flex">
+              <LanguageToggle variant="compact" />
+            </div>
+
             {/* Mobile Sticky Book a Free Consultation Button */}
             <a
               href="/contact"
               onClick={(e) => handleLinkClick(e, "/contact")}
-              className="text-[11px] font-bold py-2 px-3 rounded-lg bg-gold-500 hover:bg-gold-400 text-navy-950 flex items-center gap-1.5 shadow-xs cursor-pointer whitespace-nowrap"
+              className="text-[11px] sm:text-xs font-bold py-2 px-3 sm:px-3.5 rounded-lg bg-gold-500 hover:bg-gold-400 text-navy-950 flex items-center gap-1.5 shadow-xs cursor-pointer whitespace-nowrap active:scale-95 transition-transform"
             >
               <span>{language === "ar" ? "استشارة مجانية" : "Free Consultation"}</span>
             </a>
@@ -139,8 +144,9 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
             {/* Mobile Tap-to-Call */}
             <a
               href="tel:+971529226958"
-              className="w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-navy-950 hover:border-gold-400 transition-colors"
+              className="w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-navy-950 hover:border-gold-400 hover:text-gold-600 transition-colors"
               aria-label="Direct Phone Call"
+              title="Call Dias Accounting: +971 52 922 6958"
             >
               <Phone className="w-4 h-4 text-gold-600" />
             </a>

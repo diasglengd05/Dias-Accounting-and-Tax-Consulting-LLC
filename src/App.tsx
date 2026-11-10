@@ -368,20 +368,30 @@ function MainApp() {
 
     const handleHashChange = () => {
       const hash = window.location.hash;
+      const pathname = window.location.pathname;
+      let targetBlogId = "";
+
       if (hash && hash.startsWith("#blog-")) {
-        const blogId = hash.replace("#blog-", "").trim().toLowerCase();
+        targetBlogId = hash.replace("#blog-", "").trim().toLowerCase();
+      } else if (pathname.startsWith("/blog/")) {
+        targetBlogId = pathname.replace("/blog/", "").replace(/\/$/, "").trim().toLowerCase();
+      } else if (pathname.startsWith("/blogs/")) {
+        targetBlogId = pathname.replace("/blogs/", "").replace(/\/$/, "").trim().toLowerCase();
+      }
+
+      if (targetBlogId) {
         const found =
           blogsData.find(
             (b) =>
-              b.id.toLowerCase() === blogId ||
-              b.id.toLowerCase().startsWith(blogId) ||
-              blogId.startsWith(b.id.toLowerCase())
+              b.id.toLowerCase() === targetBlogId ||
+              b.id.toLowerCase().startsWith(targetBlogId) ||
+              targetBlogId.startsWith(b.id.toLowerCase())
           ) ||
           allBlogs.find(
             (b) =>
-              b.id.toLowerCase() === blogId ||
-              b.id.toLowerCase().startsWith(blogId) ||
-              blogId.startsWith(b.id.toLowerCase())
+              b.id.toLowerCase() === targetBlogId ||
+              b.id.toLowerCase().startsWith(targetBlogId) ||
+              targetBlogId.startsWith(b.id.toLowerCase())
           );
         if (found) {
           setSelectedBlog(found);
@@ -393,7 +403,11 @@ function MainApp() {
 
     handleHashChange();
     window.addEventListener("hashchange", handleHashChange);
-    return () => window.removeEventListener("hashchange", handleHashChange);
+    window.addEventListener("popstate", handleHashChange);
+    return () => {
+      window.removeEventListener("hashchange", handleHashChange);
+      window.removeEventListener("popstate", handleHashChange);
+    };
   }, []);
 
   // Helper to resolve Service icons dynamically
@@ -460,14 +474,18 @@ function MainApp() {
     );
   }
 
+  const normalizedCurrentPath = currentPath.toLowerCase().replace(/\/+$/, "") || "/";
+
   if (
-    currentPath === "/business-incorporation-services" ||
-    currentPath === "/business-incorporation"
+    normalizedCurrentPath === "/services/business-incorporation" ||
+    normalizedCurrentPath === "/services/business-incorporation-services" ||
+    normalizedCurrentPath === "/business-incorporation-services" ||
+    normalizedCurrentPath === "/business-incorporation"
   ) {
     return (
       <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading Business Incorporation Services Hub...</div>}>
         <ServiceDetailPage
-          serviceId="business-incorporation-services"
+          serviceId="business-incorporation"
           onNavigate={navigateTo}
           onOpenAudit={() => setTaxHealthModalOpen(true)}
           onOpenPrivacy={() => setPrivacyOpen(true)}
@@ -1075,15 +1093,23 @@ function MainApp() {
 
                 <div className="mt-8 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
                   <span className="text-xs text-slate-300">
-                    Ready to set up your 2026 financial compliance?
+                    {language === "ar"
+                      ? "هل أنت مستعد لتنظيم امتثالك المالي لعام 2026؟"
+                      : "Ready to set up your 2026 financial compliance?"}
                   </span>
-                  <button
-                    type="button"
-                    onClick={() => navigateTo("/contact")}
-                    className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold px-6 py-3 rounded-xl text-xs uppercase tracking-wider transition-all cursor-pointer shadow-md"
+                  <a
+                    href={`https://wa.me/971529226958?text=${encodeURIComponent(
+                      language === "ar"
+                        ? "مرحباً دياس للمحاسبة، أود البدء بالخطوة الأولى وحجز استشارة للامتثال الضريبي والمحاسبي لعام 2026."
+                        : "Hi Dias Accounting, I'd like to get started with Step 1 and book a consultation for 2026 tax and accounting compliance."
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold px-6 py-3 rounded-xl text-xs uppercase tracking-wider transition-all cursor-pointer shadow-md flex items-center gap-2"
                   >
-                    Get Started with Step 1
-                  </button>
+                    <MessageCircle className="w-4 h-4 text-emerald-800 shrink-0" />
+                    <span>{language === "ar" ? "ابدأ بالخطوة الأولى عبر واتساب" : "Get Started with Step 1"}</span>
+                  </a>
                 </div>
               </div>
             </div>

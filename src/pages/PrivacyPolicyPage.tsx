@@ -68,7 +68,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({
             <div className="space-y-3">
               <h2 className="font-display text-lg font-bold text-navy-950">1. Data Controller Identification</h2>
               <p>
-                The data controller is <strong>Dias Accounting &amp; Tax Consulting LLC</strong>, registered in Sharjah Media City (SHAMS), UAE. Address: Business Center, Sharjah Media City (SHAMS), Al Messaned, Sharjah (P.O. Box 515000) with branch facilities at Al Saada Tower, Business Bay, Dubai, UAE. Trade Licence: <strong>SHAMS 2646813.01</strong>. Email: <a href="mailto:info@diasuae.ae" className="text-gold-600 underline">info@diasuae.ae</a>.
+                The data controller is <strong>Dias Accounting &amp; Tax Consulting LLC</strong>, registered in Sharjah Media City (SHAMS), UAE. Address: Business Center, Sharjah Media City (SHAMS), Al Messaned, Sharjah (P.O. Box 515000). Trade Licence: <strong>SHAMS 2646813.01</strong>. Email: <a href="mailto:info@diasuae.ae" className="text-gold-600 underline">info@diasuae.ae</a>.
               </p>
             </div>
 

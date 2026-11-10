@@ -283,8 +283,7 @@ export const PageFooter: React.FC<PageFooterProps> = ({
                 </span>
                 <p className="leading-relaxed mt-0.5">
                   Business Center, Sharjah Media City (SHAMS),<br />
-                  Al Messaned, Sharjah (P.O. Box 515000)<br />
-                  <span className="text-slate-300">Dubai Suite:</span> Al Saada Tower, Business Bay, Dubai, UAE
+                  Al Messaned, Sharjah (P.O. Box 515000)
                 </p>
               </div>
 

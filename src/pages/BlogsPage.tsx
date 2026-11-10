@@ -16,6 +16,7 @@ import {
   FileText,
   Mail,
   ShieldCheck,
+  MessageCircle,
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
@@ -458,13 +459,17 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
                   Connect with Glen Dias, FTA Registered Tax Agent, for a confidential 30-minute review.
                 </p>
                 <div className="space-y-2 pt-2">
-                  <button
-                    type="button"
-                    onClick={() => onNavigate("/contact")}
-                    className="w-full py-3 rounded-xl bg-navy-950 hover:bg-gold-500 hover:text-navy-950 text-white font-display font-bold text-xs uppercase transition-colors cursor-pointer text-center block"
+                  <a
+                    href={`https://wa.me/971529226958?text=${encodeURIComponent(
+                      "Hello Glen Dias, I was reading your UAE tax insights and would like to book a confidential consultation."
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-3 rounded-xl bg-navy-950 hover:bg-gold-500 hover:text-navy-950 text-white font-display font-bold text-xs uppercase transition-colors cursor-pointer text-center flex items-center justify-center gap-2"
                   >
-                    Book Free Consultation
-                  </button>
+                    <MessageCircle className="w-4 h-4 text-emerald-400" />
+                    <span>Book Free Consultation</span>
+                  </a>
                   <a
                     href="https://wa.me/971529226958?text=Hi,%20I'd%20like%20to%20know%20more%20about%20your%20tax%20services."
                     target="_blank"

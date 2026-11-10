@@ -5,6 +5,7 @@ import {
   Quote,
   Building,
   ExternalLink,
+  MessageCircle,
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
@@ -113,13 +114,17 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({
                   <ExternalLink className="w-3.5 h-3.5 text-navy-950" />
                 </a>
 
-                <button
-                  type="button"
-                  onClick={() => onNavigate("/contact")}
-                  className="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-display font-bold px-6 py-3.5 rounded-xl text-sm transition-all cursor-pointer"
+                <a
+                  href={`https://wa.me/971529226958?text=${encodeURIComponent(
+                    "Hello Dias Accounting, I reviewed your client testimonials and would like to book a free consultation for my UAE business."
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-display font-bold px-6 py-3.5 rounded-xl text-sm transition-all cursor-pointer flex items-center gap-2"
                 >
-                  Book Free Consultation
-                </button>
+                  <MessageCircle className="w-4 h-4 text-emerald-400" />
+                  <span>Book Free Consultation</span>
+                </a>
               </div>
             </div>
           </div>
