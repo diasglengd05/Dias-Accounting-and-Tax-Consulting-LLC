@@ -37,8 +37,8 @@ export const PricingPage: React.FC<PricingPageProps> = ({
   const [pricingPath, setPricingPath] = useState<"prospective" | "retrospective">("prospective");
 
   useEffect(() => {
-    const title = "Fixed-Fee UAE Accounting Packages | Dias Accounting Dubai & Sharjah";
-    const desc = "Transparent fixed-fee accounting & tax packages for UAE businesses starting at AED 500/mo. Zero hidden fees. Bookkeeping, VAT, Corporate Tax (9%) & audit readiness.";
+    const title = "Corporate Tax & Accounting Packages Dubai | From AED 400/mo | Dias UAE";
+    const desc = "Transparent Corporate Tax and accounting packages in Dubai & UAE. Fixed-fee monthly bookkeeping, VAT filing, and 9% Corporate Tax returns with zero hidden fees.";
     document.title = title;
 
     const upsertMeta = (attr: "name" | "property", key: string, content: string) => {
@@ -53,7 +53,7 @@ export const PricingPage: React.FC<PricingPageProps> = ({
 
     upsertMeta("name", "title", title);
     upsertMeta("name", "description", desc);
-    upsertMeta("name", "keywords", "fixed fee accounting uae, accounting packages dubai, corporate tax return fee, vat compliance package, sme accounting dubai");
+    upsertMeta("name", "keywords", "Corporate Tax, accounting packages dubai, monthly accounting package dubai, fixed fee bookkeeping uae, corporate tax return fee, corporate tax consultants in difc, tax services in dubai, difc tax compliance");
     upsertMeta("property", "og:title", title);
     upsertMeta("property", "og:description", desc);
 
@@ -101,10 +101,10 @@ export const PricingPage: React.FC<PricingPageProps> = ({
                 <span>FTA Registered Tax Agency · Transparent Fixed Pricing</span>
               </div>
               <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-6">
-                Transparent Fixed-Fee Accounting Packages for UAE Businesses
+                Corporate Tax &amp; Fixed-Fee Accounting Packages for UAE Businesses
               </h1>
               <p className="text-slate-300 text-base sm:text-lg leading-relaxed mb-6">
-                No hidden surprises, surprise hourly billing, or transaction markups. Get complete peace of mind with FTA-compliant bookkeeping, quarterly VAT filing, and corporate tax returns at predictable monthly rates starting at AED 500/month.
+                No hidden surprises, surprise hourly billing, or transaction markups. Get complete peace of mind with FTA-compliant Corporate Tax (9%), DIFC tax compliance, quarterly VAT filing, and monthly bookkeeping at predictable monthly rates starting at AED 400/month.
               </p>
               
               {/* Important Pricing Note Banner */}
@@ -742,6 +742,89 @@ export const PricingPage: React.FC<PricingPageProps> = ({
             <StandalonePricingCards
               onSelectService={() => onNavigate("/contact")}
             />
+          </div>
+        </section>
+
+        {/* Pricing FAQs Section */}
+        <section className="py-16 bg-white border-t border-slate-200">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            <div className="text-center space-y-2 max-w-2xl mx-auto">
+              <span className="text-xs font-mono font-bold text-gold-600 uppercase tracking-widest block">
+                PRICING &amp; PACKAGES FAQ
+              </span>
+              <h2 className="font-display text-2xl sm:text-3xl font-bold text-navy-950">
+                Frequently Asked Questions About UAE Accounting Packages &amp; Corporate Tax Fees
+              </h2>
+              <p className="text-slate-600 text-xs sm:text-sm">
+                Transparent answers to common questions CFOs, managing directors, and founders ask before engaging Dias Accounting:
+              </p>
+            </div>
+
+            <div className="space-y-4 pt-4">
+              {[
+                {
+                  q: "What is included in Dias Accounting's fixed-fee accounting packages in Dubai?",
+                  a: "Our monthly retainers (starting from AED 400 to AED 2,500/month) cover a dedicated chartered accountant, cloud software setup (Zoho Books, QuickBooks, Xero), monthly bank and card reconciliations, IFRS Profit & Loss and Balance Sheet statements, quarterly VAT 201 return filings, and annual Corporate Tax return preparation on EmaraTax. There are zero hourly fees or surprise billing charges.",
+                },
+                {
+                  q: "How much does corporate tax filing cost for UAE mainland and Free Zone companies?",
+                  a: "For businesses maintaining clean monthly books with Dias Accounting, annual Corporate Tax return filing is bundled into our comprehensive tiers. For standalone Corporate Tax filing without monthly bookkeeping, our fixed preparation fee starts at AED 1,500 for entities claiming 0% Small Business Relief (SBR) up to AED 3M, and AED 2,500 to AED 4,500 for standard 9% or 0% QFZP Free Zone returns.",
+                },
+                {
+                  q: "Are Corporate Tax returns (9%) and VAT 201 filings included in the monthly accounting fee?",
+                  a: "Yes. Our Growth and Enterprise plans include full quarterly VAT 201 return submissions and annual Corporate Tax return filing on the FTA EmaraTax portal. Our Essential tier (AED 400 - AED 500/mo) covers ongoing bookkeeping and quarterly VAT, with an optional discounted annual corporate tax filing add-on.",
+                },
+                {
+                  q: "What are the penalties if my UAE company delays historical backlog bookkeeping?",
+                  a: "Under Cabinet Decision No. 75 of 2023, failing to register for Corporate Tax on time incurs an automatic AED 10,000 fine. Failing to maintain required accounting records for at least 5 years triggers penalties starting at AED 10,000 for a first violation and AED 20,000 for repeats. Our Backlog Catch-Up packages (from AED 2,500/year) reconstruct missing ledgers within 5 to 7 business days to eliminate fine exposure.",
+                },
+                {
+                  q: "Can DIFC, DTEC, and Free Zone companies choose standard SME accounting packages?",
+                  a: "Yes. We offer specialized Free Zone and DIFC accounting tiers that factor in annual IFRS audited accounts, 0% Qualifying Free Zone Person (QFZP) de minimis tests, and OECD Article 34 transfer pricing compliance. Check out our dedicated DIFC Tax Compliance Hub for financial institutions and common-law entities.",
+                },
+              ].map((faq, idx) => (
+                <details
+                  key={idx}
+                  className="group border border-slate-200 rounded-2xl p-5 open:bg-slate-50 transition-colors"
+                >
+                  <summary className="font-display font-bold text-navy-950 text-sm sm:text-base cursor-pointer list-none flex items-center justify-between gap-4">
+                    <span>{faq.q}</span>
+                    <ChevronRight className="w-4 h-4 text-gold-500 transition-transform group-open:rotate-90 shrink-0" />
+                  </summary>
+                  <p className="mt-3 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
+                    {faq.a}
+                  </p>
+                </details>
+              ))}
+            </div>
+
+            <div className="pt-6 border-t border-slate-100 flex flex-wrap gap-4 text-xs font-semibold text-navy-950">
+              <span>Related Resources &amp; Guides:</span>
+              <button
+                type="button"
+                onClick={() => onNavigate("/tax-planning-difc")}
+                className="text-gold-600 hover:underline flex items-center gap-1 cursor-pointer"
+              >
+                <span>DIFC Tax Compliance &amp; Advisory</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => onNavigate("/uae-tax-planner")}
+                className="text-gold-600 hover:underline flex items-center gap-1 cursor-pointer"
+              >
+                <span>UAE Tax Liability Planner</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => onNavigate("/company-setup")}
+                className="text-gold-600 hover:underline flex items-center gap-1 cursor-pointer"
+              >
+                <span>Free Zone Company Formation</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
         </section>
 

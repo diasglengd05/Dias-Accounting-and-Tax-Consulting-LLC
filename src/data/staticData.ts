@@ -477,6 +477,24 @@ export const faqsData: FAQItem[] = [
     category: "Transfer Pricing & Compliance",
     question: "How do Transfer Pricing rules (Local File and TP Disclosure) work in the UAE?",
     answer: "Under Articles 34 and 55 of UAE Corporate Tax Law, all transactions with Related Parties and Connected Persons must comply with the Arm's Length Principle. Qualifying businesses must prepare a Transfer Pricing Local File, Master File, and submit a TP Disclosure Form on EmaraTax alongside their annual corporate tax return. Dias Accounting conducts benchmark comparability analyses and drafts defensible TP documentation."
+  },
+  {
+    id: "faq-difc-tax-compliance",
+    category: "DIFC Tax Compliance",
+    question: "What are the UAE Corporate Tax compliance rules for DIFC entities in 2026?",
+    answer: "Entities established in the Dubai International Financial Centre (DIFC) are subject to UAE Federal Corporate Tax (Federal Decree-Law No. 47 of 2022). To benefit from the 0% Qualifying Free Zone Person (QFZP) tax rate, a DIFC entity must: (1) maintain adequate physical substance and personnel in DIFC, (2) derive Qualifying Income from qualifying activities, (3) comply with OECD arm's length transfer pricing rules under Article 34, (4) ensure non-qualifying revenue does not exceed the lower of 5% or AED 5,000,000, and (5) prepare audited IFRS financial statements. Failure on any condition revokes the 0% benefit for 5 consecutive tax periods."
+  },
+  {
+    id: "faq-difc-consultants",
+    category: "DIFC Tax Advisory",
+    question: "Why should UAE CFOs hire certified corporate tax consultants in DIFC?",
+    answer: "DIFC companies operate in an international common-law financial hub overseen by the DFSA, yet must strictly comply with UAE federal tax laws administered by the FTA. Certified corporate tax consultants in DIFC ensure seamless coordination between DFSA prudential reporting and FTA EmaraTax tax returns, prevent catastrophic de minimis disqualifications, and establish arm's length documentation for cross-border management charges and intercompany financing."
+  },
+  {
+    id: "faq-accounting-packages",
+    category: "Accounting Packages Dubai",
+    question: "What is included in Dias Accounting's fixed-fee accounting packages in Dubai?",
+    answer: "Dias Accounting offers transparent, fixed-fee monthly accounting packages starting from AED 400 to AED 2,500/month. Packages include a dedicated chartered accountant, cloud software setup (Zoho Books, Xero, QuickBooks), monthly bank and credit card reconciliations, IFRS Profit & Loss and Balance Sheet statements, quarterly VAT 201 return filings, and annual UAE Corporate Tax return preparation on EmaraTax with zero hidden hourly fees."
   }
 ];
 

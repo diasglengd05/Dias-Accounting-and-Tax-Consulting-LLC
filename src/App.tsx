@@ -453,10 +453,12 @@ function MainApp() {
   if (
     currentPath === "/difc-dtec-accounting" ||
     currentPath === "/dtec-accounting" ||
-    currentPath === "/accounting-services-in-dtec"
+    currentPath === "/accounting-services-in-dtec" ||
+    currentPath === "/tax-planning-difc" ||
+    currentPath === "/tax-planning-difc.html"
   ) {
     return (
-      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading DIFC &amp; DTEC Hub...</div>}>
+      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading DIFC Tax Compliance Hub...</div>}>
         <DifcDtecAccountingPage onNavigate={navigateTo} />
       </Suspense>
     );
@@ -816,16 +818,16 @@ function MainApp() {
                       className="font-display text-3xl sm:text-5xl lg:text-[50px] font-bold tracking-tight text-white leading-[1.15]"
                       style={{ textWrap: "balance" } as React.CSSProperties}
                     >
-                      Corporate Tax, VAT and Bookkeeping for UAE Businesses. Stay FTA-compliant without the stress.
+                      Corporate Tax &amp; Tax Services in Dubai. FTA-Certified Accounting &amp; 0% Relief.
                     </h1>
 
                     {/* Subheadline stating clearly who is served & what is done */}
                     <p className="text-base sm:text-lg font-medium text-gold-300 leading-relaxed">
-                      Tailored for UAE SMEs, Free Zone companies, startups, and freelancers tired of hidden fees and hourly billing.
+                      Specialized Corporate Tax filing, DIFC tax compliance, VAT returns, and fixed-fee bookkeeping for UAE Mainland and Free Zone businesses.
                     </p>
 
                     <p className="text-slate-300 text-sm sm:text-base leading-relaxed max-w-xl">
-                      Dias Accounting &amp; Tax Consulting LLC is an FTA Registered Tax Agency in Dubai and Sharjah. We handle your monthly double-entry bookkeeping, quarterly VAT returns, and 9% Corporate Tax advisory under transparent flat-fee retainers starting at AED 500/month.
+                      Dias Accounting &amp; Tax Consulting LLC is an FTA Registered Tax Agency in Dubai and Sharjah. We handle your 9% Corporate Tax returns, 0% Small Business Relief (SBR) up to AED 3M, DIFC QFZP compliance, and monthly double-entry bookkeeping under transparent flat-fee packages from AED 400/month.
                     </p>
                   </div>
                 </div>
@@ -929,10 +931,10 @@ function MainApp() {
                   CORE PRACTICE AREAS
                 </span>
                 <h2 className="font-display text-3xl sm:text-4xl font-bold text-navy-950 tracking-tight">
-                  Services at a Glance
+                  What Corporate Tax &amp; Accounting Services Are Mandatory in Dubai for 2026?
                 </h2>
                 <p className="text-slate-600 text-sm max-w-md leading-relaxed">
-                  Four core disciplines tailored to keep UAE Mainland and Free Zone companies fully compliant, penalty-free, and audit-ready.
+                  Four core disciplines tailored to keep UAE Mainland, Free Zone, and DIFC companies fully compliant, penalty-free, and audit-ready.
                 </p>
               </div>
               <button
@@ -1033,6 +1035,92 @@ function MainApp() {
                   </div>
                 </article>
               ))}
+            </div>
+
+            {/* Direct Topical Authority Answers: Executive Briefing for UAE CFOs & Founders */}
+            <div className="bg-white border border-slate-200 rounded-3xl p-8 sm:p-10 shadow-xs space-y-8">
+              <div className="space-y-2 border-b border-slate-100 pb-6">
+                <span className="text-xs font-mono font-bold text-gold-600 uppercase tracking-widest block">
+                  EXECUTIVE REGULATORY BRIEFING 2026
+                </span>
+                <h3 className="font-display text-2xl sm:text-3xl font-bold text-navy-950">
+                  Direct Answers to High-Intent UAE Tax &amp; Compliance Queries
+                </h3>
+                <p className="text-slate-600 text-xs sm:text-sm max-w-3xl leading-relaxed">
+                  Front-loaded statutory facts compiled by FTA Registered Tax Agent Glen Dias for founders, managing directors, and corporate finance executives.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* Query 1: Corporate Tax Rates & Deadlines */}
+                <div className="space-y-3 bg-slate-50/80 rounded-2xl p-6 border border-slate-200/70">
+                  <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-gold-500/10 border border-gold-400/20 text-gold-700 text-[11px] font-bold">
+                    <span>Corporate Tax (9% &amp; 0%)</span>
+                  </div>
+                  <h4 className="font-display font-bold text-base text-navy-950">
+                    What Are the UAE Corporate Tax Rates &amp; Deadlines in 2026?
+                  </h4>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Under Federal Decree-Law No. 47 of 2022, taxable profit up to <strong>AED 375,000</strong> is taxed at <strong>0%</strong>, and profits above AED 375,000 are taxed at <strong>9%</strong>. Resident entities with revenue up to <strong>AED 3,000,000</strong> can elect for <strong>0% Small Business Relief (SBR)</strong> (extended through December 31, 2029). Statutory returns must be submitted on EmaraTax within <strong>9 months</strong> of fiscal year-end. Late registration triggers a mandatory <strong>AED 10,000 fine</strong>.
+                  </p>
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      onClick={() => navigateTo("/uae-tax-planner")}
+                      className="text-xs font-bold text-gold-600 hover:text-navy-950 flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>Calculate Liability on UAE Tax Planner</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Query 2: DIFC Tax Compliance & 0% QFZP Rules */}
+                <div className="space-y-3 bg-slate-50/80 rounded-2xl p-6 border border-slate-200/70">
+                  <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/20 text-emerald-700 text-[11px] font-bold">
+                    <span>DIFC Tax Compliance</span>
+                  </div>
+                  <h4 className="font-display font-bold text-base text-navy-950">
+                    How Does DIFC Tax Compliance &amp; 0% QFZP Structuring Work?
+                  </h4>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Under Cabinet Decision No. 139 of 2023, DIFC and Free Zone entities qualify for <strong>0% Corporate Tax</strong> on Qualifying Income only if they maintain adequate physical economic substance, obtain annual IFRS audited accounts, and adhere to OECD Article 34 transfer pricing. Non-qualifying revenue derived from mainland UAE must not exceed the lower of <strong>5% of total revenue</strong> or <strong>AED 5,000,000</strong>.
+                  </p>
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      onClick={() => navigateTo("/tax-planning-difc")}
+                      className="text-xs font-bold text-gold-600 hover:text-navy-950 flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>Explore DIFC Tax Planning &amp; Advisory</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+
+                {/* Query 3: Accounting & Advisory Packages */}
+                <div className="space-y-3 bg-slate-50/80 rounded-2xl p-6 border border-slate-200/70">
+                  <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-navy-950/10 border border-navy-950/20 text-navy-950 text-[11px] font-bold">
+                    <span>Transparent Pricing</span>
+                  </div>
+                  <h4 className="font-display font-bold text-base text-navy-950">
+                    What Accounting &amp; Advisory Packages Are Available in Dubai?
+                  </h4>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Dias Accounting delivers flat-fee monthly packages starting from <strong>AED 400 to AED 2,500/month</strong> for UAE Mainland, SHAMS, DMCC, and DIFC entities. Every package includes a dedicated chartered accountant, cloud ERP setup (Zoho Books, QuickBooks, Xero), monthly reconciliations, quarterly VAT 201 filings, and official annual Corporate Tax return submission on EmaraTax with zero hidden hourly fees.
+                  </p>
+                  <div className="pt-2">
+                    <button
+                      type="button"
+                      onClick={() => navigateTo("/pricing")}
+                      className="text-xs font-bold text-gold-600 hover:text-navy-950 flex items-center gap-1 cursor-pointer"
+                    >
+                      <span>View All Fixed-Fee Pricing Tiers</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* HOW IT WORKS: 3-Step Process */}

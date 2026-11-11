@@ -22,6 +22,22 @@ export interface MetaOverride {
 }
 
 const KNOWN_BLOGS: Record<string, { title: string; summary: string; author: string; role: string; tag: string; date: string }> = {
+  "precision-accounting-bookkeeping-transforming-financial-operations-uae": {
+    title: "Precision Accounting & Bookkeeping Services Dubai | Dias",
+    summary: "Eliminate operational drag and ensure FTA compliance. Dias Consulting delivers end-to-end bookkeeping and tax-ready financials across the UAE.",
+    author: "Glen Dias",
+    role: "Managing Director & FTA Registered Tax Agent",
+    tag: "Bookkeeping",
+    date: "2026-11-11",
+  },
+  "why-spreadsheets-fail-uae-bookkeeping-compliance-statutory-shift": {
+    title: "Why Spreadsheets Fail UAE Statutory Bookkeeping | Dias",
+    summary: "Relying on Excel for UAE corporate accounting breaches Federal Decree-Law No. 32 and FTA rules. Discover mandatory IFRS compliance and 7-year archival laws.",
+    author: "Glen Dias",
+    role: "Managing Director & FTA Registered Tax Agent",
+    tag: "Compliance & Statutory Bookkeeping",
+    date: "2026-11-11",
+  },
   "seamless-uae-company-formation-complete-setup-guide-2026": {
     title: "Seamless UAE Company Formation 2026: Dubai Mainland & Free Zone Setup Guide | Dias UAE",
     summary: "The definitive 2026 guide to seamless UAE company formation by Glen Dias, FTA Registered Tax Agent. Fast-track Mainland & Free Zone trade licenses, priority tier-1 corporate banking, and Day-1 EmaraTax compliance.",
@@ -224,10 +240,12 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
   const isArabic = searchParams.get("lang") === "ar";
   const baseUrl = `https://${host}`;
 
-  // 1. Direct Blog post match (/blog/:id or ?blog=:id)
+  // 1. Direct Blog post match (/blog/:id, /blogs/:id, or ?blog=:id)
   let blogId = "";
   if (pathname.startsWith("/blog/")) {
     blogId = pathname.replace("/blog/", "").replace(/\.(html|php|aspx)$/, "").trim();
+  } else if (pathname.startsWith("/blogs/")) {
+    blogId = pathname.replace("/blogs/", "").replace(/\.(html|php|aspx)$/, "").trim();
   } else if (searchParams.has("blog")) {
     blogId = searchParams.get("blog") || "";
   }
@@ -317,9 +335,9 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
   // 4. Pricing route
   if (pathname === "/pricing" || searchParams.get("section") === "pricing") {
     return {
-      title: "Transparent Accounting Packages Dubai | From AED 400/mo",
-      description: "No hidden fees. Fixed-price monthly accounting, Corporate Tax (9%) & VAT compliance packages for UAE Mainland & Free Zone businesses. View all pricing tiers!",
-      keywords: "accounting solutions in uae, transparent pricing tax solutions uae, monthly accounting package dubai, fixed fee bookkeeping uae, corporate tax return fee",
+      title: "Corporate Tax & Accounting Packages Dubai | From AED 400/mo | Dias UAE",
+      description: "Transparent Corporate Tax and accounting packages in Dubai & UAE. Fixed-fee monthly bookkeeping, VAT filing, and 9% Corporate Tax returns with zero hidden fees.",
+      keywords: "Corporate Tax, accounting packages dubai, monthly accounting package dubai, fixed fee bookkeeping uae, corporate tax return fee, corporate tax consultants in difc, accounting solutions in uae",
       url: `${baseUrl}/pricing`,
       ogImage: `${baseUrl}/api/og?title=Fixed-Fee+UAE+Accounting+%26+Corporate+Tax+Packages&author=Dias+Tax+Team&tag=From+AED+400%2Fmo`,
       ogType: "website",
@@ -330,9 +348,9 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
   // 5. Dedicated SEO Service Landing Pages
   if (pathname === "/tax-services-dubai" || pathname === "/tax-services-dubai.html") {
     return {
-      title: "Expert Tax Services in Dubai | VAT & Corporate Tax Agency",
-      description: "Avoid penalties and stay compliant with expert tax services in Dubai. Dias Accounting and Tax Consulting LLC provides corporate tax, VAT, and tax preparation services.",
-      keywords: "tax services in dubai, corporate tax agency dubai, vat compliance dubai, tax preparation services uae, fta tax agent dubai, emaratax corporate tax filing",
+      title: "Tax Services in Dubai & Corporate Tax Agency | Dias UAE",
+      description: "Avoid penalties and stay compliant with expert Tax Services in Dubai. Dias Accounting provides Corporate Tax (9%), DIFC tax compliance, and VAT returns.",
+      keywords: "tax services in dubai, corporate tax agency dubai, vat compliance dubai, corporate tax consultants in difc, tax preparation services uae, fta tax agent dubai, emaratax corporate tax filing",
       url: `${baseUrl}/tax-services-dubai`,
       ogImage: `${baseUrl}/api/og?title=Expert+Tax+Services+in+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Tax+Agency+Dubai`,
       ogType: "website",
@@ -342,7 +360,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
 
   if (pathname === "/accounting-services-uae" || pathname === "/accounting-services-uae.html") {
     return {
-      title: "Trusted Accounting Services UAE | Expert Bookkeeping",
+      title: "Trusted Accounting Services UAE | Expert Bookkeeping | Dias UAE",
       description: "Scale your business with premier accounting services in the UAE. From DTEC startups to established mainland firms, get accurate bookkeeping and financial reporting.",
       keywords: "accounting services uae, bookkeeping dubai, chartered accountants dubai, outsourced accounting uae, ifrs financial statements dubai, dtec accounting",
       url: `${baseUrl}/accounting-services-uae`,
@@ -354,11 +372,11 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
 
   if (pathname === "/tax-planning-difc" || pathname === "/tax-planning-difc.html") {
     return {
-      title: "DIFC Tax Planning Services | Strategic Financial Advisory",
-      description: "Optimize your corporate structure with specialized DIFC tax planning services. We provide strategic financial and tax advisory for businesses operating in Dubai.",
-      keywords: "difc tax planning services, tax consultant in difc, qualifying free zone person difc, qfzp 0% tax dubai, transfer pricing difc, holding company tax uae",
+      title: "DIFC Tax Compliance & Corporate Tax Advisory Dubai | Dias UAE",
+      description: "DIFC Tax Compliance and Corporate Tax advisory in Dubai. Certified tax consultants in DIFC for 0% QFZP qualification, DFSA audit readiness, and transfer pricing.",
+      keywords: "DIFC Tax Compliance, Corporate Tax Consultants in DIFC, difc tax planning services, corporate tax uae, qualifying free zone person difc, qfzp 0% tax dubai, transfer pricing difc, holding company tax uae, difc corporate tax advisory, tax services in dubai",
       url: `${baseUrl}/tax-planning-difc`,
-      ogImage: `${baseUrl}/api/og?title=DIFC+Tax+Planning+Services&author=Glen+Dias&role=Senior+Tax+Advisor&tag=DIFC+Advisory`,
+      ogImage: `${baseUrl}/api/og?title=DIFC+Tax+Compliance+%26+Corporate+Tax+Advisory&author=Glen+Dias&role=Senior+Tax+Advisor&tag=DIFC+Advisory`,
       ogType: "website",
       isArabic,
     };
@@ -440,11 +458,11 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
 
   if (pathname === "/services") {
     return {
-      title: "Accounting, Corporate Tax & VAT Practice in UAE | Dias UAE",
-      description: "Explore Dias Accounting's 8 comprehensive practice areas across UAE Corporate Tax (9% & 0% QFZP), VAT compliance, IFRS bookkeeping, backlog reconstruction, and E-Invoicing Phase 1 ASP onboarding.",
-      keywords: "tax consulting services in uae, tax advisory services in dubai, corporate tax registration, vat returns dubai, ifrs bookkeeping uae",
+      title: "Corporate Tax, VAT & Accounting Services in Dubai | Dias UAE",
+      description: "Certified Corporate Tax, VAT filing, backlog bookkeeping, and DIFC tax compliance across Dubai and all 7 UAE Emirates. Schedule a free consultation today.",
+      keywords: "Corporate Tax, Tax Services in Dubai, DIFC Tax Compliance, tax consulting services in uae, tax advisory services in dubai, corporate tax registration, vat returns dubai, ifrs bookkeeping uae",
       url: `${baseUrl}/services`,
-      ogImage: `${baseUrl}/api/og?title=UAE+Tax+Consulting+%26+Accounting+Services&author=Glen+Dias&tag=8+Practice+Areas`,
+      ogImage: `${baseUrl}/api/og?title=Corporate+Tax%2C+VAT+%26+Accounting+Services+in+Dubai&author=Glen+Dias&tag=8+Practice+Areas`,
       ogType: "website",
       isArabic,
     };
@@ -452,11 +470,11 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
 
   if (pathname === "/company-setup") {
     return {
-      title: "Company Setup in Dubai & UAE Free Zones | Dias UAE",
-      description: "Turnkey UAE business incorporation across SHAMS, DMCC, IFZA, DTEC, Meydan, and Dubai Mainland (DET). 100% foreign ownership, 0% QFZP tax structuring, and corporate bank accounts.",
-      keywords: "company setup dubai, free zone license uae, shams incorporation, dmcc company formation, ifza visa setup",
+      title: "UAE Company Setup & Corporate Tax Structuring Dubai | Dias UAE",
+      description: "Turnkey Dubai company setup and Corporate Tax structuring across SHAMS, DMCC, IFZA, DTEC, and Mainland (DET). 100% foreign ownership with 0% QFZP tax optimization.",
+      keywords: "UAE Company Setup, Corporate Tax, company setup dubai, free zone license uae, shams incorporation, dmcc company formation, ifza visa setup, 0% QFZP corporate tax uae",
       url: `${baseUrl}/company-setup`,
-      ogImage: `${baseUrl}/api/og?title=UAE+Company+Setup+%26+Free+Zone+Hub&author=Dias+Corporate+Desk&tag=Turnkey+Incorporation`,
+      ogImage: `${baseUrl}/api/og?title=UAE+Company+Setup+%26+Corporate+Tax+Structuring&author=Dias+Corporate+Desk&tag=Turnkey+Incorporation`,
       ogType: "website",
       isArabic,
     };
@@ -476,11 +494,11 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
 
   if (pathname === "/blogs" || pathname === "/insights") {
     return {
-      title: "UAE Tax & Corporate Regulatory Insights | Dias UAE",
-      description: "Authoritative legal interpretations, FTA decisions, and compliance checklists on UAE Corporate Tax, VAT, and Phase 1 E-Invoicing prepared by registered tax agents.",
-      keywords: "uae tax blog, fta updates 2026, corporate tax guidelines, e-invoicing peppol mandate dubai",
+      title: "Corporate Tax Insights & UAE Tax Regulations Hub | Dias UAE",
+      description: "Authoritative Corporate Tax, DIFC tax compliance, and VAT regulatory insights by FTA Registered Tax Agent Glen Dias. Learn 9% filing rules, SBR, and penalties.",
+      keywords: "Corporate Tax, DIFC Tax Compliance, Tax Services in Dubai, uae tax blog, fta updates 2026, corporate tax guidelines, e-invoicing peppol mandate dubai",
       url: `${baseUrl}/blogs`,
-      ogImage: `${baseUrl}/api/og?title=UAE+Tax+%26+Regulatory+Insights+Hub&author=Glen+Dias&tag=Official+Briefings`,
+      ogImage: `${baseUrl}/api/og?title=Corporate+Tax+Insights+%26+UAE+Tax+Regulations+Hub&author=Glen+Dias&tag=Official+Briefings`,
       ogType: "website",
       isArabic,
     };
@@ -525,16 +543,16 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
   // 6. Default Fallback (Optimized for Homepage)
   return {
     title: isArabic
-      ? "أفضل شركة استشارات ضريبية ومحاسبة في الإمارات | دياز للمحاسبة"
-      : "Best Tax Consulting & Accounting Firm UAE | Dias Accounting",
+      ? "استشارات ضريبة الشركات والمحاسبة في دبي | دياس للمحاسبة الإمارات"
+      : "Corporate Tax & Tax Services in Dubai | FTA Accounting Firm | Dias UAE",
     description: isArabic
-      ? "استشارات ضريبية متخصصة للشركات، وامتثال لضريبة القيمة المضافة، وخدمات محاسبية لشركات البر الرئيسي والمناطق الحرة في الإمارات. احجز استشارتك المجانية."
-      : "Expert corporate tax consulting, VAT compliance, and accounting services for UAE mainland & Free Zone businesses. Ensure FTA compliance. Book a free consult.",
+      ? "استشارات ضريبة الشركات، والامتثال لضريبة القيمة المضافة، والخدمات المحاسبية في دبي والإمارات. باقات محاسبية واضحة تبدأ من 400 درهم/شهرياً."
+      : "Corporate Tax, DIFC tax compliance, VAT returns, and accounting packages in Dubai & UAE. Certified FTA tax agency providing 9% filing & 0% QFZP advisory from AED 400/mo.",
     keywords: isArabic
-      ? "خدمات المحاسبة والضرائب في دبي, شركات الضرائب في الإمارات, خدمات إعداد وتخطيط الضرائب, أفضل مكتب محاسبة في الإمارات, تدقيق مخاطر الغرامات 60 ثانية, تمثيل دفاعي الهيئة الاتحادية للضرائب, خيارات إعفاء ضريبة الشركات 0%, تسهيلات الأعمال الصغيرة 3 مليون, أفضل شركات المحاسبة في دبي, مستشار ضريبي معتمد, ضريبة الشركات دبي 9%, تسجيل ضريبة القيمة المضافة"
-      : "tax and accounting services, tax accounting services, accounting services uae, tax firms in uae, tax services in dubai, tax and financial planning services, tax preparation and planning services, what tax advisory and accounting packages are available in dubai, accounting consultancy in dubai, taxation services dubai, accounting advisory services uae, accounting services for consultants dubai, tax accounting services in dubai, audit tax & pro in uae, tax and accounting services in uae, online accounting services in uae, auditing firms in sharjah, dental tax consultants, Best Accounting Firms in Dubai UAE, Best Accounting Firm in Dubai, FTA Registered Tax Agency Dubai, Chartered Accountants in Dubai",
+      ? "ضريبة الشركات, خدمات المحاسبة والضرائب في دبي, شركات الضرائب في الإمارات, خدمات إعداد وتخطيط الضرائب, أفضل مكتب محاسبة في الإمارات, تدقيق مخاطر الغرامات 60 ثانية, تمثيل دفاعي الهيئة الاتحادية للضرائب, خيارات إعفاء ضريبة الشركات 0%, تسهيلات الأعمال الصغيرة 3 مليون, أفضل شركات المحاسبة في دبي, مستشار ضريبي معتمد, ضريبة الشركات دبي 9%, تسجيل ضريبة القيمة المضافة"
+      : "Corporate Tax, Tax Services in Dubai, DIFC Tax Compliance, Corporate Tax Consultants in DIFC, tax and accounting services, tax accounting services, accounting services uae, tax firms in uae, tax and financial planning services, tax preparation and planning services, what tax advisory and accounting packages are available in dubai, accounting consultancy in dubai, taxation services dubai, accounting advisory services uae, accounting packages dubai, auditing firms in sharjah, Chartered Accountants in Dubai",
     url: `${baseUrl}/`,
-    ogImage: `${baseUrl}/api/og?title=Best+Tax+Consulting+%26+Accounting+Firm+UAE&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Dias+Accounting&readTime=FTA+Certified`,
+    ogImage: `${baseUrl}/api/og?title=Corporate+Tax+%26+Tax+Services+in+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Dias+Accounting&readTime=FTA+Certified`,
     ogType: "business.business",
     isArabic,
   };

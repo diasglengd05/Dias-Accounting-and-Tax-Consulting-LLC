@@ -17,6 +17,7 @@ import {
   Cpu,
   TrendingUp,
   MessageCircle,
+  ArrowRight,
 } from "lucide-react";
 import DiasLogo from "../components/DiasLogo";
 
@@ -26,10 +27,15 @@ interface PageProps {
 
 export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
   useEffect(() => {
-    const pageTitle = "Accounting Services in DTEC & DIFC Dubai | Tax Consultant & Virtual Accounting | Dias UAE";
+    const isDifcExplicit = typeof window !== "undefined" && window.location.pathname.includes("tax-planning-difc");
+    const pageTitle = isDifcExplicit
+      ? "DIFC Tax Compliance & Corporate Tax Advisory Dubai | Dias UAE"
+      : "DIFC Tax Compliance & DTEC Accounting Dubai | Dias UAE";
     const pageDesc =
-      "Premier accounting services in DTEC and tax consultant in DIFC Dubai. Expert FTA tax advisory, virtual accounting services in DIFC, 0% QFZP corporate tax compliance, and tech startup bookkeeping in Dubai Silicon Oasis.";
-    const pageUrl = "https://diasuae.ae/difc-dtec-accounting";
+      "DIFC Tax Compliance and Corporate Tax advisory in Dubai. Certified tax consultants in DIFC for 0% QFZP qualification, DFSA audit readiness, and transfer pricing.";
+    const pageUrl = isDifcExplicit
+      ? "https://diasuae.ae/tax-planning-difc"
+      : "https://diasuae.ae/difc-dtec-accounting";
 
     document.title = pageTitle;
 
@@ -48,7 +54,7 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
     upsertMeta(
       "name",
       "keywords",
-      "accounting services in dtec, tax consultant in difc, tax and accounting services in difc, accounting services in difc, tax services for difc companies, virtual accounting services in difc, difc tax services in dubai, corporate tax consultants in difc, DTEC accounting dubai, dubai silicon oasis accounting, 0% QFZP free zone corporate tax, DFSA audit readiness"
+      "DIFC Tax Compliance, Corporate Tax Consultants in DIFC, difc tax planning services, corporate tax uae, qualifying free zone person difc, qfzp 0% tax dubai, transfer pricing difc, holding company tax uae, difc corporate tax advisory, tax services in dubai, accounting services in dtec, DTEC accounting dubai, DFSA audit readiness"
     );
     upsertMeta("property", "og:title", pageTitle);
     upsertMeta("property", "og:description", pageDesc);
@@ -75,16 +81,16 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
       scriptEl.text = JSON.stringify({
         "@context": "https://schema.org",
         "@type": ["AccountingService", "ProfessionalService"],
-        "name": "Dias Accounting - DTEC & DIFC Tax & Accounting Services",
+        "name": "Dias Accounting - DIFC Tax Compliance & Corporate Tax Advisory",
         "url": pageUrl,
         "description": pageDesc,
         "telephone": "+971-52-922-6958",
         "email": "info@diasuae.ae",
         "priceRange": "AED 500 - AED 4,500",
-        "areaServed": ["DTEC Dubai Silicon Oasis", "DIFC Dubai", "Dubai"],
+        "areaServed": ["DIFC Dubai", "DTEC Dubai Silicon Oasis", "Dubai", "United Arab Emirates"],
         "knowsAbout": [
-          "Accounting services in DTEC",
-          "Tax consultant in DIFC",
+          "DIFC Tax Compliance",
+          "Corporate tax consultants in DIFC",
           "Tax and accounting services in DIFC",
           "Virtual accounting services in DIFC",
           "DIFC tax services in Dubai",
@@ -176,11 +182,11 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs font-bold tracking-wide">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>DIFC Registered & DTEC Tech Hub Compliance Experts</span>
+            <span>DIFC Registered &amp; DTEC Tech Hub Compliance Experts</span>
           </div>
 
           <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight max-w-4xl leading-tight">
-            Accounting Services in DTEC &amp; Tax Consultant in DIFC Dubai: <span className="text-gold-400">0% QFZP Compliance</span> &amp; Virtual Accounting
+            DIFC Tax Compliance &amp; Corporate Tax Advisory Dubai: <span className="text-gold-400">0% QFZP Structuring</span> &amp; IFRS Audits
           </h1>
 
           <p className="text-slate-300 text-base sm:text-lg max-w-3xl leading-relaxed">
@@ -189,18 +195,26 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
 
           <div className="flex flex-wrap gap-4 pt-4">
             <a
-              href="mailto:info@diasuae.ae?subject=DIFC%2FDTEC%20Accounting%20and%20Audit%20Consultation%20Request"
+              href="https://wa.me/971529226958?text=Hi%20Dias%20Accounting,%20I%20would%20like%20to%20consult%20regarding%20DIFC%20Tax%20Compliance%20and%20QFZP%20Structuring."
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-flex items-center gap-2 bg-gold-500 hover:bg-gold-400 text-navy-950 font-bold px-6 py-3.5 rounded-xl text-sm shadow-xl hover:shadow-gold-500/20 transition-all active:scale-95 cursor-pointer"
             >
-              <Mail className="w-4 h-4" />
-              <span>Book DIFC / DTEC Advisory (info@diasuae.ae)</span>
+              <MessageCircle className="w-4 h-4 text-emerald-900" />
+              <span>WhatsApp Glen Dias (+971 52 922 6958)</span>
             </a>
             <a
-              href="tel:+971529226958"
+              href="/pricing"
+              onClick={(e) => {
+                if (onNavigate) {
+                  e.preventDefault();
+                  onNavigate("/pricing");
+                }
+              }}
               className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-3.5 rounded-xl text-sm border border-white/15 transition-all"
             >
-              <Phone className="w-4 h-4 text-gold-400" />
-              <span>Speak to Free Zone Tax Specialist (+971 52 922 6958)</span>
+              <span>View Fixed-Fee Packages</span>
+              <ChevronRight className="w-4 h-4 text-gold-400" />
             </a>
           </div>
 
@@ -219,7 +233,7 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
               <span className="text-xs text-slate-300">De Minimis Threshold</span>
             </div>
             <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-              <span className="text-2xl sm:text-3xl font-extrabold text-gold-400 font-display block">DFSA & DSO</span>
+              <span className="text-2xl sm:text-3xl font-extrabold text-gold-400 font-display block">DFSA &amp; DSO</span>
               <span className="text-xs text-slate-300">Regulatory Frameworks</span>
             </div>
           </div>
@@ -234,7 +248,7 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
           <div className="max-w-3xl space-y-2">
             <span className="text-xs font-bold text-gold-600 uppercase tracking-wider">Free Zone Specializations</span>
             <h2 className="text-2xl sm:text-3xl font-bold font-display text-navy-950">
-              Tailored Accounting for Dubai's Premier Innovation Hubs
+              What Are the UAE Corporate Tax Compliance Rules for DIFC &amp; Free Zone Entities?
             </h2>
             <p className="text-slate-600 text-sm sm:text-base">
               Each jurisdiction has distinct regulatory, economic substance, and auditing expectations. Dias Accounting bridges the gap with dedicated solutions for both zones:
@@ -250,7 +264,7 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
                     <Building2 className="w-6 h-6" />
                   </div>
                   <span className="text-[11px] font-bold uppercase tracking-wider text-navy-800 bg-navy-100/80 px-3 py-1 rounded-full">
-                    Financial & Professional Hub
+                    Financial &amp; Professional Hub
                   </span>
                 </div>
                 <h3 className="text-xl font-bold font-display text-navy-950">
@@ -270,7 +284,7 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
                   </li>
                   <li className="flex items-start gap-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                    <span>Economic substance compliance (adequate physical office & qualified staff)</span>
+                    <span>Economic substance compliance (adequate physical office &amp; qualified staff)</span>
                   </li>
                 </ul>
               </div>
@@ -294,14 +308,14 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
                     <Cpu className="w-6 h-6" />
                   </div>
                   <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/80 px-3 py-1 rounded-full">
-                    Technology & Startup Campus
+                    Technology &amp; Startup Campus
                   </span>
                 </div>
                 <h3 className="text-xl font-bold font-display text-navy-950">
                   DTEC (Dubai Technology Entrepreneur Campus - DSO)
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  Located within Dubai Silicon Oasis (DSO), DTEC is the epicenter for software companies, SaaS ventures, e-commerce, and venture-backed innovators. We manage lean bookkeeping, investor cap table reporting, and R&D capitalization accounting.
+                  Located within Dubai Silicon Oasis (DSO), DTEC is the epicenter for software companies, SaaS ventures, e-commerce, and venture-backed innovators. We manage lean bookkeeping, investor cap table reporting, and R&amp;D capitalization accounting.
                 </p>
                 <ul className="space-y-2 text-xs text-slate-700">
                   <li className="flex items-start gap-2">
@@ -337,7 +351,7 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
           <div className="max-w-3xl space-y-3">
             <span className="text-xs font-bold text-gold-600 uppercase tracking-wider">Corporate Tax Law Deep Dive</span>
             <h2 className="text-2xl sm:text-3xl font-bold font-display text-navy-950">
-              The 5 Cumulative Conditions for 0% Free Zone Corporate Tax
+              How Do DIFC Companies Qualify for 0% Corporate Tax under the QFZP Regime?
             </h2>
             <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
               Under <strong>Cabinet Decision No. 55 of 2023</strong> and <strong>Ministerial Decision No. 139 of 2023</strong>, an entity in DIFC or DTEC qualifies for 0% Corporate Tax only if it satisfies all 5 statutory conditions. Failing any single condition disqualifies the company for <strong>5 consecutive tax periods</strong>:
@@ -409,10 +423,10 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
           <div className="max-w-2xl space-y-3">
             <span className="text-xs font-bold text-gold-400 uppercase tracking-widest">Enterprise Support Suite</span>
             <h2 className="text-2xl sm:text-3xl font-bold font-display text-white">
-              End-to-End Accounting & Tax Management
+              Why Rely on Certified Corporate Tax Consultants in DIFC Over Traditional Audit Firms?
             </h2>
             <p className="text-slate-300 text-sm leading-relaxed">
-              Serving hundreds of companies across Dubai's specialized zones, our chartered team delivers full-lifecycle financial oversight:
+              Serving hundreds of companies across Dubai's specialized zones, our chartered team delivers full-lifecycle financial oversight without hourly billing surprises:
             </p>
           </div>
 
@@ -461,6 +475,100 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
             >
               <Phone className="w-4 h-4" />
               <span>Direct Advisory Desk: +971 52 922 6958</span>
+            </a>
+          </div>
+        </section>
+
+        {/* Section 4: Search Console FAQs */}
+        <section className="bg-white border border-slate-200 rounded-3xl p-8 sm:p-12 space-y-6">
+          <div className="max-w-3xl space-y-2">
+            <span className="text-xs font-bold text-gold-600 uppercase tracking-wider">Search Console Insights</span>
+            <h2 className="text-2xl sm:text-3xl font-bold font-display text-navy-950">
+              Frequently Asked Questions: DIFC Tax Compliance, Audits &amp; Transfer Pricing
+            </h2>
+            <p className="text-slate-600 text-sm">
+              Authoritative answers to the most common queries CFOs and founders search for in the UAE:
+            </p>
+          </div>
+
+          <div className="space-y-4 pt-4">
+            {[
+              {
+                q: "Do DIFC companies have to pay UAE Corporate Tax?",
+                a: "Yes. DIFC entities fall under the scope of UAE Federal Corporate Tax (Federal Decree-Law No. 47 of 2022). However, entities that meet the definition of a Qualifying Free Zone Person (QFZP) can benefit from a 0% corporate tax rate on Qualifying Income, provided they satisfy economic substance, adhere to transfer pricing rules, maintain de minimis limits, and obtain annual audited financial statements.",
+              },
+              {
+                q: "Why do CFOs hire certified corporate tax consultants in DIFC?",
+                a: "DIFC common law companies operate under a dual framework of DFSA commercial regulations and Federal Tax Authority (FTA) tax statutes. Certified corporate tax consultants in DIFC guarantee precise categorization of qualifying vs. non-qualifying revenue, protect the 5% / AED 5M de minimis cap, and ensure arm's length transfer pricing.",
+              },
+              {
+                q: "What are the transfer pricing requirements for DIFC businesses?",
+                a: "Under Article 34 of the Corporate Tax Law, all transactions between related parties or connected persons must meet the arm's length standard. DIFC entities exceeding the FTA group revenue thresholds must prepare and maintain Local File and Master File documentation.",
+              },
+              {
+                q: "Can DIFC holding companies distribute tax-free dividends?",
+                a: "Yes. Under UAE Corporate Tax participation exemption rules (Article 23), dividends and capital gains derived by a UAE parent company from qualifying domestic or foreign shareholdings are exempt from Corporate Tax, provided minimum ownership (5%) and holding period requirements are met.",
+              },
+              {
+                q: "What accounting packages are available for DIFC and Free Zone companies?",
+                a: "Dias Accounting provides structured, fixed-fee monthly retainers from AED 500/month covering dedicated cloud bookkeeping (Zoho Books, Xero, QuickBooks), monthly IFRS P&L reporting, quarterly VAT 201 submissions, and annual corporate tax return filing with zero hidden fees.",
+              },
+            ].map((faq, idx) => (
+              <details
+                key={idx}
+                className="group border border-slate-200 rounded-2xl p-5 open:bg-slate-50 transition-colors"
+              >
+                <summary className="font-display font-bold text-navy-950 text-sm sm:text-base cursor-pointer list-none flex items-center justify-between gap-4">
+                  <span>{faq.q}</span>
+                  <ChevronRight className="w-4 h-4 text-gold-500 transition-transform group-open:rotate-90 shrink-0" />
+                </summary>
+                <p className="mt-3 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
+                  {faq.a}
+                </p>
+              </details>
+            ))}
+          </div>
+
+          <div className="pt-6 border-t border-slate-100 flex flex-wrap gap-4 text-xs font-semibold text-navy-950">
+            <span>Explore Related Resources:</span>
+            <a
+              href="/pricing"
+              onClick={(e) => {
+                if (onNavigate) {
+                  e.preventDefault();
+                  onNavigate("/pricing");
+                }
+              }}
+              className="text-gold-600 hover:underline flex items-center gap-1"
+            >
+              <span>Fixed-Fee Retainer Packages</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </a>
+            <a
+              href="/company-setup"
+              onClick={(e) => {
+                if (onNavigate) {
+                  e.preventDefault();
+                  onNavigate("/company-setup");
+                }
+              }}
+              className="text-gold-600 hover:underline flex items-center gap-1"
+            >
+              <span>UAE Free Zone Setup Hub</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </a>
+            <a
+              href="/uae-tax-planner"
+              onClick={(e) => {
+                if (onNavigate) {
+                  e.preventDefault();
+                  onNavigate("/uae-tax-planner");
+                }
+              }}
+              className="text-gold-600 hover:underline flex items-center gap-1"
+            >
+              <span>UAE Tax Planner</span>
+              <ArrowRight className="w-3.5 h-3.5" />
             </a>
           </div>
         </section>

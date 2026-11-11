@@ -48,8 +48,26 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
   const [checklistSuccess, setChecklistSuccess] = useState(false);
 
   useEffect(() => {
-    document.title = "UAE Tax & Accounting Insights | Dias Accounting Dubai & Sharjah";
+    const title = "Corporate Tax Insights & UAE Tax Regulations Hub | Dias UAE";
+    const desc = "Authoritative UAE Corporate Tax guides, DIFC tax compliance briefings, VAT filing rules, and accounting strategies by FTA registered tax agents in Dubai.";
+    document.title = title;
     window.scrollTo({ top: 0, behavior: "instant" });
+
+    const upsertMeta = (attr: "name" | "property", key: string, content: string) => {
+      let el = document.querySelector(`meta[${attr}="${key}"]`);
+      if (!el) {
+        el = document.createElement("meta");
+        el.setAttribute(attr, key);
+        document.head.appendChild(el);
+      }
+      el.setAttribute("content", content);
+    };
+
+    upsertMeta("name", "description", desc);
+    upsertMeta("name", "keywords", "Corporate Tax, DIFC Tax Compliance, Tax Services in Dubai, UAE Corporate Tax Guide, FTA EmaraTax, Free Zone 0% QFZP, VAT filing Dubai");
+    upsertMeta("property", "og:title", title);
+    upsertMeta("property", "og:description", desc);
+    upsertMeta("property", "og:url", "https://diasuae.ae/blogs");
 
     fetch("/api/blogs")
       .then((r) => r.json())
@@ -273,7 +291,7 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
                 <span>FTA Regulatory Briefings · Practical Accounting Insights</span>
               </div>
               <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4">
-                UAE Corporate Tax, VAT &amp; Bookkeeping Insights
+                Corporate Tax Insights, DIFC Tax Compliance &amp; UAE Regulations Hub
               </h1>
               <p className="text-slate-300 text-base leading-relaxed mb-6">
                 Authoritative legislative interpretations, ministerial decrees, practical compliance guides, and draft outlines prepared by FTA Registered Tax Agents in Dubai and Sharjah.
@@ -305,7 +323,16 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
         {/* Content Section */}
         <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           
-          {/* Category Filter Tabs */}
+          {/* Section Heading & Category Filter Tabs */}
+          <div className="mb-8">
+            <h2 className="font-display text-xl sm:text-2xl font-bold text-navy-950 mb-2">
+              What Are the Latest Corporate Tax, VAT &amp; Free Zone Regulatory Updates in Dubai?
+            </h2>
+            <p className="text-slate-600 text-xs sm:text-sm">
+              Filter by regulatory category or search by topic to explore authoritative FTA compliance briefings.
+            </p>
+          </div>
+
           <div className="flex flex-wrap items-center gap-2 mb-10 pb-4 border-b border-slate-200">
             {categories.map((cat) => (
               <button
@@ -481,6 +508,105 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
                 </div>
               </div>
 
+            </div>
+          </div>
+        </section>
+
+        {/* Core Services Internal Linking Hub */}
+        <section className="py-14 bg-white border-t border-slate-200">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-3xl mx-auto mb-10">
+              <span className="text-[10px] font-mono text-gold-600 uppercase font-bold tracking-wider block mb-1">
+                EXPLORE TAX &amp; FORMATION ADVISORY
+              </span>
+              <h2 className="font-display text-2xl sm:text-3xl font-bold text-navy-950">
+                Turn UAE Regulatory Knowledge Into Compliant Business Growth
+              </h2>
+              <p className="text-slate-600 text-xs sm:text-sm mt-2">
+                Connect directly with certified tax agents and corporate structuring specialists in Dubai.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div
+                onClick={() => onNavigate("/tax-planning-difc")}
+                className="p-6 rounded-2xl border border-slate-200 hover:border-gold-400 bg-slate-50/50 hover:bg-white transition-all cursor-pointer group flex flex-col justify-between"
+              >
+                <div>
+                  <div className="w-10 h-10 rounded-xl bg-gold-500/10 text-gold-600 flex items-center justify-center mb-4">
+                    <ShieldCheck className="w-5 h-5" />
+                  </div>
+                  <h3 className="font-display font-bold text-navy-950 text-base group-hover:text-gold-600 mb-2">
+                    DIFC Tax Compliance
+                  </h3>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Corporate tax planning, DFSA statutory audit coordination, and 0% QFZP structuring in DIFC and DTEC.
+                  </p>
+                </div>
+                <span className="text-xs font-semibold text-gold-600 flex items-center gap-1 mt-4">
+                  Learn More <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                </span>
+              </div>
+
+              <div
+                onClick={() => onNavigate("/pricing")}
+                className="p-6 rounded-2xl border border-slate-200 hover:border-gold-400 bg-slate-50/50 hover:bg-white transition-all cursor-pointer group flex flex-col justify-between"
+              >
+                <div>
+                  <div className="w-10 h-10 rounded-xl bg-navy-950/10 text-navy-950 flex items-center justify-center mb-4">
+                    <Tag className="w-5 h-5 text-navy-900" />
+                  </div>
+                  <h3 className="font-display font-bold text-navy-950 text-base group-hover:text-gold-600 mb-2">
+                    Fixed-Fee Packages
+                  </h3>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Transparent monthly accounting, VAT filings, and annual Corporate Tax returns with zero surprise fees.
+                  </p>
+                </div>
+                <span className="text-xs font-semibold text-gold-600 flex items-center gap-1 mt-4">
+                  View Packages <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                </span>
+              </div>
+
+              <div
+                onClick={() => onNavigate("/company-setup")}
+                className="p-6 rounded-2xl border border-slate-200 hover:border-gold-400 bg-slate-50/50 hover:bg-white transition-all cursor-pointer group flex flex-col justify-between"
+              >
+                <div>
+                  <div className="w-10 h-10 rounded-xl bg-gold-500/10 text-gold-600 flex items-center justify-center mb-4">
+                    <BookOpen className="w-5 h-5 text-gold-600" />
+                  </div>
+                  <h3 className="font-display font-bold text-navy-950 text-base group-hover:text-gold-600 mb-2">
+                    UAE Company Setup
+                  </h3>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Fast-track Free Zone &amp; Mainland licensing with 100% foreign ownership and corporate bank accounts.
+                  </p>
+                </div>
+                <span className="text-xs font-semibold text-gold-600 flex items-center gap-1 mt-4">
+                  Start Formation <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                </span>
+              </div>
+
+              <div
+                onClick={() => onNavigate("/uae-tax-planner")}
+                className="p-6 rounded-2xl border border-slate-200 hover:border-gold-400 bg-slate-50/50 hover:bg-white transition-all cursor-pointer group flex flex-col justify-between"
+              >
+                <div>
+                  <div className="w-10 h-10 rounded-xl bg-navy-950/10 text-navy-950 flex items-center justify-center mb-4">
+                    <FileText className="w-5 h-5 text-navy-900" />
+                  </div>
+                  <h3 className="font-display font-bold text-navy-950 text-base group-hover:text-gold-600 mb-2">
+                    Tax Planner Tool
+                  </h3>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Simulate your Corporate Tax liability, test 0% Small Business Relief eligibility, and avoid penalties.
+                  </p>
+                </div>
+                <span className="text-xs font-semibold text-gold-600 flex items-center gap-1 mt-4">
+                  Calculate Tax <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                </span>
+              </div>
             </div>
           </div>
         </section>
