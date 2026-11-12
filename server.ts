@@ -1785,6 +1785,38 @@ app.get("/api/blogs", async (req, res) => {
 });
 
 /**
+ * Live Blogger Feed Proxy: /api/blogger-feed
+ * Proxies live Blogger articles from https://insights.diasuae.ae/
+ * Avoids any browser cross-origin (CORS) blocks while keeping responses instantaneous with a 5-minute cache.
+ */
+let bloggerFeedCache: { timestamp: number; data: any } | null = null;
+app.get("/api/blogger-feed", async (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Cache-Control", "public, max-age=300");
+  const now = Date.now();
+  if (bloggerFeedCache && (now - bloggerFeedCache.timestamp < 300000)) {
+    return res.json(bloggerFeedCache.data);
+  }
+  try {
+    const response = await fetch("https://insights.diasuae.ae/feeds/posts/default?alt=json&max-results=10", {
+      headers: { "User-Agent": "DiasAccounting-Bot/1.0" },
+    });
+    if (!response.ok) {
+      throw new Error(`Blogger responded with HTTP ${response.status}`);
+    }
+    const data = await response.json();
+    bloggerFeedCache = { timestamp: now, data };
+    return res.json(data);
+  } catch (err: any) {
+    console.warn("[API Blogger Feed] Proxy fetch failed:", err.message);
+    if (bloggerFeedCache) {
+      return res.json(bloggerFeedCache.data);
+    }
+    return res.status(502).json({ error: "Failed to fetch Blogger feed", details: err.message });
+  }
+});
+
+/**
  * Blog Editorial Queue Management APIs
  */
 app.get("/api/queue", async (req, res) => {

@@ -6,6 +6,7 @@ import {
   ArrowRight,
   ChevronRight,
   MessageCircle,
+  ExternalLink,
 } from "lucide-react";
 import DiasLogo from "./DiasLogo";
 import ComplianceAlertBanner from "./ComplianceAlertBanner";
@@ -32,7 +33,7 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
     onNavigate(path);
   };
 
-  // Exactly requested nav order: Home, Services, Tax Planner, Pricing, About, Testimonials, Blog, FAQs, Contact
+  // Nav order: Home, Services, Tax Planner, Pricing, About, Testimonials, Insights, FAQs, Contact
   const navItems = [
     { path: "/", label: t.nav.home || "Home" },
     { path: "/services", label: t.nav.services || "Services" },
@@ -40,7 +41,7 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
     { path: "/pricing", label: t.nav.pricing || "Pricing" },
     { path: "/about", label: language === "ar" ? "من نحن" : "About" },
     { path: "/testimonials", label: t.nav.reviews || "Testimonials" },
-    { path: "/blogs", label: language === "ar" ? "المدونة" : "Blog" },
+    { path: "/blogs", label: language === "ar" ? "الرؤى والمدونة" : "Insights" },
     { path: "/faqs", label: t.nav.faq || "FAQs" },
     { path: "/contact", label: language === "ar" ? "تواصل معنا" : "Contact" },
   ];
@@ -75,7 +76,7 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
           </div>
 
           {/* Zone 2: Navigation Links */}
-          <nav aria-label="Main Navigation" className="hidden xl:flex items-center gap-4 xl:gap-5">
+          <nav aria-label="Main Navigation" className="hidden xl:flex items-center gap-3 xl:gap-4">
             {navItems.map((item) => {
               const isActive =
                 currentPath === item.path ||
@@ -98,6 +99,19 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
                 </a>
               );
             })}
+
+            {/* Live Tax Updates - Direct Link to insights.diasuae.ae */}
+            <a
+              href="https://insights.diasuae.ae/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative py-1.5 px-3 rounded-full text-xs font-bold tracking-tight whitespace-nowrap shrink-0 transition-all duration-150 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200/80 hover:border-emerald-300 flex items-center gap-1.5 shadow-2xs"
+              title="Live UAE Tax & Regulatory Updates (insights.diasuae.ae)"
+            >
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Live Tax Updates</span>
+              <ExternalLink className="w-3 h-3 text-emerald-600" />
+            </a>
           </nav>
 
           {/* Zone 3: Sticky "Book a Free Consultation" CTA + Controls (Desktop >= xl) */}
@@ -214,6 +228,22 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
                   </a>
                 );
               })}
+
+              {/* Mobile Live Tax Updates link to insights.diasuae.ae */}
+              <a
+                href="https://insights.diasuae.ae/"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center justify-between py-3 px-3 my-1 rounded-xl text-sm font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/70 transition-colors"
+                title="Live UAE Tax & Regulatory Updates (insights.diasuae.ae)"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>Live Tax Updates (insights.diasuae.ae)</span>
+                </div>
+                <ExternalLink className="w-4 h-4 text-emerald-600" />
+              </a>
             </div>
 
             {/* Tap-to-call link on Mobile */}

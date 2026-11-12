@@ -658,6 +658,12 @@
           <li><a href="/#home">Home</a></li>
           <li><a href="/#services">Services</a></li>
           <li><a href="/blog.html" class="active">Insights</a></li>
+          <li>
+            <a href="https://insights.diasuae.ae/" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 0.35rem; color: var(--color-gold-600); font-weight: 700;">
+              <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+              <span>Live Tax Updates</span>
+            </a>
+          </li>
           <li><a href="/#contact" class="cta-btn">Book Consultation</a></li>
         </ul>
       </nav>
@@ -688,6 +694,17 @@
           <div id="noResults" style="display: none; padding: 3rem; text-align: center; background: #fff; border-radius: 16px; border: 1px dashed var(--color-slate-200);">
             <h3 style="color: var(--color-navy-950); margin-bottom: 0.5rem;">No matching articles found</h3>
             <p style="color: var(--color-slate-500); font-size: 0.9rem;">Try searching for different keywords or select a different category.</p>
+          </div>
+
+          <!-- 5. View All Insights on Blogger Subdomain Button -->
+          <div style="text-align: center; margin-top: 2.75rem; padding-top: 2rem; border-top: 1px solid var(--color-slate-200);">
+            <a href="https://insights.diasuae.ae/" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; justify-content: center; gap: 0.65rem; background: var(--color-navy-950); color: var(--color-gold-400); border: 1px solid var(--color-gold-500); padding: 0.95rem 2.25rem; border-radius: 12px; font-weight: 700; font-size: 0.95rem; text-decoration: none; transition: all 0.25s ease; box-shadow: 0 4px 14px rgba(10, 21, 38, 0.12);" onmouseover="this.style.background='var(--color-navy-900)'; this.style.borderColor='var(--color-gold-400)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='var(--color-navy-950)'; this.style.borderColor='var(--color-gold-500)'; this.style.transform='translateY(0)';">
+              <span>View All Insights &amp; Regulatory Briefings</span>
+              <span style="font-size: 1.15rem; line-height: 1;">&rarr;</span>
+            </a>
+            <p style="margin-top: 0.75rem; font-size: 0.78rem; color: var(--color-slate-500);">
+              Live updates published daily on <strong style="color: var(--color-navy-950);">insights.diasuae.ae</strong>
+            </p>
           </div>
         </section>
 
@@ -772,6 +789,7 @@
       <ul class="footer-links">
         <li><a href="/#home">Home</a></li>
         <li><a href="/#services">Services</a></li>
+        <li><a href="https://insights.diasuae.ae/" target="_blank" rel="noopener noreferrer" style="color: var(--color-gold-400); font-weight: 600;">Tax &amp; Regulatory Blog (insights.diasuae.ae)</a></li>
         <li><a href="/#contact">Contact</a></li>
         <li><a href="/#privacy">Privacy Policy</a></li>
       </ul>
@@ -1081,7 +1099,16 @@
 
       noResults.style.display = "none";
       blogGrid.innerHTML = filtered.map(post => {
-        return "<article class=\"blog-card\" style=\"cursor: pointer;\" onclick=\"openArticle('" + post.id + "')\">" +
+        const isExternal = Boolean(post.externalUrl);
+        const clickAction = isExternal
+          ? "window.open('" + post.externalUrl + "', '_blank', 'noopener,noreferrer')"
+          : "openArticle('" + post.id + "')";
+        const btnText = isExternal ? "Read on Live Blog &rarr;" : "Read Article";
+        const externalBadge = isExternal
+          ? "<span style=\"display: inline-flex; align-items: center; gap: 0.3rem; margin-left: 0.4rem; font-size: 0.68rem; font-weight: 700; color: #10b981; background: #ecfdf5; border: 1px solid #a7f3d0; padding: 0.15rem 0.5rem; border-radius: 9999px;\"><span style=\"width: 6px; height: 6px; border-radius: 50%; background: #10b981; display: inline-block;\"></span>Live</span>"
+          : "";
+
+        return "<article class=\"blog-card\" style=\"cursor: pointer;\" onclick=\"" + clickAction + "\">" +
           "<div class=\"card-thumb-wrap\">" +
             "<img class=\"card-thumb\" src=\"" + post.image + "\" alt=\"" + post.title + "\" loading=\"lazy\" />" +
             "<span class=\"category-tag\">" + post.category + "</span>" +
@@ -1091,14 +1118,13 @@
               "<span>" + post.date + "</span>" +
               "<span>•</span>" +
               "<span>" + post.readTime + "</span>" +
+              externalBadge +
             "</div>" +
             "<h2 class=\"card-title\">" + post.title + "</h2>" +
             "<p class=\"card-excerpt\">" + post.excerpt + "</p>" +
-            "<button type=\"button\" class=\"read-more-btn\" onclick=\"event.stopPropagation(); openArticle('" + post.id + "')\">" +
-              "Read Article" +
-              "<svg width=\"14\" height=\"14\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">" +
-                "<path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.5\" d=\"M14 5l7 7m0 0l-7 7m7-7H3\"/>" +
-              "</svg>" +
+            "<button type=\"button\" class=\"read-more-btn\" onclick=\"event.stopPropagation(); " + clickAction + "\">" +
+              btnText +
+              (!isExternal ? "<svg width=\"14\" height=\"14\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2.5\" d=\"M14 5l7 7m0 0l-7 7m7-7H3\"/></svg>" : "") +
             "</button>" +
           "</div>" +
         "</article>";
@@ -1192,42 +1218,141 @@
       }
     }
 
-    // Initial sort in chronological order as per date (most recent first)
-    POSTS_DATA.sort((a, b) => (new Date(b.date).getTime() || 0) - (new Date(a.date).getTime() || 0));
+    // Title normalization and fuzzy duplicate detection
+    function normalizeTitle(t) {
+      return (t || "")
+        .toLowerCase()
+        .replace(/&amp;/g, "&")
+        .replace(/[^a-z0-9\s]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+    }
 
+    function isDuplicateOfExisting(newTitle, existingTitles) {
+      const normNew = normalizeTitle(newTitle);
+      const newTokens = normNew.split(" ").filter(w => w.length > 2);
+      if (newTokens.length === 0) return false;
+
+      for (const exTitle of existingTitles) {
+        const normEx = normalizeTitle(exTitle);
+        if (normNew === normEx) return true;
+        if (normNew.length > 15 && normEx.includes(normNew)) return true;
+        if (normEx.length > 15 && normNew.includes(normEx)) return true;
+
+        const exTokens = normEx.split(" ").filter(w => w.length > 2);
+        let overlapCount = 0;
+        newTokens.forEach(t => {
+          if (exTokens.includes(t)) overlapCount++;
+        });
+
+        const overlapRatio = overlapCount / Math.min(newTokens.length, exTokens.length);
+        if (overlapRatio >= 0.6) {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    // 1. Keep all existing hardcoded articles intact at the top
     renderCategories();
     renderPosts();
     checkInitialTarget();
     window.addEventListener("hashchange", checkInitialTarget);
 
-    fetch("/api/blogs")
-      .then(res => res.json())
-      .then(data => {
-        if (data && data.success && Array.isArray(data.blogs) && data.blogs.length > 0) {
-          data.blogs.forEach(dyn => {
-            if (!POSTS_DATA.some(p => p.id === dyn.id)) {
-              POSTS_DATA.push({
-                id: dyn.id,
-                category: dyn.tag || "Tax Updates",
-                date: dyn.date || "Recent",
-                readTime: dyn.readTime || "5 min read",
-                title: dyn.title,
-                excerpt: dyn.summary,
-                image: "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=700&q=80",
-                fullContent: mdToHtml(dyn.content || dyn.summary)
-              });
-            }
-          });
-          // Sort chronologically as per date
-          POSTS_DATA.sort((a, b) => (new Date(b.date).getTime() || 0) - (new Date(a.date).getTime() || 0));
-          renderCategories();
-          renderPosts();
-          checkInitialTarget();
+    // 2. Fetch live Blogger posts from https://insights.diasuae.ae/ with fallback
+    async function loadBloggerPosts() {
+      const liveFeedUrl = "https://insights.diasuae.ae/feeds/posts/default?alt=json&max-results=10";
+      const proxyFeedUrl = "/api/blogger-feed";
+      let data = null;
+
+      try {
+        const res = await fetch(liveFeedUrl, { mode: "cors" });
+        if (res.ok) {
+          data = await res.json();
+        } else {
+          throw new Error("Direct fetch status " + res.status);
         }
-      })
-      .catch(err => {
-        console.log("Static catalog active, dynamic fetch skipped:", err);
+      } catch (err) {
+        try {
+          const resFallback = await fetch(proxyFeedUrl);
+          if (resFallback.ok) {
+            data = await resFallback.json();
+          }
+        } catch (proxyErr) {
+          console.log("Blogger feed unavailable:", proxyErr);
+        }
+      }
+
+      if (!data || !data.feed || !Array.isArray(data.feed.entry)) {
+        return;
+      }
+
+      const existingTitles = POSTS_DATA.map(p => p.title);
+      const newBloggerPosts = [];
+
+      data.feed.entry.forEach(entry => {
+        const rawTitle = (entry.title && entry.title.$t) || "";
+        // 3. Automatically skip any Blogger post whose title closely matches an existing article
+        if (!rawTitle || isDuplicateOfExisting(rawTitle, existingTitles)) {
+          return;
+        }
+
+        const altLink = (entry.link || []).find(l => l.rel === "alternate");
+        const liveUrl = altLink ? altLink.href : "https://insights.diasuae.ae/";
+
+        let category = "Live Tax Updates";
+        if (Array.isArray(entry.category) && entry.category.length > 0 && entry.category[0].term) {
+          category = entry.category[0].term;
+        }
+
+        let pubDateStr = "Recent";
+        if (entry.published && entry.published.$t) {
+          try {
+            const d = new Date(entry.published.$t);
+            pubDateStr = d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+          } catch (e) {}
+        }
+
+        let excerpt = "";
+        const rawSummary = (entry.summary && entry.summary.$t) || (entry.content && entry.content.$t) || "";
+        if (rawSummary) {
+          const tmp = document.createElement("div");
+          tmp.innerHTML = rawSummary;
+          excerpt = (tmp.textContent || tmp.innerText || "").replace(/\s+/g, " ").trim().substring(0, 160) + "...";
+        }
+
+        let image = "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=700&q=80";
+        if (entry.media$thumbnail && entry.media$thumbnail.url) {
+          image = entry.media$thumbnail.url.replace(/\/s\d+-c\//, "/s800/");
+        } else if (rawSummary.includes("<img")) {
+          const match = rawSummary.match(/<img[^>]+src=["']([^"']+)["']/i);
+          if (match && match[1]) image = match[1];
+        }
+
+        const blogId = "blogger-" + (entry.id && entry.id.$t ? entry.id.$t.split("post-")[1] || Math.random().toString(36).substr(2, 8) : Math.random().toString(36).substr(2, 8));
+
+        newBloggerPosts.push({
+          id: blogId,
+          category: category,
+          date: pubDateStr,
+          readTime: "4 min read",
+          title: rawTitle,
+          excerpt: excerpt || "Read the latest UAE corporate tax and regulatory briefing on our live Blogger portal.",
+          image: image,
+          externalUrl: liveUrl,
+          isLiveBlogger: true
+        });
       });
+
+      // 4. Render any new Blogger posts right below existing articles
+      if (newBloggerPosts.length > 0) {
+        POSTS_DATA.push(...newBloggerPosts);
+        renderCategories();
+        renderPosts();
+      }
+    }
+
+    loadBloggerPosts();
   </script>
 </body>
 </html>

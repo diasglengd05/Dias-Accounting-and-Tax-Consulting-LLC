@@ -195,6 +195,17 @@ export const PageFooter: React.FC<PageFooterProps> = ({
                 </a>
               </li>
               <li>
+                <a
+                  href="https://insights.diasuae.ae/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-gold-300 transition-colors inline-flex items-center gap-1.5 text-emerald-400 font-semibold"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  Tax &amp; Regulatory Blog (insights.diasuae.ae) ↗
+                </a>
+              </li>
+              <li>
                 <a href="/faqs" onClick={(e) => handleLink(e, "/faqs")} className="hover:text-gold-400 transition-colors">
                   FAQs
                 </a>

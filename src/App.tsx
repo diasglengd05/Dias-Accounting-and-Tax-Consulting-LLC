@@ -93,6 +93,7 @@ const TermsPage = React.lazy(() => import("./pages/TermsPage"));
 const PrivacyPolicyPage = React.lazy(() => import("./pages/PrivacyPolicyPage"));
 const BlogsPage = React.lazy(() => import("./pages/BlogsPage"));
 const TestimonialsPage = React.lazy(() => import("./pages/TestimonialsPage"));
+const HomepageInsightsSection = React.lazy(() => import("./components/HomepageInsightsSection"));
 const FaqsPage = React.lazy(() => import("./pages/FaqsPage"));
 const ContactPage = React.lazy(() => import("./pages/ContactPage"));
 const TaxPlannerPage = React.lazy(() => import("./pages/TaxPlannerPage"));
@@ -1505,6 +1506,18 @@ function MainApp() {
           </div>
         </AnimatedSection>
       </section>
+
+      {/* 6.55 Homepage Insights Section - Live Subdomain Connected */}
+      <AnimatedSection>
+        <LazyMount minHeight={480} sectionId="blogs">
+          <React.Suspense fallback={<div className="py-16 text-center text-xs text-slate-400 animate-pulse">Loading Insights...</div>}>
+            <HomepageInsightsSection
+              onSelectBlog={(blog) => setSelectedBlog(blog)}
+              onNavigate={navigateTo}
+            />
+          </React.Suspense>
+        </LazyMount>
+      </AnimatedSection>
 
       {/* 6.6 FAQ Section */}
       <section id="faqs" className="py-20 sm:py-24 bg-white border-t border-slate-200/80 scroll-mt-20 sm:scroll-mt-24">
