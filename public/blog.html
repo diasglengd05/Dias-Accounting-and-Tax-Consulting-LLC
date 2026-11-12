@@ -1340,13 +1340,19 @@
           excerpt: excerpt || "Read the latest UAE corporate tax and regulatory briefing on our live Blogger portal.",
           image: image,
           externalUrl: liveUrl,
-          isLiveBlogger: true
+          isLiveBlogger: true,
+          publishedIso: (entry.published && entry.published.$t) || ""
         });
       });
 
-      // 4. Render any new Blogger posts right below existing articles
+      // Always keep the latest published articles on the top
       if (newBloggerPosts.length > 0) {
         POSTS_DATA.push(...newBloggerPosts);
+        POSTS_DATA.sort((a, b) => {
+          const timeA = Date.parse(a.publishedIso || a.date) || 0;
+          const timeB = Date.parse(b.publishedIso || b.date) || 0;
+          return timeB - timeA;
+        });
         renderCategories();
         renderPosts();
       }

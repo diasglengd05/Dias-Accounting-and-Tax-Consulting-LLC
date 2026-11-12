@@ -62,9 +62,9 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact }
 
   if (!blog) return null;
 
-  const standaloneBlogUrl = typeof window !== "undefined"
+  const standaloneBlogUrl = blog?.externalUrl || (typeof window !== "undefined"
     ? `${window.location.origin}/blog.html#${blog.id}`
-    : `https://diasuae.ae/blog.html#${blog.id}`;
+    : `https://diasuae.ae/blog.html#${blog.id}`);
 
   const handleContactClick = () => {
     if (onContact) {
@@ -266,7 +266,14 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact }
           )}
 
           <div className="text-sm sm:text-base leading-relaxed text-slate-700">
-            <ArticleContentRenderer content={blog.content} />
+            {blog.content && (blog.content.trim().startsWith("<") || blog.content.includes("</div>") || blog.content.includes("</p>")) ? (
+              <div
+                className="article-body space-y-4 [&>p]:mb-3.5 [&>p]:leading-relaxed [&>h2]:text-xl [&>h2]:font-bold [&>h2]:text-navy-950 [&>h2]:mt-6 [&>h2]:mb-3 [&>h3]:text-lg [&>h3]:font-bold [&>h3]:text-navy-950 [&>h3]:mt-4 [&>h3]:mb-2 [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:space-y-1.5 [&>ol]:list-decimal [&>ol]:pl-5 [&>ol]:space-y-1.5 [&>a]:text-gold-600 [&>a]:underline [&>table]:w-full [&>table]:border-collapse [&>table]:my-4 [&>table_th]:border [&>table_th]:p-2 [&>table_th]:bg-slate-100 [&>table_td]:border [&>table_td]:p-2 [&>img]:rounded-xl [&>img]:my-4"
+                dangerouslySetInnerHTML={{ __html: blog.content }}
+              />
+            ) : (
+              <ArticleContentRenderer content={blog.content} />
+            )}
           </div>
 
           {/* Keywords Pill List */}
@@ -294,7 +301,7 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact }
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 bg-white hover:bg-slate-100 text-navy-950 border border-slate-300 font-display font-bold py-3 px-5 rounded-xl text-xs sm:text-sm transition-colors min-h-[44px]"
               >
                 <ExternalLink className="w-4 h-4 text-gold-500" />
-                <span>Open in New Tab</span>
+                <span>{blog.isLiveBlogger || blog.externalUrl?.includes("insights.diasuae.ae") ? "Read on insights.diasuae.ae" : "Open in New Tab"}</span>
               </a>
               <a
                 href="#contact"

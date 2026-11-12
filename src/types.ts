@@ -32,6 +32,10 @@ export interface BlogPost {
   videoTitle?: string;
   slidesTitle?: string;
   imageUrl?: string;
+  externalUrl?: string;
+  isLiveBlogger?: boolean;
+  categories?: string[];
+  publishedIso?: string;
 }
 
 export interface PricingTier {

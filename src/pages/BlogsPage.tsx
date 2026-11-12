@@ -31,6 +31,47 @@ interface BlogsPageProps {
   onOpenGooglePreferred?: () => void;
 }
 
+// Title normalization and fuzzy duplicate detection (synchronized with blog.html)
+function normalizeTitle(t: string): string {
+  return (t || "")
+    .toLowerCase()
+    .replace(/&amp;/g, "&")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function parsePublishDate(dateStr?: string): number {
+  if (!dateStr) return 0;
+  const parsed = Date.parse(dateStr);
+  return isNaN(parsed) ? 0 : parsed;
+}
+
+function isDuplicateOfExisting(newTitle: string, existingTitles: string[]): boolean {
+  const normNew = normalizeTitle(newTitle);
+  const newTokens = normNew.split(" ").filter((w) => w.length > 2);
+  if (newTokens.length === 0) return false;
+
+  for (const exTitle of existingTitles) {
+    const normEx = normalizeTitle(exTitle);
+    if (normNew === normEx) return true;
+    if (normNew.length > 15 && normEx.includes(normNew)) return true;
+    if (normEx.length > 15 && normNew.includes(normEx)) return true;
+
+    const exTokens = normEx.split(" ").filter((w) => w.length > 2);
+    let overlapCount = 0;
+    newTokens.forEach((t) => {
+      if (exTokens.includes(t)) overlapCount++;
+    });
+
+    const overlapRatio = overlapCount / Math.min(newTokens.length, exTokens.length);
+    if (overlapRatio >= 0.6) {
+      return true;
+    }
+  }
+  return false;
+}
+
 export const BlogsPage: React.FC<BlogsPageProps> = ({
   onNavigate,
   onOpenAudit,
@@ -40,7 +81,13 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
-  const [allPosts, setAllPosts] = useState<BlogPost[]>(blogsData);
+  const [allPosts, setAllPosts] = useState<BlogPost[]>(() => {
+    return [...blogsData].sort((a, b) => {
+      const timeA = parsePublishDate(a.publishedIso || a.date);
+      const timeB = parsePublishDate(b.publishedIso || b.date);
+      return timeB - timeA;
+    });
+  });
 
   // Lead Magnet Download Form State
   const [checklistEmail, setChecklistEmail] = useState("");
@@ -69,30 +116,160 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
     upsertMeta("property", "og:description", desc);
     upsertMeta("property", "og:url", "https://diasuae.ae/blogs");
 
-    fetch("/api/blogs")
-      .then((r) => r.json())
-      .then((data) => {
-        if (data && data.success && Array.isArray(data.blogs) && data.blogs.length > 0) {
-          const dynamicIds = new Set(data.blogs.map((b: BlogPost) => b.id));
-          const merged = [
-            ...data.blogs,
-            ...blogsData.filter((b) => !dynamicIds.has(b.id)),
-          ];
-          merged.sort((a, b) => (new Date(b.date).getTime() || 0) - (new Date(a.date).getTime() || 0));
-          setAllPosts(merged);
+    // Fetch live Blogger posts with duplicate filtering while keeping hardcoded articles intact at the top
+    let isMounted = true;
+    async function loadLiveBloggerPosts() {
+      const proxyUrl = "/api/blogger-feed?max-results=20";
+      const directUrl = "https://insights.diasuae.ae/feeds/posts/default?alt=json&max-results=20";
+      let data: any = null;
+
+      try {
+        const res = await fetch(proxyUrl);
+        if (res.ok) {
+          data = await res.json();
+        } else {
+          throw new Error("Proxy error " + res.status);
         }
-      })
-      .catch(() => {});
+      } catch (proxyErr) {
+        try {
+          const resDirect = await fetch(directUrl, { mode: "cors" });
+          if (resDirect.ok) {
+            data = await resDirect.json();
+          }
+        } catch (directErr) {
+          console.warn("Direct fetch error for live Blogger feed:", directErr);
+        }
+      }
+
+      if (!isMounted || !data?.feed?.entry || !Array.isArray(data.feed.entry)) {
+        return;
+      }
+
+      // Existing hardcoded articles kept intact at the top
+      const existingTitles = blogsData.map((b) => b.title);
+      const newBloggerPosts: BlogPost[] = [];
+
+      data.feed.entry.forEach((entry: any) => {
+        const rawTitle = (entry.title && entry.title.$t) || "";
+        // Automatically skip any Blogger post whose title closely matches an existing article
+        if (!rawTitle || isDuplicateOfExisting(rawTitle, existingTitles)) {
+          return;
+        }
+
+        const altLink = (entry.link || []).find((l: any) => l.rel === "alternate");
+        const liveUrl = altLink ? altLink.href : "https://insights.diasuae.ae/";
+
+        // Extract labels/categories
+        const rawCategories = Array.isArray(entry.category)
+          ? entry.category.map((c: any) => c.term || "").filter(Boolean)
+          : [];
+
+        // Map Blogger labels to site category tabs
+        let mappedTag = "Corporate Tax (9%)";
+        const catJoined = rawCategories.join(" ").toLowerCase();
+        const titleLower = rawTitle.toLowerCase();
+
+        if (catJoined.includes("vat") || titleLower.includes("vat")) {
+          mappedTag = "VAT & E-Invoicing";
+        } else if (
+          catJoined.includes("company setup") ||
+          catJoined.includes("free zone") ||
+          titleLower.includes("company") ||
+          titleLower.includes("formation")
+        ) {
+          mappedTag = "Free Zone Setup";
+        } else if (
+          catJoined.includes("accounting") ||
+          catJoined.includes("ifrs") ||
+          catJoined.includes("bookkeeping") ||
+          titleLower.includes("bookkeeping")
+        ) {
+          mappedTag = "Bookkeeping & IFRS";
+        } else if (catJoined.includes("corporate tax") || titleLower.includes("corporate tax") || titleLower.includes("tax")) {
+          mappedTag = "Corporate Tax (9%)";
+        } else if (catJoined.includes("compliance") || catJoined.includes("penalt") || titleLower.includes("penalty")) {
+          mappedTag = "Compliance & Penalties";
+        } else if (rawCategories.length > 0) {
+          mappedTag = rawCategories[0];
+        }
+
+        let pubDateStr = "Recent";
+        if (entry.published && entry.published.$t) {
+          try {
+            const d = new Date(entry.published.$t);
+            pubDateStr = d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+          } catch (e) {}
+        }
+
+        let excerpt = "";
+        const rawContent = (entry.content && entry.content.$t) || (entry.summary && entry.summary.$t) || "";
+        if (rawContent) {
+          const tmp = document.createElement("div");
+          tmp.innerHTML = rawContent;
+          excerpt = (tmp.textContent || tmp.innerText || "").replace(/\s+/g, " ").trim().substring(0, 175) + "...";
+        }
+
+        let image = "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=700&q=80";
+        if (entry.media$thumbnail && entry.media$thumbnail.url) {
+          image = entry.media$thumbnail.url.replace(/\/s\d+-c\//, "/s800/");
+        } else if (rawContent.includes("<img")) {
+          const match = rawContent.match(/<img[^>]+src=["']([^"']+)["']/i);
+          if (match && match[1]) image = match[1];
+        }
+
+        const blogId =
+          "blogger-" +
+          (entry.id && entry.id.$t
+            ? entry.id.$t.split("post-")[1] || Math.random().toString(36).substr(2, 8)
+            : Math.random().toString(36).substr(2, 8));
+
+        newBloggerPosts.push({
+          id: blogId,
+          title: rawTitle,
+          summary: excerpt || "Read the latest UAE corporate tax and compliance updates on our live Blogger portal.",
+          content: rawContent || excerpt,
+          date: pubDateStr,
+          readTime: "4 min read",
+          tag: mappedTag,
+          author: {
+            name: "Glen Dias",
+            role: "Managing Director & Certified Tax Agent",
+            avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=120",
+          },
+          imageUrl: image,
+          externalUrl: liveUrl,
+          isLiveBlogger: true,
+          categories: rawCategories,
+          keywords: rawCategories,
+          publishedIso: (entry.published && entry.published.$t) || "",
+        });
+      });
+
+      // Always keep the latest published articles on the top
+      const merged = [...blogsData, ...newBloggerPosts];
+      merged.sort((a, b) => {
+        const timeA = parsePublishDate(a.publishedIso || a.date);
+        const timeB = parsePublishDate(b.publishedIso || b.date);
+        return timeB - timeA;
+      });
+      setAllPosts(merged);
+    }
+
+    loadLiveBloggerPosts();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  // 5 exact required categories
+  // Category filter tabs mapped to UAE regulatory topics & Blogger labels
   const categories = [
     { id: "all", label: "All Insights" },
-    { id: "corporate-tax", label: "Corporate Tax" },
-    { id: "vat", label: "VAT" },
-    { id: "free-zone", label: "Free Zone" },
-    { id: "bookkeeping", label: "Bookkeeping" },
-    { id: "compliance-penalties", label: "Compliance and Penalties" },
+    { id: "corporate-tax", label: "Corporate Tax (9%)" },
+    { id: "vat", label: "VAT & E-Invoicing" },
+    { id: "free-zone", label: "Free Zone Setup" },
+    { id: "bookkeeping", label: "Bookkeeping & IFRS" },
+    { id: "compliance-penalties", label: "Compliance & Penalties" },
   ];
 
   // 5 Draft Placeholder Posts with headings & outlines only
@@ -239,20 +416,79 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
   const combinedPosts = [...allPosts, ...draftPlaceholderPosts];
 
   const filteredPosts = combinedPosts.filter((post) => {
+    const query = searchQuery.toLowerCase().trim();
     const matchesSearch =
-      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.summary.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (post.tag && post.tag.toLowerCase().includes(searchQuery.toLowerCase()));
+      !query ||
+      post.title.toLowerCase().includes(query) ||
+      post.summary.toLowerCase().includes(query) ||
+      (post.tag && post.tag.toLowerCase().includes(query)) ||
+      (post.categories && post.categories.some((c) => c.toLowerCase().includes(query)));
 
-    const matchesCategory =
-      selectedCategory === "all" ||
-      (selectedCategory === "corporate-tax" && post.tag.toLowerCase().includes("corporate tax")) ||
-      (selectedCategory === "vat" && post.tag.toLowerCase().includes("vat")) ||
-      (selectedCategory === "free-zone" && (post.tag.toLowerCase().includes("free zone") || post.tag.toLowerCase().includes("incorporation"))) ||
-      (selectedCategory === "bookkeeping" && post.tag.toLowerCase().includes("bookkeeping")) ||
-      (selectedCategory === "compliance-penalties" && (post.tag.toLowerCase().includes("compliance") || post.tag.toLowerCase().includes("penalties")));
+    if (!matchesSearch) return false;
+    if (selectedCategory === "all") return true;
 
-    return matchesSearch && matchesCategory;
+    const tagLower = (post.tag || "").toLowerCase();
+    const catList = (post.categories || []).map((c) => c.toLowerCase());
+    const titleLower = post.title.toLowerCase();
+
+    if (selectedCategory === "corporate-tax") {
+      return (
+        tagLower.includes("corporate tax") ||
+        tagLower.includes("9%") ||
+        catList.some((c) => c.includes("corporate tax") || c.includes("tax")) ||
+        titleLower.includes("corporate tax") ||
+        titleLower.includes("sbr") ||
+        titleLower.includes("small business relief")
+      );
+    }
+    if (selectedCategory === "vat") {
+      return (
+        tagLower.includes("vat") ||
+        tagLower.includes("e-invoicing") ||
+        catList.some((c) => c.includes("vat")) ||
+        titleLower.includes("vat") ||
+        titleLower.includes("e-invoicing")
+      );
+    }
+    if (selectedCategory === "free-zone") {
+      return (
+        tagLower.includes("free zone") ||
+        tagLower.includes("company setup") ||
+        tagLower.includes("formation") ||
+        tagLower.includes("incorporation") ||
+        tagLower.includes("setup") ||
+        catList.some((c) => c.includes("company setup") || c.includes("free zone") || c.includes("formation")) ||
+        titleLower.includes("company formation") ||
+        titleLower.includes("free zone") ||
+        titleLower.includes("company setup") ||
+        titleLower.includes("shams")
+      );
+    }
+    if (selectedCategory === "bookkeeping") {
+      return (
+        tagLower.includes("bookkeeping") ||
+        tagLower.includes("accounting") ||
+        tagLower.includes("ifrs") ||
+        catList.some((c) => c.includes("accounting") || c.includes("bookkeeping") || c.includes("ifrs")) ||
+        titleLower.includes("bookkeeping") ||
+        titleLower.includes("accounting") ||
+        titleLower.includes("spreadsheets")
+      );
+    }
+    if (selectedCategory === "compliance-penalties") {
+      return (
+        tagLower.includes("compliance") ||
+        tagLower.includes("penalties") ||
+        tagLower.includes("penalty") ||
+        tagLower.includes("audit") ||
+        catList.some((c) => c.includes("compliance") || c.includes("penalt") || c.includes("audit")) ||
+        titleLower.includes("compliance") ||
+        titleLower.includes("penalty") ||
+        titleLower.includes("audit")
+      );
+    }
+
+    return true;
   });
 
   const handleChecklistSubmit = (e: React.FormEvent) => {
@@ -367,8 +603,13 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
                       <div className="p-6 space-y-4">
                         <div className="flex items-center justify-between">
                           <span className={`px-2.5 py-0.5 rounded-full font-mono text-[10px] font-bold uppercase tracking-wider ${
-                            isDraft ? "bg-amber-100 text-amber-800" : "bg-gold-50 text-gold-800"
+                            isDraft
+                              ? "bg-amber-100 text-amber-800"
+                              : post.isLiveBlogger
+                              ? "bg-emerald-50 text-emerald-800 border border-emerald-200/80 inline-flex items-center gap-1.5"
+                              : "bg-gold-50 text-gold-800"
                           }`}>
+                            {post.isLiveBlogger && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />}
                             {post.tag}
                           </span>
                           <span className="text-[11px] text-slate-400 flex items-center gap-1 font-mono">
@@ -387,9 +628,16 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
                       </div>
 
                       <div className="px-6 pb-6 pt-2 border-t border-slate-100 flex items-center justify-between">
-                        <span className="text-[11px] text-slate-400 font-medium">
-                          {post.author.name}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[11px] text-slate-400 font-medium">
+                            {post.author.name}
+                          </span>
+                          {post.isLiveBlogger && (
+                            <span className="text-[9px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/80">
+                              Live Blogger
+                            </span>
+                          )}
+                        </div>
                         <span className="text-xs font-display font-bold text-navy-950 group-hover:text-gold-600 flex items-center gap-1">
                           {isDraft ? "View Outline" : "Read Article"}
                           <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
@@ -398,6 +646,21 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
                     </article>
                   );
                 })}
+              </div>
+
+              {/* View All Live Regulatory Briefings Button */}
+              <div className="pt-2 flex justify-center">
+                <a
+                  href="https://insights.diasuae.ae/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-navy-950 via-navy-900 to-navy-950 hover:from-gold-600 hover:to-gold-500 text-white font-display font-bold text-xs sm:text-sm tracking-wide border border-gold-500/40 shadow-md hover:shadow-lg transition-all group"
+                  title="View all live articles, regulatory briefings and tax updates on insights.diasuae.ae"
+                >
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+                  <span>View All Live Regulatory Briefings on insights.diasuae.ae</span>
+                  <ArrowRight className="w-4 h-4 text-gold-400 group-hover:text-navy-950 group-hover:translate-x-1 transition-all" />
+                </a>
               </div>
 
               {filteredPosts.length === 0 && (

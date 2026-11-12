@@ -24,6 +24,7 @@ interface DisplayArticle {
   image: string;
   externalUrl?: string;
   isLiveBlogger?: boolean;
+  publishedIso?: string;
   internalBlogRef?: BlogPost;
 }
 
@@ -65,17 +66,20 @@ export const HomepageInsightsSection: React.FC<HomepageInsightsSectionProps> = (
   onSelectBlog,
   onNavigate,
 }) => {
-  // Top 3 featured hardcoded articles kept intact at the top
-  const initialHardcoded: DisplayArticle[] = blogsData.slice(0, 3).map((b) => ({
-    id: b.id,
-    title: b.title,
-    summary: b.summary,
-    date: b.date,
-    readTime: b.readTime,
-    tag: b.tag,
-    image: b.imageUrl || "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=700&q=80",
-    internalBlogRef: b,
-  }));
+  // Top 3 most recently published articles
+  const initialHardcoded: DisplayArticle[] = [...blogsData]
+    .sort((a, b) => (Date.parse(b.date) || 0) - (Date.parse(a.date) || 0))
+    .slice(0, 3)
+    .map((b) => ({
+      id: b.id,
+      title: b.title,
+      summary: b.summary,
+      date: b.date,
+      readTime: b.readTime,
+      tag: b.tag,
+      image: b.imageUrl || "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=700&q=80",
+      internalBlogRef: b,
+    }));
 
   const [articles, setArticles] = useState<DisplayArticle[]>(initialHardcoded);
 
@@ -162,11 +166,19 @@ export const HomepageInsightsSection: React.FC<HomepageInsightsSectionProps> = (
           image: image,
           externalUrl: liveUrl,
           isLiveBlogger: true,
+          publishedIso: (entry.published && entry.published.$t) || "",
         });
       });
 
+      // Always keep the latest published articles on the top
       if (newBloggerArticles.length > 0) {
-        setArticles([...initialHardcoded, ...newBloggerArticles]);
+        const combined = [...newBloggerArticles, ...initialHardcoded];
+        combined.sort((a, b) => {
+          const timeA = Date.parse(a.publishedIso || a.date) || 0;
+          const timeB = Date.parse(b.publishedIso || b.date) || 0;
+          return timeB - timeA;
+        });
+        setArticles(combined);
       }
     }
 

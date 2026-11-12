@@ -1789,28 +1789,34 @@ app.get("/api/blogs", async (req, res) => {
  * Proxies live Blogger articles from https://insights.diasuae.ae/
  * Avoids any browser cross-origin (CORS) blocks while keeping responses instantaneous with a 5-minute cache.
  */
-let bloggerFeedCache: { timestamp: number; data: any } | null = null;
+let bloggerFeedCache: { [key: string]: { timestamp: number; data: any } } = {};
 app.get("/api/blogger-feed", async (req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Cache-Control", "public, max-age=300");
+  const maxResults = (req.query["max-results"] as string) || "20";
+  const cacheKey = `feed_${maxResults}`;
   const now = Date.now();
-  if (bloggerFeedCache && (now - bloggerFeedCache.timestamp < 300000)) {
-    return res.json(bloggerFeedCache.data);
+  if (bloggerFeedCache[cacheKey] && (now - bloggerFeedCache[cacheKey].timestamp < 300000)) {
+    return res.json(bloggerFeedCache[cacheKey].data);
   }
   try {
-    const response = await fetch("https://insights.diasuae.ae/feeds/posts/default?alt=json&max-results=10", {
+    const response = await fetch(`https://insights.diasuae.ae/feeds/posts/default?alt=json&max-results=${maxResults}`, {
       headers: { "User-Agent": "DiasAccounting-Bot/1.0" },
     });
     if (!response.ok) {
       throw new Error(`Blogger responded with HTTP ${response.status}`);
     }
     const data = await response.json();
-    bloggerFeedCache = { timestamp: now, data };
+    bloggerFeedCache[cacheKey] = { timestamp: now, data };
     return res.json(data);
   } catch (err: any) {
     console.warn("[API Blogger Feed] Proxy fetch failed:", err.message);
-    if (bloggerFeedCache) {
-      return res.json(bloggerFeedCache.data);
+    if (bloggerFeedCache[cacheKey]) {
+      return res.json(bloggerFeedCache[cacheKey].data);
+    }
+    const anyKey = Object.keys(bloggerFeedCache)[0];
+    if (anyKey && bloggerFeedCache[anyKey]) {
+      return res.json(bloggerFeedCache[anyKey].data);
     }
     return res.status(502).json({ error: "Failed to fetch Blogger feed", details: err.message });
   }
