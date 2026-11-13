@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { X, ExternalLink, Sparkles, Globe, CheckCircle2, PhoneCall, Video, FileText, Download, Play } from "lucide-react";
 import { BlogPost } from "../types";
 import { ArticleContentRenderer } from "./ArticleContentRenderer";
+import { removeJsonLd, upsertJsonLd } from "../lib/seo";
 
 interface BlogModalProps {
   blog: BlogPost | null;
@@ -9,56 +10,67 @@ interface BlogModalProps {
   onContact?: () => void;
 }
 
-export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact }) => {
-  // Generate fallback schema if none stored
-  const schemaJson = blog?.schemaMarkup || (blog ? JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    "mainEntityOfPage": {
-      "@type": "WebPage",
-      "@id": typeof window !== "undefined" ? `${window.location.origin}/#blog-${blog.id}` : `https://diasuae.ae/#blog-${blog.id}`
-    },
-    "headline": blog.title,
-    "description": blog.summary,
-    "datePublished": blog.date,
-    "author": {
-      "@type": "Person",
-      "name": blog.author?.name || "Glen Dias",
-      "jobTitle": blog.author?.role || "Managing Director & Tax Agent",
-      "worksFor": {
-        "@type": "Organization",
-        "name": "Dias Accounting & Tax Consulting LLC"
-      }
-    },
-    "publisher": {
-      "@type": "Organization",
-      "name": "Dias Accounting & Tax Consulting LLC",
-      "url": "https://diasuae.ae",
-      "logo": {
-        "@type": "ImageObject",
-        "url": "https://diasuae.ae/icon-192.png"
-      }
-    }
-  }, null, 2) : "");
+function toIsoDate(dateStr?: string): string {
+  if (!dateStr) return new Date().toISOString().split("T")[0];
+  const parsed = Date.parse(dateStr);
+  if (isNaN(parsed)) return dateStr;
+  return new Date(parsed).toISOString();
+}
 
-  // Dynamically inject schema into document head for Googlebot & client crawlers
-  useEffect(() => {
-    if (!blog || !schemaJson) return;
-    const scriptId = `schema-blog-${blog.id}`;
-    let scriptEl = document.getElementById(scriptId) as HTMLScriptElement | null;
-    if (!scriptEl) {
-      scriptEl = document.createElement("script");
-      scriptEl.id = scriptId;
-      scriptEl.type = "application/ld+json";
-      scriptEl.text = schemaJson;
-      document.head.appendChild(scriptEl);
-    }
-    return () => {
-      if (scriptEl && scriptEl.parentNode) {
-        scriptEl.parentNode.removeChild(scriptEl);
+export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact }) => {
+  const canonicalPostUrl = blog
+    ? blog.externalUrl || `https://diasuae.ae/blogs/${blog.id}`
+    : "https://diasuae.ae/blogs";
+
+  const blogPostingPayload = blog
+    ? {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "@id": `${canonicalPostUrl}#blogposting`,
+        mainEntityOfPage: {
+          "@type": "WebPage",
+          "@id": canonicalPostUrl,
+        },
+        headline: blog.title,
+        description: blog.summary,
+        ...(blog.imageUrl
+          ? {
+              image: blog.imageUrl.startsWith("http")
+                ? blog.imageUrl
+                : `https://diasuae.ae${blog.imageUrl.startsWith("/") ? "" : "/"}${blog.imageUrl}`,
+            }
+          : {}),
+        datePublished: toIsoDate(blog.publishedIso || blog.date),
+        dateModified: toIsoDate(blog.publishedIso || blog.date),
+        author: {
+          "@type": "Person",
+          name: blog.author?.name || "Glen Dias",
+          jobTitle: blog.author?.role || "Managing Director & FTA Registered Tax Agent",
+          worksFor: {
+            "@type": "Organization",
+            name: "Dias Accounting & Tax Consulting LLC",
+          },
+        },
+        publisher: {
+          "@type": "Organization",
+          name: "Dias Accounting & Tax Consulting LLC",
+          url: "https://diasuae.ae",
+          logo: {
+            "@type": "ImageObject",
+            url: "https://diasuae.ae/icon-192.png",
+          },
+        },
       }
+    : null;
+
+  // Dynamically inject BlogPosting schema into document head for Googlebot & client crawlers
+  useEffect(() => {
+    if (!blog || !blogPostingPayload) return;
+    upsertJsonLd("schema-blog-posting", blogPostingPayload);
+    return () => {
+      removeJsonLd("schema-blog-posting");
     };
-  }, [blog?.id, schemaJson]);
+  }, [blog?.id, blog?.title, blog?.date]);
 
   if (!blog) return null;
 

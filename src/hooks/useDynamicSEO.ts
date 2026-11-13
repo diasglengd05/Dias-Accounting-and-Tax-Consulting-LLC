@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Service, BlogPost } from "../types";
 import { Language } from "../i18n/translations";
 import { getBlogOgImageUrl } from "../lib/ogImage";
+import { CORE_HOMEPAGE_FAQS, buildFAQPageSchema, upsertJsonLd } from "../lib/seo";
 
 export interface SEOConfig {
   title: string;
@@ -36,11 +37,11 @@ export const SECTION_SEO_MAP_EN: Record<string, SEOConfig> = {
     ogImage: "/api/og?title=UAE+Company+Setup+%26+Corporate+Tax+Structuring&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Business+Incorporation&readTime=Turnkey+Setup",
   },
   "tax-planning-difc": {
-    title: "DIFC Tax Compliance & Corporate Tax Advisory Dubai | Dias UAE",
-    description: "DIFC Tax Compliance and Corporate Tax advisory in Dubai. Certified tax consultants in DIFC for 0% QFZP qualification, DFSA audit readiness, and transfer pricing.",
+    title: "DIFC & DTEC Tax Planning & Accounting Dubai | Dias UAE",
+    description: "Specialist DIFC & DTEC accounting, 0% QFZP Corporate Tax structuring, DFSA compliance & dividend audit services in Dubai by FTA-registered tax agents.",
     keywords: "DIFC Tax Compliance, Corporate Tax Consultants in DIFC, difc tax planning services, corporate tax uae, qualifying free zone person difc, qfzp 0% tax dubai, transfer pricing difc, holding company tax uae, difc corporate tax advisory, tax services in dubai",
     hash: "/tax-planning-difc",
-    ogImage: "/api/og?title=DIFC+Tax+Compliance+%26+Corporate+Tax+Advisory&author=Glen+Dias&role=Senior+Tax+Advisor&tag=DIFC+Advisory",
+    ogImage: "/api/og?title=DIFC+%26+DTEC+Tax+Planning+%26+Accounting+Dubai&author=Glen+Dias&role=Senior+Tax+Advisor&tag=DIFC+Advisory",
   },
   "why-choose-us": {
     title: "Why Choose Dias Accounting | Tax Advisory Services in Dubai & UAE",
@@ -99,11 +100,11 @@ export const SECTION_SEO_MAP_EN: Record<string, SEOConfig> = {
     ogImage: "/api/og?title=UAE+Corporate+Tax+%26+VAT+Compliance+FAQ+2026&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=FTA+Regulations&readTime=Comprehensive+Guide",
   },
   blogs: {
-    title: "Corporate Tax Insights & UAE Tax Regulations Hub | Dias UAE",
-    description: "Authoritative Corporate Tax, DIFC tax compliance, and VAT regulatory insights by FTA Registered Tax Agent Glen Dias. Learn 9% filing rules, SBR, and penalties.",
+    title: "UAE Corporate Tax, VAT & Accounting Insights 2026 | Dias UAE",
+    description: "Latest 2026 UAE Federal Tax Authority (FTA) updates, 9% Corporate Tax guides, 5% VAT audit checklists, and IFRS accounting insights by Dias Accounting.",
     keywords: "Corporate Tax, DIFC Tax Compliance, Tax Services in Dubai, UAE tax insights, corporate tax guide Dubai, FTA ministerial decisions, SHAMS free zone tax guide, accounting and bookkeeping UAE",
     hash: "#blogs",
-    ogImage: "/api/og?title=Corporate+Tax+Insights+%26+UAE+Tax+Regulations+Hub&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=UAE+Tax+Articles&readTime=Weekly+Insights",
+    ogImage: "/api/og?title=UAE+Corporate+Tax%2C+VAT+%26+Accounting+Insights+2026&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=UAE+Tax+Articles&readTime=Weekly+Insights",
   },
   contact: {
     title: "Book a Free Tax Consultation | Tax Advisory Services in Dubai & UAE | Dias",
@@ -493,6 +494,9 @@ export function useDynamicSEO({
           ]
         });
       }
+
+      // Ensure the Homepage FAQPage JSON-LD matches the 5 core visible FAQs on /
+      upsertJsonLd("homepage-faq-jsonld", buildFAQPageSchema(CORE_HOMEPAGE_FAQS, `${baseUrl}/#faqs`));
     }
 
     // 8. Non-intrusive URL Hash synchronization

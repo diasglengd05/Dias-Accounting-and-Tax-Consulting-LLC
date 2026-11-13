@@ -3,16 +3,60 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Insights &amp; Updates | Dias Accounting and Tax Consulting LLC</title>
-  <meta name="description" content="Read expert insights and timely updates on navigating UAE corporate finance, Federal Tax Authority compliance, VAT, and Small Business Relief regulations." />
+  <title>UAE Corporate Tax, VAT &amp; Accounting Insights 2026 | Dias UAE</title>
+  <meta name="title" content="UAE Corporate Tax, VAT &amp; Accounting Insights 2026 | Dias UAE" />
+  <meta name="description" content="Latest 2026 UAE Federal Tax Authority (FTA) updates, 9% Corporate Tax guides, 5% VAT audit checklists, and IFRS accounting insights by Dias Accounting." />
   <link rel="canonical" href="https://diasuae.ae/blog.html" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://diasuae.ae/blog.html" />
-  <meta property="og:title" content="Insights &amp; Updates | Dias Accounting and Tax Consulting LLC" />
-  <meta property="og:description" content="Read expert insights and timely updates on navigating UAE corporate finance, Federal Tax Authority compliance, VAT, and Small Business Relief regulations." />
+  <meta property="og:title" content="UAE Corporate Tax, VAT &amp; Accounting Insights 2026 | Dias UAE" />
+  <meta property="og:description" content="Latest 2026 UAE Federal Tax Authority (FTA) updates, 9% Corporate Tax guides, 5% VAT audit checklists, and IFRS accounting insights by Dias Accounting." />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Insights &amp; Updates | Dias Accounting and Tax Consulting LLC" />
-  <meta name="twitter:description" content="Read expert insights and timely updates on navigating UAE corporate finance, Federal Tax Authority compliance, VAT, and Small Business Relief regulations." />
+  <meta name="twitter:title" content="UAE Corporate Tax, VAT &amp; Accounting Insights 2026 | Dias UAE" />
+  <meta name="twitter:description" content="Latest 2026 UAE Federal Tax Authority (FTA) updates, 9% Corporate Tax guides, 5% VAT audit checklists, and IFRS accounting insights by Dias Accounting." />
+  <script id="schema-blog-hub" type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": "https://diasuae.ae/blog.html#collection",
+        "url": "https://diasuae.ae/blog.html",
+        "name": "UAE Corporate Tax, VAT & Accounting Insights 2026 | Dias UAE",
+        "description": "Latest 2026 UAE Federal Tax Authority (FTA) updates, 9% Corporate Tax guides, 5% VAT audit checklists, and IFRS accounting insights by Dias Accounting.",
+        "isPartOf": {
+          "@type": "WebSite",
+          "@id": "https://diasuae.ae/#website",
+          "name": "Dias Accounting & Tax Consulting LLC",
+          "url": "https://diasuae.ae/"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Dias Accounting & Tax Consulting LLC",
+          "url": "https://diasuae.ae"
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://diasuae.ae/blog.html#breadcrumb",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://diasuae.ae/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Insights & Regulatory Briefings",
+            "item": "https://diasuae.ae/blog.html"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
   
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -1196,6 +1240,51 @@
         modalNewTabBtn.href = "/blog.html#" + post.id;
       }
 
+      // Inject dynamic BlogPosting JSON-LD schema for the active article
+      const canonicalPostUrl = post.externalUrl || ("https://diasuae.ae/blog.html#" + post.id);
+      const parsedDateMs = Date.parse(post.publishedIso || post.date || "");
+      const isoPublished = !isNaN(parsedDateMs) ? new Date(parsedDateMs).toISOString() : (post.date || "");
+      const blogSchema = {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        "@id": canonicalPostUrl + "#blogposting",
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": canonicalPostUrl
+        },
+        "headline": post.title,
+        "description": post.excerpt || "",
+        ...(post.image ? { "image": post.image.startsWith("http") ? post.image : ("https://diasuae.ae" + post.image) } : {}),
+        "datePublished": isoPublished,
+        "dateModified": isoPublished,
+        "author": {
+          "@type": "Person",
+          "name": "Glen Dias",
+          "jobTitle": "Managing Director & FTA Registered Tax Agent",
+          "worksFor": {
+            "@type": "Organization",
+            "name": "Dias Accounting & Tax Consulting LLC"
+          }
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Dias Accounting & Tax Consulting LLC",
+          "url": "https://diasuae.ae",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://diasuae.ae/icon-192.png"
+          }
+        }
+      };
+      let blogScript = document.getElementById("schema-blog-posting");
+      if (!blogScript) {
+        blogScript = document.createElement("script");
+        blogScript.id = "schema-blog-posting";
+        blogScript.type = "application/ld+json";
+        document.head.appendChild(blogScript);
+      }
+      blogScript.textContent = JSON.stringify(blogSchema);
+
       articleModal.classList.add("active");
       document.body.style.overflow = "hidden";
       window.history.replaceState(null, "", "#" + post.id);
@@ -1203,6 +1292,10 @@
     };
 
     function closeModal() {
+      const blogScript = document.getElementById("schema-blog-posting");
+      if (blogScript && blogScript.parentNode) {
+        blogScript.parentNode.removeChild(blogScript);
+      }
       articleModal.classList.remove("active");
       document.body.style.overflow = "auto";
       window.history.replaceState(null, "", window.location.pathname);

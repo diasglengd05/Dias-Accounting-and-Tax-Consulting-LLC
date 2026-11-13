@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
-import { applyPageSEO } from "../lib/seo";
+import { applyPageSEO, CORE_HOMEPAGE_FAQS, buildFAQPageSchema, upsertJsonLd, removeJsonLd } from "../lib/seo";
 
 interface FaqsPageProps {
   onNavigate: (path: string) => void;
@@ -38,9 +38,40 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
-  const [openFaq, setOpenFaq] = useState<string | null>("cf-1");
+  const [openFaq, setOpenFaq] = useState<string | null>("core-1");
 
   const faqs: StructuredFaq[] = [
+    // 0. Core UAE Tax & Accounting FAQs (Synchronized with Homepage & FAQPage Rich Results)
+    {
+      id: "core-1",
+      category: "Corporate Tax",
+      question: CORE_HOMEPAGE_FAQS[0].question,
+      answer: CORE_HOMEPAGE_FAQS[0].answer,
+    },
+    {
+      id: "core-2",
+      category: "Corporate Tax",
+      question: CORE_HOMEPAGE_FAQS[1].question,
+      answer: CORE_HOMEPAGE_FAQS[1].answer,
+    },
+    {
+      id: "core-3",
+      category: "VAT",
+      question: CORE_HOMEPAGE_FAQS[2].question,
+      answer: CORE_HOMEPAGE_FAQS[2].answer,
+    },
+    {
+      id: "core-4",
+      category: "Bookkeeping",
+      question: CORE_HOMEPAGE_FAQS[3].question,
+      answer: CORE_HOMEPAGE_FAQS[3].answer,
+    },
+    {
+      id: "core-5",
+      category: "Pricing",
+      question: CORE_HOMEPAGE_FAQS[4].question,
+      answer: CORE_HOMEPAGE_FAQS[4].answer,
+    },
     // 1. Company Formation & Banking (From Today's Official Broadcast & Carousel)
     {
       id: "cf-1",
@@ -201,21 +232,11 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
     });
   }, [faqs, searchQuery, selectedCategory]);
 
-  // Generate FAQPage JSON-LD Schema
-  const faqPageSchema = useMemo(() => {
-    return {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": faqs.map((f) => ({
-        "@type": "Question",
-        "name": f.question,
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": f.answer,
-        },
-      })),
-    };
-  }, [faqs]);
+  // Generate FAQPage JSON-LD Schema matching 100% of visible FAQs on /faqs
+  const faqPageSchema = useMemo(
+    () => buildFAQPageSchema(faqs, "https://diasuae.ae/faqs#faqpage"),
+    [faqs]
+  );
 
   useEffect(() => {
     applyPageSEO({
@@ -227,17 +248,39 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
         "uae tax faqs, corporate tax questions dubai, small business relief faq, vat compliance answers",
       ogImage: "/api/og?title=UAE+Tax+%26+Accounting+FAQs&author=Glen+Dias&tag=Authoritative+Answers",
     });
+
+    // Replace homepage FAQ script with full /faqs FAQPage + BreadcrumbList schema to prevent duplicate FAQPage blocks
+    removeJsonLd("homepage-faq-jsonld");
+    upsertJsonLd("faqs-page-jsonld", faqPageSchema);
+    upsertJsonLd("faqs-breadcrumb-jsonld", {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: "https://diasuae.ae/",
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "UAE Tax & Accounting FAQs",
+          item: "https://diasuae.ae/faqs",
+        },
+      ],
+    });
+
     window.scrollTo({ top: 0, behavior: "instant" });
-  }, []);
+
+    return () => {
+      removeJsonLd("faqs-page-jsonld");
+      removeJsonLd("faqs-breadcrumb-jsonld");
+    };
+  }, [faqPageSchema]);
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800 antialiased selection:bg-gold-500/30 selection:text-navy-950">
-      {/* FAQPage JSON-LD Schema */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqPageSchema) }}
-      />
-
       <PageNavigation
         currentPath="/faqs"
         onNavigate={onNavigate}

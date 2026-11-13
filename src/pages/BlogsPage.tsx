@@ -23,7 +23,7 @@ import PageFooter from "../components/PageFooter";
 import { blogsData } from "../data/blogsData";
 import { BlogPost } from "../types";
 import BlogModal from "../components/BlogModal";
-import { applyPageSEO } from "../lib/seo";
+import { applyPageSEO, removeJsonLd, upsertJsonLd } from "../lib/seo";
 
 interface BlogsPageProps {
   onNavigate: (path: string) => void;
@@ -96,15 +96,62 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
   const [checklistSuccess, setChecklistSuccess] = useState(false);
 
   useEffect(() => {
+    const pageTitle = "UAE Corporate Tax, VAT & Accounting Insights 2026 | Dias UAE";
+    const pageDesc =
+      "Latest 2026 UAE Federal Tax Authority (FTA) updates, 9% Corporate Tax guides, 5% VAT audit checklists, and IFRS accounting insights by Dias Accounting.";
+
     applyPageSEO({
-      title: "Corporate Tax Insights & UAE Tax Regulations Hub | Dias UAE",
-      description:
-        "Authoritative Corporate Tax, DIFC tax compliance, and VAT regulatory insights by FTA Registered Tax Agent Glen Dias. Learn 9% filing rules, SBR, and penalties.",
+      title: pageTitle,
+      description: pageDesc,
       canonicalPath: "/blogs",
       keywords:
-        "Corporate Tax, DIFC Tax Compliance, Tax Services in Dubai, UAE Corporate Tax Guide, FTA EmaraTax, Free Zone 0% QFZP, VAT filing Dubai",
-      ogImage: "/api/og?title=Corporate+Tax+Insights+%26+UAE+Tax+Regulations+Hub&author=Glen+Dias&tag=Official+Briefings",
+        "UAE Corporate Tax Insights 2026, FTA Updates 2026, 9% Corporate Tax Guides, 5% VAT Audit Checklists, IFRS Accounting Insights Dubai, Dias Accounting",
+      ogImage:
+        "/api/og?title=UAE+Corporate+Tax%2C+VAT+%26+Accounting+Insights+2026&author=Glen+Dias&tag=Official+Briefings",
     });
+
+    upsertJsonLd("schema-blogs-hub", {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "CollectionPage",
+          "@id": "https://diasuae.ae/blogs#collection",
+          url: "https://diasuae.ae/blogs",
+          name: pageTitle,
+          description: pageDesc,
+          isPartOf: {
+            "@type": "WebSite",
+            "@id": "https://diasuae.ae/#website",
+            name: "Dias Accounting & Tax Consulting LLC",
+            url: "https://diasuae.ae/",
+          },
+          publisher: {
+            "@type": "Organization",
+            name: "Dias Accounting & Tax Consulting LLC",
+            url: "https://diasuae.ae",
+          },
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://diasuae.ae/blogs#breadcrumb",
+          itemListElement: [
+            {
+              "@type": "ListItem",
+              position: 1,
+              name: "Home",
+              item: "https://diasuae.ae/",
+            },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: "Insights & Blogs",
+              item: "https://diasuae.ae/blogs",
+            },
+          ],
+        },
+      ],
+    });
+
     window.scrollTo({ top: 0, behavior: "instant" });
 
     // Fetch live Blogger posts with duplicate filtering while keeping hardcoded articles intact at the top
@@ -250,6 +297,7 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
 
     return () => {
       isMounted = false;
+      removeJsonLd("schema-blogs-hub");
     };
   }, []);
 

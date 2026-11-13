@@ -284,18 +284,66 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
 
     if (blog) {
       const ogImg = `${baseUrl}/api/og/blog/${blogId}`;
+      const canonicalPostUrl = `${baseUrl}/blogs/${blogId}`;
+      const publishedIso = `${blog.date}T09:00:00+04:00`;
+      const normalizedBlogSchema = JSON.stringify({
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "BlogPosting",
+            "@id": `${canonicalPostUrl}#blogposting`,
+            mainEntityOfPage: {
+              "@type": "WebPage",
+              "@id": canonicalPostUrl,
+            },
+            headline: blog.title,
+            description: blog.summary,
+            image: ogImg,
+            datePublished: publishedIso,
+            dateModified: publishedIso,
+            author: {
+              "@type": "Person",
+              name: blog.author || "Glen Dias",
+              jobTitle: blog.role || "Managing Director & FTA Registered Tax Agent",
+              worksFor: {
+                "@type": "Organization",
+                name: "Dias Accounting & Tax Consulting LLC",
+              },
+            },
+            publisher: {
+              "@type": "Organization",
+              name: "Dias Accounting & Tax Consulting LLC",
+              url: baseUrl,
+              logo: {
+                "@type": "ImageObject",
+                url: `${baseUrl}/icon-192.png`,
+              },
+            },
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": `${canonicalPostUrl}#breadcrumb`,
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: `${baseUrl}/` },
+              { "@type": "ListItem", position: 2, name: "Insights & Blogs", item: `${baseUrl}/blogs` },
+              { "@type": "ListItem", position: 3, name: blog.title, item: canonicalPostUrl },
+            ],
+          },
+        ],
+      });
+
       return {
         title: `${blog.title} | Dias Accounting Dubai`,
         description: blog.summary,
         keywords: `UAE tax guide, ${blog.tag}, corporate tax Dubai, FTA compliance, ${blog.title.toLowerCase()}`,
-        url: `${baseUrl}/#blog-${blogId}`,
+        url: canonicalPostUrl,
         ogImage: ogImg,
         ogType: "article",
         author: blog.author,
-        publishedTime: `${blog.date}T09:00:00+04:00`,
+        publishedTime: publishedIso,
         section: blog.tag,
         isArabic,
-        schemaMarkup: dynamicSchema,
+        schemaMarkup: normalizedBlogSchema,
       };
     }
   }
@@ -417,14 +465,88 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
   }
 
   if (pathname === "/tax-planning-difc" || pathname === "/tax-planning-difc.html") {
+    const difcTitle = "DIFC & DTEC Tax Planning & Accounting Dubai | Dias UAE";
+    const difcDesc =
+      "Specialist DIFC & DTEC accounting, 0% QFZP Corporate Tax structuring, DFSA compliance & dividend audit services in Dubai by FTA-registered tax agents.";
+    const difcSchema = JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": ["AccountingService", "ProfessionalService"],
+          name: "Dias Accounting - DIFC & DTEC Tax Planning & Accounting",
+          url: `${baseUrl}/tax-planning-difc`,
+          description: difcDesc,
+          telephone: "+971-52-922-6958",
+          email: "info@diasuae.ae",
+          priceRange: "AED 500 - AED 4,500",
+          areaServed: ["DIFC Dubai", "DTEC Dubai Silicon Oasis", "Dubai", "United Arab Emirates"],
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": `${baseUrl}/tax-planning-difc#breadcrumb`,
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: `${baseUrl}/` },
+            { "@type": "ListItem", position: 2, name: "Free Zone Services", item: `${baseUrl}/services` },
+            { "@type": "ListItem", position: 3, name: "DIFC & DTEC Tax Planning & Accounting", item: `${baseUrl}/tax-planning-difc` },
+          ],
+        },
+        {
+          "@type": "FAQPage",
+          "@id": `${baseUrl}/tax-planning-difc#faqs`,
+          mainEntity: [
+            {
+              "@type": "Question",
+              name: "How do DIFC & DTEC entities qualify for 0% Corporate Tax under the QFZP regime?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Under Federal Decree-Law No. 47 of 2022 and Cabinet Decision No. 55 of 2023, DIFC and DTEC entities qualify for a 0% Corporate Tax rate as a Qualifying Free Zone Person (QFZP) on Qualifying Income only if they: (1) maintain adequate economic substance and qualified personnel inside the Free Zone, (2) derive Qualifying Income from qualifying activities or other Free Zone persons, (3) keep non-qualifying revenue within the de minimis limit (lower of 5% of total revenue or AED 5,000,000), (4) comply with arm's length Transfer Pricing rules, and (5) prepare annual audited IFRS financial statements.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "Are audited IFRS financial statements mandatory for DIFC and DTEC companies?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Yes. Maintaining and submitting annual financial statements prepared under International Financial Reporting Standards (IFRS) and audited by a UAE-licensed auditor is mandatory for DFSA-regulated DIFC entities, DTEC Free Zone license renewals, and all Qualifying Free Zone Persons (QFZPs) claiming the 0% Corporate Tax rate regardless of annual revenue.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "How does UAE dividend audit certification work for DIFC and holding companies?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Under UAE Federal Decree-Law No. 32 of 2021 (Commercial Companies Law) and DIFC Companies Law, companies distributing dividends must verify realized distributable profits through a statutory Dividend Audit certification before passing board resolutions. Furthermore, under Article 23 of UAE Corporate Tax Law, dividends received from qualifying UAE or foreign shareholdings (at least 5% ownership held for 12 months) are exempt from Corporate Tax under the Participation Exemption.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "What are the transfer pricing requirements for DIFC businesses?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Under Article 34 of the UAE Corporate Tax Law, all transactions with Related Parties and Connected Persons must satisfy the Arm's Length Principle. DIFC entities exceeding FTA thresholds must submit an annual Transfer Pricing Disclosure Form on EmaraTax and maintain Local File and Master File documentation.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "Why should CFOs hire certified corporate tax consultants in DIFC and DTEC?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "DIFC common law entities and DTEC venture-backed companies must coordinate DFSA/DIFC reporting with Federal Tax Authority (FTA) EmaraTax compliance. Certified FTA-registered tax consultants prevent accidental 5-year QFZP disqualifications, audit de minimis ratios quarterly, and ensure seamless IFRS audit readiness.",
+              },
+            },
+          ],
+        },
+      ],
+    });
     return {
-      title: "DIFC Tax Compliance & Corporate Tax Advisory Dubai | Dias UAE",
-      description: "DIFC Tax Compliance and Corporate Tax advisory in Dubai. Certified tax consultants in DIFC for 0% QFZP qualification, DFSA audit readiness, and transfer pricing.",
-      keywords: "DIFC Tax Compliance, Corporate Tax Consultants in DIFC, difc tax planning services, corporate tax uae, qualifying free zone person difc, qfzp 0% tax dubai, transfer pricing difc, holding company tax uae, difc corporate tax advisory, tax services in dubai",
+      title: difcTitle,
+      description: difcDesc,
+      keywords: "DIFC Tax Compliance, DTEC accounting Dubai, 0% QFZP Corporate Tax, DFSA audit readiness, dividend audit certification UAE, Corporate Tax Consultants in DIFC, difc tax planning services, transfer pricing difc, IFRS financial statements Dubai",
       url: `${baseUrl}/tax-planning-difc`,
-      ogImage: `${baseUrl}/api/og?title=DIFC+Tax+Compliance+%26+Corporate+Tax+Advisory&author=Glen+Dias&role=Senior+Tax+Advisor&tag=DIFC+Advisory`,
+      ogImage: `${baseUrl}/api/og?title=DIFC+%26+DTEC+Tax+Planning+%26+Accounting+Dubai&author=Glen+Dias&role=Senior+Tax+Advisor&tag=DIFC+%26+DTEC+Advisory`,
       ogType: "website",
       isArabic,
+      schemaMarkup: difcSchema,
     };
   }
 
@@ -457,14 +579,88 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     pathname === "/dtec-accounting" ||
     pathname === "/accounting-services-in-dtec"
   ) {
+    const difcDtecTitle = "DIFC & DTEC Tax Planning & Accounting Dubai | Dias UAE";
+    const difcDtecDesc =
+      "Specialist DIFC & DTEC accounting, 0% QFZP Corporate Tax structuring, DFSA compliance & dividend audit services in Dubai by FTA-registered tax agents.";
+    const difcDtecSchema = JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": ["AccountingService", "ProfessionalService"],
+          name: "Dias Accounting - DIFC & DTEC Tax Planning & Accounting",
+          url: `${baseUrl}/difc-dtec-accounting`,
+          description: difcDtecDesc,
+          telephone: "+971-52-922-6958",
+          email: "info@diasuae.ae",
+          priceRange: "AED 500 - AED 4,500",
+          areaServed: ["DIFC Dubai", "DTEC Dubai Silicon Oasis", "Dubai", "United Arab Emirates"],
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": `${baseUrl}/difc-dtec-accounting#breadcrumb`,
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: `${baseUrl}/` },
+            { "@type": "ListItem", position: 2, name: "Free Zone Services", item: `${baseUrl}/services` },
+            { "@type": "ListItem", position: 3, name: "DIFC & DTEC Tax Planning & Accounting", item: `${baseUrl}/difc-dtec-accounting` },
+          ],
+        },
+        {
+          "@type": "FAQPage",
+          "@id": `${baseUrl}/difc-dtec-accounting#faqs`,
+          mainEntity: [
+            {
+              "@type": "Question",
+              name: "How do DIFC & DTEC entities qualify for 0% Corporate Tax under the QFZP regime?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Under Federal Decree-Law No. 47 of 2022 and Cabinet Decision No. 55 of 2023, DIFC and DTEC entities qualify for a 0% Corporate Tax rate as a Qualifying Free Zone Person (QFZP) on Qualifying Income only if they: (1) maintain adequate economic substance and qualified personnel inside the Free Zone, (2) derive Qualifying Income from qualifying activities or other Free Zone persons, (3) keep non-qualifying revenue within the de minimis limit (lower of 5% of total revenue or AED 5,000,000), (4) comply with arm's length Transfer Pricing rules, and (5) prepare annual audited IFRS financial statements.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "Are audited IFRS financial statements mandatory for DIFC and DTEC companies?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Yes. Maintaining and submitting annual financial statements prepared under International Financial Reporting Standards (IFRS) and audited by a UAE-licensed auditor is mandatory for DFSA-regulated DIFC entities, DTEC Free Zone license renewals, and all Qualifying Free Zone Persons (QFZPs) claiming the 0% Corporate Tax rate regardless of annual revenue.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "How does UAE dividend audit certification work for DIFC and holding companies?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Under UAE Federal Decree-Law No. 32 of 2021 (Commercial Companies Law) and DIFC Companies Law, companies distributing dividends must verify realized distributable profits through a statutory Dividend Audit certification before passing board resolutions. Furthermore, under Article 23 of UAE Corporate Tax Law, dividends received from qualifying UAE or foreign shareholdings (at least 5% ownership held for 12 months) are exempt from Corporate Tax under the Participation Exemption.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "What are the transfer pricing requirements for DIFC businesses?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Under Article 34 of the UAE Corporate Tax Law, all transactions with Related Parties and Connected Persons must satisfy the Arm's Length Principle. DIFC entities exceeding FTA thresholds must submit an annual Transfer Pricing Disclosure Form on EmaraTax and maintain Local File and Master File documentation.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "Why should CFOs hire certified corporate tax consultants in DIFC and DTEC?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "DIFC common law entities and DTEC venture-backed companies must coordinate DFSA/DIFC reporting with Federal Tax Authority (FTA) EmaraTax compliance. Certified FTA-registered tax consultants prevent accidental 5-year QFZP disqualifications, audit de minimis ratios quarterly, and ensure seamless IFRS audit readiness.",
+              },
+            },
+          ],
+        },
+      ],
+    });
     return {
-      title: "Accounting Services in DTEC & DIFC Dubai | Tax Consultant & Virtual Accounting | Dias UAE",
-      description: "Premier accounting services in DTEC and tax consultant in DIFC Dubai. Expert FTA tax advisory, virtual accounting services in DIFC, 0% QFZP corporate tax compliance, and tech startup bookkeeping in Dubai Silicon Oasis.",
-      keywords: "accounting services in dtec, tax consultant in difc, tax and accounting services in difc, accounting services in difc, virtual accounting services in difc, difc tax services in dubai, DTEC accounting dubai, 0% QFZP free zone corporate tax",
+      title: difcDtecTitle,
+      description: difcDtecDesc,
+      keywords: "accounting services in dtec, tax consultant in difc, DIFC Tax Compliance, DTEC accounting Dubai, 0% QFZP Corporate Tax, DFSA audit readiness, dividend audit certification UAE",
       url: `${baseUrl}/difc-dtec-accounting`,
-      ogImage: `${baseUrl}/api/og?title=Accounting+Services+in+DTEC+%26+Tax+Consultant+in+DIFC&author=Glen+Dias&tag=Free+Zone+0%25+QFZP+Advisory`,
+      ogImage: `${baseUrl}/api/og?title=DIFC+%26+DTEC+Tax+Planning+%26+Accounting+Dubai&author=Glen+Dias&tag=Free+Zone+0%25+QFZP+Advisory`,
       ogType: "website",
       isArabic,
+      schemaMarkup: difcDtecSchema,
     };
   }
 
@@ -551,14 +747,49 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
   }
 
   if (pathname === "/blogs" || pathname === "/insights") {
+    const blogsTitle = "UAE Corporate Tax, VAT & Accounting Insights 2026 | Dias UAE";
+    const blogsDesc =
+      "Latest 2026 UAE Federal Tax Authority (FTA) updates, 9% Corporate Tax guides, 5% VAT audit checklists, and IFRS accounting insights by Dias Accounting.";
+    const blogsSchema = JSON.stringify({
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "CollectionPage",
+          "@id": `${baseUrl}/blogs#collection`,
+          url: `${baseUrl}/blogs`,
+          name: blogsTitle,
+          description: blogsDesc,
+          isPartOf: {
+            "@type": "WebSite",
+            "@id": `${baseUrl}/#website`,
+            name: "Dias Accounting & Tax Consulting LLC",
+            url: `${baseUrl}/`,
+          },
+          publisher: {
+            "@type": "Organization",
+            name: "Dias Accounting & Tax Consulting LLC",
+            url: baseUrl,
+          },
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": `${baseUrl}/blogs#breadcrumb`,
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: `${baseUrl}/` },
+            { "@type": "ListItem", position: 2, name: "Insights & Blogs", item: `${baseUrl}/blogs` },
+          ],
+        },
+      ],
+    });
     return {
-      title: "Corporate Tax Insights & UAE Tax Regulations Hub | Dias UAE",
-      description: "Authoritative Corporate Tax, DIFC tax compliance, and VAT regulatory insights by FTA Registered Tax Agent Glen Dias. Learn 9% filing rules, SBR, and penalties.",
-      keywords: "Corporate Tax, DIFC Tax Compliance, Tax Services in Dubai, uae tax blog, fta updates 2026, corporate tax guidelines, e-invoicing peppol mandate dubai",
+      title: blogsTitle,
+      description: blogsDesc,
+      keywords: "UAE Corporate Tax Insights 2026, FTA Updates 2026, 9% Corporate Tax Guides, 5% VAT Audit Checklists, IFRS Accounting Insights Dubai, Dias Accounting",
       url: `${baseUrl}/blogs`,
-      ogImage: `${baseUrl}/api/og?title=Corporate+Tax+Insights+%26+UAE+Tax+Regulations+Hub&author=Glen+Dias&tag=Official+Briefings`,
+      ogImage: `${baseUrl}/api/og?title=UAE+Corporate+Tax%2C+VAT+%26+Accounting+Insights+2026&author=Glen+Dias&tag=Official+Briefings`,
       ogType: "website",
       isArabic,
+      schemaMarkup: blogsSchema,
     };
   }
 
@@ -575,6 +806,15 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
   }
 
   if (pathname === "/faqs" || pathname === "/faq") {
+    const faqsBreadcrumbSchema = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "@id": `${baseUrl}/faqs#breadcrumb`,
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: `${baseUrl}/` },
+        { "@type": "ListItem", position: 2, name: "FAQs", item: `${baseUrl}/faqs` },
+      ],
+    });
     return {
       title: "UAE Tax & Accounting FAQs | Dias UAE",
       description: "Instant, authoritative answers to top questions on the 9% UAE Corporate Tax, AED 3M Small Business Relief, 0% QFZP Free Zone conditions, and VAT201 filing.",
@@ -583,6 +823,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
       ogImage: `${baseUrl}/api/og?title=UAE+Tax+%26+Accounting+FAQs&author=Glen+Dias&tag=Authoritative+Answers`,
       ogType: "website",
       isArabic,
+      schemaMarkup: faqsBreadcrumbSchema,
     };
   }
 
@@ -703,6 +944,19 @@ export function injectMetaIntoHtml(html: string, meta: MetaOverride): string {
     <meta property="article:publisher" content="https://www.linkedin.com/company/dias-accounting-and-tax-consulting" />
     `;
     modified = modified.replace("</head>", `${articleTags}\n  </head>`);
+  }
+
+  const isHomepage = meta.url === "https://diasuae.ae/" || meta.url === "https://diasuae.ae";
+  const isFaqsPage = meta.url === "https://diasuae.ae/faqs";
+
+  // Strip homepage-only JSON-LD blocks on subpages so schemas never leak onto unrelated routes
+  if (!isHomepage && !isFaqsPage) {
+    modified = modified.replace(/<script[^>]*id=["']homepage-faq-jsonld["'][^>]*>[\s\S]*?<\/script>/gi, "");
+  }
+  if (!isHomepage) {
+    modified = modified.replace(/<script[^>]*id=["']homepage-howto-jsonld["'][^>]*>[\s\S]*?<\/script>/gi, "");
+    modified = modified.replace(/<script[^>]*id=["']page-breadcrumb-jsonld["'][^>]*>[\s\S]*?<\/script>/gi, "");
+    modified = modified.replace(/<script[^>]*id=["']homepage-webpage-jsonld["'][^>]*>[\s\S]*?<\/script>/gi, "");
   }
 
   if (meta.schemaMarkup) {

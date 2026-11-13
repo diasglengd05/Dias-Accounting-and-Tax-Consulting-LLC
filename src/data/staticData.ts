@@ -389,6 +389,41 @@ export const testimonialsData: Testimonial[] = [
 
 export const faqsData: FAQItem[] = [
   {
+    id: "faq-core-ct-rate-2026",
+    category: "Corporate Tax",
+    question: "What is the UAE Corporate Tax rate in 2026?",
+    answer:
+      "Under UAE Federal Decree-Law No. 47 of 2022, the UAE Corporate Tax rate in 2026 is 0% on taxable net profit up to AED 375,000 and 9% on taxable profit exceeding AED 375,000. Eligible UAE resident businesses with gross revenue up to AED 3,000,000 can also elect for 0% Small Business Relief (extended through 31 December 2029), while Qualifying Free Zone Persons benefit from a 0% Corporate Tax rate on Qualifying Income.",
+  },
+  {
+    id: "faq-core-ct-late-penalty",
+    category: "Corporate Tax",
+    question: "What is the penalty for late UAE Corporate Tax registration?",
+    answer:
+      "Failing to register for UAE Corporate Tax within the Federal Tax Authority (FTA) deadline triggers an automatic AED 10,000 administrative penalty under Cabinet Decision No. 75 of 2023. However, under the FTA penalty waiver initiative, this AED 10,000 late registration penalty can be waived or refunded if the business files its first Corporate Tax return within 7 months from the end of its first tax period.",
+  },
+  {
+    id: "faq-core-vat-mandatory",
+    category: "VAT",
+    question: "When is VAT registration mandatory in the UAE?",
+    answer:
+      "VAT registration (5%) in the UAE is mandatory when a business's taxable supplies and imports exceed AED 375,000 over the preceding 12 months or are expected to exceed AED 375,000 in the next 30 days. Voluntary VAT registration is available once taxable supplies, imports, or taxable business expenses exceed AED 187,500.",
+  },
+  {
+    id: "faq-core-audited-statements",
+    category: "Compliance & Bookkeeping",
+    question: "Do UAE companies need audited financial statements?",
+    answer:
+      "Yes. Audited financial statements prepared under IFRS are mandatory for all Qualifying Free Zone Persons (QFZPs) regardless of revenue to retain their 0% Corporate Tax status, and for Mainland or non-qualifying UAE entities with annual revenue exceeding AED 50 million. Statutory audit certification is also required for UAE Dividend Distribution audits under Federal Decree-Law No. 32 of 2021 and many Free Zone license renewals (including DIFC, DMCC, and DTEC).",
+  },
+  {
+    id: "faq-core-dias-packages",
+    category: "Pricing & Services",
+    question: "What accounting and tax packages does Dias Accounting offer in Dubai and Sharjah?",
+    answer:
+      "Dias Accounting offers transparent, fixed-fee monthly accounting and tax packages in Dubai and Sharjah starting from AED 400–500/month. Packages include a dedicated chartered accountant, IFRS-compliant double-entry bookkeeping (Zoho Books, Xero, QuickBooks, or Wafeq), monthly financial statements, quarterly 5% VAT 201 return filing, and annual 9% or 0% Corporate Tax return submission on EmaraTax.",
+  },
+  {
     id: "faq-cf-formation-dubai",
     category: "Company Formation & Banking",
     question: "How long does company formation take in Dubai and the UAE?",

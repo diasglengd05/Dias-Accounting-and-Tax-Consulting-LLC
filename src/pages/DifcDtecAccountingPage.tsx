@@ -20,94 +20,113 @@ import {
   ArrowRight,
 } from "lucide-react";
 import DiasLogo from "../components/DiasLogo";
+import { applyPageSEO, buildFAQPageSchema, FAQSchemaItem, removeJsonLd, upsertJsonLd } from "../lib/seo";
 
 interface PageProps {
   onNavigate?: (path: string) => void;
 }
 
+export const DIFC_DTEC_FAQS: FAQSchemaItem[] = [
+  {
+    question: "How do DIFC & DTEC entities qualify for 0% Corporate Tax under the QFZP regime?",
+    answer:
+      "Under Federal Decree-Law No. 47 of 2022 and Cabinet Decision No. 55 of 2023, DIFC and DTEC entities qualify for a 0% Corporate Tax rate as a Qualifying Free Zone Person (QFZP) on Qualifying Income only if they: (1) maintain adequate economic substance and qualified personnel inside the Free Zone, (2) derive Qualifying Income from qualifying activities or other Free Zone persons, (3) keep non-qualifying revenue within the de minimis limit (lower of 5% of total revenue or AED 5,000,000), (4) comply with arm's length Transfer Pricing rules, and (5) prepare annual audited IFRS financial statements.",
+  },
+  {
+    question: "Are audited IFRS financial statements mandatory for DIFC and DTEC companies?",
+    answer:
+      "Yes. Maintaining and submitting annual financial statements prepared under International Financial Reporting Standards (IFRS) and audited by a UAE-licensed auditor is mandatory for DFSA-regulated DIFC entities, DTEC Free Zone license renewals, and all Qualifying Free Zone Persons (QFZPs) claiming the 0% Corporate Tax rate regardless of annual revenue.",
+  },
+  {
+    question: "How does UAE dividend audit certification work for DIFC and holding companies?",
+    answer:
+      "Under UAE Federal Decree-Law No. 32 of 2021 (Commercial Companies Law) and DIFC Companies Law, companies distributing dividends must verify realized distributable profits through a statutory Dividend Audit certification before passing board resolutions. Furthermore, under Article 23 of UAE Corporate Tax Law, dividends received from qualifying UAE or foreign shareholdings (at least 5% ownership held for 12 months) are exempt from Corporate Tax under the Participation Exemption.",
+  },
+  {
+    question: "What are the transfer pricing requirements for DIFC businesses?",
+    answer:
+      "Under Article 34 of the UAE Corporate Tax Law, all transactions with Related Parties and Connected Persons must satisfy the Arm's Length Principle. DIFC entities exceeding FTA thresholds must submit an annual Transfer Pricing Disclosure Form on EmaraTax and maintain Local File and Master File documentation.",
+  },
+  {
+    question: "Why should CFOs hire certified corporate tax consultants in DIFC and DTEC?",
+    answer:
+      "DIFC common law entities and DTEC venture-backed companies must coordinate DFSA/DIFC reporting with Federal Tax Authority (FTA) EmaraTax compliance. Certified FTA-registered tax consultants prevent accidental 5-year QFZP disqualifications, audit de minimis ratios quarterly, and ensure seamless IFRS audit readiness.",
+  },
+];
+
 export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
   useEffect(() => {
-    const isDifcExplicit = typeof window !== "undefined" && window.location.pathname.includes("tax-planning-difc");
-    const pageTitle = isDifcExplicit
-      ? "DIFC Tax Compliance & Corporate Tax Advisory Dubai | Dias UAE"
-      : "DIFC Tax Compliance & DTEC Accounting Dubai | Dias UAE";
+    const isDifcExplicit =
+      typeof window !== "undefined" && window.location.pathname.toLowerCase().includes("tax-planning-difc");
+    const canonicalPath = isDifcExplicit ? "/tax-planning-difc" : "/difc-dtec-accounting";
+    const pageTitle = "DIFC & DTEC Tax Planning & Accounting Dubai | Dias UAE";
     const pageDesc =
-      "DIFC Tax Compliance and Corporate Tax advisory in Dubai. Certified tax consultants in DIFC for 0% QFZP qualification, DFSA audit readiness, and transfer pricing.";
-    const pageUrl = isDifcExplicit
-      ? "https://diasuae.ae/tax-planning-difc"
-      : "https://diasuae.ae/difc-dtec-accounting";
+      "Specialist DIFC & DTEC accounting, 0% QFZP Corporate Tax structuring, DFSA compliance & dividend audit services in Dubai by FTA-registered tax agents.";
+    const pageUrl = `https://diasuae.ae${canonicalPath}`;
 
-    document.title = pageTitle;
+    applyPageSEO({
+      title: pageTitle,
+      description: pageDesc,
+      canonicalPath,
+      keywords:
+        "DIFC Tax Compliance, DTEC accounting Dubai, 0% QFZP Corporate Tax, DFSA audit readiness, dividend audit certification UAE, Corporate Tax Consultants in DIFC, transfer pricing DIFC, IFRS financial statements Dubai",
+      ogType: "article",
+      ogImage:
+        "/api/og?title=DIFC+%26+DTEC+Tax+Planning+%26+Accounting+Dubai&author=Glen+Dias&role=Senior+Tax+Advisor&tag=DIFC+%26+DTEC+Advisory",
+    });
 
-    const upsertMeta = (attr: "name" | "property", key: string, content: string) => {
-      let el = document.querySelector(`meta[${attr}="${key}"]`);
-      if (!el) {
-        el = document.createElement("meta");
-        el.setAttribute(attr, key);
-        document.head.appendChild(el);
-      }
-      el.setAttribute("content", content);
-    };
+    upsertJsonLd("schema-difc-dtec", {
+      "@context": "https://schema.org",
+      "@type": ["AccountingService", "ProfessionalService"],
+      name: "Dias Accounting - DIFC & DTEC Tax Planning & Accounting",
+      url: pageUrl,
+      description: pageDesc,
+      telephone: "+971-52-922-6958",
+      email: "info@diasuae.ae",
+      priceRange: "AED 500 - AED 4,500",
+      areaServed: ["DIFC Dubai", "DTEC Dubai Silicon Oasis", "Dubai", "United Arab Emirates"],
+      knowsAbout: [
+        "DIFC Tax Compliance",
+        "0% Qualifying Free Zone Person (QFZP) Structuring",
+        "DFSA Statutory Audits and IFRS Financial Reporting",
+        "UAE Dividend Audit Certification",
+        "DTEC Tech Startup Accounting Dubai",
+      ],
+    });
 
-    upsertMeta("name", "title", pageTitle);
-    upsertMeta("name", "description", pageDesc);
-    upsertMeta(
-      "name",
-      "keywords",
-      "DIFC Tax Compliance, Corporate Tax Consultants in DIFC, difc tax planning services, corporate tax uae, qualifying free zone person difc, qfzp 0% tax dubai, transfer pricing difc, holding company tax uae, difc corporate tax advisory, tax services in dubai, accounting services in dtec, DTEC accounting dubai, DFSA audit readiness"
-    );
-    upsertMeta("property", "og:title", pageTitle);
-    upsertMeta("property", "og:description", pageDesc);
-    upsertMeta("property", "og:url", pageUrl);
-    upsertMeta("property", "og:type", "article");
-    upsertMeta("name", "twitter:title", pageTitle);
-    upsertMeta("name", "twitter:description", pageDesc);
+    upsertJsonLd("schema-difc-faq", buildFAQPageSchema(DIFC_DTEC_FAQS, `${pageUrl}#faqs`));
 
-    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
-    if (!canonical) {
-      canonical = document.createElement("link");
-      canonical.setAttribute("rel", "canonical");
-      document.head.appendChild(canonical);
-    }
-    canonical.setAttribute("href", pageUrl);
-
-    // Inject dedicated JSON-LD Schema for DTEC & DIFC
-    const scriptId = "schema-difc-dtec";
-    let scriptEl = document.getElementById(scriptId) as HTMLScriptElement | null;
-    if (!scriptEl) {
-      scriptEl = document.createElement("script");
-      scriptEl.id = scriptId;
-      scriptEl.type = "application/ld+json";
-      scriptEl.text = JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": ["AccountingService", "ProfessionalService"],
-        "name": "Dias Accounting - DIFC Tax Compliance & Corporate Tax Advisory",
-        "url": pageUrl,
-        "description": pageDesc,
-        "telephone": "+971-52-922-6958",
-        "email": "info@diasuae.ae",
-        "priceRange": "AED 500 - AED 4,500",
-        "areaServed": ["DIFC Dubai", "DTEC Dubai Silicon Oasis", "Dubai", "United Arab Emirates"],
-        "knowsAbout": [
-          "DIFC Tax Compliance",
-          "Corporate tax consultants in DIFC",
-          "Tax and accounting services in DIFC",
-          "Virtual accounting services in DIFC",
-          "DIFC tax services in Dubai",
-          "Qualifying Free Zone Person 0% Corporate Tax",
-          "DFSA Statutory Audits and Financial Reporting"
-        ]
-      });
-      document.head.appendChild(scriptEl);
-    }
+    upsertJsonLd("schema-difc-breadcrumb", {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: "https://diasuae.ae/",
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Free Zone Services",
+          item: "https://diasuae.ae/services",
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: "DIFC & DTEC Tax Planning & Accounting",
+          item: pageUrl,
+        },
+      ],
+    });
 
     window.scrollTo({ top: 0, behavior: "instant" });
 
     return () => {
-      const el = document.getElementById(scriptId);
-      if (el && el.parentNode) {
-        el.parentNode.removeChild(el);
-      }
+      removeJsonLd("schema-difc-dtec");
+      removeJsonLd("schema-difc-faq");
+      removeJsonLd("schema-difc-breadcrumb");
     };
   }, []);
 
@@ -492,38 +511,18 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
           </div>
 
           <div className="space-y-4 pt-4">
-            {[
-              {
-                q: "Do DIFC companies have to pay UAE Corporate Tax?",
-                a: "Yes. DIFC entities fall under the scope of UAE Federal Corporate Tax (Federal Decree-Law No. 47 of 2022). However, entities that meet the definition of a Qualifying Free Zone Person (QFZP) can benefit from a 0% corporate tax rate on Qualifying Income, provided they satisfy economic substance, adhere to transfer pricing rules, maintain de minimis limits, and obtain annual audited financial statements.",
-              },
-              {
-                q: "Why do CFOs hire certified corporate tax consultants in DIFC?",
-                a: "DIFC common law companies operate under a dual framework of DFSA commercial regulations and Federal Tax Authority (FTA) tax statutes. Certified corporate tax consultants in DIFC guarantee precise categorization of qualifying vs. non-qualifying revenue, protect the 5% / AED 5M de minimis cap, and ensure arm's length transfer pricing.",
-              },
-              {
-                q: "What are the transfer pricing requirements for DIFC businesses?",
-                a: "Under Article 34 of the Corporate Tax Law, all transactions between related parties or connected persons must meet the arm's length standard. DIFC entities exceeding the FTA group revenue thresholds must prepare and maintain Local File and Master File documentation.",
-              },
-              {
-                q: "Can DIFC holding companies distribute tax-free dividends?",
-                a: "Yes. Under UAE Corporate Tax participation exemption rules (Article 23), dividends and capital gains derived by a UAE parent company from qualifying domestic or foreign shareholdings are exempt from Corporate Tax, provided minimum ownership (5%) and holding period requirements are met.",
-              },
-              {
-                q: "What accounting packages are available for DIFC and Free Zone companies?",
-                a: "Dias Accounting provides structured, fixed-fee monthly retainers from AED 500/month covering dedicated cloud bookkeeping (Zoho Books, Xero, QuickBooks), monthly IFRS P&L reporting, quarterly VAT 201 submissions, and annual corporate tax return filing with zero hidden fees.",
-              },
-            ].map((faq, idx) => (
+            {DIFC_DTEC_FAQS.map((faq, idx) => (
               <details
                 key={idx}
+                open={idx === 0}
                 className="group border border-slate-200 rounded-2xl p-5 open:bg-slate-50 transition-colors"
               >
                 <summary className="font-display font-bold text-navy-950 text-sm sm:text-base cursor-pointer list-none flex items-center justify-between gap-4">
-                  <span>{faq.q}</span>
+                  <span>{faq.question}</span>
                   <ChevronRight className="w-4 h-4 text-gold-500 transition-transform group-open:rotate-90 shrink-0" />
                 </summary>
                 <p className="mt-3 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
-                  {faq.a}
+                  {faq.answer}
                 </p>
               </details>
             ))}
