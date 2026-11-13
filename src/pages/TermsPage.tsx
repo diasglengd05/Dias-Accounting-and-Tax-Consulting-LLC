@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { ShieldCheck, ChevronRight, Lock, FileText, Mail, MapPin } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
+import { applyPageSEO } from "../lib/seo";
 
 interface TermsPageProps {
   onNavigate: (path: string) => void;
@@ -17,7 +18,15 @@ export const TermsPage: React.FC<TermsPageProps> = ({
   onOpenGooglePreferred,
 }) => {
   useEffect(() => {
-    document.title = "Terms of Service & Engagement | Dias Accounting UAE";
+    applyPageSEO({
+      title: "Terms of Service & Engagement | Dias Accounting UAE",
+      description:
+        "Terms of Service, statutory advisory engagement scope, and compliance policies for Dias Accounting & Tax Consulting LLC in Dubai & Sharjah.",
+      canonicalPath: "/terms",
+      keywords:
+        "Dias Accounting terms of service, UAE tax engagement terms, FTA agency compliance",
+      ogImage: "/api/og?title=Terms+of+Service+%26+Engagement&author=Dias+Accounting&tag=UAE+Tax+Agency",
+    });
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
 

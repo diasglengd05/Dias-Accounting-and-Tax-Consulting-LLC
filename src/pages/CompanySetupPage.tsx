@@ -16,6 +16,7 @@ import {
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
 import CompanySetupHub from "../components/CompanySetupHub";
+import { applyPageSEO } from "../lib/seo";
 
 interface CompanySetupPageProps {
   onNavigate: (path: string) => void;
@@ -31,25 +32,15 @@ export const CompanySetupPage: React.FC<CompanySetupPageProps> = ({
   onOpenGooglePreferred,
 }) => {
   useEffect(() => {
-    const title = "UAE Company Setup & Corporate Tax Structuring Dubai | Dias UAE";
-    const desc = "Turnkey Dubai company setup and Corporate Tax structuring across SHAMS, DMCC, IFZA, DTEC, and Mainland (DET). 100% foreign ownership with 0% QFZP tax optimization.";
-    document.title = title;
-
-    const upsertMeta = (attr: "name" | "property", key: string, content: string) => {
-      let el = document.querySelector(`meta[${attr}="${key}"]`);
-      if (!el) {
-        el = document.createElement("meta");
-        el.setAttribute(attr, key);
-        document.head.appendChild(el);
-      }
-      el.setAttribute("content", content);
-    };
-
-    upsertMeta("name", "title", title);
-    upsertMeta("name", "description", desc);
-    upsertMeta("name", "keywords", "UAE Company Setup, Corporate Tax, company setup dubai, free zone license uae, shams incorporation, dmcc company formation, ifza visa setup, 0% QFZP corporate tax uae, difc tax compliance");
-    upsertMeta("property", "og:title", title);
-    upsertMeta("property", "og:description", desc);
+    applyPageSEO({
+      title: "UAE Company Setup & Corporate Tax Structuring Dubai | Dias UAE",
+      description:
+        "Turnkey Dubai company setup and Corporate Tax structuring across SHAMS, DMCC, IFZA, DTEC, and Mainland (DET). 100% foreign ownership with 0% QFZP tax optimization.",
+      canonicalPath: "/company-setup",
+      keywords:
+        "UAE Company Setup, Corporate Tax, company setup dubai, free zone license uae, shams incorporation, dmcc company formation, ifza visa setup, 0% QFZP corporate tax uae, difc tax compliance",
+      ogImage: "/api/og?title=UAE+Company+Setup+%26+Corporate+Tax+Structuring&author=Dias+Corporate+Desk&tag=Turnkey+Incorporation",
+    });
 
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);

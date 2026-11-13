@@ -216,12 +216,13 @@ function MainApp() {
     return () => clearTimeout(timer);
   }, []);
 
-  // Dynamically update document head title and SEO meta tags based on active section & modal states
+  // Dynamically update document head title and SEO meta tags on homepage & modal states
   useDynamicSEO({
     activeSection,
     selectedService,
     selectedBlog,
     language,
+    enabled: currentPath === "/" || currentPath === "",
   });
   
   // Target service for scheduler preselection

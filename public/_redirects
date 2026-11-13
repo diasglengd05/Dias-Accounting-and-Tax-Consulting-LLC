@@ -3,6 +3,10 @@
 # Dias Accounting and Tax Consulting LLC
 # ----------------------------------------------------------------------
 
+# 0. Canonical Domain Enforcement (301 Permanent Redirect: www -> non-www)
+https://www.diasuae.ae/*       https://diasuae.ae/:splat  301!
+http://www.diasuae.ae/*        https://diasuae.ae/:splat  301!
+
 # 1. Standard Accounting Pages Redirects (Old Google Sites -> New SPA Sections)
 # Redirecting old indexed paths with a 301 Permanent Redirect to clean homepage anchor sections
 /tax-preparation      /#services     301

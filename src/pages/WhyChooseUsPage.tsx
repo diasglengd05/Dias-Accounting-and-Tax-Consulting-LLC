@@ -17,6 +17,7 @@ import PageFooter from "../components/PageFooter";
 import WhyChooseUsGrid from "../components/WhyChooseUsGrid";
 import OurAffiliations from "../components/OurAffiliations";
 import ClientCaseStudies from "../components/ClientCaseStudies";
+import { applyPageSEO } from "../lib/seo";
 
 interface WhyChooseUsPageProps {
   onNavigate: (path: string) => void;
@@ -32,7 +33,15 @@ export const WhyChooseUsPage: React.FC<WhyChooseUsPageProps> = ({
   onOpenGooglePreferred,
 }) => {
   useEffect(() => {
-    document.title = "Why Dias Accounting | FTA Certified Tax Agency Dubai";
+    applyPageSEO({
+      title: "Why Dias Accounting | FTA Certified Tax Agency Dubai | Dias UAE",
+      description:
+        "Discover the 6 foundational pillars that make Dias Accounting the trusted choice for 500+ UAE enterprises: FTA certified agents, unlimited transactions, and direct client WhatsApp channels.",
+      canonicalPath: "/why-choose-us",
+      keywords:
+        "why dias accounting, fta registered tax agency, certified tax agent glen dias, corporate tax advisory firm dubai",
+      ogImage: "/api/og?title=Why+Dias+Accounting+%26+Tax+Consulting&author=Glen+Dias&tag=6+Core+Pillars",
+    });
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
 

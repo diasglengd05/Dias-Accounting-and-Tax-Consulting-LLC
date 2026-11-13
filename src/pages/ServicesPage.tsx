@@ -23,6 +23,7 @@ import PageFooter from "../components/PageFooter";
 import { servicesData } from "../data/staticData";
 import { Service } from "../types";
 import ServiceModal from "../components/ServiceModal";
+import { applyPageSEO } from "../lib/seo";
 
 interface ServicesPageProps {
   onNavigate: (path: string) => void;
@@ -40,27 +41,15 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
   const [selectedService, setSelectedService] = useState<Service | null>(null);
 
   useEffect(() => {
-    const title = "Tax & Accounting Services Dubai | FTA Tax Firm | Dias UAE";
-    const desc = "Premier tax and accounting services in Dubai & UAE. Certified FTA tax agents for Corporate Tax (9%), VAT & bookkeeping. Schedule your free consultation!";
-    document.title = title;
-
-    const upsertMeta = (attr: "name" | "property", key: string, content: string) => {
-      let el = document.querySelector(`meta[${attr}="${key}"]`);
-      if (!el) {
-        el = document.createElement("meta");
-        el.setAttribute(attr, key);
-        document.head.appendChild(el);
-      }
-      el.setAttribute("content", content);
-    };
-
-    upsertMeta("name", "title", title);
-    upsertMeta("name", "description", desc);
-    upsertMeta("name", "keywords", "tax and accounting services, tax accounting services, accounting services uae, tax firms in uae, tax services in dubai, corporate tax advisory uae, vat compliance dubai");
-    upsertMeta("property", "og:title", title);
-    upsertMeta("property", "og:description", desc);
-    upsertMeta("name", "twitter:title", title);
-    upsertMeta("name", "twitter:description", desc);
+    applyPageSEO({
+      title: "Corporate Tax, VAT & Accounting Services in Dubai | Dias UAE",
+      description:
+        "Certified Corporate Tax, VAT filing, backlog bookkeeping, and DIFC tax compliance across Dubai and all 7 UAE Emirates. Schedule a free consultation today.",
+      canonicalPath: "/services",
+      keywords:
+        "Corporate Tax, Tax Services in Dubai, DIFC Tax Compliance, tax consulting services in uae, tax advisory services in dubai, corporate tax registration, vat returns dubai, ifrs bookkeeping uae",
+      ogImage: "/api/og?title=Corporate+Tax%2C+VAT+%26+Accounting+Services+in+Dubai&author=Glen+Dias&tag=8+Practice+Areas",
+    });
 
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);

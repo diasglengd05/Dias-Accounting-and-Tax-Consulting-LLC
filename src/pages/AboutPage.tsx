@@ -19,6 +19,7 @@ import {
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
 import { useLanguage } from "../i18n/LanguageContext";
+import { applyPageSEO } from "../lib/seo";
 
 interface AboutPageProps {
   onNavigate: (path: string) => void;
@@ -36,7 +37,15 @@ export const AboutPage: React.FC<AboutPageProps> = ({
   const { language } = useLanguage();
 
   useEffect(() => {
-    document.title = "About Us | Dias Accounting & Tax Consulting LLC Dubai";
+    applyPageSEO({
+      title: "About Dias Accounting | Chartered Tax Consultants in Dubai & UAE",
+      description:
+        "Led by Senior Tax Advisor Glen Dias, Dias Accounting delivers high-precision Corporate Tax advisory, VAT compliance, and IFRS accounting services across Dubai, Sharjah & UAE.",
+      canonicalPath: "/about",
+      keywords:
+        "Glen Dias tax advisor, Dias Accounting LLC, certified tax consultant Dubai, tax consulting services in uae, tax advisory services in dubai",
+      ogImage: "/api/og?title=About+Glen+Dias+%26+Certified+Tax+Advisors+Dubai&author=Glen+Dias&tag=FTA+Registered+Agent",
+    });
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
 

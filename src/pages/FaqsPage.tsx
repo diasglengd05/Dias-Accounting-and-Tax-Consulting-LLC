@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
+import { applyPageSEO } from "../lib/seo";
 
 interface FaqsPageProps {
   onNavigate: (path: string) => void;
@@ -217,7 +218,15 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
   }, [faqs]);
 
   useEffect(() => {
-    document.title = "Frequently Asked Questions (FAQ) | Dias Accounting & Tax Dubai";
+    applyPageSEO({
+      title: "UAE Tax & Accounting FAQs | Dias UAE",
+      description:
+        "Instant, authoritative answers to top questions on the 9% UAE Corporate Tax, AED 3M Small Business Relief, 0% QFZP Free Zone conditions, and VAT201 filing.",
+      canonicalPath: "/faqs",
+      keywords:
+        "uae tax faqs, corporate tax questions dubai, small business relief faq, vat compliance answers",
+      ogImage: "/api/og?title=UAE+Tax+%26+Accounting+FAQs&author=Glen+Dias&tag=Authoritative+Answers",
+    });
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
 

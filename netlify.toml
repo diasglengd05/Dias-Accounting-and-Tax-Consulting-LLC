@@ -3,6 +3,18 @@
   command = "npm run build"
 
 [[redirects]]
+  from = "https://www.diasuae.ae/*"
+  to = "https://diasuae.ae/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.diasuae.ae/*"
+  to = "https://diasuae.ae/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
   from = "/blog"
   to = "/blog.html"
   status = 200

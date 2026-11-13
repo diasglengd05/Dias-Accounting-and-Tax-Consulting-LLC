@@ -31,6 +31,7 @@ import PageFooter from "../components/PageFooter";
 import { servicesData } from "../data/staticData";
 import { Service } from "../types";
 import { useLanguage } from "../i18n/LanguageContext";
+import { applyPageSEO } from "../lib/seo";
 
 interface ServiceDetailPageProps {
   serviceId?: string;
@@ -86,35 +87,14 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
       desc = "Premier business incorporation services in UAE. 100% foreign ownership company setup in Dubai Mainland (DET) and top Free Zones (SHAMS, DMCC, IFZA, DTEC). Fast-track licensing & bank accounts.";
       keywords = "business incorporation services uae, business incorporation services in uae, company setup dubai, business setup uae, commercial license dubai, professional license uae, free zone company formation, mainland DET incorporation";
     }
-    document.title = title;
-
-    const upsertMeta = (attr: "name" | "property", key: string, content: string) => {
-      let el = document.querySelector(`meta[${attr}="${key}"]`);
-      if (!el) {
-        el = document.createElement("meta");
-        el.setAttribute(attr, key);
-        document.head.appendChild(el);
-      }
-      el.setAttribute("content", content);
-    };
-
-    upsertMeta("name", "title", title);
-    upsertMeta("name", "description", desc);
-    upsertMeta("name", "keywords", keywords);
-    upsertMeta("property", "og:title", title);
-    upsertMeta("property", "og:description", desc);
-    upsertMeta("name", "twitter:title", title);
-    upsertMeta("name", "twitter:description", desc);
-
-    // Update canonical link to match the exact clean service URL
     const canonicalUrl = `https://diasuae.ae/services/${currentService.id}`;
-    let canonical = document.querySelector('link[rel="canonical"]');
-    if (!canonical) {
-      canonical = document.createElement("link");
-      canonical.setAttribute("rel", "canonical");
-      document.head.appendChild(canonical);
-    }
-    canonical.setAttribute("href", canonicalUrl);
+    applyPageSEO({
+      title,
+      description: desc,
+      canonicalPath: `/services/${currentService.id}`,
+      keywords,
+      ogType: "business.business",
+    });
 
     // Inject Service Schema for Google Rich Results
     let schemaScript = document.getElementById("service-schema-jsonld");

@@ -23,6 +23,7 @@ import PageFooter from "../components/PageFooter";
 import { blogsData } from "../data/blogsData";
 import { BlogPost } from "../types";
 import BlogModal from "../components/BlogModal";
+import { applyPageSEO } from "../lib/seo";
 
 interface BlogsPageProps {
   onNavigate: (path: string) => void;
@@ -95,26 +96,16 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
   const [checklistSuccess, setChecklistSuccess] = useState(false);
 
   useEffect(() => {
-    const title = "Corporate Tax Insights & UAE Tax Regulations Hub | Dias UAE";
-    const desc = "Authoritative UAE Corporate Tax guides, DIFC tax compliance briefings, VAT filing rules, and accounting strategies by FTA registered tax agents in Dubai.";
-    document.title = title;
+    applyPageSEO({
+      title: "Corporate Tax Insights & UAE Tax Regulations Hub | Dias UAE",
+      description:
+        "Authoritative Corporate Tax, DIFC tax compliance, and VAT regulatory insights by FTA Registered Tax Agent Glen Dias. Learn 9% filing rules, SBR, and penalties.",
+      canonicalPath: "/blogs",
+      keywords:
+        "Corporate Tax, DIFC Tax Compliance, Tax Services in Dubai, UAE Corporate Tax Guide, FTA EmaraTax, Free Zone 0% QFZP, VAT filing Dubai",
+      ogImage: "/api/og?title=Corporate+Tax+Insights+%26+UAE+Tax+Regulations+Hub&author=Glen+Dias&tag=Official+Briefings",
+    });
     window.scrollTo({ top: 0, behavior: "instant" });
-
-    const upsertMeta = (attr: "name" | "property", key: string, content: string) => {
-      let el = document.querySelector(`meta[${attr}="${key}"]`);
-      if (!el) {
-        el = document.createElement("meta");
-        el.setAttribute(attr, key);
-        document.head.appendChild(el);
-      }
-      el.setAttribute("content", content);
-    };
-
-    upsertMeta("name", "description", desc);
-    upsertMeta("name", "keywords", "Corporate Tax, DIFC Tax Compliance, Tax Services in Dubai, UAE Corporate Tax Guide, FTA EmaraTax, Free Zone 0% QFZP, VAT filing Dubai");
-    upsertMeta("property", "og:title", title);
-    upsertMeta("property", "og:description", desc);
-    upsertMeta("property", "og:url", "https://diasuae.ae/blogs");
 
     // Fetch live Blogger posts with duplicate filtering while keeping hardcoded articles intact at the top
     let isMounted = true;

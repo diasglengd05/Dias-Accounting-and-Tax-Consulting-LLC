@@ -26,6 +26,7 @@ import PageFooter from "../components/PageFooter";
 import { submitToGoogleSheetsDirectly } from "../lib/sheetsService";
 import { useLanguage } from "../i18n/LanguageContext";
 import { validateEmailField, validatePhoneField } from "../lib/validation";
+import { applyPageSEO } from "../lib/seo";
 
 interface CorporateTaxSavingsPageProps {
   onNavigate: (path: string) => void;
@@ -59,7 +60,15 @@ export const CorporateTaxSavingsPage: React.FC<CorporateTaxSavingsPageProps> = (
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    document.title = "UAE Corporate Tax Savings & 0% Relief Assessment | Dias UAE";
+    applyPageSEO({
+      title: "UAE Corporate Tax Savings & 0% Relief Assessment | Dias UAE",
+      description:
+        "Estimate your 2026 UAE Corporate Tax liability (9%), test 0% Small Business Relief (AED 3M), and verify Qualifying Free Zone Person eligibility.",
+      canonicalPath: "/corporate-tax-calculator",
+      keywords:
+        "corporate tax calculator UAE, 9% tax savings calculator, small business relief assessment UAE, QFZP 0% corporate tax",
+      ogImage: "/api/og?title=UAE+Corporate+Tax+Savings+Assessment&author=Glen+Dias&tag=0%25+Relief+Check",
+    });
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
 

@@ -19,6 +19,7 @@ import {
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
 import StandalonePricingCards from "../components/StandalonePricingCards";
+import { applyPageSEO } from "../lib/seo";
 
 interface PricingPageProps {
   onNavigate: (path: string) => void;
@@ -37,25 +38,15 @@ export const PricingPage: React.FC<PricingPageProps> = ({
   const [pricingPath, setPricingPath] = useState<"prospective" | "retrospective">("prospective");
 
   useEffect(() => {
-    const title = "Corporate Tax & Accounting Packages Dubai | From AED 400/mo | Dias UAE";
-    const desc = "Transparent Corporate Tax and accounting packages in Dubai & UAE. Fixed-fee monthly bookkeeping, VAT filing, and 9% Corporate Tax returns with zero hidden fees.";
-    document.title = title;
-
-    const upsertMeta = (attr: "name" | "property", key: string, content: string) => {
-      let el = document.querySelector(`meta[${attr}="${key}"]`);
-      if (!el) {
-        el = document.createElement("meta");
-        el.setAttribute(attr, key);
-        document.head.appendChild(el);
-      }
-      el.setAttribute("content", content);
-    };
-
-    upsertMeta("name", "title", title);
-    upsertMeta("name", "description", desc);
-    upsertMeta("name", "keywords", "Corporate Tax, accounting packages dubai, monthly accounting package dubai, fixed fee bookkeeping uae, corporate tax return fee, corporate tax consultants in difc, tax services in dubai, difc tax compliance");
-    upsertMeta("property", "og:title", title);
-    upsertMeta("property", "og:description", desc);
+    applyPageSEO({
+      title: "Fixed-Fee Accounting & Tax Packages Dubai | From AED 400/mo",
+      description:
+        "Transparent fixed-fee accounting, bookkeeping & tax advisory packages in Dubai & Sharjah from AED 400/mo. Monthly IFRS books, VAT filing & Corporate Tax.",
+      canonicalPath: "/pricing",
+      keywords:
+        "Corporate Tax, accounting packages dubai, monthly accounting package dubai, fixed fee bookkeeping uae, corporate tax return fee, corporate tax consultants in difc, tax services in dubai, difc tax compliance",
+      ogImage: "/api/og?title=Fixed-Fee+Accounting+%26+Tax+Packages+Dubai&author=Dias+Tax+Team&tag=From+AED+400%2Fmo",
+    });
 
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);

@@ -20,6 +20,7 @@ import PageFooter from "../components/PageFooter";
 import { submitToGoogleSheetsDirectly } from "../lib/sheetsService";
 import { useLanguage } from "../i18n/LanguageContext";
 import { validateEmailField, validatePhoneField } from "../lib/validation";
+import { applyPageSEO } from "../lib/seo";
 
 interface FtaDeadlinesPageProps {
   onNavigate: (path: string) => void;
@@ -52,7 +53,15 @@ export const FtaDeadlinesPage: React.FC<FtaDeadlinesPageProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    document.title = "UAE Corporate Tax & VAT Deadlines Planner 2026 | Dias UAE";
+    applyPageSEO({
+      title: "UAE Corporate Tax & VAT Deadlines Planner 2026 | Dias UAE",
+      description:
+        "Calculate exact FTA EmaraTax filing deadlines for UAE Corporate Tax (9-month rule) and VAT 201 returns to avoid AED 10,000 administrative fines.",
+      canonicalPath: "/fta-deadlines",
+      keywords:
+        "UAE corporate tax deadline 2026, FTA EmaraTax due dates, VAT filing calendar UAE, Cabinet Decision 75 penalty shield",
+      ogImage: "/api/og?title=UAE+Corporate+Tax+%26+VAT+Deadlines+2026&author=Glen+Dias&tag=Penalty+Prevention",
+    });
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
 

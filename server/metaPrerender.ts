@@ -234,11 +234,14 @@ export function isSocialOrSearchCrawler(userAgent: string = ""): boolean {
  * Resolves metadata parameters for a given request path / query
  */
 export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae"): MetaOverride {
-  const urlObj = new URL(reqUrl, `https://${host}`);
-  const pathname = urlObj.pathname.toLowerCase();
+  const safeHost = host && !host.includes("localhost") && !host.includes("127.0.0.1") ? host : "diasuae.ae";
+  const urlObj = new URL(reqUrl, `https://${safeHost}`);
+  const rawPathname = urlObj.pathname.toLowerCase();
+  const pathname = rawPathname.length > 1 ? rawPathname.replace(/\/+$/, "") : rawPathname;
   const searchParams = urlObj.searchParams;
   const isArabic = searchParams.get("lang") === "ar";
-  const baseUrl = `https://${host}`;
+  // Enforce strict non-www canonical domain (https://diasuae.ae) across every page
+  const baseUrl = "https://diasuae.ae";
 
   // 1. Direct Blog post match (/blog/:id, /blogs/:id, or ?blog=:id)
   let blogId = "";
@@ -320,13 +323,56 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     };
   }
 
-  // 3. Calculator route
-  if (pathname === "/calculator" || searchParams.get("section") === "calculator") {
+  // 3. UAE Tax Planner & Calculator routes
+  if (
+    pathname === "/uae-tax-planner" ||
+    pathname === "/tax-planner" ||
+    pathname === "/tax-calculator" ||
+    pathname === "/calculator" ||
+    searchParams.get("section") === "calculator"
+  ) {
     return {
-      title: "UAE Corporate Tax Calculator 2026 | Free 9% Tax Tool | Dias Accounting",
-      description: "Calculate your UAE Corporate Tax liability instantly. Accurately estimate 9% tax above AED 375,000 threshold and verify Small Business Relief (AED 3M) eligibility.",
-      url: `${baseUrl}/#calculator`,
-      ogImage: `${baseUrl}/api/og?title=UAE+Corporate+Tax+Calculator+2026+(Free+9%25+Tool)&author=Glen+Dias&tag=Free+Interactive+Tool`,
+      title: "UAE Corporate Tax (9%) & VAT Calculator 2026 | Dias UAE",
+      description: "Free 2026 UAE Tax Calculator & Planner. Estimate 9% Corporate Tax, 0% Small Business Relief (AED 3M), QFZP eligibility & 5% VAT liability in seconds.",
+      keywords: "UAE Corporate Tax Calculator 2026, UAE Tax Planner, 9% Corporate Tax Calculator, 0% Small Business Relief AED 3M, QFZP eligibility, 5% VAT Calculator Dubai",
+      url: `${baseUrl}/uae-tax-planner`,
+      ogImage: `${baseUrl}/api/og?title=UAE+Corporate+Tax+(9%25)+%26+VAT+Calculator+2026&author=Glen+Dias&tag=Free+Tax+Planner`,
+      ogType: "website",
+      isArabic,
+    };
+  }
+
+  if (pathname === "/corporate-tax-calculator" || pathname === "/tax-savings" || pathname === "/tax-savings-assessment") {
+    return {
+      title: "UAE Corporate Tax Savings & 0% Relief Assessment | Dias UAE",
+      description: "Estimate your 2026 UAE Corporate Tax liability (9%), test 0% Small Business Relief (AED 3M), and verify Qualifying Free Zone Person eligibility.",
+      keywords: "corporate tax calculator UAE, 9% tax savings calculator, small business relief assessment UAE, QFZP 0% corporate tax",
+      url: `${baseUrl}/corporate-tax-calculator`,
+      ogImage: `${baseUrl}/api/og?title=UAE+Corporate+Tax+Savings+Assessment&author=Glen+Dias&tag=0%25+Relief+Check`,
+      ogType: "website",
+      isArabic,
+    };
+  }
+
+  if (pathname === "/uae-vat-calculator" || pathname === "/vat-calculator" || pathname === "/vat-planner") {
+    return {
+      title: "UAE VAT Calculator & 5% Compliance Planner 2026 | Dias UAE",
+      description: "Calculate net UAE 5% VAT payable or refundable for your quarterly FTA Form 201 return. Check AED 375,000 mandatory VAT registration thresholds.",
+      keywords: "UAE VAT calculator, 5% VAT planner Dubai, FTA Form 201 calculator, VAT registration threshold UAE AED 375k",
+      url: `${baseUrl}/uae-vat-calculator`,
+      ogImage: `${baseUrl}/api/og?title=UAE+5%25+VAT+Calculator+%26+Compliance+Planner&author=Glen+Dias&tag=FTA+Form+201`,
+      ogType: "website",
+      isArabic,
+    };
+  }
+
+  if (pathname === "/fta-deadlines" || pathname === "/tax-deadlines" || pathname === "/deadline-calculator") {
+    return {
+      title: "UAE Corporate Tax & VAT Deadlines Planner 2026 | Dias UAE",
+      description: "Calculate exact FTA EmaraTax filing deadlines for UAE Corporate Tax (9-month rule) and VAT 201 returns to avoid AED 10,000 administrative fines.",
+      keywords: "UAE corporate tax deadline 2026, FTA EmaraTax due dates, VAT filing calendar UAE, Cabinet Decision 75 penalty shield",
+      url: `${baseUrl}/fta-deadlines`,
+      ogImage: `${baseUrl}/api/og?title=UAE+Corporate+Tax+%26+VAT+Deadlines+2026&author=Glen+Dias&tag=Penalty+Prevention`,
       ogType: "website",
       isArabic,
     };
@@ -335,11 +381,11 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
   // 4. Pricing route
   if (pathname === "/pricing" || searchParams.get("section") === "pricing") {
     return {
-      title: "Corporate Tax & Accounting Packages Dubai | From AED 400/mo | Dias UAE",
-      description: "Transparent Corporate Tax and accounting packages in Dubai & UAE. Fixed-fee monthly bookkeeping, VAT filing, and 9% Corporate Tax returns with zero hidden fees.",
+      title: "Fixed-Fee Accounting & Tax Packages Dubai | From AED 400/mo",
+      description: "Transparent fixed-fee accounting, bookkeeping & tax advisory packages in Dubai & Sharjah from AED 400/mo. Monthly IFRS books, VAT filing & Corporate Tax.",
       keywords: "Corporate Tax, accounting packages dubai, monthly accounting package dubai, fixed fee bookkeeping uae, corporate tax return fee, corporate tax consultants in difc, accounting solutions in uae",
       url: `${baseUrl}/pricing`,
-      ogImage: `${baseUrl}/api/og?title=Fixed-Fee+UAE+Accounting+%26+Corporate+Tax+Packages&author=Dias+Tax+Team&tag=From+AED+400%2Fmo`,
+      ogImage: `${baseUrl}/api/og?title=Fixed-Fee+Accounting+%26+Tax+Packages+Dubai&author=Dias+Tax+Team&tag=From+AED+400%2Fmo`,
       ogType: "website",
       isArabic,
     };
@@ -480,13 +526,25 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     };
   }
 
-  if (pathname === "/why-choose-us" || pathname === "/about") {
+  if (pathname === "/why-choose-us") {
     return {
       title: "Why Dias Accounting | FTA Certified Tax Agency Dubai | Dias UAE",
       description: "Discover the 6 foundational pillars that make Dias Accounting the trusted choice for 500+ UAE enterprises: FTA certified agents, unlimited transactions, and direct client WhatsApp channels.",
       keywords: "why dias accounting, fta registered tax agency, certified tax agent glen dias, corporate tax advisory firm dubai",
       url: `${baseUrl}/why-choose-us`,
       ogImage: `${baseUrl}/api/og?title=Why+Dias+Accounting+%26+Tax+Consulting&author=Glen+Dias&tag=6+Core+Pillars`,
+      ogType: "website",
+      isArabic,
+    };
+  }
+
+  if (pathname === "/about") {
+    return {
+      title: "About Dias Accounting | Chartered Tax Consultants in Dubai & UAE",
+      description: "Led by Senior Tax Advisor Glen Dias, Dias Accounting delivers high-precision Corporate Tax advisory, VAT compliance, and IFRS accounting services across Dubai, Sharjah & UAE.",
+      keywords: "Glen Dias tax advisor, Dias Accounting LLC, certified tax consultant Dubai, tax consulting services in uae, tax advisory services in dubai",
+      url: `${baseUrl}/about`,
+      ogImage: `${baseUrl}/api/og?title=About+Glen+Dias+%26+Certified+Tax+Advisors+Dubai&author=Glen+Dias&tag=FTA+Registered+Agent`,
       ogType: "website",
       isArabic,
     };
@@ -540,19 +598,43 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     };
   }
 
+  if (pathname === "/privacy-policy" || pathname === "/privacy") {
+    return {
+      title: "Privacy Policy & UAE Data Protection | Dias Accounting",
+      description: "Privacy Policy and UAE Federal Decree-Law No. 45 Personal Data Protection commitments for Dias Accounting & Tax Consulting LLC.",
+      keywords: "Dias Accounting privacy policy, UAE PDPL compliance, client confidentiality tax advisory",
+      url: `${baseUrl}/privacy-policy`,
+      ogImage: `${baseUrl}/api/og?title=Privacy+Policy+%26+UAE+Data+Protection&author=Dias+Accounting&tag=Client+Confidentiality`,
+      ogType: "website",
+      isArabic,
+    };
+  }
+
+  if (pathname === "/terms" || pathname === "/terms-of-service" || pathname === "/terms-and-conditions") {
+    return {
+      title: "Terms of Service & Engagement | Dias Accounting UAE",
+      description: "Terms of Service, statutory advisory engagement scope, and compliance policies for Dias Accounting & Tax Consulting LLC in Dubai & Sharjah.",
+      keywords: "Dias Accounting terms of service, UAE tax engagement terms, FTA agency compliance",
+      url: `${baseUrl}/terms`,
+      ogImage: `${baseUrl}/api/og?title=Terms+of+Service+%26+Engagement&author=Dias+Accounting&tag=UAE+Tax+Agency`,
+      ogType: "website",
+      isArabic,
+    };
+  }
+
   // 6. Default Fallback (Optimized for Homepage)
   return {
     title: isArabic
       ? "استشارات ضريبة الشركات والمحاسبة في دبي | دياس للمحاسبة الإمارات"
-      : "Corporate Tax & Tax Services in Dubai | FTA Accounting Firm | Dias UAE",
+      : "UAE Corporate Tax & Accounting Firm Dubai | Dias Accounting",
     description: isArabic
       ? "استشارات ضريبة الشركات، والامتثال لضريبة القيمة المضافة، والخدمات المحاسبية في دبي والإمارات. باقات محاسبية واضحة تبدأ من 400 درهم/شهرياً."
-      : "Corporate Tax, DIFC tax compliance, VAT returns, and accounting packages in Dubai & UAE. Certified FTA tax agency providing 9% filing & 0% QFZP advisory from AED 400/mo.",
+      : "FTA-registered tax consultants & chartered accountants in Dubai & Sharjah. Fixed-fee IFRS bookkeeping, 9% Corporate Tax, 5% VAT & DIFC/DTEC audit services.",
     keywords: isArabic
       ? "ضريبة الشركات, خدمات المحاسبة والضرائب في دبي, شركات الضرائب في الإمارات, خدمات إعداد وتخطيط الضرائب, أفضل مكتب محاسبة في الإمارات, تدقيق مخاطر الغرامات 60 ثانية, تمثيل دفاعي الهيئة الاتحادية للضرائب, خيارات إعفاء ضريبة الشركات 0%, تسهيلات الأعمال الصغيرة 3 مليون, أفضل شركات المحاسبة في دبي, مستشار ضريبي معتمد, ضريبة الشركات دبي 9%, تسجيل ضريبة القيمة المضافة"
       : "Corporate Tax, Tax Services in Dubai, DIFC Tax Compliance, Corporate Tax Consultants in DIFC, tax and accounting services, tax accounting services, accounting services uae, tax firms in uae, tax and financial planning services, tax preparation and planning services, what tax advisory and accounting packages are available in dubai, accounting consultancy in dubai, taxation services dubai, accounting advisory services uae, accounting packages dubai, auditing firms in sharjah, Chartered Accountants in Dubai",
     url: `${baseUrl}/`,
-    ogImage: `${baseUrl}/api/og?title=Corporate+Tax+%26+Tax+Services+in+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Dias+Accounting&readTime=FTA+Certified`,
+    ogImage: `${baseUrl}/api/og?title=UAE+Corporate+Tax+%26+Accounting+Firm+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Dias+Accounting&readTime=FTA+Certified`,
     ogType: "business.business",
     isArabic,
   };
@@ -589,8 +671,10 @@ export function injectMetaIntoHtml(html: string, meta: MetaOverride): string {
   }
 
   if (meta.url) {
-    // Replace canonical
+    // Replace canonical & hreflang
     modified = modified.replace(/<link rel="canonical" href="[\s\S]*?" \/>/i, `<link rel="canonical" href="${meta.url}" />`);
+    modified = modified.replace(/<link rel="alternate" hreflang="en" href="[\s\S]*?" \/>/i, `<link rel="alternate" hreflang="en" href="${meta.url}" />`);
+    modified = modified.replace(/<link rel="alternate" hreflang="x-default" href="[\s\S]*?" \/>/i, `<link rel="alternate" hreflang="x-default" href="${meta.url}" />`);
     // Replace og:url
     modified = modified.replace(/<meta property="og:url" content="[\s\S]*?" \/>/i, `<meta property="og:url" content="${meta.url}" />`);
     // Replace twitter:url

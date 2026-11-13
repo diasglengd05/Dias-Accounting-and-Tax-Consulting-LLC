@@ -22,6 +22,7 @@ import PageFooter from "../components/PageFooter";
 import { submitToGoogleSheetsDirectly } from "../lib/sheetsService";
 import { useLanguage } from "../i18n/LanguageContext";
 import { validateEmailField, validatePhoneField } from "../lib/validation";
+import { applyPageSEO } from "../lib/seo";
 
 interface VatPlannerPageProps {
   onNavigate: (path: string) => void;
@@ -55,7 +56,15 @@ export const VatPlannerPage: React.FC<VatPlannerPageProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    document.title = "UAE VAT Calculator & 5% Compliance Planner 2026 | Dias UAE";
+    applyPageSEO({
+      title: "UAE VAT Calculator & 5% Compliance Planner 2026 | Dias UAE",
+      description:
+        "Calculate net UAE 5% VAT payable or refundable for your quarterly FTA Form 201 return. Check AED 375,000 mandatory VAT registration thresholds.",
+      canonicalPath: "/uae-vat-calculator",
+      keywords:
+        "UAE VAT calculator, 5% VAT planner Dubai, FTA Form 201 calculator, VAT registration threshold UAE AED 375k",
+      ogImage: "/api/og?title=UAE+5%25+VAT+Calculator+%26+Compliance+Planner&author=Glen+Dias&tag=FTA+Form+201",
+    });
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
 

@@ -246,8 +246,24 @@ const SecureStorageService = {
 
 const app = express();
 
+// Trust reverse proxy headers (Cloud Run / Firebase App Hosting / Nginx)
+app.set("trust proxy", true);
+
 // Security: Disable X-Powered-By header to prevent fingerprinting
 app.disable("x-powered-by");
+
+// Canonical Domain Enforcement: 301 Permanent Redirect from www.diasuae.ae/* -> https://diasuae.ae/*
+app.use((req, res, next) => {
+  const forwardedHost = (req.headers["x-forwarded-host"] as string) || "";
+  const rawHost = (forwardedHost.split(",")[0] || req.headers.host || "").trim().toLowerCase();
+  const hostname = rawHost.split(":")[0];
+
+  if (hostname === "www.diasuae.ae") {
+    const targetUrl = `https://diasuae.ae${req.originalUrl || "/"}`;
+    return res.redirect(301, targetUrl);
+  }
+  return next();
+});
 
 // Enterprise Security Headers Middleware (Addresses CSP, XSS, Clickjacking, MIME sniffing, and framing)
 app.use((req, res, next) => {
@@ -2016,20 +2032,35 @@ async function bootstrap() {
       appType: "spa",
     });
 
-    // Crawler interception middleware in dev mode (for social crawlers/search bots)
+    // Crawler & HTML navigation SEO meta injection middleware in dev mode
     app.use(async (req, res, next) => {
       const userAgent = req.headers["user-agent"] || "";
       const isCrawler = isSocialOrSearchCrawler(userAgent);
+      const acceptHeader = req.headers.accept || "";
+      const reqPath = (req.path || "/").toLowerCase();
+      const isAssetOrApi =
+        reqPath.startsWith("/api/") ||
+        reqPath.startsWith("/src/") ||
+        reqPath.startsWith("/@") ||
+        reqPath.startsWith("/node_modules/") ||
+        reqPath.startsWith("/assets/") ||
+        /\.(js|ts|tsx|css|map|png|jpg|jpeg|svg|webp|ico|json|xml|txt|pdf|mp4|woff2?)$/i.test(reqPath);
 
-      if (isCrawler) {
+      const isHtmlPageNav =
+        req.method === "GET" &&
+        !isAssetOrApi &&
+        !reqPath.endsWith(".html") &&
+        (isCrawler || acceptHeader.includes("text/html") || acceptHeader === "*/*");
+
+      if (isHtmlPageNav) {
         try {
           const indexPath = path.join(process.cwd(), "index.html");
           let template = fs.readFileSync(indexPath, "utf-8");
           template = await vite.transformIndexHtml(req.url, template);
-          
+
           const meta = resolveMetaForRequest(req.url, req.headers.host || "diasuae.ae");
           const finalHtml = injectMetaIntoHtml(template, meta);
-          
+
           res.setHeader("Content-Type", "text/html; charset=utf-8");
           return res.status(200).send(finalHtml);
         } catch (e) {

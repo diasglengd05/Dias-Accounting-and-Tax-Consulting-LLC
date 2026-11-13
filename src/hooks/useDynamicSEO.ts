@@ -15,11 +15,11 @@ export interface SEOConfig {
 // Master English SEO Metadata Dictionary
 export const SECTION_SEO_MAP_EN: Record<string, SEOConfig> = {
   home: {
-    title: "Corporate Tax & Tax Services in Dubai | FTA Accounting Firm | Dias UAE",
-    description: "Corporate Tax, DIFC tax compliance, VAT returns, and accounting packages in Dubai & UAE. Certified FTA tax agency providing 9% filing & 0% QFZP advisory from AED 400/mo.",
-    keywords: "Corporate Tax, Tax Services in Dubai, DIFC Tax Compliance, Corporate Tax Consultants in DIFC, tax and accounting services, tax accounting services, accounting services uae, tax firms in uae, tax and financial planning services, accounting consultancy in dubai, tax preparation and planning services, taxation services dubai, taxation services in uae, tax consulting services in uae, accounting advisory services uae, accounting packages dubai, auditing firms in sharjah, pricing & tax solutions uae, dias accounting",
+    title: "UAE Corporate Tax & Accounting Firm Dubai | Dias Accounting",
+    description: "FTA-registered tax consultants & chartered accountants in Dubai & Sharjah. Fixed-fee IFRS bookkeeping, 9% Corporate Tax, 5% VAT & DIFC/DTEC audit services.",
+    keywords: "Corporate Tax, Tax Services in Dubai, DIFC Tax Compliance, Corporate Tax Consultants in DIFC, tax and accounting services, tax accounting services, accounting services uae, tax firms in uae, tax and financial planning services, accounting consultancy in dubai, tax preparation and planning services, taxation services dubai, taxation services in uae, tax consulting services in uae, accounting advisory services uae, accounting packages dubai, auditing firms in sharjah, pricing & tax solutions uae, accounting services in dtec, dias accounting",
     hash: "#home",
-    ogImage: "/api/og?title=Corporate+Tax+%26+Tax+Services+in+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Dias+Accounting&readTime=Top+Ranked",
+    ogImage: "/api/og?title=UAE+Corporate+Tax+%26+Accounting+Firm+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Dias+Accounting&readTime=Top+Ranked",
   },
   services: {
     title: "Corporate Tax, VAT & Accounting Services in Dubai | Dias UAE",
@@ -57,11 +57,11 @@ export const SECTION_SEO_MAP_EN: Record<string, SEOConfig> = {
     ogImage: "/api/og?title=About+Glen+Dias+%26+Certified+Tax+Advisors+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Zero+Penalty+Guarantee&readTime=15%2B+Yrs+Exp",
   },
   pricing: {
-    title: "Corporate Tax & Accounting Packages Dubai | From AED 400/mo | Dias UAE",
-    description: "Transparent Corporate Tax and accounting packages in Dubai & UAE. Fixed-fee monthly bookkeeping, VAT filing, and 9% Corporate Tax returns with zero hidden fees.",
+    title: "Fixed-Fee Accounting & Tax Packages Dubai | From AED 400/mo",
+    description: "Transparent fixed-fee accounting, bookkeeping & tax advisory packages in Dubai & Sharjah from AED 400/mo. Monthly IFRS books, VAT filing & Corporate Tax.",
     keywords: "Corporate Tax, accounting packages dubai, monthly accounting package dubai, fixed fee bookkeeping uae, corporate tax return fee, corporate tax consultants in difc, accounting solutions in uae",
     hash: "#pricing",
-    ogImage: "/api/og?title=Fixed-Fee+UAE+Accounting+%26+Corporate+Tax+Packages&author=Dias+Tax+Team&role=Transparent+Fee+Schedule&tag=From+AED+400&readTime=Zero+Hidden+Fees",
+    ogImage: "/api/og?title=Fixed-Fee+Accounting+%26+Tax+Packages+Dubai&author=Dias+Tax+Team&role=Transparent+Fee+Schedule&tag=From+AED+400&readTime=Zero+Hidden+Fees",
   },
   jurisdictions: {
     title: "Dubai & UAE Free Zone Tax Compliance | SHAMS, DMCC, IFZA, DIFC | Dias UAE",
@@ -78,11 +78,11 @@ export const SECTION_SEO_MAP_EN: Record<string, SEOConfig> = {
     ogImage: "/api/og?title=Proven+UAE+Tax+Savings+%26+Client+Case+Studies&author=Dias+Tax+Team&role=E-E-A-T+Verified&tag=AED+180k%2B+Saved&readTime=Case+Studies",
   },
   calculator: {
-    title: "UAE Corporate Tax Calculator 2026 | 9% Tax & 0% Relief Estimator | Dias UAE",
-    description: "Calculate your UAE Corporate Tax liability instantly. Estimate 9% corporate tax above AED 375,000 and verify 0% Small Business Relief (AED 3M) or Free Zone QFZP eligibility.",
-    keywords: "UAE corporate tax calculator, 9 percent tax calculator Dubai, small business relief calculator UAE, calculate corporate tax UAE 2026",
+    title: "UAE Corporate Tax (9%) & VAT Calculator 2026 | Dias UAE",
+    description: "Free 2026 UAE Tax Calculator & Planner. Estimate 9% Corporate Tax, 0% Small Business Relief (AED 3M), QFZP eligibility & 5% VAT liability in seconds.",
+    keywords: "UAE Corporate Tax Calculator 2026, UAE Tax Planner, 9% Corporate Tax Calculator, 0% Small Business Relief AED 3M, QFZP eligibility, 5% VAT Calculator Dubai",
     hash: "#calculator",
-    ogImage: "/api/og?title=UAE+Corporate+Tax+Calculator+2026+(Free+9%25+Tool)&author=Glen+Dias&role=FTA+Tax+Agent&tag=Free+Interactive+Tool&readTime=Instant+Estimate",
+    ogImage: "/api/og?title=UAE+Corporate+Tax+(9%25)+%26+VAT+Calculator+2026&author=Glen+Dias&role=FTA+Tax+Agent&tag=Free+Interactive+Tool&readTime=Instant+Estimate",
   },
   testimonials: {
     title: "Verified Client Reviews (5.0★ Google Rating) | Dias Tax Consulting UAE",
@@ -201,6 +201,7 @@ interface UseDynamicSEOMetadataProps {
   selectedBlog?: BlogPost | null;
   language?: Language;
   updateUrlHash?: boolean;
+  enabled?: boolean;
 }
 
 /**
@@ -231,6 +232,12 @@ function setCanonical(url: string) {
     document.head.appendChild(link);
   }
   link.setAttribute("href", url);
+
+  const hreflangEn = document.querySelector('link[rel="alternate"][hreflang="en"]') as HTMLLinkElement | null;
+  if (hreflangEn) hreflangEn.setAttribute("href", url);
+
+  const hreflangDefault = document.querySelector('link[rel="alternate"][hreflang="x-default"]') as HTMLLinkElement | null;
+  if (hreflangDefault) hreflangDefault.setAttribute("href", url);
 }
 
 /**
@@ -244,9 +251,10 @@ export function useDynamicSEO({
   selectedBlog = null,
   language = "en",
   updateUrlHash = true,
+  enabled = true,
 }: UseDynamicSEOMetadataProps) {
   useEffect(() => {
-    if (typeof document === "undefined") return;
+    if (typeof document === "undefined" || !enabled) return;
 
     try {
       const baseUrl = "https://diasuae.ae";
@@ -308,14 +316,15 @@ export function useDynamicSEO({
         };
       }
     }
-    // Case 3: Active Section on the landing page
+    // Case 3: Homepage root view (preserve authoritative Homepage title/description even while scrolling)
     else {
-      seoConfig = sectionMap[activeSection] || sectionMap.home;
+      seoConfig = sectionMap.home;
     }
 
-    const fullUrl = seoConfig.hash === "#home" ? `${baseUrl}/` : `${baseUrl}/${seoConfig.hash}`;
+    const sectionHashConfig = sectionMap[activeSection] || sectionMap.home;
+    const fullUrl = sectionHashConfig.hash === "#home" ? `${baseUrl}/` : `${baseUrl}/${sectionHashConfig.hash}`;
     const cleanPath = typeof window !== "undefined" && window.location.pathname && window.location.pathname !== "/"
-      ? window.location.pathname
+      ? window.location.pathname.replace(/\/+$/, "")
       : "/";
     const canonicalUrl = `${baseUrl}${cleanPath}`;
 
@@ -489,7 +498,8 @@ export function useDynamicSEO({
     // 8. Non-intrusive URL Hash synchronization
     if (updateUrlHash && typeof window !== "undefined" && window.history && window.history.replaceState) {
       const currentHash = window.location.hash;
-      const targetHash = seoConfig.hash === "#home" ? "" : seoConfig.hash;
+      const hashSource = selectedService || selectedBlog ? seoConfig.hash : sectionHashConfig.hash;
+      const targetHash = hashSource === "#home" ? "" : hashSource;
       
       if (currentHash !== targetHash && !(currentHash === "" && targetHash === "")) {
         const newUrl = targetHash ? `${window.location.pathname}${targetHash}` : window.location.pathname;
@@ -499,7 +509,7 @@ export function useDynamicSEO({
   } catch (err) {
     console.warn("useDynamicSEO safe bypass:", err);
   }
-  }, [activeSection, selectedService, selectedBlog, language, updateUrlHash]);
+  }, [activeSection, selectedService, selectedBlog, language, updateUrlHash, enabled]);
 }
 
 export default useDynamicSEO;

@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Shield, Lock, ChevronRight, Mail, MapPin, CheckCircle2 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
+import { applyPageSEO } from "../lib/seo";
 
 interface PrivacyPolicyPageProps {
   onNavigate: (path: string) => void;
@@ -17,7 +18,15 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({
   onOpenGooglePreferred,
 }) => {
   useEffect(() => {
-    document.title = "Privacy Policy & UAE Data Protection | Dias Accounting";
+    applyPageSEO({
+      title: "Privacy Policy & UAE Data Protection | Dias Accounting",
+      description:
+        "Privacy Policy and UAE Federal Decree-Law No. 45 Personal Data Protection commitments for Dias Accounting & Tax Consulting LLC.",
+      canonicalPath: "/privacy-policy",
+      keywords:
+        "Dias Accounting privacy policy, UAE PDPL compliance, client confidentiality tax advisory",
+      ogImage: "/api/og?title=Privacy+Policy+%26+UAE+Data+Protection&author=Dias+Accounting&tag=Client+Confidentiality",
+    });
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
 

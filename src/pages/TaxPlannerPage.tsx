@@ -30,6 +30,7 @@ import {
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
 import { useLanguage } from "../i18n/LanguageContext";
+import { applyPageSEO } from "../lib/seo";
 
 interface TaxPlannerPageProps {
   onNavigate: (path: string) => void;
@@ -87,7 +88,15 @@ export const TaxPlannerPage: React.FC<TaxPlannerPageProps> = ({
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   useEffect(() => {
-    document.title = "UAE Tax Planner & Corporate Tax Calculator 2026 | Dias UAE";
+    applyPageSEO({
+      title: "UAE Corporate Tax (9%) & VAT Calculator 2026 | Dias UAE",
+      description:
+        "Free 2026 UAE Tax Calculator & Planner. Estimate 9% Corporate Tax, 0% Small Business Relief (AED 3M), QFZP eligibility & 5% VAT liability in seconds.",
+      canonicalPath: "/uae-tax-planner",
+      keywords:
+        "UAE Corporate Tax Calculator 2026, UAE Tax Planner, 9% Corporate Tax Calculator, 0% Small Business Relief AED 3M, QFZP eligibility, 5% VAT Calculator Dubai",
+      ogImage: "/api/og?title=UAE+Corporate+Tax+(9%25)+%26+VAT+Calculator+2026&author=Glen+Dias&tag=Free+Tax+Planner",
+    });
     window.scrollTo({ top: 0, behavior: "instant" });
     if (onToolStarted) onToolStarted();
   }, [onToolStarted]);

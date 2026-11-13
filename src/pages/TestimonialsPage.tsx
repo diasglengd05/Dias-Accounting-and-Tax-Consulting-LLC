@@ -10,6 +10,7 @@ import {
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
 import { GOOGLE_BUSINESS_URL } from "../data/staticData";
+import { applyPageSEO } from "../lib/seo";
 
 interface TestimonialsPageProps {
   onNavigate: (path: string) => void;
@@ -25,7 +26,15 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({
   onOpenGooglePreferred,
 }) => {
   useEffect(() => {
-    document.title = "Client Testimonials & Case Studies | Dias Accounting Dubai & Sharjah";
+    applyPageSEO({
+      title: "Client Reviews & Verified 5.0★ Feedback | Dias UAE",
+      description:
+        "Verified 5.0★ Google Reviews and measurable case study outcomes from 500+ UAE mainland LLCs and free zone enterprises managed by Dias Accounting.",
+      canonicalPath: "/testimonials",
+      keywords:
+        "dias accounting reviews, google reviews tax consultant dubai, fta tax agent testimonials uae",
+      ogImage: "/api/og?title=Client+Reviews+%26+5.0+Star+Feedback&author=Dias+Accounting&tag=500%2B+Clients",
+    });
     window.scrollTo({ top: 0, behavior: "instant" });
   }, []);
 

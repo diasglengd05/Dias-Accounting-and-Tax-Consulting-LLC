@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
+import { applyPageSEO } from "../lib/seo";
 
 interface ContactPageProps {
   onNavigate: (path: string) => void;
@@ -40,7 +41,15 @@ export const ContactPage: React.FC<ContactPageProps> = ({
   const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
-    document.title = "Contact Us & Book Free Consultation | Dias Accounting Dubai & Sharjah";
+    applyPageSEO({
+      title: "Book Tax Consultation & Office Desk | Dias UAE",
+      description:
+        "Schedule a confidential consultation with Glen Dias, FTA Registered Tax Agent. Office location in SHAMS Business Center & Dubai with direct WhatsApp advisory.",
+      canonicalPath: "/contact",
+      keywords:
+        "contact tax consultant dubai, book tax consultation uae, fta tax agent phone number, dias accounting office",
+      ogImage: "/api/og?title=Schedule+Confidential+Tax+Consultation&author=Glen+Dias&tag=FTA+Registered+Agent",
+    });
     window.scrollTo({ top: 0, behavior: "instant" });
 
     // Preselect service if passed via URL or session
