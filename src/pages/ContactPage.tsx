@@ -209,7 +209,10 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                       Dias Accounting &amp; Tax Consulting LLC
                     </p>
                     <p>
-                      Business Center, Sharjah Media City (SHAMS), Al Messaned, Sharjah (P.O. Box 515000), UAE
+                      Sharjah Media City (SHAMS), Al Messaned, Sharjah, United Arab Emirates
+                    </p>
+                    <p className="text-[11px] text-slate-500">
+                      P.O. Box 515000 · Serving Dubai, Sharjah &amp; UAE clients remotely &amp; on-site
                     </p>
                   </div>
                 </div>
@@ -249,7 +252,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                     Sharjah Media City (SHAMS)
                   </span>
                   <span className="text-xs text-slate-400 mt-1 max-w-xs">
-                    Business Center, Sharjah Media City (SHAMS), serving UAE Mainland and Free Zone clients.
+                    Sharjah Media City (SHAMS), Al Messaned, Sharjah, United Arab Emirates — serving Dubai, Sharjah &amp; UAE clients remotely and on-site.
                   </span>
                   <a
                     href="https://maps.google.com/?q=Sharjah+Media+City+SHAMS"

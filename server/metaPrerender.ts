@@ -479,7 +479,15 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
           telephone: "+971-52-922-6958",
           email: "info@diasuae.ae",
           priceRange: "AED 400 - AED 4,500",
-          areaServed: ["DIFC Dubai", "DTEC Dubai Silicon Oasis", "Dubai", "United Arab Emirates"],
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "Sharjah Media City (SHAMS), Al Messaned",
+            addressLocality: "Sharjah",
+            addressRegion: "Sharjah",
+            postOfficeBoxNumber: "P.O. Box 515000",
+            addressCountry: "AE",
+          },
+          areaServed: ["Dubai", "Sharjah", "United Arab Emirates"],
         },
         {
           "@type": "BreadcrumbList",
@@ -593,7 +601,15 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
           telephone: "+971-52-922-6958",
           email: "info@diasuae.ae",
           priceRange: "AED 400 - AED 4,500",
-          areaServed: ["DIFC Dubai", "DTEC Dubai Silicon Oasis", "Dubai", "United Arab Emirates"],
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "Sharjah Media City (SHAMS), Al Messaned",
+            addressLocality: "Sharjah",
+            addressRegion: "Sharjah",
+            postOfficeBoxNumber: "P.O. Box 515000",
+            addressCountry: "AE",
+          },
+          areaServed: ["Dubai", "Sharjah", "United Arab Emirates"],
         },
         {
           "@type": "BreadcrumbList",

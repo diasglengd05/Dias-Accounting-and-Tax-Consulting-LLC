@@ -964,7 +964,7 @@ function MainApp() {
                   FTA Registered
                 </span>
                 <span className="text-xs text-slate-300 mt-1 block">
-                  Tax Agency (Dubai &amp; Sharjah)
+                  SHAMS HQ · Serving Dubai &amp; UAE
                 </span>
               </div>
               <div className="p-4 rounded-2xl bg-white/5 border border-white/10">
@@ -1430,13 +1430,13 @@ function MainApp() {
             <div className="lg:col-span-7 space-y-6">
               <div className="space-y-3">
                 <span className="inline-block text-[11px] font-mono font-bold uppercase tracking-[0.18em] text-gold-600">
-                  Sharjah &amp; Dubai Dual-Emirate Presence
+                  Sharjah Headquarters · Serving Dubai &amp; All UAE
                 </span>
                 <h2 className="font-display text-2xl sm:text-3xl font-bold text-navy-950 tracking-tight leading-tight">
                   Tax Consulting &amp; Accounting Services in Sharjah &amp; SHAMS Free Zone
                 </h2>
                 <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-                  Operating directly from <strong>Sharjah Media City (SHAMS), Al Messaned, Sharjah</strong> alongside our <strong>Dubai Business Bay &amp; DIFC / DTEC</strong> advisory desk, Dias Accounting &amp; Tax Consulting LLC serves SMEs, digital agencies, trading entities, and holding companies across <strong>SHAMS Free Zone, SAIF Zone, Hamriyah Free Zone, SRTIP, and Sharjah Mainland (SEDD)</strong>.
+                  Headquartered at <strong>Sharjah Media City (SHAMS), Al Messaned, Sharjah, United Arab Emirates</strong>, Dias Accounting &amp; Tax Consulting LLC serves Dubai, Sharjah, and UAE-wide clients both remotely and on-site across <strong>SHAMS Free Zone, SAIF Zone, Hamriyah Free Zone, SRTIP, Sharjah Mainland (SEDD), DIFC, DTEC, DMCC, and Dubai Mainland</strong>.
                 </p>
               </div>
 
@@ -1455,7 +1455,7 @@ function MainApp() {
 
                 <article className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
                   <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-gold-600">
-                    Sharjah Mainland (SEDD) &amp; Dubai
+                    Sharjah Mainland (SEDD) &amp; Dubai Coverage
                   </span>
                   <h3 className="font-display text-base font-bold text-navy-950">
                     Fixed-Fee IFRS Bookkeeping &amp; VAT 201 Returns
@@ -1501,15 +1501,15 @@ function MainApp() {
               </div>
             </div>
 
-            {/* Right Column: Official Sharjah SHAMS & Dubai Office Credentials */}
+            {/* Right Column: Official SHAMS Headquarters Credentials */}
             <aside className="lg:col-span-5 bg-navy-950 text-white rounded-3xl p-6 sm:p-8 border border-navy-800 shadow-xl space-y-5">
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
                 <div>
                   <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-gold-400 block">
-                    Licensed UAE Offices
+                    Registered UAE Headquarters
                   </span>
                   <h3 className="font-display text-lg font-bold text-white mt-0.5">
-                    Sharjah (SHAMS) &amp; Dubai Desks
+                    Sharjah Media City (SHAMS)
                   </h3>
                 </div>
                 <MapPin className="w-5 h-5 text-gold-400 shrink-0" />
@@ -1518,10 +1518,10 @@ function MainApp() {
               <div className="space-y-4 text-xs sm:text-sm">
                 <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1">
                   <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-gold-400 block">
-                    Head Office · Sharjah Free Zone
+                    Physical Headquarters Address
                   </span>
                   <p className="font-semibold text-white">
-                    Sharjah Media City (SHAMS), Al Messaned, Sharjah, UAE
+                    Sharjah Media City (SHAMS), Al Messaned, Sharjah, United Arab Emirates
                   </p>
                   <p className="text-slate-300 text-xs">
                     Trade Licence SHAMS 2646813.01 · P.O. Box 515000
@@ -1530,13 +1530,13 @@ function MainApp() {
 
                 <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1">
                   <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-gold-400 block">
-                    Dubai Client Advisory Desk
+                    Service Coverage · Remote &amp; On-Site
                   </span>
                   <p className="font-semibold text-white">
-                    Business Bay &amp; DIFC / DTEC Advisory Coverage, Dubai, UAE
+                    Dubai, Sharjah &amp; United Arab Emirates
                   </p>
                   <p className="text-slate-300 text-xs">
-                    Same-day consultations for DIFC, DTEC, DMCC, IFZA &amp; Dubai Mainland
+                    Dedicated remote &amp; on-site tax advisory for Dubai Mainland, DIFC, DTEC, DMCC, IFZA &amp; SHAMS entities
                   </p>
                 </div>
 
@@ -1562,7 +1562,7 @@ function MainApp() {
                   className="flex-1 inline-flex items-center justify-center gap-2 bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold text-xs py-3 px-4 rounded-xl transition-colors"
                 >
                   <Calendar className="w-4 h-4 shrink-0" />
-                  <span>Book Sharjah or Dubai Meeting</span>
+                  <span>Book a Free Consultation</span>
                 </a>
               </div>
             </aside>
@@ -1888,9 +1888,12 @@ function MainApp() {
                       <MapPin className="w-4 h-4" />
                     </div>
                     <div className="leading-tight">
-                      <span className="text-[10px] font-mono text-slate-400 font-bold uppercase tracking-wider block">UAE Office Addresses</span>
+                      <span className="text-[10px] font-mono text-slate-400 font-bold uppercase tracking-wider block">Office Address</span>
                       <p className="text-navy-950 font-semibold text-xs mt-1">
-                        Sharjah Media City (SHAMS), Al Messaned, Sharjah (P.O. Box 515000) &amp; Dubai Advisory Desk (Business Bay / DIFC)
+                        Sharjah Media City (SHAMS), Al Messaned, Sharjah, United Arab Emirates
+                      </p>
+                      <p className="text-slate-500 text-[11px] mt-0.5">
+                        P.O. Box 515000 · Serving Dubai &amp; UAE clients remotely &amp; on-site
                       </p>
                     </div>
                   </div>

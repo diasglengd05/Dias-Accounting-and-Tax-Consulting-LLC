@@ -117,13 +117,14 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
         "email": "info@diasuae.ae",
         "address": {
           "@type": "PostalAddress",
-          "streetAddress": "Business Center, Sharjah Media City (SHAMS)",
-          "addressLocality": "Dubai / Sharjah",
-          "addressRegion": "Dubai",
+          "streetAddress": "Sharjah Media City (SHAMS), Al Messaned",
+          "addressLocality": "Sharjah",
+          "addressRegion": "Sharjah",
           "addressCountry": "AE"
-        }
+        },
+        "areaServed": ["Dubai", "Sharjah", "United Arab Emirates"]
       },
-      "areaServed": ["Dubai", "Sharjah", "Abu Dhabi", "United Arab Emirates"],
+      "areaServed": ["Dubai", "Sharjah", "United Arab Emirates"],
       "url": canonicalUrl
     });
 

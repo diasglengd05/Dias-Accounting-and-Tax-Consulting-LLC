@@ -81,7 +81,14 @@ export const DividendsAuditPage: React.FC<PageProps> = ({ onNavigate }) => {
         "telephone": "+971-52-922-6958",
         "email": "info@diasuae.ae",
         "priceRange": "AED 1,500 - AED 6,000",
-        "areaServed": ["Dubai", "Sharjah", "Abu Dhabi", "United Arab Emirates"],
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "Sharjah Media City (SHAMS), Al Messaned",
+          "addressLocality": "Sharjah",
+          "addressRegion": "Sharjah",
+          "addressCountry": "AE"
+        },
+        "areaServed": ["Dubai", "Sharjah", "United Arab Emirates"],
         "knowsAbout": [
           "Dividends audit Dubai",
           "Dividends audit UAE",

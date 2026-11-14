@@ -1437,7 +1437,7 @@ DMCC and DIFC companies require strict annual statutory audits submitted to the 
 For digital agencies, SaaS companies, and tech startups based in DTEC, our **AED 400 Starter Plan** paired with Small Business Relief provides zero corporate tax liability up to AED 3 Million annual revenue with minimal compliance friction.
 
 ### 4. Sharjah Media City (SHAMS) & SAIF Zone
-Operating from our corporate office in SHAMS and Business Bay, we provide cost-effective company setup, 0-visa bookkeeping, and tax agency representations across all Sharjah jurisdictions.
+Operating from our headquarters in Sharjah Media City (SHAMS), Al Messaned, Sharjah, United Arab Emirates, we provide cost-effective company setup, 0-visa bookkeeping, and tax agency representations across all Sharjah and Dubai jurisdictions.
 
 ### 5. Abu Dhabi Global Market (ADGM) & KEZAD
 For investment vehicles, SPVs, and industrial manufacturers in Abu Dhabi, we handle complex multi-entity consolidation, economic substance reporting, and transfer pricing local file documentation.
@@ -1467,7 +1467,7 @@ Whether you require monthly bookkeeping starting at AED 400/month, an urgent his
 - **Managing Director:** Glen Dias (FTA Registered Tax Agent)
 - **Direct Phone & WhatsApp:** [+971 52 922 6958](https://wa.me/971529226958?text=Hello%20Dias%20Accounting,%20we%20are%20seeking%20Pricing%20and%20Tax%20Solutions%20for%20our%20UAE%20company)
 - **Email:** info@diasuae.com / glen@diasuae.com
-- **Locations:** Business Bay, Dubai & Sharjah Media City (SHAMS), UAE
+- **Headquarters:** Sharjah Media City (SHAMS), Al Messaned, Sharjah, United Arab Emirates (Serving Dubai & UAE)
 - **Official Portal:** [https://diasuae.ae/pricing](https://diasuae.ae/pricing)`,
     date: "October 30, 2026",
     readTime: "9 min read",
@@ -1607,7 +1607,7 @@ Dias Accounting delivers customized accounting frameworks tailored to niche sect
 
 ## 7. Serving Sharjah: Our Corporate Practice Base
 
-Dias Accounting is licensed directly in **Sharjah Media City (SHAMS License: 2646813.01)** with corporate offices in Sharjah and Business Bay, Dubai. As a leading **accounting firm in Sharjah**, we assist businesses across SAIF Zone, Sharjah Publishing City (SPC), and Sharjah Mainland with:
+Dias Accounting is licensed and headquartered in **Sharjah Media City (SHAMS License: 2646813.01), Al Messaned, Sharjah, United Arab Emirates**, serving clients across Dubai, SAIF Zone, Sharjah Publishing City (SPC), and Sharjah Mainland remotely and on-site with:
 - FTA Tax Agency representation
 - Fixed-fee monthly bookkeeping starting at **AED 400/month**
 - Fast-track corporate bank account opening with premier UAE digital and tier-1 banks
@@ -1622,7 +1622,7 @@ Whether you operate a technology venture in **DTEC Silicon Oasis**, a financial 
 - **Managing Director & Lead Tax Agent:** Glen Dias
 - **Direct Phone & WhatsApp:** [+971 52 922 6958](https://wa.me/971529226958?text=Hello%20Dias%20Accounting,%20we%20require%20accounting%20and%20tax%20advisory%20in%20Dubai)
 - **Corporate Desk Email:** info@diasuae.ae
-- **Main Office:** Business Center, SHAMS, Sharjah & Business Bay, Dubai, UAE
+- **Headquarters:** Sharjah Media City (SHAMS), Al Messaned, Sharjah, United Arab Emirates (Serving Dubai & All UAE)
 - **Client Rating:** 5.0 ★★★★★ Verified Google Reviews`,
     date: "October 30, 2026",
     readTime: "8 min read",
@@ -1871,7 +1871,7 @@ At **Dias Accounting & Tax Consulting LLC**, led by **Glen Dias** (*Managing Dir
 Don't wait until mandatory enforcement freezes your billing operations or disallows your input VAT deductions. Schedule a consultation with Glen Dias and our senior UAE tax technology team today.
 
 - **Direct WhatsApp Advisory:** [+971 52 922 6958](https://wa.me/971529226958?text=Hello%20Dias%20Accounting,%20we%20need%20assistance%20with%20UAE%20E-Invoicing%20Mandate%20and%20ASP%20integration)
-- **Corporate Office:** Sharjah Media City (SHAMS) & Business Bay, Dubai, United Arab Emirates
+- **Corporate Headquarters:** Sharjah Media City (SHAMS), Al Messaned, Sharjah, United Arab Emirates (Serving Dubai & All UAE)
 - **Official Website:** [https://diasuae.ae](https://diasuae.ae)`,
     date: "October 28, 2026",
     readTime: "9 min read",

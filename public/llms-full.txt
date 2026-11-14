@@ -61,4 +61,4 @@
 - Lead Magnet Playbook API: POST https://diasuae.ae/api/send-playbook-email
 - Direct WhatsApp: https://wa.me/971502560990
 - Direct Phone: +971 50 256 0990 / +971 52 922 6958
-- Office Address: Al Saada Tower, Business Bay, Dubai, UAE
+- Office Address: Sharjah Media City (SHAMS), Al Messaned, Sharjah, United Arab Emirates (P.O. Box 515000)

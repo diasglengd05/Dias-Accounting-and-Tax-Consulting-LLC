@@ -84,7 +84,14 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
       telephone: "+971-52-922-6958",
       email: "info@diasuae.ae",
       priceRange: "AED 400 - AED 4,500",
-      areaServed: ["DIFC Dubai", "DTEC Dubai Silicon Oasis", "Dubai", "United Arab Emirates"],
+      address: {
+        "@type": "PostalAddress",
+        "streetAddress": "Sharjah Media City (SHAMS), Al Messaned",
+        "addressLocality": "Sharjah",
+        "addressRegion": "Sharjah",
+        "addressCountry": "AE"
+      },
+      areaServed: ["Dubai", "Sharjah", "United Arab Emirates"],
       knowsAbout: [
         "DIFC Tax Compliance",
         "0% Qualifying Free Zone Person (QFZP) Structuring",

@@ -293,8 +293,11 @@ export const PageFooter: React.FC<PageFooterProps> = ({
                   Registered Office Address
                 </span>
                 <p className="leading-relaxed mt-0.5">
-                  Business Center, Sharjah Media City (SHAMS),<br />
-                  Al Messaned, Sharjah (P.O. Box 515000)
+                  Sharjah Media City (SHAMS), Al Messaned,<br />
+                  Sharjah, United Arab Emirates
+                </p>
+                <p className="text-[11px] text-slate-400 mt-1">
+                  P.O. Box 515000 · Serving Dubai &amp; UAE Clients
                 </p>
               </div>
 
