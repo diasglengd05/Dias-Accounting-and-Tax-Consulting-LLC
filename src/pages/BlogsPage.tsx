@@ -83,7 +83,14 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [allPosts, setAllPosts] = useState<BlogPost[]>(() => {
-    return [...blogsData].sort((a, b) => {
+    const seen: string[] = [];
+    const uniqueStatic: BlogPost[] = [];
+    for (const post of blogsData) {
+      if (!post?.title || isDuplicateOfExisting(post.title, seen)) continue;
+      seen.push(post.title);
+      uniqueStatic.push(post);
+    }
+    return uniqueStatic.sort((a, b) => {
       const timeA = parsePublishDate(a.publishedIso || a.date);
       const timeB = parsePublishDate(b.publishedIso || b.date);
       return timeB - timeA;
@@ -183,7 +190,7 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
         return;
       }
 
-      // Existing hardcoded articles kept intact at the top
+      // Track every existing title cumulatively (hardcoded + already-added live posts)
       const existingTitles = blogsData.map((b) => b.title);
       const newBloggerPosts: BlogPost[] = [];
 
@@ -193,6 +200,7 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
         if (!rawTitle || isDuplicateOfExisting(rawTitle, existingTitles)) {
           return;
         }
+        existingTitles.push(rawTitle);
 
         const altLink = (entry.link || []).find((l: any) => l.rel === "alternate");
         const liveUrl = altLink ? altLink.href : "https://insights.diasuae.ae/";
@@ -283,14 +291,33 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
         });
       });
 
-      // Always keep the latest published articles on the top
-      const merged = [...blogsData, ...newBloggerPosts];
-      merged.sort((a, b) => {
+      // Always keep the latest published articles on the top, deduplicated
+      const seenCombined: string[] = [];
+      const merged: BlogPost[] = [];
+      const candidates = [...blogsData, ...newBloggerPosts].sort((a, b) => {
         const timeA = parsePublishDate(a.publishedIso || a.date);
         const timeB = parsePublishDate(b.publishedIso || b.date);
         return timeB - timeA;
       });
+      for (const post of candidates) {
+        if (!post?.title || isDuplicateOfExisting(post.title, seenCombined)) continue;
+        seenCombined.push(post.title);
+        merged.push(post);
+      }
       setAllPosts(merged);
+    }
+
+    // Deep-link support if arriving via /blog/:id, /blogs/:id, or #blog-:id
+    const pathname = window.location.pathname.toLowerCase();
+    const hash = window.location.hash.toLowerCase();
+    let deepId = "";
+    if (pathname.startsWith("/blog/")) deepId = pathname.replace("/blog/", "").replace(/\/$/, "");
+    else if (pathname.startsWith("/blogs/")) deepId = pathname.replace("/blogs/", "").replace(/\/$/, "");
+    else if (hash.startsWith("#blog-")) deepId = hash.replace("#blog-", "");
+    else if (hash.length > 1) deepId = hash.slice(1);
+    if (deepId) {
+      const match = blogsData.find((b) => b.id.toLowerCase() === deepId || b.id.toLowerCase().startsWith(deepId));
+      if (match) setSelectedPost(match);
     }
 
     loadLiveBloggerPosts();
@@ -677,10 +704,24 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
                             </span>
                           )}
                         </div>
-                        <span className="text-xs font-display font-bold text-navy-950 group-hover:text-gold-600 flex items-center gap-1">
-                          {isDraft ? "View Outline" : "Read Article"}
+                        <a
+                          href={post.externalUrl || `/blog/${post.id}`}
+                          target={post.externalUrl ? "_blank" : undefined}
+                          rel={post.externalUrl ? "noopener noreferrer" : undefined}
+                          title={`${isDraft ? "View Outline" : "Read Article"}: ${post.title}`}
+                          aria-label={`${isDraft ? "View Outline" : "Read Article"}: ${post.title}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (!post.externalUrl) {
+                              e.preventDefault();
+                              setSelectedPost(post);
+                            }
+                          }}
+                          className="text-xs font-display font-bold text-navy-950 group-hover:text-gold-600 flex items-center gap-1"
+                        >
+                          <span>{isDraft ? "View Outline" : "Read Article"}</span>
                           <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                        </span>
+                        </a>
                       </div>
                     </article>
                   );

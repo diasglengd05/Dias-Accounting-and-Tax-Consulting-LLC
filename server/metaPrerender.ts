@@ -63,8 +63,8 @@ const KNOWN_BLOGS: Record<string, { title: string; summary: string; author: stri
     date: "2026-11-06",
   },
   "fixed-fee-accounting-packages-uae-sme-pricing": {
-    title: "Fixed-Fee Accounting for UAE SMEs: Complete Tax & Bookkeeping Packages from AED 500/Month",
-    summary: "No hidden fees. Fixed-fee UAE SME accounting from AED 500/mo. Backlog books, VAT & 9% Corporate Tax by an FTA Registered Tax Agency. See plans at diasuae.ae/pricing!",
+    title: "Fixed-Fee Accounting for UAE SMEs: Complete Tax & Bookkeeping Packages from AED 400/Month",
+    summary: "No hidden fees. Fixed-fee UAE SME accounting from AED 400/month. Backlog books, VAT & 9% Corporate Tax by an FTA Registered Tax Agency. See plans at diasuae.ae/pricing!",
     author: "Glen Dias",
     role: "Managing Director & FTA Registered Tax Agent",
     tag: "Fixed-Fee Accounting & Pricing",
@@ -145,8 +145,8 @@ const KNOWN_BLOGS: Record<string, { title: string; summary: string; author: stri
   "choosing-uae-jurisdiction": {
     title: "Choosing the Right Business Jurisdiction: Mainland vs. Free Zone",
     summary: "Evaluating corporate tax implications, 0% Qualifying Free Zone Person (QFZP) rules, ownership structures, and commercial flexibility.",
-    author: "Michael Chen",
-    role: "Corporate Services Director",
+    author: "Glen Dias",
+    role: "Managing Director & Certified Tax Advisor",
     tag: "Incorporation",
     date: "2026-05-29",
   },
@@ -478,7 +478,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
           description: difcDesc,
           telephone: "+971-52-922-6958",
           email: "info@diasuae.ae",
-          priceRange: "AED 500 - AED 4,500",
+          priceRange: "AED 400 - AED 4,500",
           areaServed: ["DIFC Dubai", "DTEC Dubai Silicon Oasis", "Dubai", "United Arab Emirates"],
         },
         {
@@ -592,7 +592,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
           description: difcDtecDesc,
           telephone: "+971-52-922-6958",
           email: "info@diasuae.ae",
-          priceRange: "AED 500 - AED 4,500",
+          priceRange: "AED 400 - AED 4,500",
           areaServed: ["DIFC Dubai", "DTEC Dubai Silicon Oasis", "Dubai", "United Arab Emirates"],
         },
         {

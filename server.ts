@@ -27,6 +27,7 @@ import {
 import firebaseConfig from "./firebase-applet-config.json" with { type: "json" };
 import {
   dailyBlogGenerator,
+  deduplicateBlogPosts,
   processBlogQueueHandler,
   triggerDailyBlogGeneration,
   getStoredBlogPosts,
@@ -1769,9 +1770,7 @@ app.get("/api/cron/status", async (req, res) => {
 app.get("/api/blogs", async (req, res) => {
   try {
     const dynamicPosts = await getStoredBlogPosts();
-    const dynamicIds = new Set(dynamicPosts.map((p) => p.id));
-    const filteredStatic = blogsData.filter((b) => !dynamicIds.has(b.id));
-    const allBlogs = [...dynamicPosts, ...filteredStatic];
+    const allBlogs = deduplicateBlogPosts([...dynamicPosts, ...blogsData]);
     // Sort all blogs in chronological order as per date (most recent first)
     allBlogs.sort((a, b) => {
       const timeA = new Date(a.date).getTime() || 0;
@@ -1786,7 +1785,7 @@ app.get("/api/blogs", async (req, res) => {
     });
   } catch (err: any) {
     console.error("[API Blogs] Error loading blogs:", err);
-    const sorted = [...blogsData].sort((a, b) => {
+    const sorted = deduplicateBlogPosts([...blogsData]).sort((a, b) => {
       const timeA = new Date(a.date).getTime() || 0;
       const timeB = new Date(b.date).getTime() || 0;
       return timeB - timeA;
@@ -1979,11 +1978,10 @@ async function bootstrap() {
     return res.sendFile(file);
   });
 
-  app.get(["/blog", "/blog.html"], (_req, res) => {
-    const file = path.join(process.cwd(), "public", "blog.html");
-    res.setHeader("Content-Type", "text/html; charset=utf-8");
-    res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
-    return res.sendFile(file);
+  app.get(["/blog", "/blog.html"], (req, res) => {
+    const qsIndex = req.originalUrl.indexOf("?");
+    const qs = qsIndex !== -1 ? req.originalUrl.slice(qsIndex) : "";
+    return res.redirect(301, `/blogs${qs}`);
   });
 
   app.get("/sitemap.xml", (_req, res) => {

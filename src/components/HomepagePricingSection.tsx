@@ -70,8 +70,8 @@ export const HomepagePricingSection: React.FC<HomepagePricingSectionProps> = ({
 
           <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
             {isAr
-              ? "لا مفاجآت، لا رسوم خفية، ولا تكاليف إضافية على المعاملات. راحة بال تامة مع مسك دفاتر متوافق مع معايير الهيئة، إقرارات ضريبة القيمة المضافة، وضريبة الشركات بأسعار شهرية محددة تبدأ من 500 درهم شهرياً."
-              : "No hidden surprises, surprise hourly billing, or transaction markups. Get complete peace of mind with FTA-compliant bookkeeping, quarterly VAT filing, and corporate tax returns at predictable monthly rates starting at AED 500/month."}
+              ? "لا مفاجآت، لا رسوم خفية، ولا تكاليف إضافية على المعاملات. راحة بال تامة مع مسك دفاتر متوافق مع معايير الهيئة، إقرارات ضريبة القيمة المضافة، وضريبة الشركات بأسعار شهرية محددة تبدأ من 400 درهم شهرياً."
+              : "No hidden surprises, surprise hourly billing, or transaction markups. Get complete peace of mind with FTA-compliant bookkeeping, quarterly VAT filing, and corporate tax returns at predictable monthly rates from AED 400/month."}
           </p>
 
           {/* Pricing Note Banner */}

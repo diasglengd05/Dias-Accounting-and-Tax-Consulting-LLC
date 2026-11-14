@@ -355,13 +355,36 @@ function MainApp() {
       .then((r) => r.json())
       .then((data) => {
         if (data && data.success && Array.isArray(data.blogs) && data.blogs.length > 0) {
-          const dynamicIds = new Set(data.blogs.map((b: BlogPost) => b.id));
-          const merged = [
-            ...data.blogs,
-            ...blogsData.filter((b) => !dynamicIds.has(b.id)),
-          ];
-          merged.sort((a, b) => (new Date(b.date).getTime() || 0) - (new Date(a.date).getTime() || 0));
-          setAllBlogs(merged);
+          const normTitle = (t: string) =>
+            (t || "")
+              .toLowerCase()
+              .replace(/&amp;/g, "and")
+              .replace(/[^\w\s]/g, " ")
+              .replace(/\s+/g, " ")
+              .trim();
+          const seenIds = new Set<string>();
+          const seenTitles = new Set<string>();
+          let hasAuditThresholds = false;
+          let hasEnforcement = false;
+
+          const deduped: BlogPost[] = [];
+          for (const item of [...data.blogs, ...blogsData]) {
+            if (!item || !item.id || !item.title) continue;
+            const norm = normTitle(item.title);
+            const isAuditThresholds =
+              norm.includes("uae corporate tax return preparation") && norm.includes("audit threshold");
+            const isEnforcement = norm.includes("uae corporate tax enforcement");
+            if (seenIds.has(item.id) || seenTitles.has(norm)) continue;
+            if (isAuditThresholds && hasAuditThresholds) continue;
+            if (isEnforcement && hasEnforcement) continue;
+            seenIds.add(item.id);
+            seenTitles.add(norm);
+            if (isAuditThresholds) hasAuditThresholds = true;
+            if (isEnforcement) hasEnforcement = true;
+            deduped.push(item);
+          }
+          deduped.sort((a, b) => (new Date(b.date).getTime() || 0) - (new Date(a.date).getTime() || 0));
+          setAllBlogs(deduped);
         }
       })
       .catch((err) => {
@@ -653,7 +676,7 @@ function MainApp() {
     );
   }
 
-  if (currentPath === "/blogs" || currentPath === "/insights" || currentPath.startsWith("/blog/")) {
+  if (currentPath === "/blogs" || currentPath === "/insights" || currentPath.startsWith("/blog/") || currentPath.startsWith("/blogs/")) {
     return (
       <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading Insights Hub...</div>}>
         <BlogsPage
@@ -835,29 +858,63 @@ function MainApp() {
                 </div>
 
                 {/* Primary & Secondary Action Bar */}
-                <div className="space-y-5 pt-2">
+                <div className="space-y-4 pt-2">
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 max-w-xl">
                     {/* Primary CTA: Book a Free Consultation */}
-                    <button
-                      type="button"
-                      onClick={() => navigateTo("/contact")}
+                    <a
+                      href="/contact"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigateTo("/contact");
+                      }}
                       className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold py-3.5 px-6 rounded-xl transition-all duration-150 flex items-center justify-center gap-2.5 text-sm whitespace-nowrap shrink-0 cursor-pointer shadow-lg shadow-gold-500/20"
                     >
                       <Calendar className="w-4 h-4 text-navy-950 shrink-0" />
                       <span>Book a Free Consultation</span>
                       <ArrowRight className="w-4 h-4 shrink-0 rtl:rotate-180" />
-                    </button>
+                    </a>
 
                     {/* Secondary CTA: Try the UAE Tax Planner */}
-                    <button
-                      type="button"
-                      onClick={() => navigateTo("/uae-tax-planner")}
+                    <a
+                      href="/uae-tax-planner"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigateTo("/uae-tax-planner");
+                      }}
                       className="bg-white/10 hover:bg-white/20 border border-white/25 hover:border-gold-400/60 text-white font-display font-bold py-3.5 px-5 rounded-xl transition-all duration-150 text-sm flex items-center justify-center gap-2 whitespace-nowrap shrink-0 cursor-pointer"
                     >
                       <Calculator className="w-4 h-4 text-gold-400 shrink-0" />
-                      <span>Try the UAE Tax Planner</span>
-                    </button>
+                      <span>UAE Corporate Tax (9%) &amp; VAT Planner</span>
+                    </a>
                   </div>
+
+                  {/* High-Intent Above-the-Fold Internal Anchor Links */}
+                  <nav aria-label="Primary UAE Tax and Accounting Solutions" className="flex flex-wrap items-center gap-2.5 pt-1">
+                    <a
+                      href="/tax-planning-difc"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigateTo("/tax-planning-difc");
+                      }}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.06] hover:bg-gold-500/15 border border-white/10 hover:border-gold-400/50 text-xs font-medium text-slate-200 hover:text-gold-300 transition-all"
+                    >
+                      <ShieldCheck className="w-3.5 h-3.5 text-gold-400 shrink-0" />
+                      <span>DIFC Tax Compliance &amp; 0% QFZP Advisory</span>
+                      <ChevronRight className="w-3 h-3 text-slate-400 rtl:rotate-180" />
+                    </a>
+                    <a
+                      href="/pricing"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigateTo("/pricing");
+                      }}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.06] hover:bg-gold-500/15 border border-white/10 hover:border-gold-400/50 text-xs font-medium text-slate-200 hover:text-gold-300 transition-all"
+                    >
+                      <BarChart3 className="w-3.5 h-3.5 text-gold-400 shrink-0" />
+                      <span>Fixed-Fee Accounting Packages from AED 400/mo</span>
+                      <ChevronRight className="w-3 h-3 text-slate-400 rtl:rotate-180" />
+                    </a>
+                  </nav>
 
                   {/* Secondary WhatsApp & Risk Audit Quick Links */}
                   <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-slate-300">
@@ -1362,6 +1419,157 @@ function MainApp() {
         </LazyMount>
       </AnimatedSection>
 
+      {/* 4.7 Dedicated Local SEO Section: Sharjah & SHAMS Free Zone Practice */}
+      <section
+        id="sharjah-shams-tax-services"
+        className="py-16 sm:py-20 bg-white border-y border-slate-200/80 scroll-mt-20"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+            {/* Left Column: Sharjah & SHAMS Tax Authority Narrative */}
+            <div className="lg:col-span-7 space-y-6">
+              <div className="space-y-3">
+                <span className="inline-block text-[11px] font-mono font-bold uppercase tracking-[0.18em] text-gold-600">
+                  Sharjah &amp; Dubai Dual-Emirate Presence
+                </span>
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-navy-950 tracking-tight leading-tight">
+                  Tax Consulting &amp; Accounting Services in Sharjah &amp; SHAMS Free Zone
+                </h2>
+                <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
+                  Operating directly from <strong>Sharjah Media City (SHAMS), Al Messaned, Sharjah</strong> alongside our <strong>Dubai Business Bay &amp; DIFC / DTEC</strong> advisory desk, Dias Accounting &amp; Tax Consulting LLC serves SMEs, digital agencies, trading entities, and holding companies across <strong>SHAMS Free Zone, SAIF Zone, Hamriyah Free Zone, SRTIP, and Sharjah Mainland (SEDD)</strong>.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <article className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+                  <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-emerald-700">
+                    SHAMS · SAIF · Hamriyah Free Zone
+                  </span>
+                  <h3 className="font-display text-base font-bold text-navy-950">
+                    0% QFZP Corporate Tax &amp; Small Business Relief
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                    Every SHAMS and Sharjah Free Zone company must register on EmaraTax and file an annual Corporate Tax return. We structure Qualifying Free Zone Person (0%) elections, AED 3M Small Business Relief filings, and IFRS audited financial statements.
+                  </p>
+                </article>
+
+                <article className="p-5 rounded-2xl bg-slate-50 border border-slate-200/80 space-y-2">
+                  <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-gold-600">
+                    Sharjah Mainland (SEDD) &amp; Dubai
+                  </span>
+                  <h3 className="font-display text-base font-bold text-navy-950">
+                    Fixed-Fee IFRS Bookkeeping &amp; VAT 201 Returns
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                    Dedicated monthly double-entry bookkeeping on Zoho Books, Xero, QuickBooks, and Wafeq, quarterly FTA VAT 201 submissions, and multi-year backlog cleanup under fixed retainers starting from <strong>AED 400/month</strong>.
+                  </p>
+                </article>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-3 pt-1">
+                <a
+                  href="/pricing"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigateTo("/pricing");
+                  }}
+                  className="inline-flex items-center gap-2 bg-navy-950 hover:bg-navy-900 text-white font-display font-bold text-xs px-5 py-3 rounded-xl transition-colors"
+                >
+                  <span>View Accounting Packages (from AED 400/mo)</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-gold-400 rtl:rotate-180" />
+                </a>
+                <a
+                  href="/company-setup"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigateTo("/company-setup");
+                  }}
+                  className="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-navy-950 font-display font-semibold text-xs px-4 py-3 rounded-xl transition-colors border border-slate-200"
+                >
+                  <span>SHAMS &amp; UAE Free Zone Company Setup</span>
+                </a>
+                <a
+                  href="/uae-tax-planner"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigateTo("/uae-tax-planner");
+                  }}
+                  className="inline-flex items-center gap-1.5 text-xs font-display font-bold text-gold-600 hover:text-gold-700 underline underline-offset-4 px-2 py-2"
+                >
+                  <span>Estimate 9% Corporate Tax &amp; SBR</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Right Column: Official Sharjah SHAMS & Dubai Office Credentials */}
+            <aside className="lg:col-span-5 bg-navy-950 text-white rounded-3xl p-6 sm:p-8 border border-navy-800 shadow-xl space-y-5">
+              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                <div>
+                  <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-gold-400 block">
+                    Licensed UAE Offices
+                  </span>
+                  <h3 className="font-display text-lg font-bold text-white mt-0.5">
+                    Sharjah (SHAMS) &amp; Dubai Desks
+                  </h3>
+                </div>
+                <MapPin className="w-5 h-5 text-gold-400 shrink-0" />
+              </div>
+
+              <div className="space-y-4 text-xs sm:text-sm">
+                <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-gold-400 block">
+                    Head Office · Sharjah Free Zone
+                  </span>
+                  <p className="font-semibold text-white">
+                    Sharjah Media City (SHAMS), Al Messaned, Sharjah, UAE
+                  </p>
+                  <p className="text-slate-300 text-xs">
+                    Trade Licence SHAMS 2646813.01 · P.O. Box 515000
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-1">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-gold-400 block">
+                    Dubai Client Advisory Desk
+                  </span>
+                  <p className="font-semibold text-white">
+                    Business Bay &amp; DIFC / DTEC Advisory Coverage, Dubai, UAE
+                  </p>
+                  <p className="text-slate-300 text-xs">
+                    Same-day consultations for DIFC, DTEC, DMCC, IFZA &amp; Dubai Mainland
+                  </p>
+                </div>
+
+                <ul className="space-y-2 pt-1 text-xs text-slate-300">
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>FTA Registered Tax Agency &amp; Chartered Accountant Review</span>
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>5.0 ★ Rated across 48 Verified UAE Client Reviews</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="pt-2 flex flex-col sm:flex-row gap-3">
+                <a
+                  href="/contact"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigateTo("/contact");
+                  }}
+                  className="flex-1 inline-flex items-center justify-center gap-2 bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold text-xs py-3 px-4 rounded-xl transition-colors"
+                >
+                  <Calendar className="w-4 h-4 shrink-0" />
+                  <span>Book Sharjah or Dubai Meeting</span>
+                </a>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
 
 
 
@@ -1680,9 +1888,9 @@ function MainApp() {
                       <MapPin className="w-4 h-4" />
                     </div>
                     <div className="leading-tight">
-                      <span className="text-[10px] font-mono text-slate-400 font-bold uppercase tracking-wider block">Office Address</span>
+                      <span className="text-[10px] font-mono text-slate-400 font-bold uppercase tracking-wider block">UAE Office Addresses</span>
                       <p className="text-navy-950 font-semibold text-xs mt-1">
-                        Sharjah Media City (Shams), Sharjah, United Arab Emirates
+                        Sharjah Media City (SHAMS), Al Messaned, Sharjah (P.O. Box 515000) &amp; Dubai Advisory Desk (Business Bay / DIFC)
                       </p>
                     </div>
                   </div>

@@ -86,9 +86,13 @@ export const BlogSection: React.FC<BlogSectionProps> = ({
                   return (
                     <a
                       key={blog.id}
-                      href={`/blog.html#${blog.id}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      href={`/blog/${blog.id}`}
+                      title={`Read Article: ${blog.title}`}
+                      aria-label={`Read Article: ${blog.title}`}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        onSelectBlog(blog);
+                      }}
                       className={`bg-white border ${
                         idx === 0
                           ? "border-gold-400 shadow-sm"

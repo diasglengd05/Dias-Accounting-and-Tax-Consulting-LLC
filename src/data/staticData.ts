@@ -421,7 +421,7 @@ export const faqsData: FAQItem[] = [
     category: "Pricing & Services",
     question: "What accounting and tax packages does Dias Accounting offer in Dubai and Sharjah?",
     answer:
-      "Dias Accounting offers transparent, fixed-fee monthly accounting and tax packages in Dubai and Sharjah starting from AED 400–500/month. Packages include a dedicated chartered accountant, IFRS-compliant double-entry bookkeeping (Zoho Books, Xero, QuickBooks, or Wafeq), monthly financial statements, quarterly 5% VAT 201 return filing, and annual 9% or 0% Corporate Tax return submission on EmaraTax.",
+      "Dias Accounting offers transparent, fixed-fee monthly accounting and tax packages in Dubai and Sharjah from AED 400/month. Packages include a dedicated chartered accountant, IFRS-compliant double-entry bookkeeping (Zoho Books, Xero, QuickBooks, or Wafeq), monthly financial statements, quarterly 5% VAT 201 return filing, and annual 9% or 0% Corporate Tax return submission on EmaraTax.",
   },
   {
     id: "faq-cf-formation-dubai",
@@ -505,7 +505,7 @@ export const faqsData: FAQItem[] = [
     id: "faq-7",
     category: "Corporate Tax & Top Ranking",
     question: "Why is Dias Accounting considered among the best accounting firms in Dubai UAE?",
-    answer: "Dias Accounting and Tax Consulting LLC is widely recognized among the top accounting and tax consulting firms in Dubai due to its accredited FTA tax agency status, 5.0-star verified client satisfaction record, and leadership under Senior Tax Advisor Glen Dias. Dias delivers transparent fixed-fee bookkeeping from AED 500/month, comprehensive UAE 9% Corporate Tax advisory, 0% Free Zone QFZP structuring, Small Business Relief (SBR) up to AED 3M, IFRS audits, and penalty defense across all 7 Emirates."
+    answer: "Dias Accounting and Tax Consulting LLC is widely recognized among the top accounting and tax consulting firms in Dubai due to its accredited FTA tax agency status, 5.0-star verified client satisfaction record, and leadership under Senior Tax Advisor Glen Dias. Dias delivers transparent fixed-fee bookkeeping from AED 400/month, comprehensive UAE 9% Corporate Tax advisory, 0% Free Zone QFZP structuring, Small Business Relief (SBR) up to AED 3M, IFRS audits, and penalty defense across all 7 Emirates."
   },
   {
     id: "faq-8",

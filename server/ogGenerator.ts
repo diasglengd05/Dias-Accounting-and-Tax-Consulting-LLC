@@ -36,8 +36,8 @@ const BLOG_PRESETS: Record<string, OgPayload> = {
   },
   "choosing-uae-jurisdiction": {
     title: "Choosing the Right Business Jurisdiction: Mainland vs. Free Zone",
-    author: "Michael Chen",
-    role: "Corporate Services Director",
+    author: "Glen Dias",
+    role: "Managing Director & Certified Tax Advisor",
     tag: "Incorporation",
     date: "May 29, 2026",
     readTime: "6 min read",

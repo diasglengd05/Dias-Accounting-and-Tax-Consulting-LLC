@@ -121,6 +121,7 @@ export const HomepageInsightsSection: React.FC<HomepageInsightsSectionProps> = (
         if (!rawTitle || isDuplicateOfExisting(rawTitle, existingTitles)) {
           return;
         }
+        existingTitles.push(rawTitle);
 
         const altLink = (entry.link || []).find((l: any) => l.rel === "alternate");
         const liveUrl = altLink ? altLink.href : "https://insights.diasuae.ae/";
@@ -304,14 +305,28 @@ export const HomepageInsightsSection: React.FC<HomepageInsightsSectionProps> = (
                     <Sparkles className="w-3 h-3 text-gold-500" />
                     <span>FTA Tax Agent Verified</span>
                   </span>
-                  <span className="text-xs font-display font-bold text-navy-950 group-hover:text-gold-600 flex items-center gap-1 transition-colors">
-                    {isExternal ? "Read on Live Blog" : "Read Article"}
+                  <a
+                    href={isExternal && item.externalUrl ? item.externalUrl : `/blog/${item.id}`}
+                    target={isExternal ? "_blank" : undefined}
+                    rel={isExternal ? "noopener noreferrer" : undefined}
+                    title={`${isExternal ? "Read on Live Blog" : "Read Article"}: ${item.title}`}
+                    aria-label={`${isExternal ? "Read on Live Blog" : "Read Article"}: ${item.title}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!isExternal && item.internalBlogRef) {
+                        e.preventDefault();
+                        onSelectBlog(item.internalBlogRef);
+                      }
+                    }}
+                    className="text-xs font-display font-bold text-navy-950 group-hover:text-gold-600 flex items-center gap-1 transition-colors"
+                  >
+                    <span>{isExternal ? "Read on Live Blog" : "Read Article"}</span>
                     {isExternal ? (
                       <ExternalLink className="w-3.5 h-3.5 text-gold-600" />
                     ) : (
                       <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                     )}
-                  </span>
+                  </a>
                 </div>
               </article>
             );

@@ -114,7 +114,7 @@ export function generateSitemapXml(domain = "https://diasuae.ae"): string {
       comment: "Dedicated Page: Corporate Tax Services UAE Mainland & Free Zone",
     },
     {
-      loc: `${domain}/blog.html`,
+      loc: `${domain}/blogs`,
       lastmod: today,
       changefreq: "daily",
       priority: "0.90",
@@ -189,8 +189,39 @@ export function generateSitemapXml(domain = "https://diasuae.ae"): string {
     });
   });
 
-  // 3. Knowledge Base / Blog Articles (Static + Dynamic 24h AI Grounded)
-  const combinedBlogs = [...blogsData];
+  // 3. Knowledge Base / Blog Articles (Static + Dynamic 24h AI Grounded, deduplicated)
+  const normSitemapTitle = (t: string) =>
+    (t || "")
+      .toLowerCase()
+      .replace(/&amp;/g, "and")
+      .replace(/[^\w\s]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+  const seenBlogIds = new Set<string>();
+  const seenBlogTitles = new Set<string>();
+  let seenAuditThresholds = false;
+  let seenEnforcement = false;
+  const combinedBlogs: any[] = [];
+
+  const pushUniqueBlog = (post: any) => {
+    if (!post || !post.id || !post.title) return;
+    const norm = normSitemapTitle(post.title);
+    const isAuditThresholds =
+      norm.includes("uae corporate tax return preparation") && norm.includes("audit threshold");
+    const isEnforcement = norm.includes("uae corporate tax enforcement");
+    if (seenBlogIds.has(post.id) || seenBlogTitles.has(norm)) return;
+    if (isAuditThresholds && seenAuditThresholds) return;
+    if (isEnforcement && seenEnforcement) return;
+    seenBlogIds.add(post.id);
+    seenBlogTitles.add(norm);
+    if (isAuditThresholds) seenAuditThresholds = true;
+    if (isEnforcement) seenEnforcement = true;
+    combinedBlogs.push(post);
+  };
+
+  blogsData.forEach(pushUniqueBlog);
+
   try {
     const rootFallbackPath = path.join(process.cwd(), "db_fallback.json");
     const serverFallbackPath = path.join(process.cwd(), "server", "db_fallback.json");
@@ -203,11 +234,7 @@ export function generateSitemapXml(domain = "https://diasuae.ae"): string {
         : fallbackData.blog_posts && typeof fallbackData.blog_posts === "object"
         ? Object.values(fallbackData.blog_posts)
         : [];
-      rawList.forEach((dynamicBlog: any) => {
-        if (dynamicBlog && dynamicBlog.id && !combinedBlogs.some(b => b.id === dynamicBlog.id)) {
-          combinedBlogs.push(dynamicBlog);
-        }
-      });
+      rawList.forEach(pushUniqueBlog);
     }
   } catch {
     // Graceful fallback

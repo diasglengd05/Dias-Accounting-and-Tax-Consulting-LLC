@@ -675,14 +675,107 @@ Respond with a strict, valid JSON object only (no extra markdown explanation bef
 }
 
 /**
+ * Normalizes a blog post title for duplicate detection.
+ */
+function normalizeBlogTitle(t: string): string {
+  return (t || "")
+    .toLowerCase()
+    .replace(/&amp;/g, "&")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
+ * Checks whether a candidate title is an exact or near-duplicate of any already-kept title.
+ */
+function isDuplicateBlogTitle(candidateTitle: string, seenNormalized: string[]): boolean {
+  const norm = normalizeBlogTitle(candidateTitle);
+  if (!norm) return true;
+
+  // Collapse known historical cron duplicate families into one canonical entry
+  const isAuditThresholdsFamily =
+    norm.includes("uae corporate tax return preparation") &&
+    norm.includes("2026 audit thresholds");
+  const isCtEnforcementFamily =
+    (norm.includes("uae corporate tax enforcement") ||
+      norm.includes("uae corporate tax filing enforcement")) &&
+    (norm.includes("qfzp") || norm.includes("small business relief") || norm.includes("sbr"));
+
+  const candidateTokens = norm.split(" ").filter((w) => w.length > 2);
+
+  for (const existing of seenNormalized) {
+    if (norm === existing) return true;
+    if (norm.length > 15 && existing.includes(norm)) return true;
+    if (existing.length > 15 && norm.includes(existing)) return true;
+
+    if (
+      isAuditThresholdsFamily &&
+      existing.includes("uae corporate tax return preparation") &&
+      existing.includes("2026 audit thresholds")
+    ) {
+      return true;
+    }
+
+    if (
+      isCtEnforcementFamily &&
+      (existing.includes("uae corporate tax enforcement") ||
+        existing.includes("uae corporate tax filing enforcement")) &&
+      (existing.includes("qfzp") || existing.includes("small business relief") || existing.includes("sbr"))
+    ) {
+      return true;
+    }
+
+    if (candidateTokens.length > 0) {
+      const exTokens = existing.split(" ").filter((w) => w.length > 2);
+      if (exTokens.length > 0) {
+        let overlap = 0;
+        for (const tok of candidateTokens) {
+          if (exTokens.includes(tok)) overlap++;
+        }
+        if (overlap / Math.min(candidateTokens.length, exTokens.length) >= 0.72) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+export function deduplicateBlogPosts<T extends { id?: string; title?: string; date?: string; generatedAt?: string }>(
+  posts: T[]
+): T[] {
+  const sorted = [...posts].sort((a, b) => {
+    const timeA = Date.parse(a.generatedAt || a.date || "") || 0;
+    const timeB = Date.parse(b.generatedAt || b.date || "") || 0;
+    return timeB - timeA;
+  });
+
+  const result: T[] = [];
+  const seenIds = new Set<string>();
+  const seenTitles: string[] = [];
+
+  for (const post of sorted) {
+    if (!post || !post.title) continue;
+    const idKey = (post.id || "").toLowerCase();
+    if (idKey && seenIds.has(idKey)) continue;
+    if (isDuplicateBlogTitle(post.title, seenTitles)) continue;
+
+    if (idKey) seenIds.add(idKey);
+    seenTitles.push(normalizeBlogTitle(post.title));
+    result.push(post);
+  }
+  return result;
+}
+
+/**
  * Persists the generated blog post to both Firestore and local storage.
  */
 async function persistBlogPost(post: GeneratedBlogPost): Promise<void> {
-  // 1. Local Fallback persistence
+  // 1. Local Fallback persistence (keep deduplicated by id and normalized title)
   const local = readLocalDB();
   if (!local.blogs) local.blogs = [];
-  // Prepend so newest is first, remove duplicates by id
-  local.blogs = [post, ...local.blogs.filter((b: any) => b.id !== post.id)];
+  local.blogs = deduplicateBlogPosts([post, ...local.blogs.filter((b: any) => b.id !== post.id)]);
   writeLocalDB(local);
 
   // 2. Firestore Cloud Persistence
@@ -698,7 +791,7 @@ async function persistBlogPost(post: GeneratedBlogPost): Promise<void> {
 }
 
 /**
- * Retrieves all dynamic blog posts from Firestore / local storage
+ * Retrieves all dynamic blog posts from Firestore / local storage (deduplicated, newest first)
  */
 export async function getStoredBlogPosts(): Promise<GeneratedBlogPost[]> {
   if (isFirestoreAvailable && db) {
@@ -710,7 +803,7 @@ export async function getStoredBlogPosts(): Promise<GeneratedBlogPost[]> {
         posts.push(docSnap.data() as GeneratedBlogPost);
       });
       if (posts.length > 0) {
-        return posts;
+        return deduplicateBlogPosts(posts);
       }
     } catch (err: any) {
       console.warn("[DailyBlogGenerator] Firestore read failed for blog_posts, using local fallback:", err?.message || err);
@@ -718,7 +811,7 @@ export async function getStoredBlogPosts(): Promise<GeneratedBlogPost[]> {
   }
 
   const local = readLocalDB();
-  return (local.blogs || []) as GeneratedBlogPost[];
+  return deduplicateBlogPosts((local.blogs || []) as GeneratedBlogPost[]);
 }
 
 /**
@@ -762,7 +855,7 @@ async function saveDailyCronSettings(data: any): Promise<void> {
 
 // ==================== CURATED FALLBACK POST ====================
 function createCuratedFallbackArticle(todayFormatted: string, isoTimestamp: string): GeneratedBlogPost {
-  const slug = `uae-corporate-tax-filing-and-transfer-pricing-${Date.now().toString(36).substring(0, 5)}`;
+  const slug = `uae-corporate-tax-filing-and-transfer-pricing-2026`;
   const title = "UAE Corporate Tax Return Preparation: 2026 Audit Thresholds & Mandatory Disclosures";
   const summary = "A critical breakdown of mandatory disclosures for UAE Corporate Tax returns, Small Business Relief renewals through 2029, and Free Zone QFZP transfer pricing documentation.";
   

@@ -698,9 +698,9 @@ export const translations: Record<Language, Translations> = {
           readTime: "6 min read",
           tag: "Incorporation",
           author: {
-            name: "Michael Chen",
-            role: "Corporate Services Director",
-            avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=120",
+            name: "Glen Dias",
+            role: "Managing Director & Certified Tax Advisor",
+            avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=120",
           },
         },
       ],

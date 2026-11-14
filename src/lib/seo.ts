@@ -42,7 +42,7 @@ export const CORE_HOMEPAGE_FAQS: FAQSchemaItem[] = [
   {
     question: "What accounting and tax packages does Dias Accounting offer in Dubai and Sharjah?",
     answer:
-      "Dias Accounting offers transparent, fixed-fee monthly accounting and tax packages in Dubai and Sharjah starting from AED 400–500/month. Packages include a dedicated chartered accountant, IFRS-compliant double-entry bookkeeping (Zoho Books, Xero, QuickBooks, or Wafeq), monthly financial statements, quarterly 5% VAT 201 return filing, and annual 9% or 0% Corporate Tax return submission on EmaraTax.",
+      "Dias Accounting offers transparent, fixed-fee monthly accounting and tax packages in Dubai and Sharjah from AED 400/month. Packages include a dedicated chartered accountant, IFRS-compliant double-entry bookkeeping (Zoho Books, Xero, QuickBooks, or Wafeq), monthly financial statements, quarterly 5% VAT 201 return filing, and annual 9% or 0% Corporate Tax return submission on EmaraTax.",
   },
 ];
 

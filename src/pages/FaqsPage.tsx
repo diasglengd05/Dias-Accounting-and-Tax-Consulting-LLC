@@ -187,7 +187,7 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
       id: "pr-1",
       category: "Pricing",
       question: "How do your fixed-fee accounting packages work?",
-      answer: "We offer transparent fixed-fee monthly packages starting at AED 500/month. There are no hidden fees, unexpected hourly invoices, or transaction surcharges. Final pricing depends on your business activity, transaction volume, and filing requirements. Book a free consultation on WhatsApp (+971 52 922 6958) for an accurate quote.",
+      answer: "We offer transparent fixed-fee monthly packages from AED 400/month. There are no hidden fees, unexpected hourly invoices, or transaction surcharges. Final pricing depends on your business activity, transaction volume, and filing requirements. Book a free consultation on WhatsApp (+971 52 922 6958) for an accurate quote.",
     },
     {
       id: "pr-2",

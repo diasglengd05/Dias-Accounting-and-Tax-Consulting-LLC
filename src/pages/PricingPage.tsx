@@ -34,7 +34,7 @@ export const PricingPage: React.FC<PricingPageProps> = ({
   onOpenPrivacy,
   onOpenGooglePreferred,
 }) => {
-  const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annual">("monthly");
+  const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annual">("annual");
   const [pricingPath, setPricingPath] = useState<"prospective" | "retrospective">("prospective");
 
   useEffect(() => {
@@ -95,7 +95,7 @@ export const PricingPage: React.FC<PricingPageProps> = ({
                 Corporate Tax &amp; Fixed-Fee Accounting Packages for UAE Businesses
               </h1>
               <p className="text-slate-300 text-base sm:text-lg leading-relaxed mb-6">
-                No hidden surprises, surprise hourly billing, or transaction markups. Get complete peace of mind with FTA-compliant Corporate Tax (9%), DIFC tax compliance, quarterly VAT filing, and monthly bookkeeping at predictable monthly rates starting at AED 400/month.
+                No hidden surprises, surprise hourly billing, or transaction markups. Get complete peace of mind with FTA-compliant Corporate Tax (9%), DIFC tax compliance, quarterly VAT filing, and monthly bookkeeping at predictable monthly rates from AED 400/month.
               </p>
               
               {/* Important Pricing Note Banner */}
@@ -763,7 +763,7 @@ export const PricingPage: React.FC<PricingPageProps> = ({
                 },
                 {
                   q: "Are Corporate Tax returns (9%) and VAT 201 filings included in the monthly accounting fee?",
-                  a: "Yes. Our Growth and Enterprise plans include full quarterly VAT 201 return submissions and annual Corporate Tax return filing on the FTA EmaraTax portal. Our Essential tier (AED 400 - AED 500/mo) covers ongoing bookkeeping and quarterly VAT, with an optional discounted annual corporate tax filing add-on.",
+                  a: "Yes. Our Growth and Enterprise plans include full quarterly VAT 201 return submissions and annual Corporate Tax return filing on the FTA EmaraTax portal. Our Essential tier (from AED 400/month on annual billing) covers ongoing bookkeeping and quarterly VAT, with an optional discounted annual corporate tax filing add-on.",
                 },
                 {
                   q: "What are the penalties if my UAE company delays historical backlog bookkeeping?",

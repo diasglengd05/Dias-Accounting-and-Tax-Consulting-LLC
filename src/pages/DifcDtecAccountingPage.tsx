@@ -83,7 +83,7 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
       description: pageDesc,
       telephone: "+971-52-922-6958",
       email: "info@diasuae.ae",
-      priceRange: "AED 500 - AED 4,500",
+      priceRange: "AED 400 - AED 4,500",
       areaServed: ["DIFC Dubai", "DTEC Dubai Silicon Oasis", "Dubai", "United Arab Emirates"],
       knowsAbout: [
         "DIFC Tax Compliance",

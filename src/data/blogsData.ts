@@ -951,11 +951,11 @@ When you partner with **Dias Accounting & Tax Consulting LLC**, your enterprise 
 
 ## Transparent Fixed-Fee Retainers vs. Outdated Hourly Billing
 
-Traditional accounting firms often bill on an hourly basis, creating budget unpredictability and discouraging open communication. At Dias Accounting, we operate exclusively on transparent, fixed-fee monthly packages starting from **AED 500 per month**:
+Traditional accounting firms often bill on an hourly basis, creating budget unpredictability and discouraging open communication. At Dias Accounting, we operate exclusively on transparent, fixed-fee monthly packages starting from **AED 400 per month**:
 
 | Compliance Level | Starter SME Compliance | Growth & VAT Hub | Enterprise & Free Zone |
 | :--- | :--- | :--- | :--- |
-| **Monthly Retainer** | **From AED 500 / mo** | **From AED 950 / mo** | **From AED 1,750 / mo** |
+| **Monthly Retainer** | **From AED 400 / mo** | **From AED 600 / mo** | **From AED 1,000 / mo** |
 | **Ideal For** | Startups, Freelancers & Solo Entities | Active Commercial SMEs | Free Zone (QFZP) & High-Volume |
 | **Transaction Processing** | Up to 25 monthly transactions | Up to 100 monthly transactions | High-Volume / Multi-Entity |
 | **Bookkeeping Frequency** | Monthly reconciliation | Monthly reconciliation | Weekly / Bi-Weekly reconciliation |
@@ -977,7 +977,7 @@ Hiring an in-house accountant carries substantial overhead costs, including visa
 Dias Accounting performs immediate Corporate Tax registration on the FTA EmaraTax portal, tracking licensing dates against Cabinet Decision No. 75 of 2023 deadlines to secure your Tax Registration Number (TRN) ahead of cutoff dates. If a penalty notice has already been issued, our certified tax agents prepare and submit formal FTA reconsideration requests and voluntary disclosures to mitigate or dispute unmerited fines.
 
 ### What is the cost of comprehensive SME accounting and tax compliance in the UAE?
-Professional SME accounting in the UAE typically ranges from AED 500 to AED 2,500 per month depending on transaction volume, entity structure, and tax complexity. Dias Accounting & Tax Consulting LLC offers transparent, fixed-fee packages starting at AED 500 per month, covering IFRS double-entry bookkeeping, bank reconciliations, and tax readiness without unexpected hourly charges.
+Professional SME accounting in the UAE typically ranges from AED 400 to AED 2,500 per month depending on transaction volume, entity structure, and tax complexity. Dias Accounting & Tax Consulting LLC offers transparent, fixed-fee packages starting from AED 400 per month, covering IFRS double-entry bookkeeping, bank reconciliations, and tax readiness without unexpected hourly charges.
 
 ### Can Free Zone companies in Dubai and Sharjah claim 0% Corporate Tax?
 Yes, Free Zone companies can qualify for a 0% Corporate Tax rate if they meet the strict Qualifying Free Zone Person (QFZP) criteria under Federal Decree-Law No. 47 of 2022. Entities must derive Qualifying Income, maintain adequate economic substance and physical presence in the Free Zone, satisfy de minimis requirements on non-qualifying revenue, and maintain audited annual financial statements.
@@ -993,8 +993,8 @@ Do not let accounting backlog or looming tax deadlines jeopardize your commercia
   },
   {
     id: "fixed-fee-accounting-packages-uae-sme-pricing",
-    title: "Fixed-Fee Accounting for UAE SMEs: Complete Tax & Bookkeeping Packages from AED 500/Month",
-    summary: "No hidden fees. Fixed-fee UAE SME accounting from AED 500/mo. Backlog books, VAT & 9% Corporate Tax by an FTA Registered Tax Agency. See plans at diasuae.ae/pricing!",
+    title: "Fixed-Fee Accounting for UAE SMEs: Complete Tax & Bookkeeping Packages from AED 400/Month",
+    summary: "No hidden fees. Fixed-fee UAE SME accounting from AED 400/month. Backlog books, VAT & 9% Corporate Tax by an FTA Registered Tax Agency. See plans at diasuae.ae/pricing!",
     date: "November 6, 2026",
     readTime: "5 min read",
     tag: "Fixed-Fee Accounting & Pricing",
@@ -1028,8 +1028,8 @@ Do not let accounting backlog or looming tax deadlines jeopardize your commercia
         "@type": "WebPage",
         "@id": "https://diasuae.ae/#blog-fixed-fee-accounting-packages-uae-sme-pricing"
       },
-      "headline": "Fixed-Fee Accounting for UAE SMEs: Complete Tax & Bookkeeping Packages from AED 500/Month",
-      "description": "No hidden fees. Fixed-fee UAE SME accounting from AED 500/mo. Backlog books, VAT & 9% Corporate Tax by an FTA Registered Tax Agency. See plans at diasuae.ae/pricing!",
+      "headline": "Fixed-Fee Accounting for UAE SMEs: Complete Tax & Bookkeeping Packages from AED 400/Month",
+      "description": "No hidden fees. Fixed-fee UAE SME accounting from AED 400/month. Backlog books, VAT & 9% Corporate Tax by an FTA Registered Tax Agency. See plans at diasuae.ae/pricing!",
       "image": "https://diasuae.ae/api/og?title=Fixed-Fee+Accounting+for+UAE+SMEs&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Pricing+Solutions",
       "datePublished": "2026-11-06",
       "dateModified": "2026-11-06",
@@ -1058,11 +1058,11 @@ Running a growing business in Dubai or Sharjah is challenging enough without the
 
 When business owners fear reaching out to their accountant because the meter is running, compliance suffers. Critical deadlines slip, invoices go unreconciled, and suddenly your business faces severe **Federal Tax Authority (FTA)** fines—including the **AED 10,000 late Corporate Tax registration penalty** under Cabinet Decision No. 75/2023 or steep late VAT filing surcharges.
 
-At **Dias Accounting & Tax Consulting LLC**, an **FTA Registered Tax Agency** operating across Dubai and Sharjah, we believe financial compliance should provide peace of mind, not financial surprises. That is why we are proud to announce our new **transparent, fixed-fee SME accounting packages starting at just AED 500 per month**.
+At **Dias Accounting & Tax Consulting LLC**, an **FTA Registered Tax Agency** operating across Dubai and Sharjah, we believe financial compliance should provide peace of mind, not financial surprises. That is why we are proud to announce our new **transparent, fixed-fee SME accounting packages starting from AED 400/month**.
 
 ---
 
-## Predictable Compliance: Fixed-Fee Accounting from AED 500/Month
+## Predictable Compliance: Fixed-Fee Accounting from AED 400/Month
 
 Our fixed-fee model eliminates billing uncertainty once and for all. Whether you are an e-commerce startup in DTEC, an established consultancy in Sharjah Media City (SHAMS), or a trading firm in Dubai Mainland, your monthly investment is fixed, transparent, and completely predictable.
 
@@ -1117,7 +1117,7 @@ When you partner with **Dias Accounting & Tax Consulting LLC**, you benefit from
 
 | Feature / Service | Starter Compliance | Growth & VAT Hub | Enterprise & Free Zone |
 | :--- | :--- | :--- | :--- |
-| **Monthly Retainer** | **From AED 500 / mo** | **From AED 950 / mo** | **From AED 1,750 / mo** |
+| **Monthly Retainer** | **From AED 400 / mo** | **From AED 600 / mo** | **From AED 1,000 / mo** |
 | **Target Business** | Startups & Freelancers | Active UAE SMEs | High-Volume & Free Zone |
 | **Monthly Invoices / Transactions** | Up to 25 transactions | Up to 100 transactions | Unlimited / Custom |
 | **Bookkeeping & Bank Reconciliations** | Monthly | Monthly | Weekly / Bi-Weekly |
@@ -1133,7 +1133,7 @@ View complete tier details and schedule a free onboarding consultation at [diasu
 ## Frequently Asked Questions (FAQ)
 
 ### How much does accounting cost for a small business in Dubai?
-Accounting services for small businesses in Dubai typically range from AED 500 to AED 2,500 per month depending on transaction volume and regulatory scope. At Dias Accounting, our transparent fixed-fee packages start at AED 500 per month, covering complete double-entry bookkeeping, tax readiness, and dedicated accountant support without surprise hourly charges.
+Accounting services for small businesses in Dubai typically range from AED 400 to AED 2,500 per month depending on transaction volume and regulatory scope. At Dias Accounting, our transparent fixed-fee packages start from AED 400/month, covering complete double-entry bookkeeping, tax readiness, and dedicated accountant support without surprise hourly charges.
 
 ### What is included in a fixed-fee accounting package in the UAE?
 A comprehensive fixed-fee accounting package in the UAE includes cloud bookkeeping under IFRS standards, monthly bank reconciliations, quarterly VAT 201 filing, and UAE Corporate Tax (9%) compliance. High-value packages also provide backlog bookkeeping reconstruction, financial statements, and direct representation before the Federal Tax Authority.
@@ -2581,7 +2581,7 @@ Whether you need to submit an urgent late corporate tax return, file an FTA Volu
 
 *   **Zero-Penalty Assessment Review:** Instant audit of your filed return to verify accuracy and claim missed deductions.
 *   **Direct FTA Representation:** Official submission of penalty waiver petitions and audit defense.
-*   **Fixed-Fee Monthly Bookkeeping:** Transparent packages starting at **AED 500/month** to keep your company audit-ready year-round.
+*   **Fixed-Fee Monthly Bookkeeping:** Transparent packages starting from **AED 400/month** to keep your company audit-ready year-round.
 
 *Contact Glen Dias and our senior corporate tax advisory desk today on WhatsApp at +971 52 922 6958 or book a confidential consultation.*`,
     date: "October 1, 2026",
@@ -2961,9 +2961,9 @@ With the UAE's new Corporate Tax regulations now in effect, this decision has di
     readTime: "6 min read",
     tag: "Incorporation",
     author: {
-      name: "Michael Chen",
-      role: "Corporate Services Director",
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=120"
+      name: "Glen Dias",
+      role: "Managing Director & Certified Tax Advisor",
+      avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=120"
     }
   }
 ];
