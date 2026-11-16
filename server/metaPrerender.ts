@@ -465,20 +465,22 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
   }
 
   if (pathname === "/tax-planning-difc" || pathname === "/tax-planning-difc.html") {
-    const difcTitle = "DIFC & DTEC Tax Planning & Accounting Dubai | Dias UAE";
+    const difcTitle = "DIFC & DTEC Corporate Tax Planning, 0% QFZP & Dividend Audits | Dias Accounting";
     const difcDesc =
-      "Specialist DIFC & DTEC accounting, 0% QFZP Corporate Tax structuring, DFSA compliance & dividend audit services in Dubai by FTA-registered tax agents.";
+      "DIFC & DTEC Corporate Tax Planning, 0% QFZP Compliance & Dividend Audits by FTA-Registered Tax Agents (From AED 400/mo). Book a free 15-min review.";
     const difcSchema = JSON.stringify({
       "@context": "https://schema.org",
       "@graph": [
         {
-          "@type": ["AccountingService", "ProfessionalService"],
-          name: "Dias Accounting - DIFC & DTEC Tax Planning & Accounting",
+          "@type": ["AccountingService", "LocalBusiness", "ProfessionalService"],
+          "@id": `${baseUrl}/#organization`,
+          name: "Dias Accounting and Tax Consulting LLC",
           url: `${baseUrl}/tax-planning-difc`,
-          description: difcDesc,
+          description:
+            "FTA-Registered Tax Agents headquartered in Sharjah Media City (SHAMS), serving DIFC, DTEC, and Dubai Free Zones with DIFC Corporate Tax Planning, DTEC Accounting & Bookkeeping, 0% QFZP Compliance, DIFC Interim & Final Dividend Distribution Audits, and 5% UAE VAT Filing starting from AED 400/month.",
           telephone: "+971-52-922-6958",
           email: "info@diasuae.ae",
-          priceRange: "AED 400 - AED 4,500",
+          priceRange: "From AED 400/month",
           address: {
             "@type": "PostalAddress",
             streetAddress: "Sharjah Media City (SHAMS), Al Messaned",
@@ -487,7 +489,46 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
             postOfficeBoxNumber: "P.O. Box 515000",
             addressCountry: "AE",
           },
-          areaServed: ["Dubai", "Sharjah", "United Arab Emirates"],
+          areaServed: ["DIFC", "DTEC", "Dubai Free Zones", "Dubai", "Sharjah", "United Arab Emirates"],
+          knowsAbout: [
+            "DIFC Corporate Tax Planning",
+            "DTEC Accounting & Bookkeeping",
+            "0% Qualifying Free Zone Person (QFZP) Compliance",
+            "DIFC Interim & Final Dividend Distribution Audits",
+            "5% UAE VAT Filing",
+          ],
+          hasOfferCatalog: {
+            "@type": "OfferCatalog",
+            name: "DIFC & DTEC Tax Planning, Accounting & Audit Services (From AED 400/month)",
+            itemListElement: [
+              {
+                "@type": "Offer",
+                price: "400",
+                priceCurrency: "AED",
+                itemOffered: { "@type": "Service", name: "DIFC Corporate Tax Planning" },
+              },
+              {
+                "@type": "Offer",
+                price: "400",
+                priceCurrency: "AED",
+                itemOffered: { "@type": "Service", name: "DTEC Accounting & Bookkeeping" },
+              },
+              {
+                "@type": "Offer",
+                itemOffered: { "@type": "Service", name: "0% Qualifying Free Zone Person (QFZP) Compliance" },
+              },
+              {
+                "@type": "Offer",
+                itemOffered: { "@type": "Service", name: "DIFC Interim & Final Dividend Distribution Audits" },
+              },
+              {
+                "@type": "Offer",
+                price: "400",
+                priceCurrency: "AED",
+                itemOffered: { "@type": "Service", name: "5% UAE VAT Filing" },
+              },
+            ],
+          },
         },
         {
           "@type": "BreadcrumbList",
@@ -495,7 +536,12 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
           itemListElement: [
             { "@type": "ListItem", position: 1, name: "Home", item: `${baseUrl}/` },
             { "@type": "ListItem", position: 2, name: "Free Zone Services", item: `${baseUrl}/services` },
-            { "@type": "ListItem", position: 3, name: "DIFC & DTEC Tax Planning & Accounting", item: `${baseUrl}/tax-planning-difc` },
+            {
+              "@type": "ListItem",
+              position: 3,
+              name: "DIFC & DTEC Corporate Tax Planning, 0% QFZP & Dividend Audits",
+              item: `${baseUrl}/tax-planning-difc`,
+            },
           ],
         },
         {
@@ -549,9 +595,9 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     return {
       title: difcTitle,
       description: difcDesc,
-      keywords: "DIFC Tax Compliance, DTEC accounting Dubai, 0% QFZP Corporate Tax, DFSA audit readiness, dividend audit certification UAE, Corporate Tax Consultants in DIFC, difc tax planning services, transfer pricing difc, IFRS financial statements Dubai",
+      keywords: "DIFC Corporate Tax Planning, DTEC Accounting & Bookkeeping, 0% Qualifying Free Zone Person (QFZP) Compliance, DIFC Interim & Final Dividend Distribution Audits, 5% UAE VAT Filing, DIFC Tax Compliance, Corporate Tax Consultants in DIFC",
       url: `${baseUrl}/tax-planning-difc`,
-      ogImage: `${baseUrl}/api/og?title=DIFC+%26+DTEC+Tax+Planning+%26+Accounting+Dubai&author=Glen+Dias&role=Senior+Tax+Advisor&tag=DIFC+%26+DTEC+Advisory`,
+      ogImage: `${baseUrl}/api/og?title=DIFC+%26+DTEC+Corporate+Tax+Planning%2C+0%25+QFZP+%26+Dividend+Audits&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=From+AED+400%2Fmo`,
       ogType: "website",
       isArabic,
       schemaMarkup: difcSchema,

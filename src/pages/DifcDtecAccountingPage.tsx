@@ -59,9 +59,9 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
     const isDifcExplicit =
       typeof window !== "undefined" && window.location.pathname.toLowerCase().includes("tax-planning-difc");
     const canonicalPath = isDifcExplicit ? "/tax-planning-difc" : "/difc-dtec-accounting";
-    const pageTitle = "DIFC & DTEC Tax Planning & Accounting Dubai | Dias UAE";
+    const pageTitle = "DIFC & DTEC Corporate Tax Planning, 0% QFZP & Dividend Audits | Dias Accounting";
     const pageDesc =
-      "Specialist DIFC & DTEC accounting, 0% QFZP Corporate Tax structuring, DFSA compliance & dividend audit services in Dubai by FTA-registered tax agents.";
+      "DIFC & DTEC Corporate Tax Planning, 0% QFZP Compliance & Dividend Audits by FTA-Registered Tax Agents (From AED 400/mo). Book a free 15-min review.";
     const pageUrl = `https://diasuae.ae${canonicalPath}`;
 
     applyPageSEO({
@@ -69,36 +69,49 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
       description: pageDesc,
       canonicalPath,
       keywords:
-        "DIFC Tax Compliance, DTEC accounting Dubai, 0% QFZP Corporate Tax, DFSA audit readiness, dividend audit certification UAE, Corporate Tax Consultants in DIFC, transfer pricing DIFC, IFRS financial statements Dubai",
-      ogType: "article",
+        "DIFC Corporate Tax Planning, DTEC Accounting & Bookkeeping, 0% Qualifying Free Zone Person (QFZP) Compliance, DIFC Interim & Final Dividend Distribution Audits, 5% UAE VAT Filing, DIFC Tax Compliance, Corporate Tax Consultants in DIFC",
+      ogType: "website",
       ogImage:
-        "/api/og?title=DIFC+%26+DTEC+Tax+Planning+%26+Accounting+Dubai&author=Glen+Dias&role=Senior+Tax+Advisor&tag=DIFC+%26+DTEC+Advisory",
+        "/api/og?title=DIFC+%26+DTEC+Corporate+Tax+Planning%2C+0%25+QFZP+%26+Dividend+Audits&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=From+AED+400%2Fmo",
     });
 
     upsertJsonLd("schema-difc-dtec", {
       "@context": "https://schema.org",
-      "@type": ["AccountingService", "ProfessionalService"],
-      name: "Dias Accounting - DIFC & DTEC Tax Planning & Accounting",
+      "@type": ["AccountingService", "LocalBusiness", "ProfessionalService"],
+      name: "Dias Accounting and Tax Consulting LLC",
       url: pageUrl,
-      description: pageDesc,
+      description:
+        "FTA-Registered Tax Agents headquartered in Sharjah Media City (SHAMS), serving DIFC, DTEC, and Dubai Free Zones with DIFC Corporate Tax Planning, DTEC Accounting & Bookkeeping, 0% QFZP Compliance, DIFC Interim & Final Dividend Distribution Audits, and 5% UAE VAT Filing starting from AED 400/month.",
       telephone: "+971-52-922-6958",
       email: "info@diasuae.ae",
-      priceRange: "AED 400 - AED 4,500",
+      priceRange: "From AED 400/month",
       address: {
         "@type": "PostalAddress",
-        "streetAddress": "Sharjah Media City (SHAMS), Al Messaned",
-        "addressLocality": "Sharjah",
-        "addressRegion": "Sharjah",
-        "addressCountry": "AE"
+        streetAddress: "Sharjah Media City (SHAMS), Al Messaned",
+        addressLocality: "Sharjah",
+        addressRegion: "Sharjah",
+        postOfficeBoxNumber: "P.O. Box 515000",
+        addressCountry: "AE",
       },
-      areaServed: ["Dubai", "Sharjah", "United Arab Emirates"],
+      areaServed: ["DIFC", "DTEC", "Dubai Free Zones", "Dubai", "Sharjah", "United Arab Emirates"],
       knowsAbout: [
-        "DIFC Tax Compliance",
-        "0% Qualifying Free Zone Person (QFZP) Structuring",
-        "DFSA Statutory Audits and IFRS Financial Reporting",
-        "UAE Dividend Audit Certification",
-        "DTEC Tech Startup Accounting Dubai",
+        "DIFC Corporate Tax Planning",
+        "DTEC Accounting & Bookkeeping",
+        "0% Qualifying Free Zone Person (QFZP) Compliance",
+        "DIFC Interim & Final Dividend Distribution Audits",
+        "5% UAE VAT Filing",
       ],
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "DIFC & DTEC Tax Planning, Accounting & Audit Services (From AED 400/month)",
+        itemListElement: [
+          { "@type": "Offer", price: "400", priceCurrency: "AED", itemOffered: { "@type": "Service", name: "DIFC Corporate Tax Planning" } },
+          { "@type": "Offer", price: "400", priceCurrency: "AED", itemOffered: { "@type": "Service", name: "DTEC Accounting & Bookkeeping" } },
+          { "@type": "Offer", itemOffered: { "@type": "Service", name: "0% Qualifying Free Zone Person (QFZP) Compliance" } },
+          { "@type": "Offer", itemOffered: { "@type": "Service", name: "DIFC Interim & Final Dividend Distribution Audits" } },
+          { "@type": "Offer", price: "400", priceCurrency: "AED", itemOffered: { "@type": "Service", name: "5% UAE VAT Filing" } },
+        ],
+      },
     });
 
     upsertJsonLd("schema-difc-faq", buildFAQPageSchema(DIFC_DTEC_FAQS, `${pageUrl}#faqs`));

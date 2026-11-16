@@ -37,11 +37,11 @@ export const SECTION_SEO_MAP_EN: Record<string, SEOConfig> = {
     ogImage: "/api/og?title=UAE+Company+Setup+%26+Corporate+Tax+Structuring&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Business+Incorporation&readTime=Turnkey+Setup",
   },
   "tax-planning-difc": {
-    title: "DIFC & DTEC Tax Planning & Accounting Dubai | Dias UAE",
-    description: "Specialist DIFC & DTEC accounting, 0% QFZP Corporate Tax structuring, DFSA compliance & dividend audit services in Dubai by FTA-registered tax agents.",
-    keywords: "DIFC Tax Compliance, Corporate Tax Consultants in DIFC, difc tax planning services, corporate tax uae, qualifying free zone person difc, qfzp 0% tax dubai, transfer pricing difc, holding company tax uae, difc corporate tax advisory, tax services in dubai",
+    title: "DIFC & DTEC Corporate Tax Planning, 0% QFZP & Dividend Audits | Dias Accounting",
+    description: "DIFC & DTEC Corporate Tax Planning, 0% QFZP Compliance & Dividend Audits by FTA-Registered Tax Agents (From AED 400/mo). Book a free 15-min review.",
+    keywords: "DIFC Corporate Tax Planning, DTEC Accounting & Bookkeeping, 0% Qualifying Free Zone Person (QFZP) Compliance, DIFC Interim & Final Dividend Distribution Audits, 5% UAE VAT Filing, DIFC Tax Compliance, Corporate Tax Consultants in DIFC",
     hash: "/tax-planning-difc",
-    ogImage: "/api/og?title=DIFC+%26+DTEC+Tax+Planning+%26+Accounting+Dubai&author=Glen+Dias&role=Senior+Tax+Advisor&tag=DIFC+Advisory",
+    ogImage: "/api/og?title=DIFC+%26+DTEC+Corporate+Tax+Planning%2C+0%25+QFZP+%26+Dividend+Audits&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=From+AED+400%2Fmo",
   },
   "why-choose-us": {
     title: "Why Choose Dias Accounting | Tax Advisory Services in Dubai & UAE",
