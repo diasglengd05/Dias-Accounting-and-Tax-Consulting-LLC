@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Menu,
   X,
   Phone,
-  ArrowRight,
+  ChevronDown,
   ChevronRight,
-  MessageCircle,
-  ExternalLink,
+  ShieldCheck,
 } from "lucide-react";
 import DiasLogo from "./DiasLogo";
 import ComplianceAlertBanner from "./ComplianceAlertBanner";
@@ -19,46 +18,121 @@ interface PageNavigationProps {
   onOpenAudit?: () => void;
 }
 
+interface DropdownItem {
+  label: string;
+  path: string;
+}
+
+const SERVICES_DROPDOWN: DropdownItem[] = [
+  { label: "9% Corporate Tax & 0% SBR", path: "/services/corporate-tax-advisory" },
+  { label: "DIFC & DTEC Tax Planning", path: "/tax-planning-difc" },
+  { label: "5% UAE VAT & Audit Readiness", path: "/services/vat-compliance" },
+  { label: "Monthly IFRS Bookkeeping", path: "/services/accounting-bookkeeping" },
+  { label: "Dividend Distribution Audits", path: "/dividends-audit" },
+  { label: "UAE E-Invoicing Setup", path: "/blog/uae-e-invoicing-mandate-asp-integration-guide-2026" },
+];
+
+const COMPANY_SETUP_DROPDOWN: DropdownItem[] = [
+  { label: "SHAMS Free Zone (Sharjah)", path: "/blog/opening-company-shams-free-zone-sharjah-setup-tax-guide-2026" },
+  { label: "Dubai Mainland LLC", path: "/services/business-incorporation" },
+  { label: "DIFC / DTEC / IFZA / DMCC", path: "/company-setup" },
+  { label: "Free Zone vs. Mainland Guide", path: "/blog/choosing-uae-jurisdiction" },
+];
+
+const ABOUT_DROPDOWN: DropdownItem[] = [
+  { label: "About Dias Accounting", path: "/about" },
+  { label: "Client Testimonials", path: "/testimonials" },
+  { label: "FAQs", path: "/faqs" },
+];
+
+type DropdownKey = "services" | "company-setup" | "about";
+
 export const PageNavigation: React.FC<PageNavigationProps> = ({
   currentPath,
   onNavigate,
   onOpenAudit,
 }) => {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [openDesktopDropdown, setOpenDesktopDropdown] = useState<DropdownKey | null>(null);
+  const [openMobileAccordions, setOpenMobileAccordions] = useState<Record<DropdownKey, boolean>>({
+    services: false,
+    "company-setup": false,
+    about: false,
+  });
+
+  const navContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (navContainerRef.current && !navContainerRef.current.contains(event.target as Node)) {
+        setOpenDesktopDropdown(null);
+      }
+    };
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpenDesktopDropdown(null);
+        setMobileMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
 
   const handleLinkClick = (e: React.MouseEvent, path: string) => {
     e.preventDefault();
+    setOpenDesktopDropdown(null);
     setMobileMenuOpen(false);
     onNavigate(path);
   };
 
-  // Nav order: Home, Services, Tax Planner, Pricing, About, Testimonials, Insights, FAQs, Contact
-  const navItems = [
-    { path: "/", label: t.nav.home || "Home" },
-    { path: "/services", label: t.nav.services || "Services" },
-    { path: "/uae-tax-planner", label: language === "ar" ? "حاسبة الضرائب" : "Tax Planner" },
-    { path: "/pricing", label: t.nav.pricing || "Pricing" },
-    { path: "/about", label: language === "ar" ? "من نحن" : "About" },
-    { path: "/testimonials", label: t.nav.reviews || "Testimonials" },
-    { path: "/blogs", label: language === "ar" ? "الرؤى والمدونة" : "Insights" },
-    { path: "/faqs", label: t.nav.faq || "FAQs" },
-    { path: "/contact", label: language === "ar" ? "تواصل معنا" : "Contact" },
-  ];
+  const toggleMobileAccordion = (key: DropdownKey) => {
+    setOpenMobileAccordions((prev) => ({
+      ...prev,
+      [key]: !prev[key],
+    }));
+  };
+
+  const isServicesActive =
+    currentPath.startsWith("/service") ||
+    currentPath === "/tax-planning-difc" ||
+    currentPath === "/difc-dtec-accounting" ||
+    currentPath === "/dividends-audit";
+
+  const isSetupActive =
+    currentPath === "/company-setup" ||
+    currentPath === "/blog/choosing-uae-jurisdiction" ||
+    currentPath === "/blog/opening-company-shams-free-zone-sharjah-setup-tax-guide-2026";
+
+  const isAboutActive =
+    currentPath === "/about" ||
+    currentPath === "/testimonials" ||
+    currentPath === "/reviews" ||
+    currentPath === "/faqs" ||
+    currentPath === "/why-choose-us";
+
+  const isBlogsActive =
+    currentPath === "/blogs" ||
+    currentPath === "/insights" ||
+    (currentPath.startsWith("/blog/") && !isSetupActive);
 
   return (
     <>
       {/* 0. Top FTA Compliance Alert Banner */}
       <ComplianceAlertBanner onOpenAudit={onOpenAudit} />
 
-      {/* 1. Header / Navigation - Sticky on Desktop & Mobile */}
+      {/* 1. Unified Dark-Navy & Brushed-Gold Executive Sticky Header */}
       <header
+        ref={navContainerRef}
         role="banner"
-        className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 transition-all duration-200"
+        className="sticky top-0 z-40 bg-[#070d19]/95 backdrop-blur-md border-b border-[#c5a059]/30 shadow-lg transition-all duration-200"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4 lg:gap-6">
-          
-          {/* Zone 1: Brand Logo */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-3 lg:gap-4">
+          {/* Left: Brand Logo linking to / */}
           <div className="flex items-center shrink-0">
             <a
               href="/"
@@ -67,196 +141,439 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
               aria-label="Dias Accounting Home"
             >
               <DiasLogo
-                className="w-10 h-10"
+                className="w-9 h-9 sm:w-10 sm:h-10"
                 showText={true}
-                textSize="text-xl sm:text-2xl"
-                textColor="text-navy-950"
+                textSize="text-lg sm:text-xl"
+                textColor="text-white"
               />
             </a>
           </div>
 
-          {/* Zone 2: Navigation Links */}
-          <nav aria-label="Main Navigation" className="hidden xl:flex items-center gap-3 xl:gap-4">
-            {navItems.map((item) => {
-              const isActive =
-                currentPath === item.path ||
-                (item.path === "/services" && currentPath.startsWith("/service")) ||
-                (item.path === "/blogs" && currentPath.startsWith("/blog")) ||
-                (item.path === "/about" && currentPath === "/why-choose-us");
-
-              return (
-                <a
-                  key={item.path}
-                  href={item.path}
-                  onClick={(e) => handleLinkClick(e, item.path)}
-                  className={`relative py-2 text-xs font-semibold tracking-tight whitespace-nowrap shrink-0 transition-colors duration-150 border-b-2 ${
-                    isActive
-                      ? "text-navy-950 border-gold-500 font-bold"
-                      : "text-slate-600 border-transparent hover:text-navy-950 hover:border-gold-400/60"
-                  }`}
-                >
-                  {item.label}
-                </a>
-              );
-            })}
-
-            {/* Live Tax Updates - Direct Link to insights.diasuae.ae */}
-            <a
-              href="https://insights.diasuae.ae/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="relative py-1.5 px-3 rounded-full text-xs font-bold tracking-tight whitespace-nowrap shrink-0 transition-all duration-150 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200/80 hover:border-emerald-300 flex items-center gap-1.5 shadow-2xs"
-              title="Live UAE Tax & Regulatory Updates (insights.diasuae.ae)"
+          {/* Center: Single-Row Desktop Horizontal Menu (min-width: 1024px) */}
+          <nav
+            aria-label="Main Navigation"
+            className="hidden lg:flex items-center flex-nowrap gap-3.5 xl:gap-5"
+          >
+            {/* Dropdown 1: SERVICES */}
+            <div
+              className="relative shrink-0"
+              onMouseEnter={() => setOpenDesktopDropdown("services")}
+              onMouseLeave={() => setOpenDesktopDropdown(null)}
             >
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Live Tax Updates</span>
-              <ExternalLink className="w-3 h-3 text-emerald-600" />
+              <button
+                type="button"
+                onClick={() =>
+                  setOpenDesktopDropdown((prev) => (prev === "services" ? null : "services"))
+                }
+                aria-expanded={openDesktopDropdown === "services"}
+                aria-haspopup="true"
+                className={`inline-flex items-center gap-1 py-2 text-[12px] xl:text-[13px] font-semibold uppercase tracking-wider whitespace-nowrap transition-colors cursor-pointer ${
+                  isServicesActive || openDesktopDropdown === "services"
+                    ? "text-[#c5a059]"
+                    : "text-white hover:text-[#c5a059]"
+                }`}
+              >
+                <span>SERVICES</span>
+                <ChevronDown
+                  className={`w-3.5 h-3.5 transition-transform duration-150 ${
+                    openDesktopDropdown === "services" ? "rotate-180 text-[#c5a059]" : ""
+                  }`}
+                />
+              </button>
+
+              {openDesktopDropdown === "services" && (
+                <div className="absolute left-0 top-full pt-2 w-72 z-50">
+                  <div
+                    role="menu"
+                    className="bg-[#0d1b2a] border border-[#c5a059] rounded-xl shadow-2xl py-2 overflow-hidden"
+                  >
+                    {SERVICES_DROPDOWN.map((sub) => (
+                      <a
+                        key={sub.path}
+                        href={sub.path}
+                        role="menuitem"
+                        onClick={(e) => handleLinkClick(e, sub.path)}
+                        className="block px-4 py-2.5 text-[13px] font-medium text-[#ffffff] hover:text-[#c5a059] hover:bg-white/5 transition-colors"
+                      >
+                        {sub.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Dropdown 2: COMPANY SETUP */}
+            <div
+              className="relative shrink-0"
+              onMouseEnter={() => setOpenDesktopDropdown("company-setup")}
+              onMouseLeave={() => setOpenDesktopDropdown(null)}
+            >
+              <button
+                type="button"
+                onClick={() =>
+                  setOpenDesktopDropdown((prev) =>
+                    prev === "company-setup" ? null : "company-setup"
+                  )
+                }
+                aria-expanded={openDesktopDropdown === "company-setup"}
+                aria-haspopup="true"
+                className={`inline-flex items-center gap-1 py-2 text-[12px] xl:text-[13px] font-semibold uppercase tracking-wider whitespace-nowrap transition-colors cursor-pointer ${
+                  isSetupActive || openDesktopDropdown === "company-setup"
+                    ? "text-[#c5a059]"
+                    : "text-white hover:text-[#c5a059]"
+                }`}
+              >
+                <span>COMPANY SETUP</span>
+                <ChevronDown
+                  className={`w-3.5 h-3.5 transition-transform duration-150 ${
+                    openDesktopDropdown === "company-setup" ? "rotate-180 text-[#c5a059]" : ""
+                  }`}
+                />
+              </button>
+
+              {openDesktopDropdown === "company-setup" && (
+                <div className="absolute left-0 top-full pt-2 w-68 z-50">
+                  <div
+                    role="menu"
+                    className="bg-[#0d1b2a] border border-[#c5a059] rounded-xl shadow-2xl py-2 overflow-hidden"
+                  >
+                    {COMPANY_SETUP_DROPDOWN.map((sub) => (
+                      <a
+                        key={sub.path}
+                        href={sub.path}
+                        role="menuitem"
+                        onClick={(e) => handleLinkClick(e, sub.path)}
+                        className="block px-4 py-2.5 text-[13px] font-medium text-[#ffffff] hover:text-[#c5a059] hover:bg-white/5 transition-colors"
+                      >
+                        {sub.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Direct Link: PRICING */}
+            <a
+              href="/pricing"
+              onClick={(e) => handleLinkClick(e, "/pricing")}
+              className={`py-2 text-[12px] xl:text-[13px] font-semibold uppercase tracking-wider whitespace-nowrap shrink-0 transition-colors ${
+                currentPath === "/pricing"
+                  ? "text-[#c5a059]"
+                  : "text-white hover:text-[#c5a059]"
+              }`}
+            >
+              PRICING
+            </a>
+
+            {/* Direct Link: TAX CALCULATOR */}
+            <a
+              href="/uae-tax-planner"
+              onClick={(e) => handleLinkClick(e, "/uae-tax-planner")}
+              className={`py-2 text-[12px] xl:text-[13px] font-semibold uppercase tracking-wider whitespace-nowrap shrink-0 transition-colors ${
+                currentPath === "/uae-tax-planner" ||
+                currentPath === "/tax-planner" ||
+                currentPath === "/corporate-tax-calculator" ||
+                currentPath === "/uae-vat-calculator"
+                  ? "text-[#c5a059]"
+                  : "text-white hover:text-[#c5a059]"
+              }`}
+            >
+              TAX CALCULATOR
+            </a>
+
+            {/* Direct Link: BLOGS */}
+            <a
+              href="/blogs"
+              onClick={(e) => handleLinkClick(e, "/blogs")}
+              className={`py-2 text-[12px] xl:text-[13px] font-semibold uppercase tracking-wider whitespace-nowrap shrink-0 transition-colors ${
+                isBlogsActive ? "text-[#c5a059]" : "text-white hover:text-[#c5a059]"
+              }`}
+            >
+              BLOGS
+            </a>
+
+            {/* Dropdown 3: ABOUT & REVIEWS */}
+            <div
+              className="relative shrink-0"
+              onMouseEnter={() => setOpenDesktopDropdown("about")}
+              onMouseLeave={() => setOpenDesktopDropdown(null)}
+            >
+              <button
+                type="button"
+                onClick={() =>
+                  setOpenDesktopDropdown((prev) => (prev === "about" ? null : "about"))
+                }
+                aria-expanded={openDesktopDropdown === "about"}
+                aria-haspopup="true"
+                className={`inline-flex items-center gap-1 py-2 text-[12px] xl:text-[13px] font-semibold uppercase tracking-wider whitespace-nowrap transition-colors cursor-pointer ${
+                  isAboutActive || openDesktopDropdown === "about"
+                    ? "text-[#c5a059]"
+                    : "text-white hover:text-[#c5a059]"
+                }`}
+              >
+                <span>ABOUT &amp; REVIEWS</span>
+                <ChevronDown
+                  className={`w-3.5 h-3.5 transition-transform duration-150 ${
+                    openDesktopDropdown === "about" ? "rotate-180 text-[#c5a059]" : ""
+                  }`}
+                />
+              </button>
+
+              {openDesktopDropdown === "about" && (
+                <div className="absolute right-0 top-full pt-2 w-60 z-50">
+                  <div
+                    role="menu"
+                    className="bg-[#0d1b2a] border border-[#c5a059] rounded-xl shadow-2xl py-2 overflow-hidden"
+                  >
+                    {ABOUT_DROPDOWN.map((sub) => (
+                      <a
+                        key={sub.path}
+                        href={sub.path}
+                        role="menuitem"
+                        onClick={(e) => handleLinkClick(e, sub.path)}
+                        className="block px-4 py-2.5 text-[13px] font-medium text-[#ffffff] hover:text-[#c5a059] hover:bg-white/5 transition-colors"
+                      >
+                        {sub.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Direct Link: CONTACT */}
+            <a
+              href="/#contact"
+              onClick={(e) => handleLinkClick(e, "/#contact")}
+              className={`py-2 text-[12px] xl:text-[13px] font-semibold uppercase tracking-wider whitespace-nowrap shrink-0 transition-colors ${
+                currentPath === "/contact"
+                  ? "text-[#c5a059]"
+                  : "text-white hover:text-[#c5a059]"
+              }`}
+            >
+              CONTACT
             </a>
           </nav>
 
-          {/* Zone 3: Sticky "Book a Free Consultation" CTA + Controls (Desktop >= xl) */}
-          <div className="hidden xl:flex items-center gap-3 shrink-0">
-            <LanguageToggle variant="desktop" />
-
-            {/* Tap-to-call link */}
+          {/* Right: Compact Brushed Gold CTA Button (Desktop >= 1024px) */}
+          <div className="hidden lg:flex items-center shrink-0">
             <a
-              href="tel:+971529226958"
-              className="p-2 text-slate-700 hover:text-gold-600 transition-colors"
-              title="Call Dias Accounting: +971 52 922 6958"
-              aria-label="Direct Phone Line"
+              href="/uae-tax-planner"
+              onClick={(e) => handleLinkClick(e, "/uae-tax-planner")}
+              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-[#c5a059] hover:bg-[#dec18c] text-[#070d19] font-display font-extrabold text-xs xl:text-[13px] px-4 xl:px-5 py-2.5 whitespace-nowrap shrink-0 shadow-md shadow-[#c5a059]/20 transition-all cursor-pointer active:scale-95"
             >
-              <Phone className="w-4 h-4 text-gold-600" />
-            </a>
-
-            {/* Sticky "Book a Free Consultation" Button on Desktop */}
-            <a
-              href="/contact"
-              onClick={(e) => handleLinkClick(e, "/contact")}
-              className="font-display font-bold py-2.5 px-5 rounded-xl text-xs tracking-tight bg-gradient-to-r from-gold-500 via-amber-400 to-gold-500 hover:from-gold-400 hover:to-gold-500 text-navy-950 border border-gold-400/80 shadow-sm hover:shadow-md transition-all flex items-center gap-2 whitespace-nowrap shrink-0 cursor-pointer active:scale-95"
-            >
-              <span>{language === "ar" ? "احجز استشارة مجانية" : "Book a Free Consultation"}</span>
-              <ArrowRight className="w-3.5 h-3.5 text-navy-950 rtl:rotate-180" />
+              <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+              <span>Free Tax Check</span>
             </a>
           </div>
 
-          {/* Mobile & Tablet Controls (< xl) */}
-          <div className="flex xl:hidden items-center gap-2 sm:gap-2.5">
-            {/* Tablet Quick Language Toggle */}
-            <div className="hidden sm:inline-flex">
-              <LanguageToggle variant="compact" />
-            </div>
-
-            {/* Mobile Sticky Book a Free Consultation Button */}
+          {/* Mobile & Tablet Controls (< 1024px) */}
+          <div className="flex lg:hidden items-center gap-2 sm:gap-2.5 shrink-0">
             <a
-              href="/contact"
-              onClick={(e) => handleLinkClick(e, "/contact")}
-              className="text-[11px] sm:text-xs font-bold py-2 px-3 sm:px-3.5 rounded-lg bg-gold-500 hover:bg-gold-400 text-navy-950 flex items-center gap-1.5 shadow-xs cursor-pointer whitespace-nowrap active:scale-95 transition-transform"
+              href="/uae-tax-planner"
+              onClick={(e) => handleLinkClick(e, "/uae-tax-planner")}
+              className="inline-flex items-center justify-center rounded-full bg-[#c5a059] hover:bg-[#dec18c] text-[#070d19] font-display font-extrabold text-[11px] sm:text-xs px-3.5 py-2 whitespace-nowrap shadow-xs cursor-pointer transition-colors"
             >
-              <span>{language === "ar" ? "استشارة مجانية" : "Free Consultation"}</span>
+              Free Tax Check
             </a>
 
-            {/* Mobile Tap-to-Call */}
             <a
               href="tel:+971529226958"
-              className="w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-center text-navy-950 hover:border-gold-400 hover:text-gold-600 transition-colors"
+              className="w-10 h-10 min-w-[40px] min-h-[40px] rounded-xl bg-[#0d1b2a] border border-[#c5a059]/40 flex items-center justify-center text-[#dec18c] hover:border-[#c5a059] transition-colors"
               aria-label="Direct Phone Call"
               title="Call Dias Accounting: +971 52 922 6958"
             >
-              <Phone className="w-4 h-4 text-gold-600" />
+              <Phone className="w-4 h-4" />
             </a>
 
-            {/* Hamburger Button */}
             <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center text-navy-950 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-500 cursor-pointer transition-colors"
+              type="button"
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
+              className="w-10 h-10 min-w-[40px] min-h-[40px] flex items-center justify-center text-white bg-[#0d1b2a] hover:bg-[#0d1b2a]/80 border border-[#c5a059]/50 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#c5a059] cursor-pointer transition-colors"
               aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-nav-menu"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileMenuOpen ? <X className="w-5 h-5 text-[#c5a059]" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation Drawer */}
+        {/* Mobile & Tablet Navigation Drawer (< 1024px) with Expandable Accordions */}
         <div
           id="mobile-nav-menu"
-          className={`xl:hidden absolute top-20 left-0 w-full bg-white border-b border-slate-200 shadow-xl z-50 overflow-hidden flex flex-col transition-all duration-200 ease-out origin-top ${
+          className={`lg:hidden absolute top-20 left-0 w-full bg-[#070d19] border-b border-[#c5a059]/50 shadow-2xl z-50 overflow-hidden flex flex-col transition-all duration-200 ease-out origin-top ${
             mobileMenuOpen
               ? "opacity-100 max-h-[calc(100vh-5rem)] pointer-events-auto visible"
               : "opacity-0 max-h-0 pointer-events-none invisible"
           }`}
           aria-hidden={!mobileMenuOpen}
         >
-          <div className="px-4 sm:px-6 pt-4 pb-6 space-y-4 overflow-y-auto flex-1">
-            
-            {/* Top Bar with Language Toggle */}
-            <div className="pb-3 border-b border-slate-100 flex items-center justify-between">
-              <span className="text-xs font-semibold text-slate-500">
-                {language === "ar" ? "اللغة / Language" : "Language"}
-              </span>
-              <LanguageToggle variant="mobile" />
-            </div>
-
+          <div className="px-4 sm:px-6 pt-4 pb-6 space-y-3 overflow-y-auto flex-1">
             {/* Primary Mobile CTA */}
             <a
-              href="/contact"
-              onClick={(e) => handleLinkClick(e, "/contact")}
-              className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-gold-500 to-amber-400 text-navy-950 font-display font-extrabold text-sm flex items-center justify-center gap-2 shadow-md cursor-pointer text-center"
+              href="/uae-tax-planner"
+              onClick={(e) => handleLinkClick(e, "/uae-tax-planner")}
+              className="w-full py-3 px-4 rounded-full bg-[#c5a059] hover:bg-[#dec18c] text-[#070d19] font-display font-extrabold text-sm flex items-center justify-center gap-2 shadow-md cursor-pointer text-center"
             >
-              <span>{language === "ar" ? "احجز استشارة مجانية" : "Book a Free Consultation"}</span>
-              <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+              <ShieldCheck className="w-4 h-4" />
+              <span>Free Tax Check</span>
             </a>
 
-            {/* Main Navigation Links */}
-            <div className="divide-y divide-slate-100">
-              {navItems.map((item) => {
-                const isActive = currentPath === item.path;
-                return (
-                  <a
-                    key={item.path}
-                    href={item.path}
-                    onClick={(e) => handleLinkClick(e, item.path)}
-                    className={`flex items-center justify-between py-3 text-sm font-semibold transition-colors ${
-                      isActive
-                        ? "text-gold-600 font-bold bg-gold-50/50 px-2 rounded-lg"
-                        : "text-navy-950 hover:text-gold-600"
+            {/* Accordions & Direct Links */}
+            <div className="divide-y divide-white/10">
+              {/* Mobile Accordion: SERVICES */}
+              <div className="py-1">
+                <button
+                  type="button"
+                  onClick={() => toggleMobileAccordion("services")}
+                  aria-expanded={openMobileAccordions.services}
+                  className="w-full flex items-center justify-between py-3 text-xs font-bold uppercase tracking-wider text-white hover:text-[#c5a059] cursor-pointer"
+                >
+                  <span>SERVICES</span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-[#c5a059] transition-transform duration-150 ${
+                      openMobileAccordions.services ? "rotate-180" : ""
                     }`}
-                  >
-                    <span>{item.label}</span>
-                    <ChevronRight className="w-4 h-4 text-slate-400 rtl:rotate-180" />
-                  </a>
-                );
-              })}
+                  />
+                </button>
+                {openMobileAccordions.services && (
+                  <div className="pl-3 pb-2 space-y-1 border-l border-[#c5a059]/40 ml-1">
+                    {SERVICES_DROPDOWN.map((sub) => (
+                      <a
+                        key={sub.path}
+                        href={sub.path}
+                        onClick={(e) => handleLinkClick(e, sub.path)}
+                        className="block py-2 px-2 text-sm text-[#cbd5e1] hover:text-[#c5a059] transition-colors"
+                      >
+                        {sub.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
 
-              {/* Mobile Live Tax Updates link to insights.diasuae.ae */}
+              {/* Mobile Accordion: COMPANY SETUP */}
+              <div className="py-1">
+                <button
+                  type="button"
+                  onClick={() => toggleMobileAccordion("company-setup")}
+                  aria-expanded={openMobileAccordions["company-setup"]}
+                  className="w-full flex items-center justify-between py-3 text-xs font-bold uppercase tracking-wider text-white hover:text-[#c5a059] cursor-pointer"
+                >
+                  <span>COMPANY SETUP</span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-[#c5a059] transition-transform duration-150 ${
+                      openMobileAccordions["company-setup"] ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                {openMobileAccordions["company-setup"] && (
+                  <div className="pl-3 pb-2 space-y-1 border-l border-[#c5a059]/40 ml-1">
+                    {COMPANY_SETUP_DROPDOWN.map((sub) => (
+                      <a
+                        key={sub.path}
+                        href={sub.path}
+                        onClick={(e) => handleLinkClick(e, sub.path)}
+                        className="block py-2 px-2 text-sm text-[#cbd5e1] hover:text-[#c5a059] transition-colors"
+                      >
+                        {sub.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Mobile Direct Link: PRICING */}
               <a
-                href="https://insights.diasuae.ae/"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-between py-3 px-3 my-1 rounded-xl text-sm font-bold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/70 transition-colors"
-                title="Live UAE Tax & Regulatory Updates (insights.diasuae.ae)"
+                href="/pricing"
+                onClick={(e) => handleLinkClick(e, "/pricing")}
+                className="flex items-center justify-between py-3 text-xs font-bold uppercase tracking-wider text-white hover:text-[#c5a059] transition-colors"
               >
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>Live Tax Updates (insights.diasuae.ae)</span>
-                </div>
-                <ExternalLink className="w-4 h-4 text-emerald-600" />
+                <span>PRICING</span>
+                <ChevronRight className="w-4 h-4 text-[#c5a059]" />
+              </a>
+
+              {/* Mobile Direct Link: TAX CALCULATOR */}
+              <a
+                href="/uae-tax-planner"
+                onClick={(e) => handleLinkClick(e, "/uae-tax-planner")}
+                className="flex items-center justify-between py-3 text-xs font-bold uppercase tracking-wider text-white hover:text-[#c5a059] transition-colors"
+              >
+                <span>TAX CALCULATOR</span>
+                <ChevronRight className="w-4 h-4 text-[#c5a059]" />
+              </a>
+
+              {/* Mobile Direct Link: BLOGS */}
+              <a
+                href="/blogs"
+                onClick={(e) => handleLinkClick(e, "/blogs")}
+                className="flex items-center justify-between py-3 text-xs font-bold uppercase tracking-wider text-white hover:text-[#c5a059] transition-colors"
+              >
+                <span>BLOGS</span>
+                <ChevronRight className="w-4 h-4 text-[#c5a059]" />
+              </a>
+
+              {/* Mobile Accordion: ABOUT & REVIEWS */}
+              <div className="py-1">
+                <button
+                  type="button"
+                  onClick={() => toggleMobileAccordion("about")}
+                  aria-expanded={openMobileAccordions.about}
+                  className="w-full flex items-center justify-between py-3 text-xs font-bold uppercase tracking-wider text-white hover:text-[#c5a059] cursor-pointer"
+                >
+                  <span>ABOUT &amp; REVIEWS</span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-[#c5a059] transition-transform duration-150 ${
+                      openMobileAccordions.about ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                {openMobileAccordions.about && (
+                  <div className="pl-3 pb-2 space-y-1 border-l border-[#c5a059]/40 ml-1">
+                    {ABOUT_DROPDOWN.map((sub) => (
+                      <a
+                        key={sub.path}
+                        href={sub.path}
+                        onClick={(e) => handleLinkClick(e, sub.path)}
+                        className="block py-2 px-2 text-sm text-[#cbd5e1] hover:text-[#c5a059] transition-colors"
+                      >
+                        {sub.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Mobile Direct Link: CONTACT */}
+              <a
+                href="/#contact"
+                onClick={(e) => handleLinkClick(e, "/#contact")}
+                className="flex items-center justify-between py-3 text-xs font-bold uppercase tracking-wider text-white hover:text-[#c5a059] transition-colors"
+              >
+                <span>CONTACT</span>
+                <ChevronRight className="w-4 h-4 text-[#c5a059]" />
               </a>
             </div>
 
-            {/* Tap-to-call link on Mobile */}
-            <div className="pt-2">
+            {/* Utility Footer Row inside Mobile Drawer: Language & Phone */}
+            <div className="pt-3 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="flex items-center justify-between w-full sm:w-auto gap-3">
+                <span className="text-xs font-semibold text-slate-400">
+                  {language === "ar" ? "اللغة" : "Language"}
+                </span>
+                <LanguageToggle variant="mobile" />
+              </div>
               <a
                 href="tel:+971529226958"
-                className="w-full py-3 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-navy-950 font-bold text-xs flex items-center justify-center gap-2 transition-colors"
+                className="w-full sm:w-auto py-2.5 px-4 rounded-xl bg-[#0d1b2a] border border-[#c5a059]/40 text-white font-bold text-xs flex items-center justify-center gap-2 transition-colors hover:border-[#c5a059]"
               >
-                <Phone className="w-4 h-4 text-gold-600" />
-                <span>Call Advisory Desk: +971 52 922 6958</span>
+                <Phone className="w-3.5 h-3.5 text-[#c5a059]" />
+                <span>+971 52 922 6958</span>
               </a>
             </div>
-
           </div>
         </div>
       </header>

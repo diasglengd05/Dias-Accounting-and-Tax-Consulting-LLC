@@ -19,7 +19,9 @@ import {
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
 import StandalonePricingCards from "../components/StandalonePricingCards";
-import { applyPageSEO } from "../lib/seo";
+import LeadQuoteSection from "../components/LeadQuoteSection";
+import QuickAnswersPricingTable from "../components/QuickAnswersPricingTable";
+import { applyPageSEO, buildFAQPageSchema, upsertJsonLd, removeJsonLd, FAQSchemaItem } from "../lib/seo";
 
 interface PricingPageProps {
   onNavigate: (path: string) => void;
@@ -27,6 +29,34 @@ interface PricingPageProps {
   onOpenPrivacy?: () => void;
   onOpenGooglePreferred?: () => void;
 }
+
+const PRICING_FAQS: FAQSchemaItem[] = [
+  {
+    question: "What is included in Dias Accounting's fixed-fee accounting packages in Dubai?",
+    answer:
+      "Our monthly retainers (starting from AED 400 to AED 2,500/month) cover a dedicated chartered accountant, cloud software setup (Zoho Books, QuickBooks, Xero), monthly bank and card reconciliations, IFRS Profit & Loss and Balance Sheet statements, quarterly VAT 201 return filings, and annual Corporate Tax return preparation on EmaraTax. There are zero hourly fees or surprise billing charges.",
+  },
+  {
+    question: "How much does corporate tax filing cost for UAE mainland and Free Zone companies?",
+    answer:
+      "For businesses maintaining clean monthly books with Dias Accounting, annual Corporate Tax return filing is bundled into our comprehensive tiers. For standalone Corporate Tax filing without monthly bookkeeping, our fixed preparation fee starts at AED 1,500 for entities claiming 0% Small Business Relief (SBR) up to AED 3M, and AED 2,500 to AED 4,500 for standard 9% or 0% QFZP Free Zone returns.",
+  },
+  {
+    question: "Are Corporate Tax returns (9%) and VAT 201 filings included in the monthly accounting fee?",
+    answer:
+      "Yes. Our Growth and Enterprise plans include full quarterly VAT 201 return submissions and annual Corporate Tax return filing on the FTA EmaraTax portal. Our Essential tier (from AED 400/month on annual billing) covers ongoing bookkeeping and quarterly VAT, with an optional discounted annual corporate tax filing add-on.",
+  },
+  {
+    question: "What are the penalties if my UAE company delays historical backlog bookkeeping?",
+    answer:
+      "Under Cabinet Decision No. 75 of 2023, failing to register for Corporate Tax on time incurs an automatic AED 10,000 fine. Failing to maintain required accounting records for at least 5 years triggers penalties starting at AED 10,000 for a first violation and AED 20,000 for repeats. Our Backlog Catch-Up packages (from AED 2,500/year) reconstruct missing ledgers within 5 to 7 business days to eliminate fine exposure.",
+  },
+  {
+    question: "Can DIFC, DTEC, and Free Zone companies choose standard SME accounting packages?",
+    answer:
+      "Yes. We offer specialized Free Zone and DIFC accounting tiers that factor in annual IFRS audited accounts, 0% Qualifying Free Zone Person (QFZP) de minimis tests, and OECD Article 34 transfer pricing compliance. Check out our dedicated DIFC Tax Compliance Hub for financial institutions and common-law entities.",
+  },
+];
 
 export const PricingPage: React.FC<PricingPageProps> = ({
   onNavigate,
@@ -47,8 +77,12 @@ export const PricingPage: React.FC<PricingPageProps> = ({
         "Corporate Tax, accounting packages dubai, monthly accounting package dubai, fixed fee bookkeeping uae, corporate tax return fee, corporate tax consultants in difc, tax services in dubai, difc tax compliance",
       ogImage: "/api/og?title=Fixed-Fee+Accounting+%26+Tax+Packages+Dubai&author=Dias+Tax+Team&tag=From+AED+400%2Fmo",
     });
+    upsertJsonLd("pricing-faq-jsonld", buildFAQPageSchema(PRICING_FAQS, "https://diasuae.ae/pricing#faqs"));
 
     window.scrollTo({ top: 0, behavior: "instant" });
+    return () => {
+      removeJsonLd("pricing-faq-jsonld");
+    };
   }, []);
 
   const handleSelectPackage = (packageName: string) => {
@@ -104,6 +138,25 @@ export const PricingPage: React.FC<PricingPageProps> = ({
                 <p>
                   <strong>Note:</strong> Final pricing depends on your business activity, transaction volume, and filing requirements. Book a free consultation for an accurate quote.
                 </p>
+              </div>
+
+              {/* Subtle Quick-Scroll Anchor to Lead Capture Section */}
+              <div className="pt-6 flex flex-wrap items-center gap-3">
+                <a
+                  href="#get-quote"
+                  className="inline-flex items-center gap-2 rounded-xl bg-[#0d1b2a] hover:bg-[#c5a059] text-[#dec18c] hover:text-[#070d19] font-display font-bold text-xs sm:text-sm px-5 py-3 transition-all border border-[#c5a059]"
+                >
+                  <span>Get a Custom Quote in 60 Seconds ↓</span>
+                </a>
+                <a
+                  href="https://wa.me/971529226958?text=Hi%20Dias%20Accounting%2C%20I%20would%20like%20a%20quote%20for%20UAE%20accounting%20and%20tax%20compliance."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-xl bg-white/5 hover:bg-white/10 text-white font-display font-semibold text-xs sm:text-sm px-5 py-3 transition-all border border-white/15"
+                >
+                  <MessageCircle className="w-4 h-4 text-emerald-400" />
+                  <span>Chat on WhatsApp (+971 52 922 6958)</span>
+                </a>
               </div>
             </div>
           </div>
@@ -734,7 +787,10 @@ export const PricingPage: React.FC<PricingPageProps> = ({
               onSelectService={() => onNavigate("/contact")}
             />
           </div>
+          {/* Quick Answers & Transparent UAE Pricing Table */}
         </section>
+
+        <QuickAnswersPricingTable variant="pricing" onNavigate={onNavigate} />
 
         {/* Pricing FAQs Section */}
         <section className="py-16 bg-white border-t border-slate-200">
@@ -853,6 +909,8 @@ export const PricingPage: React.FC<PricingPageProps> = ({
           </div>
         </section>
       </main>
+
+      <LeadQuoteSection variant="pricing" />
 
       <PageFooter
         onNavigate={onNavigate}

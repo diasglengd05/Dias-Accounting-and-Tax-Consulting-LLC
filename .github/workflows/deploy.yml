@@ -36,7 +36,7 @@ jobs:
       - name: Add .nojekyll, CNAME and SPA 404 fallback
         run: |
           touch dist/.nojekyll
-          echo "www.diasuae.ae" > dist/CNAME
+          echo "diasuae.ae" > dist/CNAME
           cp dist/index.html dist/404.html
 
       - name: Setup Pages

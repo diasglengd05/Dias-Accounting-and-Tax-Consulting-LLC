@@ -895,9 +895,13 @@ async function sendEmailNotification(options: SendEmailOptions): Promise<{ sent:
 app.post("/api/inquiries", async (req, res) => {
   const { name, email, phone, company, serviceType, message } = req.body;
 
-  if (!name || !email || !phone) {
-    return res.status(400).json({ error: "Required fields are missing." });
+  if (!name || !String(name).trim() || !phone || !String(phone).trim()) {
+    return res.status(400).json({ error: "Required fields (name and phone) are missing." });
   }
+
+  const trimmedEmail = typeof email === "string" ? email.trim() : "";
+  const hasRealEmail = trimmedEmail.includes("@");
+  const safeEmail = trimmedEmail || "Quick Quote (WhatsApp / Phone Callback)";
 
   // Pack any message text into the company string so it gets recorded in Google Sheets as well
   const finalCompany = message 
@@ -905,9 +909,9 @@ app.post("/api/inquiries", async (req, res) => {
     : (company || "N/A");
 
   const payload = {
-    name,
-    email,
-    phone,
+    name: String(name).trim(),
+    email: safeEmail,
+    phone: String(phone).trim(),
     company: finalCompany,
     serviceType: serviceType || "general",
     createdAt: new Date().toISOString(),
@@ -990,7 +994,7 @@ app.post("/api/inquiries", async (req, res) => {
 
     // 3. Dispatch internal admin alert email
     const adminEmail = process.env.ADMIN_NOTIFICATION_EMAIL || process.env.ADMIN_EMAIL || "diasglen.gd@gmail.com";
-    const cleanPhone = phone.replace(/[^0-9]/g, "");
+    const cleanPhone = String(phone).replace(/[^0-9]/g, "");
     const waLink = cleanPhone ? `https://wa.me/${cleanPhone}` : `https://wa.me/971502560990`;
     const appUrl = process.env.APP_URL || "https://diasaccounting.ae";
 
@@ -1000,7 +1004,7 @@ app.post("/api/inquiries", async (req, res) => {
           <div style="display: inline-block; background-color: #c5a059; color: #0a1736; font-size: 10px; font-weight: bold; padding: 3px 8px; border-radius: 9999px; text-transform: uppercase; margin-bottom: 8px;">
             🚨 New Client Inquiry / Booking
           </div>
-          <h2 style="margin: 0; font-size: 20px; font-weight: bold; color: #ffffff;">New Lead: ${name}</h2>
+          <h2 style="margin: 0; font-size: 20px; font-weight: bold; color: #ffffff;">New Lead: ${payload.name}</h2>
           <p style="margin: 4px 0 0 0; font-size: 13px; color: #94a3b8;">Service: ${serviceType || "Tax & Accounting Inquiry"}</p>
         </div>
         
@@ -1009,15 +1013,15 @@ app.post("/api/inquiries", async (req, res) => {
             <tbody>
               <tr style="border-bottom: 1px solid #f1f5f9;">
                 <td style="padding: 10px 0; color: #64748b; font-weight: bold; width: 35%;">Client Name:</td>
-                <td style="padding: 10px 0; color: #0a1736; font-weight: bold;">${name}</td>
+                <td style="padding: 10px 0; color: #0a1736; font-weight: bold;">${payload.name}</td>
               </tr>
               <tr style="border-bottom: 1px solid #f1f5f9;">
                 <td style="padding: 10px 0; color: #64748b; font-weight: bold;">Email:</td>
-                <td style="padding: 10px 0;"><a href="mailto:${email}" style="color: #0284c7; text-decoration: none; font-weight: 600;">${email}</a></td>
+                <td style="padding: 10px 0;">${hasRealEmail ? `<a href="mailto:${safeEmail}" style="color: #0284c7; text-decoration: none; font-weight: 600;">${safeEmail}</a>` : `<span style="color: #475569;">${safeEmail}</span>`}</td>
               </tr>
               <tr style="border-bottom: 1px solid #f1f5f9;">
                 <td style="padding: 10px 0; color: #64748b; font-weight: bold;">Phone / WhatsApp:</td>
-                <td style="padding: 10px 0;"><a href="tel:${phone}" style="color: #0a1736; text-decoration: none; font-weight: 600;">${phone}</a></td>
+                <td style="padding: 10px 0;"><a href="tel:${payload.phone}" style="color: #0a1736; text-decoration: none; font-weight: 600;">${payload.phone}</a></td>
               </tr>
               <tr style="border-bottom: 1px solid #f1f5f9;">
                 <td style="padding: 10px 0; color: #64748b; font-weight: bold;">Company / Details:</td>
@@ -1046,9 +1050,7 @@ app.post("/api/inquiries", async (req, res) => {
               <a href="${waLink}" style="background-color: #25d366; color: #ffffff; padding: 10px 18px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 12px; display: inline-block; margin: 4px;">
                 💬 WhatsApp Prospect
               </a>
-              <a href="mailto:${email}?subject=Regarding%20your%20consultation%20with%20Dias%20Accounting" style="background-color: #0a1736; color: #ffffff; padding: 10px 18px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 12px; display: inline-block; margin: 4px;">
-                ✉️ Reply via Email
-              </a>
+              ${hasRealEmail ? `<a href="mailto:${safeEmail}?subject=Regarding%20your%20consultation%20with%20Dias%20Accounting" style="background-color: #0a1736; color: #ffffff; padding: 10px 18px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 12px; display: inline-block; margin: 4px;">✉️ Reply via Email</a>` : ""}
               <a href="${appUrl}/#admin" style="background-color: #f1f5f9; color: #0a1736; border: 1px solid #cbd5e1; padding: 10px 18px; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 12px; display: inline-block; margin: 4px;">
                 📊 View in Admin Portal
               </a>
@@ -1984,6 +1986,18 @@ async function bootstrap() {
     return res.redirect(301, `/blogs${qs}`);
   });
 
+  // Permanent consolidation: 301 Redirect /home, /home/, /home.html, and /index.html -> /
+  app.use((req, res, next) => {
+    if (req.method !== "GET" && req.method !== "HEAD") return next();
+    const reqPath = (req.path || "").toLowerCase();
+    if (reqPath === "/home" || reqPath === "/home/" || reqPath === "/home.html" || reqPath === "/index.html") {
+      const qsIndex = req.originalUrl.indexOf("?");
+      const qs = qsIndex !== -1 ? req.originalUrl.slice(qsIndex) : "";
+      return res.redirect(301, `/${qs}`);
+    }
+    return next();
+  });
+
   app.get("/sitemap.xml", (_req, res) => {
     const file = path.join(process.cwd(), "public", "sitemap.xml");
     res.setHeader("Content-Type", "application/xml; charset=utf-8");
@@ -1993,6 +2007,14 @@ async function bootstrap() {
 
   app.get("/robots.txt", (_req, res) => {
     const file = path.join(process.cwd(), "public", "robots.txt");
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.setHeader("Cache-Control", "public, max-age=3600");
+    return res.sendFile(file);
+  });
+
+  app.get(["/llms.txt", "/llms-full.txt"], (req, res) => {
+    const fileName = req.path === "/llms-full.txt" ? "llms-full.txt" : "llms.txt";
+    const file = path.join(process.cwd(), "public", fileName);
     res.setHeader("Content-Type", "text/plain; charset=utf-8");
     res.setHeader("Cache-Control", "public, max-age=3600");
     return res.sendFile(file);

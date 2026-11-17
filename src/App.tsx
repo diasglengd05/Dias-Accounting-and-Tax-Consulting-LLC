@@ -103,6 +103,7 @@ const VatPlannerPage = React.lazy(() => import("./pages/VatPlannerPage"));
 const FtaDeadlinesPage = React.lazy(() => import("./pages/FtaDeadlinesPage"));
 import CookieConsentBanner from "./components/CookieConsentBanner";
 import HomepagePricingSection from "./components/HomepagePricingSection";
+import QuickAnswersPricingTable from "./components/QuickAnswersPricingTable";
 
 // Framer Motion variants for staggered sequential reveal in Services section
 const servicesContainerVariants: Variants = {
@@ -133,6 +134,14 @@ const serviceCardVariants: Variants = {
   },
 };
 
+const normalizeAppPath = (rawPath: string): string => {
+  const lower = (rawPath || "/").toLowerCase();
+  if (lower === "/home" || lower === "/home/" || lower === "/home.html" || lower === "/index.html") {
+    return "/";
+  }
+  return rawPath;
+};
+
 function MainApp() {
   const { t, language, isRTL } = useLanguage();
 
@@ -143,24 +152,44 @@ function MainApp() {
   // Dedicated SEO Landing Pages Path State
   const [currentPath, setCurrentPath] = useState<string>(() => {
     if (typeof window !== "undefined") {
-      return window.location.pathname;
+      return normalizeAppPath(window.location.pathname);
     }
     return "/";
   });
 
   useEffect(() => {
-    const handlePopState = () => {
-      setCurrentPath(window.location.pathname);
+    const syncAndConsolidateHome = () => {
+      const raw = window.location.pathname;
+      const normalized = normalizeAppPath(raw);
+      if (normalized !== raw) {
+        const nextHash = window.location.hash === "#home" ? "" : window.location.hash;
+        window.history.replaceState(null, "", `${normalized}${window.location.search}${nextHash}`);
+      }
+      setCurrentPath(normalized);
     };
-    window.addEventListener("popstate", handlePopState);
-    return () => window.removeEventListener("popstate", handlePopState);
+
+    syncAndConsolidateHome();
+    window.addEventListener("popstate", syncAndConsolidateHome);
+    return () => window.removeEventListener("popstate", syncAndConsolidateHome);
   }, []);
 
   const navigateTo = (path: string) => {
     if (typeof window !== "undefined") {
-      window.history.pushState(null, "", path);
-      setCurrentPath(path);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      const [rawPathPart, hashPart] = path.split("#");
+      const normalized = normalizeAppPath(rawPathPart || "/");
+      const fullUrl = hashPart ? `${normalized}#${hashPart}` : normalized;
+      window.history.pushState(null, "", fullUrl);
+      setCurrentPath(normalized);
+      if (hashPart) {
+        setTimeout(() => {
+          const el = document.getElementById(hashPart);
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth" });
+          }
+        }, 80);
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
     }
   };
 
@@ -1583,6 +1612,9 @@ function MainApp() {
         language={language}
         onPreselectedCallBooking={handlePreselectedCallBooking}
       />
+
+      {/* 6.2 Quick Answers & Transparent UAE Pricing Table (AI & Human Scannable) */}
+      <QuickAnswersPricingTable variant="homepage" onNavigate={navigateTo} />
 
       {/* 6.3 High-Value Lead Magnet: 2026 UAE Compliance Playbook Banner */}
       <section id="lead-magnet" className="bg-navy-950 text-white py-10 border-y border-white/10 relative overflow-hidden">

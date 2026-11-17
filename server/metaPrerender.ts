@@ -380,11 +380,11 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     searchParams.get("section") === "calculator"
   ) {
     return {
-      title: "UAE Corporate Tax (9%) & VAT Calculator 2026 | Dias UAE",
-      description: "Free 2026 UAE Tax Calculator & Planner. Estimate 9% Corporate Tax, 0% Small Business Relief (AED 3M), QFZP eligibility & 5% VAT liability in seconds.",
-      keywords: "UAE Corporate Tax Calculator 2026, UAE Tax Planner, 9% Corporate Tax Calculator, 0% Small Business Relief AED 3M, QFZP eligibility, 5% VAT Calculator Dubai",
+      title: "UAE Corporate Tax & 5% VAT Calculator (2026) | Free Zone QFZP & SBR Tool | Dias Accounting",
+      description: "Free 2026 UAE Corporate Tax (9%, 0% Small Business Relief & Free Zone QFZP) and 5% VAT Input Recovery Calculator by FTA-Registered Tax Agents in Dubai & Sharjah.",
+      keywords: "UAE Corporate Tax Calculator 2026, 5% UAE VAT Calculator, Free Zone QFZP Calculator, Small Business Relief AED 3M, UAE VAT Input Recovery Tool, Dias Accounting",
       url: `${baseUrl}/uae-tax-planner`,
-      ogImage: `${baseUrl}/api/og?title=UAE+Corporate+Tax+(9%25)+%26+VAT+Calculator+2026&author=Glen+Dias&tag=Free+Tax+Planner`,
+      ogImage: `${baseUrl}/api/og?title=UAE+Corporate+Tax+%26+5%25+VAT+Calculator+(2026)&author=Glen+Dias&tag=Free+Zone+QFZP+%26+SBR+Tool`,
       ogType: "website",
       isArabic,
     };
@@ -392,11 +392,11 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
 
   if (pathname === "/corporate-tax-calculator" || pathname === "/tax-savings" || pathname === "/tax-savings-assessment") {
     return {
-      title: "UAE Corporate Tax Savings & 0% Relief Assessment | Dias UAE",
-      description: "Estimate your 2026 UAE Corporate Tax liability (9%), test 0% Small Business Relief (AED 3M), and verify Qualifying Free Zone Person eligibility.",
-      keywords: "corporate tax calculator UAE, 9% tax savings calculator, small business relief assessment UAE, QFZP 0% corporate tax",
+      title: "UAE Corporate Tax & 5% VAT Calculator (2026) | Free Zone QFZP & SBR Tool | Dias Accounting",
+      description: "Free 2026 UAE Corporate Tax (9%, 0% Small Business Relief & Free Zone QFZP) and 5% VAT Input Recovery Calculator by FTA-Registered Tax Agents in Dubai & Sharjah.",
+      keywords: "UAE Corporate Tax Calculator 2026, corporate tax calculator UAE, 9% tax calculator, small business relief assessment UAE, QFZP 0% corporate tax, 5% VAT calculator UAE",
       url: `${baseUrl}/corporate-tax-calculator`,
-      ogImage: `${baseUrl}/api/og?title=UAE+Corporate+Tax+Savings+Assessment&author=Glen+Dias&tag=0%25+Relief+Check`,
+      ogImage: `${baseUrl}/api/og?title=UAE+Corporate+Tax+%26+5%25+VAT+Calculator+(2026)&author=Glen+Dias&tag=Free+Zone+QFZP+%26+SBR+Tool`,
       ogType: "website",
       isArabic,
     };
@@ -428,6 +428,53 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
 
   // 4. Pricing route
   if (pathname === "/pricing" || searchParams.get("section") === "pricing") {
+    const pricingFaqSchema = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "@id": `${baseUrl}/pricing#faqs`,
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is included in Dias Accounting's fixed-fee accounting packages in Dubai?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Our monthly retainers (starting from AED 400 to AED 2,500/month) cover a dedicated chartered accountant, cloud software setup (Zoho Books, QuickBooks, Xero), monthly bank and card reconciliations, IFRS Profit & Loss and Balance Sheet statements, quarterly VAT 201 return filings, and annual Corporate Tax return preparation on EmaraTax. There are zero hourly fees or surprise billing charges."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How much does corporate tax filing cost for UAE mainland and Free Zone companies?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "For businesses maintaining clean monthly books with Dias Accounting, annual Corporate Tax return filing is bundled into our comprehensive tiers. For standalone Corporate Tax filing without monthly bookkeeping, our fixed preparation fee starts at AED 1,500 for entities claiming 0% Small Business Relief (SBR) up to AED 3M, and AED 2,500 to AED 4,500 for standard 9% or 0% QFZP Free Zone returns."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are Corporate Tax returns (9%) and VAT 201 filings included in the monthly accounting fee?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Our Growth and Enterprise plans include full quarterly VAT 201 return submissions and annual Corporate Tax return filing on the FTA EmaraTax portal. Our Essential tier (from AED 400/month on annual billing) covers ongoing bookkeeping and quarterly VAT, with an optional discounted annual corporate tax filing add-on."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What are the penalties if my UAE company delays historical backlog bookkeeping?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Under Cabinet Decision No. 75 of 2023, failing to register for Corporate Tax on time incurs an automatic AED 10,000 fine. Failing to maintain required accounting records for at least 5 years triggers penalties starting at AED 10,000 for a first violation and AED 20,000 for repeats. Our Backlog Catch-Up packages (from AED 2,500/year) reconstruct missing ledgers within 5 to 7 business days to eliminate fine exposure."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can DIFC, DTEC, and Free Zone companies choose standard SME accounting packages?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. We offer specialized Free Zone and DIFC accounting tiers that factor in annual IFRS audited accounts, 0% Qualifying Free Zone Person (QFZP) de minimis tests, and OECD Article 34 transfer pricing compliance."
+          }
+        }
+      ]
+    });
     return {
       title: "Fixed-Fee Accounting & Tax Packages Dubai | From AED 400/mo",
       description: "Transparent fixed-fee accounting, bookkeeping & tax advisory packages in Dubai & Sharjah from AED 400/mo. Monthly IFRS books, VAT filing & Corporate Tax.",
@@ -436,6 +483,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
       ogImage: `${baseUrl}/api/og?title=Fixed-Fee+Accounting+%26+Tax+Packages+Dubai&author=Dias+Tax+Team&tag=From+AED+400%2Fmo`,
       ogType: "website",
       isArabic,
+      schemaMarkup: pricingFaqSchema,
     };
   }
 
