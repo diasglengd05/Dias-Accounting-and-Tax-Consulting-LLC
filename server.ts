@@ -2020,6 +2020,13 @@ async function bootstrap() {
     return res.sendFile(file);
   });
 
+  app.get("/cccc32e358e34d038e6909f83402a07c.txt", (_req, res) => {
+    const file = path.join(process.cwd(), "public", "cccc32e358e34d038e6909f83402a07c.txt");
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.setHeader("Cache-Control", "public, max-age=3600");
+    return res.status(200).sendFile(file);
+  });
+
   // Dedicated Service Detail & Blog routes for SEO & Instant Googlebot & AI Agent crawling
   app.get([
     "/services/:serviceId",
