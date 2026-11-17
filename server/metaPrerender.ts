@@ -19,6 +19,7 @@ export interface MetaOverride {
   section?: string;
   isArabic?: boolean;
   schemaMarkup?: string;
+  h1?: string;
 }
 
 const KNOWN_BLOGS: Record<string, { title: string; summary: string; author: string; role: string; tag: string; date: string }> = {
@@ -379,6 +380,27 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     pathname === "/calculator" ||
     searchParams.get("section") === "calculator"
   ) {
+    const plannerSoftwareSchema = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "@id": `${baseUrl}/uae-tax-planner#software`,
+      name: "2026 UAE Corporate Tax & 5% VAT Calculator",
+      applicationCategory: "FinanceApplication",
+      operatingSystem: "Web",
+      url: `${baseUrl}/uae-tax-planner`,
+      description:
+        "Free 2026 UAE Corporate Tax Calculator (Mainland 9%, 0% Small Business Relief up to AED 3M, Free Zone 0% QFZP De Minimis) and 5% UAE VAT Input Recovery Calculator by Dias Accounting and Tax Consulting LLC.",
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "AED",
+      },
+      provider: {
+        "@type": "AccountingService",
+        "@id": `${baseUrl}/#organization`,
+        name: "Dias Accounting and Tax Consulting LLC",
+      },
+    });
     return {
       title: "UAE Corporate Tax & 5% VAT Calculator (2026) | Free Zone QFZP & SBR Tool | Dias Accounting",
       description: "Free 2026 UAE Corporate Tax (9%, 0% Small Business Relief & Free Zone QFZP) and 5% VAT Input Recovery Calculator by FTA-Registered Tax Agents in Dubai & Sharjah.",
@@ -387,10 +409,33 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
       ogImage: `${baseUrl}/api/og?title=UAE+Corporate+Tax+%26+5%25+VAT+Calculator+(2026)&author=Glen+Dias&tag=Free+Zone+QFZP+%26+SBR+Tool`,
       ogType: "website",
       isArabic,
+      schemaMarkup: plannerSoftwareSchema,
+      h1: "2026 UAE Corporate Tax & 5% VAT Calculator (Free Zone QFZP & SBR)",
     };
   }
 
   if (pathname === "/corporate-tax-calculator" || pathname === "/tax-savings" || pathname === "/tax-savings-assessment") {
+    const ctCalcSoftwareSchema = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "@id": `${baseUrl}/corporate-tax-calculator#software`,
+      name: "2026 UAE Corporate Tax & 5% VAT Calculator",
+      applicationCategory: "FinanceApplication",
+      operatingSystem: "Web",
+      url: `${baseUrl}/corporate-tax-calculator`,
+      description:
+        "Free 2026 UAE Corporate Tax Calculator (Mainland 9%, 0% Small Business Relief up to AED 3M, Free Zone 0% QFZP De Minimis) and 5% UAE VAT Input Recovery Calculator by Dias Accounting and Tax Consulting LLC.",
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "AED",
+      },
+      provider: {
+        "@type": "AccountingService",
+        "@id": `${baseUrl}/#organization`,
+        name: "Dias Accounting and Tax Consulting LLC",
+      },
+    });
     return {
       title: "UAE Corporate Tax & 5% VAT Calculator (2026) | Free Zone QFZP & SBR Tool | Dias Accounting",
       description: "Free 2026 UAE Corporate Tax (9%, 0% Small Business Relief & Free Zone QFZP) and 5% VAT Input Recovery Calculator by FTA-Registered Tax Agents in Dubai & Sharjah.",
@@ -399,6 +444,8 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
       ogImage: `${baseUrl}/api/og?title=UAE+Corporate+Tax+%26+5%25+VAT+Calculator+(2026)&author=Glen+Dias&tag=Free+Zone+QFZP+%26+SBR+Tool`,
       ogType: "website",
       isArabic,
+      schemaMarkup: ctCalcSoftwareSchema,
+      h1: "2026 UAE Corporate Tax & 5% VAT Calculator (Free Zone QFZP & SBR)",
     };
   }
 
@@ -484,6 +531,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
       ogType: "website",
       isArabic,
       schemaMarkup: pricingFaqSchema,
+      h1: "Fixed-Fee UAE Accounting, Bookkeeping & Tax Packages (From AED 400/Mo)",
     };
   }
 
@@ -649,6 +697,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
       ogType: "website",
       isArabic,
       schemaMarkup: difcSchema,
+      h1: "DIFC & DTEC Corporate Tax Planning, 0% QFZP & Dividend Audits",
     };
   }
 
@@ -829,6 +878,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
       ogImage: `${baseUrl}/api/og?title=UAE+Company+Setup+%26+Corporate+Tax+Structuring&author=Dias+Corporate+Desk&tag=Turnkey+Incorporation`,
       ogType: "website",
       isArabic,
+      h1: "UAE Mainland & Free Zone Company Formation & Tax Registration",
     };
   }
 
@@ -900,6 +950,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
       ogType: "website",
       isArabic,
       schemaMarkup: blogsSchema,
+      h1: "Corporate Tax Insights, DIFC Tax Compliance & UAE Regulations Hub",
     };
   }
 
@@ -912,6 +963,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
       ogImage: `${baseUrl}/api/og?title=Client+Reviews+%26+5.0+Star+Feedback&author=Dias+Accounting&tag=500%2B+Clients`,
       ogType: "website",
       isArabic,
+      h1: "What UAE Founders & Business Owners Say About Dias",
     };
   }
 
@@ -934,6 +986,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
       ogType: "website",
       isArabic,
       schemaMarkup: faqsBreadcrumbSchema,
+      h1: "UAE Corporate Tax, VAT & Bookkeeping FAQs",
     };
   }
 
@@ -988,11 +1041,21 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     ogImage: `${baseUrl}/api/og?title=UAE+Corporate+Tax+%26+Accounting+Firm+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Dias+Accounting&readTime=FTA+Certified`,
     ogType: "business.business",
     isArabic,
+    h1: isArabic
+      ? "مكتب استشارات ضريبة الشركات والمحاسبة المعتمد في دبي والشارقة"
+      : "FTA-Registered Tax Agents & IFRS Accounting Firm in Dubai & Sharjah",
   };
 }
 
+function escapeHtmlText(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
 /**
- * Injects meta tags and schema markup into HTML template
+ * Injects meta tags, semantic SSR H1, and schema markup into HTML template
  */
 export function injectMetaIntoHtml(html: string, meta: MetaOverride): string {
   let modified = html;
@@ -1019,6 +1082,19 @@ export function injectMetaIntoHtml(html: string, meta: MetaOverride): string {
     modified = modified.replace(/<meta property="og:description" content="[\s\S]*?" \/>/i, `<meta property="og:description" content="${meta.description}" />`);
     // Replace twitter:description
     modified = modified.replace(/<meta name="twitter:description" content="[\s\S]*?" \/>/i, `<meta name="twitter:description" content="${meta.description}" />`);
+    // Sync SSR preloader subtitle
+    modified = modified.replace(
+      /(<p id="ssr-page-subtitle"[^>]*>)[\s\S]*?(<\/p>)/i,
+      `$1${escapeHtmlText(meta.description)}$2`
+    );
+  }
+
+  const resolvedH1 = meta.h1 || meta.title;
+  if (resolvedH1) {
+    modified = modified.replace(
+      /(<h1 id="ssr-page-h1"[^>]*>)[\s\S]*?(<\/h1>)/i,
+      `$1${escapeHtmlText(resolvedH1)}$2`
+    );
   }
 
   if (meta.url) {
@@ -1067,6 +1143,7 @@ export function injectMetaIntoHtml(html: string, meta: MetaOverride): string {
     modified = modified.replace(/<script[^>]*id=["']homepage-howto-jsonld["'][^>]*>[\s\S]*?<\/script>/gi, "");
     modified = modified.replace(/<script[^>]*id=["']page-breadcrumb-jsonld["'][^>]*>[\s\S]*?<\/script>/gi, "");
     modified = modified.replace(/<script[^>]*id=["']homepage-webpage-jsonld["'][^>]*>[\s\S]*?<\/script>/gi, "");
+    modified = modified.replace(/<script[^>]*id=["']calculator-software-jsonld["'][^>]*>[\s\S]*?<\/script>/gi, "");
   }
 
   if (meta.schemaMarkup) {

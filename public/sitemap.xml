@@ -157,6 +157,27 @@
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
+  <!-- UAE Company Setup & Corporate Tax Structuring -->
+  <url>
+    <loc>https://diasuae.ae/company-setup</loc>
+    <lastmod>2026-11-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <!-- Verified Client Testimonials & Reviews -->
+  <url>
+    <loc>https://diasuae.ae/testimonials</loc>
+    <lastmod>2026-11-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
+  <!-- UAE Corporate Tax, VAT & Bookkeeping FAQs -->
+  <url>
+    <loc>https://diasuae.ae/faqs</loc>
+    <lastmod>2026-11-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.90</priority>
+  </url>
   <!-- Service: Corporate Tax Registration and Filing -->
   <url>
     <loc>https://diasuae.ae/services/corporate-tax-advisory</loc>

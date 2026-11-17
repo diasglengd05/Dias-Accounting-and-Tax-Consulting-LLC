@@ -24,6 +24,7 @@ import { blogsData } from "../data/blogsData";
 import { BlogPost } from "../types";
 import BlogModal from "../components/BlogModal";
 import { applyPageSEO, removeJsonLd, upsertJsonLd } from "../lib/seo";
+import TaxToolsPromoBanner from "../components/TaxToolsPromoBanner";
 
 interface BlogsPageProps {
   onNavigate: (path: string) => void;
@@ -966,6 +967,8 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
           />
         )}
       </main>
+
+      <TaxToolsPromoBanner onNavigate={onNavigate} />
 
       <PageFooter
         onNavigate={onNavigate}

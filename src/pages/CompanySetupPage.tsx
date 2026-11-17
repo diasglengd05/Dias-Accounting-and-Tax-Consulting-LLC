@@ -133,7 +133,7 @@ export const CompanySetupPage: React.FC<CompanySetupPageProps> = ({
                 <span>Turnkey Corporate Formation &amp; Structuring</span>
               </div>
               <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-6">
-                UAE Company Setup, Free Zone Incorporation &amp; Corporate Tax Structuring
+                UAE Mainland &amp; Free Zone Company Formation &amp; Tax Registration
               </h1>
               <p className="text-slate-300 text-base sm:text-lg leading-relaxed mb-8">
                 Form your business in Dubai or Sharjah with full regulatory compliance from Day 1. Benefit from 100% foreign ownership, 0% Qualifying Free Zone Person (QFZP) tax structuring, and fast-track corporate bank account opening.

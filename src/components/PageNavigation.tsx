@@ -122,8 +122,8 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
 
   return (
     <>
-      {/* 0. Top FTA Compliance Alert Banner */}
-      <ComplianceAlertBanner onOpenAudit={onOpenAudit} />
+      {/* 0. Slim Top 2026 UAE Tax Calculator Announcement Bar */}
+      <ComplianceAlertBanner onOpenAudit={onOpenAudit} onNavigate={onNavigate} />
 
       {/* 1. Unified Dark-Navy & Brushed-Gold Executive Sticky Header */}
       <header

@@ -82,28 +82,29 @@ const TaxAiAdvisorModal = React.lazy<React.ComponentType<any>>(() => import("./c
 const CompanySetupHub = React.lazy<React.ComponentType<any>>(() => import("./components/CompanySetupHub").then(m => ({ default: (m as any).default || (m as any).CompanySetupHub })));
 const SeoEngineDashboardModal = React.lazy(() => import("./components/SeoEngineDashboardModal"));
 const SmallBusinessTaxReliefPage = React.lazy(() => import("./pages/SmallBusinessTaxReliefPage").then(m => ({ default: m.SmallBusinessTaxReliefPage })));
-const DifcDtecAccountingPage = React.lazy(() => import("./pages/DifcDtecAccountingPage").then(m => ({ default: m.DifcDtecAccountingPage })));
+import { DifcDtecAccountingPage } from "./pages/DifcDtecAccountingPage";
 const DividendsAuditPage = React.lazy(() => import("./pages/DividendsAuditPage").then(m => ({ default: m.DividendsAuditPage })));
 const ServicesPage = React.lazy(() => import("./pages/ServicesPage"));
-const CompanySetupPage = React.lazy(() => import("./pages/CompanySetupPage"));
-const PricingPage = React.lazy(() => import("./pages/PricingPage"));
+import CompanySetupPage from "./pages/CompanySetupPage";
+import PricingPage from "./pages/PricingPage";
 const WhyChooseUsPage = React.lazy(() => import("./pages/WhyChooseUsPage"));
 const AboutPage = React.lazy(() => import("./pages/AboutPage"));
 const TermsPage = React.lazy(() => import("./pages/TermsPage"));
 const PrivacyPolicyPage = React.lazy(() => import("./pages/PrivacyPolicyPage"));
-const BlogsPage = React.lazy(() => import("./pages/BlogsPage"));
-const TestimonialsPage = React.lazy(() => import("./pages/TestimonialsPage"));
+import BlogsPage from "./pages/BlogsPage";
+import TestimonialsPage from "./pages/TestimonialsPage";
 const HomepageInsightsSection = React.lazy(() => import("./components/HomepageInsightsSection"));
-const FaqsPage = React.lazy(() => import("./pages/FaqsPage"));
+import FaqsPage from "./pages/FaqsPage";
 const ContactPage = React.lazy(() => import("./pages/ContactPage"));
-const TaxPlannerPage = React.lazy(() => import("./pages/TaxPlannerPage"));
+import TaxPlannerPage from "./pages/TaxPlannerPage";
 const ServiceDetailPage = React.lazy(() => import("./pages/ServiceDetailPage"));
-const CorporateTaxSavingsPage = React.lazy(() => import("./pages/CorporateTaxSavingsPage"));
+import CorporateTaxSavingsPage from "./pages/CorporateTaxSavingsPage";
 const VatPlannerPage = React.lazy(() => import("./pages/VatPlannerPage"));
 const FtaDeadlinesPage = React.lazy(() => import("./pages/FtaDeadlinesPage"));
 import CookieConsentBanner from "./components/CookieConsentBanner";
 import HomepagePricingSection from "./components/HomepagePricingSection";
 import QuickAnswersPricingTable from "./components/QuickAnswersPricingTable";
+import TaxToolsPromoBanner from "./components/TaxToolsPromoBanner";
 
 // Framer Motion variants for staggered sequential reveal in Services section
 const servicesContainerVariants: Variants = {
@@ -511,11 +512,7 @@ function MainApp() {
     currentPath === "/tax-planning-difc" ||
     currentPath === "/tax-planning-difc.html"
   ) {
-    return (
-      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading DIFC Tax Compliance Hub...</div>}>
-        <DifcDtecAccountingPage onNavigate={navigateTo} />
-      </Suspense>
-    );
+    return <DifcDtecAccountingPage onNavigate={navigateTo} />;
   }
 
   if (
@@ -581,40 +578,34 @@ function MainApp() {
 
   if (currentPath === "/company-setup") {
     return (
-      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading Company Setup Hub...</div>}>
-        <CompanySetupPage
-          onNavigate={navigateTo}
-          onOpenAudit={() => setTaxHealthModalOpen(true)}
-          onOpenPrivacy={() => setPrivacyOpen(true)}
-          onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
-        />
-      </Suspense>
+      <CompanySetupPage
+        onNavigate={navigateTo}
+        onOpenAudit={() => setTaxHealthModalOpen(true)}
+        onOpenPrivacy={() => setPrivacyOpen(true)}
+        onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+      />
     );
   }
 
   if (currentPath === "/pricing") {
     return (
-      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading Pricing Hub...</div>}>
-        <PricingPage
-          onNavigate={navigateTo}
-          onOpenAudit={() => setTaxHealthModalOpen(true)}
-          onOpenPrivacy={() => setPrivacyOpen(true)}
-          onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
-        />
-      </Suspense>
+      <PricingPage
+        onNavigate={navigateTo}
+        onOpenAudit={() => setTaxHealthModalOpen(true)}
+        onOpenPrivacy={() => setPrivacyOpen(true)}
+        onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+      />
     );
   }
 
   if (currentPath === "/uae-tax-planner" || currentPath === "/tax-planner" || currentPath === "/tax-calculator" || currentPath === "/calculator") {
     return (
-      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading UAE Tax Planner...</div>}>
-        <TaxPlannerPage
-          onNavigate={navigateTo}
-          onOpenAudit={() => setTaxHealthModalOpen(true)}
-          onOpenPrivacy={() => setPrivacyOpen(true)}
-          onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
-        />
-      </Suspense>
+      <TaxPlannerPage
+        onNavigate={navigateTo}
+        onOpenAudit={() => setTaxHealthModalOpen(true)}
+        onOpenPrivacy={() => setPrivacyOpen(true)}
+        onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+      />
     );
   }
 
@@ -707,40 +698,34 @@ function MainApp() {
 
   if (currentPath === "/blogs" || currentPath === "/insights" || currentPath.startsWith("/blog/") || currentPath.startsWith("/blogs/")) {
     return (
-      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading Insights Hub...</div>}>
-        <BlogsPage
-          onNavigate={navigateTo}
-          onOpenAudit={() => setTaxHealthModalOpen(true)}
-          onOpenPrivacy={() => setPrivacyOpen(true)}
-          onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
-        />
-      </Suspense>
+      <BlogsPage
+        onNavigate={navigateTo}
+        onOpenAudit={() => setTaxHealthModalOpen(true)}
+        onOpenPrivacy={() => setPrivacyOpen(true)}
+        onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+      />
     );
   }
 
   if (currentPath === "/testimonials" || currentPath === "/reviews") {
     return (
-      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading Reviews Hub...</div>}>
-        <TestimonialsPage
-          onNavigate={navigateTo}
-          onOpenAudit={() => setTaxHealthModalOpen(true)}
-          onOpenPrivacy={() => setPrivacyOpen(true)}
-          onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
-        />
-      </Suspense>
+      <TestimonialsPage
+        onNavigate={navigateTo}
+        onOpenAudit={() => setTaxHealthModalOpen(true)}
+        onOpenPrivacy={() => setPrivacyOpen(true)}
+        onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+      />
     );
   }
 
   if (currentPath === "/faqs" || currentPath === "/faq") {
     return (
-      <Suspense fallback={<div className="min-h-screen bg-navy-950 flex items-center justify-center text-gold-400 font-sans">Loading FAQs Hub...</div>}>
-        <FaqsPage
-          onNavigate={navigateTo}
-          onOpenAudit={() => setTaxHealthModalOpen(true)}
-          onOpenPrivacy={() => setPrivacyOpen(true)}
-          onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
-        />
-      </Suspense>
+      <FaqsPage
+        onNavigate={navigateTo}
+        onOpenAudit={() => setTaxHealthModalOpen(true)}
+        onOpenPrivacy={() => setPrivacyOpen(true)}
+        onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+      />
     );
   }
 
@@ -872,7 +857,7 @@ function MainApp() {
                       className="font-display text-3xl sm:text-5xl lg:text-[50px] font-bold tracking-tight text-white leading-[1.15]"
                       style={{ textWrap: "balance" } as React.CSSProperties}
                     >
-                      Corporate Tax &amp; Tax Services in Dubai. FTA-Certified Accounting &amp; 0% Relief.
+                      FTA-Registered Tax Agents &amp; IFRS Accounting Firm in Dubai &amp; Sharjah
                     </h1>
 
                     {/* Subheadline stating clearly who is served & what is done */}
@@ -1985,6 +1970,9 @@ function MainApp() {
         </AnimatedSection>
       </section>
       </main>
+
+      {/* 8.5 2-Column Promotional Banner Above Footer */}
+      <TaxToolsPromoBanner onNavigate={navigateTo} />
 
       {/* 9. Unified Footer */}
       <PageFooter

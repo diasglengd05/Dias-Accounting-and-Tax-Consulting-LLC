@@ -12,7 +12,7 @@ import {
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
 import UaeTaxCalculatorSuite from "../components/UaeTaxCalculatorSuite";
-import { applyPageSEO } from "../lib/seo";
+import { applyPageSEO, upsertJsonLd, removeJsonLd } from "../lib/seo";
 
 interface CorporateTaxSavingsPageProps {
   onNavigate: (path: string) => void;
@@ -38,7 +38,31 @@ export const CorporateTaxSavingsPage: React.FC<CorporateTaxSavingsPageProps> = (
       ogImage:
         "/api/og?title=UAE+Corporate+Tax+%26+5%25+VAT+Calculator+(2026)&author=Glen+Dias&tag=Free+Zone+QFZP+%26+SBR+Tool",
     });
+    upsertJsonLd("calculator-software-jsonld", {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "@id": "https://diasuae.ae/corporate-tax-calculator#software",
+      name: "2026 UAE Corporate Tax & 5% VAT Calculator",
+      applicationCategory: "FinanceApplication",
+      operatingSystem: "Web",
+      url: "https://diasuae.ae/corporate-tax-calculator",
+      description:
+        "Free 2026 UAE Corporate Tax Calculator (Mainland 9%, 0% Small Business Relief up to AED 3M, Free Zone 0% QFZP De Minimis) and 5% UAE VAT Input Recovery Calculator by Dias Accounting and Tax Consulting LLC.",
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "AED",
+      },
+      provider: {
+        "@type": "AccountingService",
+        "@id": "https://diasuae.ae/#organization",
+        name: "Dias Accounting and Tax Consulting LLC",
+      },
+    });
     window.scrollTo({ top: 0, behavior: "instant" });
+    return () => {
+      removeJsonLd("calculator-software-jsonld");
+    };
   }, []);
 
   const handleWhatsAppRedirect = () => {
@@ -82,7 +106,7 @@ export const CorporateTaxSavingsPage: React.FC<CorporateTaxSavingsPageProps> = (
               </div>
 
               <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
-                UAE Corporate Tax &amp; <span className="text-[#c5a059]">5% VAT Calculator</span>
+                2026 UAE Corporate Tax &amp; <span className="text-[#c5a059]">5% VAT Calculator</span> (Free Zone QFZP &amp; SBR)
               </h1>
 
               <p className="text-[#cbd5e1] text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">

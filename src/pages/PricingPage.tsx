@@ -126,7 +126,7 @@ export const PricingPage: React.FC<PricingPageProps> = ({
                 <span>FTA Registered Tax Agency · Transparent Fixed Pricing</span>
               </div>
               <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-6">
-                Corporate Tax &amp; Fixed-Fee Accounting Packages for UAE Businesses
+                Fixed-Fee UAE Accounting, Bookkeeping &amp; Tax Packages (From AED 400/Mo)
               </h1>
               <p className="text-slate-300 text-base sm:text-lg leading-relaxed mb-6">
                 No hidden surprises, surprise hourly billing, or transaction markups. Get complete peace of mind with FTA-compliant Corporate Tax (9%), DIFC tax compliance, quarterly VAT filing, and monthly bookkeeping at predictable monthly rates from AED 400/month.

@@ -176,6 +176,48 @@ export function generateSitemapXml(domain = "https://diasuae.ae"): string {
       priority: "0.95",
       comment: "Dividend Audit & Distribution Advisory Dubai (Commercial Companies Law)",
     },
+    {
+      loc: `${domain}/company-setup`,
+      lastmod: today,
+      changefreq: "weekly",
+      priority: "0.95",
+      comment: "UAE Mainland & Free Zone Company Formation & Tax Registration",
+    },
+    {
+      loc: `${domain}/testimonials`,
+      lastmod: today,
+      changefreq: "weekly",
+      priority: "0.90",
+      comment: "Verified Client Testimonials & 5.0 Star Reviews",
+    },
+    {
+      loc: `${domain}/faqs`,
+      lastmod: today,
+      changefreq: "weekly",
+      priority: "0.90",
+      comment: "UAE Corporate Tax, VAT & Bookkeeping FAQs",
+    },
+    {
+      loc: `${domain}/services`,
+      lastmod: today,
+      changefreq: "weekly",
+      priority: "0.92",
+      comment: "UAE Corporate Tax, VAT & Accounting Services Hub",
+    },
+    {
+      loc: `${domain}/about`,
+      lastmod: today,
+      changefreq: "monthly",
+      priority: "0.85",
+      comment: "About Dias Accounting & FTA Registered Tax Agent Glen Dias",
+    },
+    {
+      loc: `${domain}/contact`,
+      lastmod: today,
+      changefreq: "monthly",
+      priority: "0.88",
+      comment: "Contact Dias Accounting SHAMS HQ & Dubai Advisory Desk",
+    },
   ];
 
   // 2. Canonical Individual Service Landing Pages (Indexed by Google)

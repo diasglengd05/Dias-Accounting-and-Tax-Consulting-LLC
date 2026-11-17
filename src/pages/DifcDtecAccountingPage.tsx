@@ -195,7 +195,7 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
           </div>
 
           <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight max-w-4xl leading-tight">
-            DIFC Tax Compliance &amp; Corporate Tax Advisory Dubai: <span className="text-gold-400">0% QFZP Structuring</span> &amp; IFRS Audits
+            DIFC &amp; DTEC Corporate Tax Planning, <span className="text-gold-400">0% QFZP</span> &amp; Dividend Audits
           </h1>
 
           <p className="text-slate-300 text-base sm:text-lg max-w-3xl leading-relaxed">
