@@ -69,13 +69,13 @@ export const PricingPage: React.FC<PricingPageProps> = ({
 
   useEffect(() => {
     applyPageSEO({
-      title: "Fixed-Fee Accounting & Tax Packages Dubai | From AED 400/mo",
+      title: "UAE Accounting & Bookkeeping Packages From AED 400/Mo | Fixed-Fee Tax Retainers",
       description:
-        "Transparent fixed-fee accounting, bookkeeping & tax advisory packages in Dubai & Sharjah from AED 400/mo. Monthly IFRS books, VAT filing & Corporate Tax.",
+        "Transparent fixed-fee monthly IFRS bookkeeping, 5% VAT Form 201 filing & 9% Corporate Tax compliance in Dubai & Sharjah. Request an instant quote.",
       canonicalPath: "/pricing",
       keywords:
         "Corporate Tax, accounting packages dubai, monthly accounting package dubai, fixed fee bookkeeping uae, corporate tax return fee, corporate tax consultants in difc, tax services in dubai, difc tax compliance",
-      ogImage: "/api/og?title=Fixed-Fee+Accounting+%26+Tax+Packages+Dubai&author=Dias+Tax+Team&tag=From+AED+400%2Fmo",
+      ogImage: "/api/og?title=UAE+Accounting+%26+Bookkeeping+Packages+From+AED+400%2FMo&author=Dias+Tax+Team&tag=Fixed-Fee+Tax+Retainers",
     });
     upsertJsonLd("pricing-faq-jsonld", buildFAQPageSchema(PRICING_FAQS, "https://diasuae.ae/pricing#faqs"));
 

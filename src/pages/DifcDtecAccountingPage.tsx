@@ -61,9 +61,9 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
     const isDifcExplicit =
       typeof window !== "undefined" && window.location.pathname.toLowerCase().includes("tax-planning-difc");
     const canonicalPath = isDifcExplicit ? "/tax-planning-difc" : "/difc-dtec-accounting";
-    const pageTitle = "DIFC & DTEC Corporate Tax Planning, 0% QFZP & Dividend Audits | Dias Accounting";
+    const pageTitle = "DIFC & DTEC Accounting, 0% QFZP Tax & Dividend Audits Dubai | Dias Accounting";
     const pageDesc =
-      "DIFC & DTEC Corporate Tax Planning, 0% QFZP Compliance & Dividend Audits by FTA-Registered Tax Agents (From AED 400/mo). Book a free 15-min review.";
+      "FTA-Registered Tax Agents serving DIFC & DTEC companies. Statutory interim/final dividend audits, 0% QFZP compliance & monthly IFRS bookkeeping from AED 400/mo.";
     const pageUrl = `https://diasuae.ae${canonicalPath}`;
 
     applyPageSEO({

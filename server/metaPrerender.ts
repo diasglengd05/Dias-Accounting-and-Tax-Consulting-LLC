@@ -523,11 +523,11 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
       ]
     });
     return {
-      title: "Fixed-Fee Accounting & Tax Packages Dubai | From AED 400/mo",
-      description: "Transparent fixed-fee accounting, bookkeeping & tax advisory packages in Dubai & Sharjah from AED 400/mo. Monthly IFRS books, VAT filing & Corporate Tax.",
+      title: "UAE Accounting & Bookkeeping Packages From AED 400/Mo | Fixed-Fee Tax Retainers",
+      description: "Transparent fixed-fee monthly IFRS bookkeeping, 5% VAT Form 201 filing & 9% Corporate Tax compliance in Dubai & Sharjah. Request an instant quote.",
       keywords: "Corporate Tax, accounting packages dubai, monthly accounting package dubai, fixed fee bookkeeping uae, corporate tax return fee, corporate tax consultants in difc, accounting solutions in uae",
       url: `${baseUrl}/pricing`,
-      ogImage: `${baseUrl}/api/og?title=Fixed-Fee+Accounting+%26+Tax+Packages+Dubai&author=Dias+Tax+Team&tag=From+AED+400%2Fmo`,
+      ogImage: `${baseUrl}/api/og?title=UAE+Accounting+%26+Bookkeeping+Packages+From+AED+400%2FMo&author=Dias+Tax+Team&tag=Fixed-Fee+Tax+Retainers`,
       ogType: "website",
       isArabic,
       schemaMarkup: pricingFaqSchema,
@@ -561,9 +561,9 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
   }
 
   if (pathname === "/tax-planning-difc" || pathname === "/tax-planning-difc.html") {
-    const difcTitle = "DIFC & DTEC Corporate Tax Planning, 0% QFZP & Dividend Audits | Dias Accounting";
+    const difcTitle = "DIFC & DTEC Accounting, 0% QFZP Tax & Dividend Audits Dubai | Dias Accounting";
     const difcDesc =
-      "DIFC & DTEC Corporate Tax Planning, 0% QFZP Compliance & Dividend Audits by FTA-Registered Tax Agents (From AED 400/mo). Book a free 15-min review.";
+      "FTA-Registered Tax Agents serving DIFC & DTEC companies. Statutory interim/final dividend audits, 0% QFZP compliance & monthly IFRS bookkeeping from AED 400/mo.";
     const difcSchema = JSON.stringify({
       "@context": "https://schema.org",
       "@graph": [
@@ -871,11 +871,11 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
 
   if (pathname === "/company-setup") {
     return {
-      title: "UAE Company Setup & Corporate Tax Structuring Dubai | Dias UAE",
-      description: "Turnkey Dubai company setup and Corporate Tax structuring across SHAMS, DMCC, IFZA, DTEC, and Mainland (DET). 100% foreign ownership with 0% QFZP tax optimization.",
+      title: "SHAMS Free Zone & Dubai Mainland Company Setup + Tax Registration (2026)",
+      description: "Launch your SHAMS Free Zone or Dubai Mainland LLC with full EmaraTax Corporate Tax & 5% VAT registration. Fixed-fee accounting from AED 400/mo.",
       keywords: "UAE Company Setup, Corporate Tax, company setup dubai, free zone license uae, shams incorporation, dmcc company formation, ifza visa setup, 0% QFZP corporate tax uae",
       url: `${baseUrl}/company-setup`,
-      ogImage: `${baseUrl}/api/og?title=UAE+Company+Setup+%26+Corporate+Tax+Structuring&author=Dias+Corporate+Desk&tag=Turnkey+Incorporation`,
+      ogImage: `${baseUrl}/api/og?title=SHAMS+Free+Zone+%26+Dubai+Mainland+Company+Setup&author=Dias+Corporate+Desk&tag=Tax+Registration+2026`,
       ogType: "website",
       isArabic,
       h1: "UAE Mainland & Free Zone Company Formation & Tax Registration",

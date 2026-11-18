@@ -25,6 +25,7 @@ import { BlogPost } from "../types";
 import BlogModal from "../components/BlogModal";
 import { applyPageSEO, removeJsonLd, upsertJsonLd } from "../lib/seo";
 import TaxToolsPromoBanner from "../components/TaxToolsPromoBanner";
+import BlogInstantAdvisorStrip from "../components/BlogInstantAdvisorStrip";
 
 interface BlogsPageProps {
   onNavigate: (path: string) => void;
@@ -600,6 +601,9 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
                 Authoritative legislative interpretations, ministerial decrees, practical compliance guides, and draft outlines prepared by FTA Registered Tax Agents in Dubai and Sharjah.
               </p>
 
+              {/* Above-the-Fold Instant Advisor & Tax Calculator Strip */}
+              <BlogInstantAdvisorStrip onNavigate={onNavigate} />
+
               {/* General Information Disclaimer */}
               <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 text-xs leading-relaxed flex items-start gap-2.5 mb-6">
                 <AlertCircle className="w-4 h-4 text-gold-400 shrink-0 mt-0.5" />
@@ -959,6 +963,7 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
         {selectedPost && (
           <BlogModal
             blog={selectedPost}
+            onNavigate={onNavigate}
             onClose={() => setSelectedPost(null)}
             onContact={() => {
               setSelectedPost(null);

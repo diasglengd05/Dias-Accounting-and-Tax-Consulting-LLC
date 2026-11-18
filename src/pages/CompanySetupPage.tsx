@@ -33,13 +33,13 @@ export const CompanySetupPage: React.FC<CompanySetupPageProps> = ({
 }) => {
   useEffect(() => {
     applyPageSEO({
-      title: "UAE Company Setup & Corporate Tax Structuring Dubai | Dias UAE",
+      title: "SHAMS Free Zone & Dubai Mainland Company Setup + Tax Registration (2026)",
       description:
-        "Turnkey Dubai company setup and Corporate Tax structuring across SHAMS, DMCC, IFZA, DTEC, and Mainland (DET). 100% foreign ownership with 0% QFZP tax optimization.",
+        "Launch your SHAMS Free Zone or Dubai Mainland LLC with full EmaraTax Corporate Tax & 5% VAT registration. Fixed-fee accounting from AED 400/mo.",
       canonicalPath: "/company-setup",
       keywords:
         "UAE Company Setup, Corporate Tax, company setup dubai, free zone license uae, shams incorporation, dmcc company formation, ifza visa setup, 0% QFZP corporate tax uae, difc tax compliance",
-      ogImage: "/api/og?title=UAE+Company+Setup+%26+Corporate+Tax+Structuring&author=Dias+Corporate+Desk&tag=Turnkey+Incorporation",
+      ogImage: "/api/og?title=SHAMS+Free+Zone+%26+Dubai+Mainland+Company+Setup&author=Dias+Corporate+Desk&tag=Tax+Registration+2026",
     });
 
     window.scrollTo({ top: 0, behavior: "instant" });

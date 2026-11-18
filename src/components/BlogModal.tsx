@@ -3,11 +3,13 @@ import { X, ExternalLink, Sparkles, Globe, CheckCircle2, PhoneCall, Video, FileT
 import { BlogPost } from "../types";
 import { ArticleContentRenderer } from "./ArticleContentRenderer";
 import { removeJsonLd, upsertJsonLd } from "../lib/seo";
+import { BlogInstantAdvisorStrip } from "./BlogInstantAdvisorStrip";
 
 interface BlogModalProps {
   blog: BlogPost | null;
   onClose: () => void;
   onContact?: () => void;
+  onNavigate?: (path: string) => void;
 }
 
 function toIsoDate(dateStr?: string): string {
@@ -17,7 +19,7 @@ function toIsoDate(dateStr?: string): string {
   return new Date(parsed).toISOString();
 }
 
-export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact }) => {
+export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact, onNavigate }) => {
   const canonicalPostUrl = blog
     ? blog.externalUrl || `https://diasuae.ae/blogs/${blog.id}`
     : "https://diasuae.ae/blogs";
@@ -196,6 +198,15 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact }
 
         {/* Article Content (Scrolls together seamlessly with the header) */}
         <div className="p-5 sm:p-6 md:p-8 bg-white prose prose-slate max-w-none text-slate-700">
+          {blog.summary && (
+            <p className="text-sm sm:text-base text-slate-600 leading-relaxed mb-4 mt-0 font-medium">
+              {blog.summary}
+            </p>
+          )}
+
+          {/* Above-the-Fold Instant Advisor & Tax Calculator Strip */}
+          <BlogInstantAdvisorStrip onNavigate={onNavigate} onBeforeNavigate={onClose} />
+
           {/* Grounded Trends Banner if AI Generated */}
           {blog.sourceTrends && blog.sourceTrends.length > 0 && (
             <div className="mb-6 bg-slate-50 border border-slate-200/80 rounded-xl p-4">

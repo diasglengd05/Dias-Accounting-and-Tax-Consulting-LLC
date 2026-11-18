@@ -1829,6 +1829,7 @@ function MainApp() {
         {selectedBlog && (
           <BlogModal
             blog={selectedBlog}
+            onNavigate={navigateTo}
             onClose={() => {
               setSelectedBlog(null);
               if (typeof window !== "undefined" && window.location.hash.startsWith("#blog-")) {
