@@ -40,7 +40,7 @@ export const PageFooter: React.FC<PageFooterProps> = ({
   };
 
   return (
-    <footer className="bg-navy-950 text-white border-t border-slate-800 pt-16 pb-12">
+    <footer className="bg-navy-950 text-white border-t border-slate-800 pt-16 pb-24 md:pb-12 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Top Trust & Security Certification Banner */}

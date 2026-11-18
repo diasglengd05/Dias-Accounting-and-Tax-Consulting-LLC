@@ -157,10 +157,21 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
     appsScriptUrl?: string | null;
   } | null>(null);
 
-  // Sync serviceType when prop changes
+  // Sync serviceType when prop changes or from Instant Quote sessionStorage
   useEffect(() => {
     if (preselectedService) {
       setServiceType(preselectedService);
+      return;
+    }
+    if (typeof window !== "undefined") {
+      try {
+        const storedScope = sessionStorage.getItem("dias_selected_service");
+        if (storedScope) {
+          setServiceType(storedScope);
+        }
+      } catch {
+        // Ignore storage errors
+      }
     }
   }, [preselectedService]);
 
@@ -1472,6 +1483,19 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
                   onChange={(e) => setServiceType(e.target.value)}
                   className="w-full px-4 py-2.5 text-xs border border-slate-200 rounded-xl bg-slate-50/50 text-slate-700 focus:bg-white focus:ring-2 focus:ring-gold-500 focus:border-transparent outline-none font-medium transition-all"
                 >
+                  {serviceType &&
+                    ![
+                      "corporate-tax",
+                      "Corporate Tax SBR Filing (AED 500)",
+                      "VAT Return Filing (AED 750/Qtr)",
+                      "Financial Audit Preparation & Scoping",
+                      "vat-compliance",
+                      "accounting",
+                      "incorporation",
+                      "general",
+                    ].includes(serviceType) && (
+                      <option value={serviceType}>{serviceType}</option>
+                    )}
                   <option value="corporate-tax">{language === "ar" ? "استشارات ضريبة الشركات (الامتثال بنسبة 9%)" : "Corporate Tax Advisory (9% compliance)"}</option>
                   <option value="Corporate Tax SBR Filing (AED 500)">{language === "ar" ? "إقرار ضريبة الشركات (تسهيلات الأعمال الصغيرة SBR - 500 د.إ)" : "Corporate Tax (SBR) Filing - AED 500"}</option>
                   <option value="VAT Return Filing (AED 750/Qtr)">{language === "ar" ? "تقديم إقرار ضريبة القيمة المضافة (750 د.إ / ربع سنوي)" : "VAT Return Filing - AED 750 / Quarter"}</option>

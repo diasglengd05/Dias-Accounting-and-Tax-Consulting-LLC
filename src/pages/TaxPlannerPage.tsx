@@ -60,6 +60,23 @@ export const TaxPlannerPage: React.FC<TaxPlannerPageProps> = ({
   onWhatsAppClicked,
 }) => {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [urlDefaultTab, setUrlDefaultTab] = useState<"corporate-tax" | "vat">(() => {
+    if (typeof window !== "undefined") {
+      const tabParam = new URLSearchParams(window.location.search).get("tab");
+      return tabParam === "vat" ? "vat" : "corporate-tax";
+    }
+    return "corporate-tax";
+  });
+
+  useEffect(() => {
+    const syncTabFromUrl = () => {
+      const tabParam = new URLSearchParams(window.location.search).get("tab");
+      setUrlDefaultTab(tabParam === "vat" ? "vat" : "corporate-tax");
+    };
+    syncTabFromUrl();
+    window.addEventListener("popstate", syncTabFromUrl);
+    return () => window.removeEventListener("popstate", syncTabFromUrl);
+  }, []);
 
   useEffect(() => {
     applyPageSEO({
@@ -164,7 +181,7 @@ export const TaxPlannerPage: React.FC<TaxPlannerPageProps> = ({
         {/* Main Split-Card Calculator Section */}
         <section className="py-10 lg:py-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <UaeTaxCalculatorSuite
-            defaultTab="corporate-tax"
+            defaultTab={urlDefaultTab}
             onNavigate={onNavigate}
             onResultViewed={onResultViewed}
             onCtaClicked={onCtaClicked}

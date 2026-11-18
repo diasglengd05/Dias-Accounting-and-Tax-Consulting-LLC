@@ -21,6 +21,7 @@ import PageFooter from "../components/PageFooter";
 import StandalonePricingCards from "../components/StandalonePricingCards";
 import LeadQuoteSection from "../components/LeadQuoteSection";
 import QuickAnswersPricingTable from "../components/QuickAnswersPricingTable";
+import ScopeInstantQuoteBuilder from "../components/ScopeInstantQuoteBuilder";
 import { applyPageSEO, buildFAQPageSchema, upsertJsonLd, removeJsonLd, FAQSchemaItem } from "../lib/seo";
 
 interface PricingPageProps {
@@ -789,6 +790,8 @@ export const PricingPage: React.FC<PricingPageProps> = ({
           </div>
           {/* Quick Answers & Transparent UAE Pricing Table */}
         </section>
+
+        <ScopeInstantQuoteBuilder id="instant-quote" onNavigate={onNavigate} />
 
         <QuickAnswersPricingTable variant="pricing" onNavigate={onNavigate} />
 

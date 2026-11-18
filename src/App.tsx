@@ -105,6 +105,7 @@ import CookieConsentBanner from "./components/CookieConsentBanner";
 import HomepagePricingSection from "./components/HomepagePricingSection";
 import QuickAnswersPricingTable from "./components/QuickAnswersPricingTable";
 import TaxToolsPromoBanner from "./components/TaxToolsPromoBanner";
+import ScopeInstantQuoteBuilder from "./components/ScopeInstantQuoteBuilder";
 
 // Framer Motion variants for staggered sequential reveal in Services section
 const servicesContainerVariants: Variants = {
@@ -136,19 +137,78 @@ const serviceCardVariants: Variants = {
 };
 
 const normalizeAppPath = (rawPath: string): string => {
-  const lower = (rawPath || "/").toLowerCase();
+  const pathOnly = (rawPath || "/").split("?")[0];
+  const lower = pathOnly.toLowerCase();
   if (lower === "/home" || lower === "/home/" || lower === "/home.html" || lower === "/index.html") {
     return "/";
   }
-  return rawPath;
+  return pathOnly || "/";
+};
+
+type HomepageJurisdictionFilter = "all" | "difc-dtec" | "shams-fz" | "dubai-mainland";
+
+const JURISDICTION_DELIVERABLES: Record<
+  HomepageJurisdictionFilter,
+  {
+    badge: string;
+    title: string;
+    taxRegime: string;
+    auditScope: string;
+    startingRate: string;
+    ctaLabel: string;
+    ctaPath: string;
+    highlightedIds: string[];
+  }
+> = {
+  all: {
+    badge: "ALL UAE JURISDICTIONS",
+    title: "Unified Compliance Across Dubai Mainland, DIFC, SHAMS & All 40+ Free Zones",
+    taxRegime: "0% SBR (up to AED 3M) · 0% QFZP Free Zone · 9% Standard > AED 375k",
+    auditScope: "Monthly IFRS Close + Quarterly VAT Form 201 + Annual EmaraTax Return",
+    startingRate: "Fixed-fee retainers from AED 400/month",
+    ctaLabel: "Match Your Scope Below",
+    ctaPath: "/#instant-quote",
+    highlightedIds: ["corporate-tax-advisory", "vat-compliance", "accounting-bookkeeping", "auditing-assurance"],
+  },
+  "difc-dtec": {
+    badge: "DIFC & DTEC COMPLIANCE",
+    title: "DIFC Common-Law IFRS, 0% QFZP Substance & Statutory Dividend Audits",
+    taxRegime: "0% QFZP on Qualifying Income · 5% / AED 5M De Minimis Testing",
+    auditScope: "Annual Audited IFRS Accounts + Interim/Final Dividend Solvency + Transfer Pricing",
+    startingRate: "Enterprise & DIFC advisory from AED 1,000/month",
+    ctaLabel: "Explore DIFC & DTEC Tax Planning",
+    ctaPath: "/tax-planning-difc",
+    highlightedIds: ["corporate-tax-advisory", "accounting-bookkeeping", "auditing-assurance"],
+  },
+  "shams-fz": {
+    badge: "SHAMS & FREE ZONES",
+    title: "SHAMS, IFZA, DMCC & RAKEZ Free Zone Accounting & EmaraTax Filings",
+    taxRegime: "0% Small Business Relief (<= AED 3M) or 0% QFZP Qualifying Free Zone Status",
+    auditScope: "Monthly Cloud IFRS Ledger + Bank Reconciliations + License Renewal Audits",
+    startingRate: "Starter Free Zone packages from AED 400/month",
+    ctaLabel: "View Free Zone Packages",
+    ctaPath: "/pricing",
+    highlightedIds: ["corporate-tax-advisory", "accounting-bookkeeping", "auditing-assurance"],
+  },
+  "dubai-mainland": {
+    badge: "DUBAI MAINLAND (DET)",
+    title: "Dubai Mainland LLC Corporate Tax (9%), Mandatory 5% VAT & Audit Readiness",
+    taxRegime: "0% up to AED 375k Net Profit · 9% Standard · AED 3M Small Business Relief",
+    auditScope: "Quarterly FTA VAT 201 Optimization + E-Invoicing Readiness + IFRS P&L",
+    startingRate: "Mainland Growth retainers from AED 600/month",
+    ctaLabel: "Calculate 9% Tax & 5% VAT",
+    ctaPath: "/uae-tax-planner",
+    highlightedIds: ["corporate-tax-advisory", "vat-compliance", "accounting-bookkeeping"],
+  },
 };
 
 function MainApp() {
   const { t, language, isRTL } = useLanguage();
 
-  // Navigation states
+  // Navigation & filter states
   const [activeSection, setActiveSection] = useState("home");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [jurisdictionFilter, setJurisdictionFilter] = useState<HomepageJurisdictionFilter>("all");
 
   // Dedicated SEO Landing Pages Path State
   const [currentPath, setCurrentPath] = useState<string>(() => {
@@ -176,10 +236,13 @@ function MainApp() {
 
   const navigateTo = (path: string) => {
     if (typeof window !== "undefined") {
-      const [rawPathPart, hashPart] = path.split("#");
+      const [rawBeforeHash, hashPart] = path.split("#");
+      const [rawPathPart, queryPart] = (rawBeforeHash || "/").split("?");
       const normalized = normalizeAppPath(rawPathPart || "/");
-      const fullUrl = hashPart ? `${normalized}#${hashPart}` : normalized;
+      const searchStr = queryPart ? `?${queryPart}` : "";
+      const fullUrl = `${normalized}${searchStr}${hashPart ? `#${hashPart}` : ""}`;
       window.history.pushState(null, "", fullUrl);
+      window.dispatchEvent(new PopStateEvent("popstate"));
       setCurrentPath(normalized);
       if (hashPart) {
         setTimeout(() => {
@@ -791,7 +854,7 @@ function MainApp() {
   }
 
   return (
-    <div className="mobile-container min-h-screen bg-slate-50 font-sans text-slate-800 antialiased selection:bg-gold-500/30 selection:text-navy-950 pb-24 md:pb-0">
+    <div className="min-h-screen flex flex-col bg-slate-50 font-sans text-slate-800 antialiased selection:bg-gold-500/30 selection:text-navy-950">
       {/* Skip to Main Content Link for Keyboard Accessibility */}
       <a
         href="#main-content"
@@ -861,44 +924,57 @@ function MainApp() {
                     </h1>
 
                     {/* Subheadline stating clearly who is served & what is done */}
-                    <p className="text-base sm:text-lg font-medium text-gold-300 leading-relaxed">
-                      Specialized Corporate Tax filing, DIFC tax compliance, VAT returns, and fixed-fee bookkeeping for UAE Mainland and Free Zone businesses.
+                    <p className="text-base sm:text-lg font-medium text-[#dec18c] leading-relaxed">
+                      FTA-Registered Tax Agents · Fixed-Fee IFRS Accounting, 5% VAT &amp; 9% Corporate Tax in Dubai &amp; Sharjah.
                     </p>
 
                     <p className="text-slate-300 text-sm sm:text-base leading-relaxed max-w-xl">
-                      Dias Accounting &amp; Tax Consulting LLC is an FTA Registered Tax Agency in Dubai and Sharjah. We handle your 9% Corporate Tax returns, 0% Small Business Relief (SBR) up to AED 3M, DIFC QFZP compliance, and monthly double-entry bookkeeping under transparent flat-fee packages from AED 400/month.
+                      Dias Accounting &amp; Tax Consulting LLC handles your 9% Corporate Tax returns, 0% Small Business Relief (SBR) up to AED 3M, DIFC QFZP compliance, and monthly double-entry bookkeeping under transparent flat-fee packages from AED 400/month.
                     </p>
                   </div>
                 </div>
 
                 {/* Primary & Secondary Action Bar */}
                 <div className="space-y-4 pt-2">
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 max-w-xl">
-                    {/* Primary CTA: Book a Free Consultation */}
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 max-w-2xl">
+                    {/* Primary CTA: Get Instant Quote */}
                     <a
-                      href="/contact"
+                      href="/#instant-quote"
                       onClick={(e) => {
                         e.preventDefault();
-                        navigateTo("/contact");
+                        navigateTo("/#instant-quote");
                       }}
-                      className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold py-3.5 px-6 rounded-xl transition-all duration-150 flex items-center justify-center gap-2.5 text-sm whitespace-nowrap shrink-0 cursor-pointer shadow-lg shadow-gold-500/20"
+                      className="bg-[#c5a059] hover:bg-[#dec18c] text-[#070d19] font-display font-extrabold py-3.5 px-6 rounded-xl transition-all duration-150 flex items-center justify-center gap-2.5 text-sm whitespace-nowrap shrink-0 cursor-pointer shadow-lg shadow-[#c5a059]/20"
                     >
-                      <Calendar className="w-4 h-4 text-navy-950 shrink-0" />
-                      <span>Book a Free Consultation</span>
+                      <Sparkles className="w-4 h-4 text-[#070d19] shrink-0" />
+                      <span>Get Instant Fixed-Fee Quote</span>
                       <ArrowRight className="w-4 h-4 shrink-0 rtl:rotate-180" />
                     </a>
 
-                    {/* Secondary CTA: Try the UAE Tax Planner */}
+                    {/* Secondary CTA: Book a Free Consultation */}
+                    <a
+                      href="/#contact"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        navigateTo("/#contact");
+                      }}
+                      className="bg-white/10 hover:bg-white/20 border border-[#c5a059]/60 hover:border-[#c5a059] text-white font-display font-bold py-3.5 px-5 rounded-xl transition-all duration-150 flex items-center justify-center gap-2 text-sm whitespace-nowrap shrink-0 cursor-pointer"
+                    >
+                      <Calendar className="w-4 h-4 text-[#c5a059] shrink-0" />
+                      <span>Book a Free Consultation</span>
+                    </a>
+
+                    {/* Tertiary CTA: Try the UAE Tax Planner */}
                     <a
                       href="/uae-tax-planner"
                       onClick={(e) => {
                         e.preventDefault();
                         navigateTo("/uae-tax-planner");
                       }}
-                      className="bg-white/10 hover:bg-white/20 border border-white/25 hover:border-gold-400/60 text-white font-display font-bold py-3.5 px-5 rounded-xl transition-all duration-150 text-sm flex items-center justify-center gap-2 whitespace-nowrap shrink-0 cursor-pointer"
+                      className="bg-white/5 hover:bg-white/15 border border-white/20 hover:border-[#c5a059]/50 text-[#dec18c] hover:text-white font-display font-bold py-3.5 px-5 rounded-xl transition-all duration-150 text-sm flex items-center justify-center gap-2 whitespace-nowrap shrink-0 cursor-pointer"
                     >
-                      <Calculator className="w-4 h-4 text-gold-400 shrink-0" />
-                      <span>UAE Corporate Tax (9%) &amp; VAT Planner</span>
+                      <Calculator className="w-4 h-4 text-[#c5a059] shrink-0" />
+                      <span>2026 Tax Calculator</span>
                     </a>
                   </div>
 
@@ -993,6 +1069,68 @@ function MainApp() {
           </div>
         </section>
 
+        {/* 2.5 Monthly Deliverables 4-Pillar Horizontal Trust Card */}
+        <section
+          aria-label="Monthly Deliverables Guarantee"
+          className="bg-[#070d19] border-b border-[#c5a059]/30 py-8 sm:py-10"
+        >
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="bg-[#0d1b2a] border border-[#c5a059]/45 rounded-2xl p-5 sm:p-6 shadow-xl">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 mb-5 border-b border-white/10">
+                <span className="text-[11px] font-mono font-bold uppercase tracking-[0.2em] text-[#c5a059]">
+                  MONTHLY DELIVERABLES INCLUDED IN RETAINERS
+                </span>
+                <span className="text-xs text-[#cbd5e1]">
+                  Every deliverable signed off by chartered accountants &amp; FTA tax agents
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                {[
+                  {
+                    num: "01",
+                    title: "Monthly IFRS P&L, Balance Sheet & Cash Flow",
+                    detail: "Reconciled ledgers on Zoho Books, Xero & QuickBooks",
+                  },
+                  {
+                    num: "02",
+                    title: "9% Corporate Tax & 0% SBR / QFZP Filings",
+                    detail: "EmaraTax preparation, SBR elections & Free Zone schedules",
+                  },
+                  {
+                    num: "03",
+                    title: "Quarterly 5% VAT Form 201 & Audit Readiness",
+                    detail: "Input tax recovery checks & FTA-ready documentation",
+                  },
+                  {
+                    num: "04",
+                    title: "FTA-Registered Tax Agent & Zero Hidden Fees",
+                    detail: "Fixed monthly retainers starting from AED 400/month",
+                  },
+                ].map((pillar) => (
+                  <div
+                    key={pillar.num}
+                    className="rounded-xl bg-[#070d19] border border-white/10 hover:border-[#c5a059]/60 p-4 transition-colors space-y-1.5"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-mono font-bold text-[#c5a059]">
+                        PILLAR {pillar.num}
+                      </span>
+                      <CheckCircle2 className="w-4 h-4 text-[#c5a059]" />
+                    </div>
+                    <h3 className="font-display text-sm font-bold text-white leading-snug">
+                      {pillar.title}
+                    </h3>
+                    <p className="text-[11px] text-[#cbd5e1]/80 leading-relaxed">
+                      {pillar.detail}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* 3. Core Services Grid Section - Structured BCL.ae Practice Architecture */}
         <section id="services" className="py-20 sm:py-24 bg-slate-50 scroll-mt-20">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
@@ -1020,7 +1158,86 @@ function MainApp() {
               </button>
             </AnimatedSection>
 
-            {/* 4 Core Services Cards Only */}
+            {/* Interactive Jurisdiction Filter Tabs */}
+            <div className="space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-4">
+                <div
+                  role="tablist"
+                  aria-label="Filter Compliance Deliverables by UAE Jurisdiction"
+                  className="inline-flex flex-wrap gap-1.5 p-1.5 rounded-2xl bg-[#070d19] border border-[#c5a059]/40 shadow-md"
+                >
+                  {[
+                    { id: "all", label: "All UAE" },
+                    { id: "difc-dtec", label: "DIFC & DTEC" },
+                    { id: "shams-fz", label: "SHAMS & Free Zones" },
+                    { id: "dubai-mainland", label: "Dubai Mainland" },
+                  ].map((tab) => {
+                    const active = jurisdictionFilter === tab.id;
+                    return (
+                      <button
+                        key={tab.id}
+                        type="button"
+                        role="tab"
+                        aria-selected={active}
+                        onClick={() => setJurisdictionFilter(tab.id as HomepageJurisdictionFilter)}
+                        className={`px-4 py-2 rounded-xl text-xs font-display font-bold transition-all cursor-pointer whitespace-nowrap ${
+                          active
+                            ? "bg-[#c5a059] text-[#070d19] shadow-sm"
+                            : "text-[#cbd5e1] hover:text-white hover:bg-white/5"
+                        }`}
+                      >
+                        {tab.label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <span className="text-xs text-slate-500 font-medium">
+                  Select a jurisdiction to filter relevant compliance deliverables
+                </span>
+              </div>
+
+              {/* Active Jurisdiction Deliverables Card */}
+              <div className="bg-[#0d1b2a] border border-[#c5a059]/50 rounded-2xl p-5 sm:p-6 text-white shadow-lg flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div className="space-y-2 max-w-2xl">
+                  <span className="inline-block text-[10px] font-mono font-bold uppercase tracking-widest text-[#c5a059]">
+                    {JURISDICTION_DELIVERABLES[jurisdictionFilter].badge}
+                  </span>
+                  <h3 className="font-display text-lg sm:text-xl font-bold text-white leading-snug">
+                    {JURISDICTION_DELIVERABLES[jurisdictionFilter].title}
+                  </h3>
+                  <div className="flex flex-wrap gap-x-6 gap-y-1.5 text-xs text-[#cbd5e1] pt-1">
+                    <span>
+                      <strong className="text-[#dec18c]">Tax Regime:</strong>{" "}
+                      {JURISDICTION_DELIVERABLES[jurisdictionFilter].taxRegime}
+                    </span>
+                    <span>
+                      <strong className="text-[#dec18c]">Deliverables:</strong>{" "}
+                      {JURISDICTION_DELIVERABLES[jurisdictionFilter].auditScope}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end gap-3 shrink-0">
+                  <span className="text-xs font-mono font-bold text-[#c5a059]">
+                    {JURISDICTION_DELIVERABLES[jurisdictionFilter].startingRate}
+                  </span>
+                  <a
+                    href={JURISDICTION_DELIVERABLES[jurisdictionFilter].ctaPath}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigateTo(JURISDICTION_DELIVERABLES[jurisdictionFilter].ctaPath);
+                    }}
+                    className="inline-flex items-center gap-2 rounded-xl bg-[#c5a059] hover:bg-[#dec18c] text-[#070d19] font-display font-extrabold text-xs px-4 py-2.5 transition-colors whitespace-nowrap"
+                  >
+                    <span>{JURISDICTION_DELIVERABLES[jurisdictionFilter].ctaLabel}</span>
+                    <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* 4 Core Services Cards (Filtered by Active Jurisdiction Tab) */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
                 {
@@ -1055,7 +1272,11 @@ function MainApp() {
                   desc: "Pre-audit verification, balance sheet cleanup, and Free Zone renewal compliance. We prepare defensible audit files that satisfy external auditors, banks, and licensing authorities.",
                   link: "/services/auditing-assurance",
                 },
-              ].map((service) => (
+              ]
+                .filter((service) =>
+                  JURISDICTION_DELIVERABLES[jurisdictionFilter].highlightedIds.includes(service.id)
+                )
+                .map((service) => (
                 <article
                   key={service.id}
                   onClick={() => navigateTo(service.link)}
@@ -1598,6 +1819,13 @@ function MainApp() {
         onPreselectedCallBooking={handlePreselectedCallBooking}
       />
 
+      {/* 6.1 Interactive Scope & Instant Quote Builder */}
+      <ScopeInstantQuoteBuilder
+        id="instant-quote"
+        onNavigate={navigateTo}
+        onSelectScopeForBooking={(summary) => handlePreselectedCallBooking(summary)}
+      />
+
       {/* 6.2 Quick Answers & Transparent UAE Pricing Table (AI & Human Scannable) */}
       <QuickAnswersPricingTable variant="homepage" onNavigate={navigateTo} />
 
@@ -1982,8 +2210,8 @@ function MainApp() {
         onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
       />
 
-      {/* 10. Global WhatsApp & Google Reviews Floating Widget */}
-      <div className="fixed bottom-[88px] right-[34px] md:right-8 z-40 flex flex-col gap-2.5 items-center">
+      {/* 10. Global Google Reviews & Social Floating Stack (Desktop only, tucked neatly above bottom-right FloatingConversionPill) */}
+      <div className="hidden md:flex fixed bottom-[82px] right-6 z-40 flex-col gap-2 items-center">
         <a
           href={GOOGLE_BUSINESS_URL}
           target="_blank"
@@ -2070,18 +2298,10 @@ function MainApp() {
 
       <React.Suspense fallback={null}>
         {mountFloatingWidgets && (
-          <>
-            <WhatsAppWidget
-              activeSection={activeSection}
-              selectedService={selectedService}
-              selectedBlog={selectedBlog}
-              customContext={preselectedServiceTitle ? "cfo-advisory" : undefined}
-            />
-            <StickyMobileLeadBar
-              onOpenAudit={() => setTaxHealthModalOpen(true)}
-              onNavigate={navigateTo}
-            />
-          </>
+          <StickyMobileLeadBar
+            onOpenAudit={() => setTaxHealthModalOpen(true)}
+            onNavigate={navigateTo}
+          />
         )}
         {taxHealthModalOpen && (
           <TaxHealthCheckModal isOpen={taxHealthModalOpen} onClose={() => setTaxHealthModalOpen(false)} />

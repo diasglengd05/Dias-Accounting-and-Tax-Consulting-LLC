@@ -241,6 +241,10 @@ export const UaeTaxCalculatorSuite: React.FC<UaeTaxCalculatorSuiteProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<CalculatorSuiteTab>(defaultTab);
 
+  useEffect(() => {
+    setActiveTab(defaultTab);
+  }, [defaultTab]);
+
   // ==========================
   // TAB 1: Corporate Tax State
   // ==========================

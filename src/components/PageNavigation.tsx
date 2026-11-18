@@ -5,11 +5,15 @@ import {
   Phone,
   ChevronDown,
   ChevronRight,
-  ShieldCheck,
+  Calculator,
+  Calendar,
+  ArrowRight,
+  Sparkles,
 } from "lucide-react";
 import DiasLogo from "./DiasLogo";
 import ComplianceAlertBanner from "./ComplianceAlertBanner";
 import LanguageToggle from "./LanguageToggle";
+import FloatingConversionPill from "./FloatingConversionPill";
 import { useLanguage } from "../i18n/LanguageContext";
 
 interface PageNavigationProps {
@@ -18,34 +22,104 @@ interface PageNavigationProps {
   onOpenAudit?: () => void;
 }
 
-interface DropdownItem {
+interface MegaDropdownItem {
   label: string;
+  description?: string;
   path: string;
 }
 
-const SERVICES_DROPDOWN: DropdownItem[] = [
-  { label: "9% Corporate Tax & 0% SBR", path: "/services/corporate-tax-advisory" },
-  { label: "DIFC & DTEC Tax Planning", path: "/tax-planning-difc" },
-  { label: "5% UAE VAT & Audit Readiness", path: "/services/vat-compliance" },
-  { label: "Monthly IFRS Bookkeeping", path: "/services/accounting-bookkeeping" },
-  { label: "Dividend Distribution Audits", path: "/dividends-audit" },
-  { label: "UAE E-Invoicing Setup", path: "/blog/uae-e-invoicing-mandate-asp-integration-guide-2026" },
+const SERVICES_DROPDOWN: MegaDropdownItem[] = [
+  {
+    label: "9% Corporate Tax & 0% SBR",
+    description: "EmaraTax filings & AED 3M relief",
+    path: "/services/corporate-tax-advisory",
+  },
+  {
+    label: "DIFC & DTEC Tax Planning",
+    description: "0% QFZP & common-law IFRS",
+    path: "/tax-planning-difc",
+  },
+  {
+    label: "5% UAE VAT & Form 201",
+    description: "TRN setup & quarterly returns",
+    path: "/services/vat-compliance",
+  },
+  {
+    label: "Monthly IFRS Bookkeeping",
+    description: "Zoho, Xero & QuickBooks ledgers",
+    path: "/services/accounting-bookkeeping",
+  },
+  {
+    label: "Dividend Distribution Audits",
+    description: "Interim & final solvency audits",
+    path: "/dividends-audit",
+  },
+  {
+    label: "UAE E-Invoicing Setup",
+    description: "2026 ASP & Peppol readiness",
+    path: "/blog/uae-e-invoicing-mandate-asp-integration-guide-2026",
+  },
 ];
 
-const COMPANY_SETUP_DROPDOWN: DropdownItem[] = [
-  { label: "SHAMS Free Zone (Sharjah)", path: "/blog/opening-company-shams-free-zone-sharjah-setup-tax-guide-2026" },
-  { label: "Dubai Mainland LLC", path: "/services/business-incorporation" },
-  { label: "DIFC / DTEC / IFZA / DMCC", path: "/company-setup" },
-  { label: "Free Zone vs. Mainland Guide", path: "/blog/choosing-uae-jurisdiction" },
+const COMPANY_SETUP_DROPDOWN: MegaDropdownItem[] = [
+  {
+    label: "All UAE Company Setup Packages",
+    description: "Turnkey licensing & EmaraTax setup",
+    path: "/company-setup",
+  },
+  {
+    label: "SHAMS Free Zone (Sharjah)",
+    description: "Fast licensing & 0% SBR/QFZP guide",
+    path: "/blog/opening-company-shams-free-zone-sharjah-setup-tax-guide-2026",
+  },
+  {
+    label: "Dubai Mainland LLC",
+    description: "100% foreign ownership DET setup",
+    path: "/services/business-incorporation",
+  },
+  {
+    label: "DIFC & DTEC Entities",
+    description: "Financial center compliance hub",
+    path: "/tax-planning-difc",
+  },
+  {
+    label: "IFZA & DMCC Free Zones",
+    description: "Free Zone vs. Mainland comparison",
+    path: "/blog/choosing-uae-jurisdiction",
+  },
 ];
 
-const ABOUT_DROPDOWN: DropdownItem[] = [
+const RESOURCES_DROPDOWN: MegaDropdownItem[] = [
+  {
+    label: "2026 UAE Corporate Tax Calculator",
+    description: "Mainland 9% / SBR & Free Zone QFZP",
+    path: "/uae-tax-planner",
+  },
+  {
+    label: "5% UAE VAT Recovery Calculator",
+    description: "Add/extract 5% & Form 201 rules",
+    path: "/uae-tax-planner?tab=vat",
+  },
+  {
+    label: "Interactive Scope & Quote Selector",
+    description: "Match your fixed-fee retainer in 30s",
+    path: "/#instant-quote",
+  },
+  {
+    label: "Tax & IFRS Guides",
+    description: "Expert UAE regulatory briefings",
+    path: "/blogs",
+  },
+];
+
+const ABOUT_DROPDOWN: MegaDropdownItem[] = [
   { label: "About Dias Accounting", path: "/about" },
   { label: "Client Testimonials", path: "/testimonials" },
   { label: "FAQs", path: "/faqs" },
+  { label: "Contact & Consultation", path: "/#contact" },
 ];
 
-type DropdownKey = "services" | "company-setup" | "about";
+type DropdownKey = "services" | "company-setup" | "resources" | "about";
 
 export const PageNavigation: React.FC<PageNavigationProps> = ({
   currentPath,
@@ -58,6 +132,7 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
   const [openMobileAccordions, setOpenMobileAccordions] = useState<Record<DropdownKey, boolean>>({
     services: false,
     "company-setup": false,
+    resources: false,
     about: false,
   });
 
@@ -87,6 +162,14 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
     e.preventDefault();
     setOpenDesktopDropdown(null);
     setMobileMenuOpen(false);
+    // If already on /pricing and user clicks Instant Quote, scroll smoothly to #instant-quote on /pricing
+    if (path === "/#instant-quote" && currentPath === "/pricing") {
+      const localQuoteEl = document.getElementById("instant-quote");
+      if (localQuoteEl) {
+        localQuoteEl.scrollIntoView({ behavior: "smooth" });
+        return;
+      }
+    }
     onNavigate(path);
   };
 
@@ -108,17 +191,22 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
     currentPath === "/blog/choosing-uae-jurisdiction" ||
     currentPath === "/blog/opening-company-shams-free-zone-sharjah-setup-tax-guide-2026";
 
+  const isResourcesActive =
+    currentPath === "/uae-tax-planner" ||
+    currentPath === "/tax-planner" ||
+    currentPath === "/corporate-tax-calculator" ||
+    currentPath === "/uae-vat-calculator" ||
+    currentPath === "/blogs" ||
+    currentPath === "/insights" ||
+    (currentPath.startsWith("/blog/") && !isSetupActive);
+
   const isAboutActive =
     currentPath === "/about" ||
     currentPath === "/testimonials" ||
     currentPath === "/reviews" ||
     currentPath === "/faqs" ||
-    currentPath === "/why-choose-us";
-
-  const isBlogsActive =
-    currentPath === "/blogs" ||
-    currentPath === "/insights" ||
-    (currentPath.startsWith("/blog/") && !isSetupActive);
+    currentPath === "/why-choose-us" ||
+    currentPath === "/contact";
 
   return (
     <>
@@ -131,7 +219,7 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
         role="banner"
         className="sticky top-0 z-40 bg-[#070d19]/95 backdrop-blur-md border-b border-[#c5a059]/30 shadow-lg transition-all duration-200"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-3 lg:gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-2 lg:gap-4">
           {/* Left: Brand Logo linking to / */}
           <div className="flex items-center shrink-0">
             <a
@@ -143,7 +231,7 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
               <DiasLogo
                 className="w-9 h-9 sm:w-10 sm:h-10"
                 showText={true}
-                textSize="text-lg sm:text-xl"
+                textSize="text-base sm:text-xl"
                 textColor="text-white"
               />
             </a>
@@ -152,9 +240,9 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
           {/* Center: Single-Row Desktop Horizontal Menu (min-width: 1024px) */}
           <nav
             aria-label="Main Navigation"
-            className="hidden lg:flex items-center flex-nowrap gap-3.5 xl:gap-5"
+            className="hidden lg:flex items-center flex-nowrap whitespace-nowrap gap-3 xl:gap-5"
           >
-            {/* Dropdown 1: SERVICES */}
+            {/* Mega-Dropdown 1: SERVICES */}
             <div
               className="relative shrink-0"
               onMouseEnter={() => setOpenDesktopDropdown("services")}
@@ -167,13 +255,13 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
                 }
                 aria-expanded={openDesktopDropdown === "services"}
                 aria-haspopup="true"
-                className={`inline-flex items-center gap-1 py-2 text-[12px] xl:text-[13px] font-semibold uppercase tracking-wider whitespace-nowrap transition-colors cursor-pointer ${
+                className={`inline-flex items-center gap-1 py-2 text-[11.5px] xl:text-[12.5px] font-semibold uppercase tracking-wide xl:tracking-wider whitespace-nowrap transition-colors cursor-pointer ${
                   isServicesActive || openDesktopDropdown === "services"
                     ? "text-[#c5a059]"
                     : "text-white hover:text-[#c5a059]"
                 }`}
               >
-                <span>SERVICES</span>
+                <span>Services</span>
                 <ChevronDown
                   className={`w-3.5 h-3.5 transition-transform duration-150 ${
                     openDesktopDropdown === "services" ? "rotate-180 text-[#c5a059]" : ""
@@ -182,28 +270,50 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
               </button>
 
               {openDesktopDropdown === "services" && (
-                <div className="absolute left-0 top-full pt-2 w-72 z-50">
+                <div className="absolute left-0 top-full pt-2 w-[480px] z-50">
                   <div
                     role="menu"
-                    className="bg-[#0d1b2a] border border-[#c5a059] rounded-xl shadow-2xl py-2 overflow-hidden"
+                    className="bg-[#0d1b2a] border border-[#c5a059]/35 border-t-2 border-t-[#c5a059] rounded-2xl shadow-2xl p-3 overflow-hidden"
                   >
-                    {SERVICES_DROPDOWN.map((sub) => (
+                    <div className="grid grid-cols-2 gap-1.5">
+                      {SERVICES_DROPDOWN.map((sub) => (
+                        <a
+                          key={sub.path}
+                          href={sub.path}
+                          role="menuitem"
+                          onClick={(e) => handleLinkClick(e, sub.path)}
+                          className="group block px-3.5 py-2.5 rounded-xl hover:bg-white/5 transition-colors whitespace-normal"
+                        >
+                          <span className="block text-[13px] font-semibold text-white group-hover:text-[#c5a059] transition-colors">
+                            {sub.label}
+                          </span>
+                          {sub.description && (
+                            <span className="block text-[11px] text-[#cbd5e1]/75 mt-0.5">
+                              {sub.description}
+                            </span>
+                          )}
+                        </a>
+                      ))}
+                    </div>
+                    <div className="mt-2 pt-2 border-t border-white/10 px-2 flex items-center justify-between">
+                      <span className="text-[11px] text-[#cbd5e1]/70">
+                        FTA-Registered Practice · All 7 Emirates
+                      </span>
                       <a
-                        key={sub.path}
-                        href={sub.path}
-                        role="menuitem"
-                        onClick={(e) => handleLinkClick(e, sub.path)}
-                        className="block px-4 py-2.5 text-[13px] font-medium text-[#ffffff] hover:text-[#c5a059] hover:bg-white/5 transition-colors"
+                        href="/services"
+                        onClick={(e) => handleLinkClick(e, "/services")}
+                        className="inline-flex items-center gap-1 text-[11px] font-bold text-[#dec18c] hover:text-[#c5a059]"
                       >
-                        {sub.label}
+                        <span>All Services</span>
+                        <ArrowRight className="w-3 h-3" />
                       </a>
-                    ))}
+                    </div>
                   </div>
                 </div>
               )}
             </div>
 
-            {/* Dropdown 2: COMPANY SETUP */}
+            {/* Mega-Dropdown 2: COMPANY SETUP */}
             <div
               className="relative shrink-0"
               onMouseEnter={() => setOpenDesktopDropdown("company-setup")}
@@ -218,13 +328,13 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
                 }
                 aria-expanded={openDesktopDropdown === "company-setup"}
                 aria-haspopup="true"
-                className={`inline-flex items-center gap-1 py-2 text-[12px] xl:text-[13px] font-semibold uppercase tracking-wider whitespace-nowrap transition-colors cursor-pointer ${
+                className={`inline-flex items-center gap-1 py-2 text-[11.5px] xl:text-[12.5px] font-semibold uppercase tracking-wide xl:tracking-wider whitespace-nowrap transition-colors cursor-pointer ${
                   isSetupActive || openDesktopDropdown === "company-setup"
                     ? "text-[#c5a059]"
                     : "text-white hover:text-[#c5a059]"
                 }`}
               >
-                <span>COMPANY SETUP</span>
+                <span>Company Setup</span>
                 <ChevronDown
                   className={`w-3.5 h-3.5 transition-transform duration-150 ${
                     openDesktopDropdown === "company-setup" ? "rotate-180 text-[#c5a059]" : ""
@@ -233,10 +343,10 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
               </button>
 
               {openDesktopDropdown === "company-setup" && (
-                <div className="absolute left-0 top-full pt-2 w-68 z-50">
+                <div className="absolute left-0 top-full pt-2 w-[340px] z-50">
                   <div
                     role="menu"
-                    className="bg-[#0d1b2a] border border-[#c5a059] rounded-xl shadow-2xl py-2 overflow-hidden"
+                    className="bg-[#0d1b2a] border border-[#c5a059]/35 border-t-2 border-t-[#c5a059] rounded-2xl shadow-2xl p-2.5 overflow-hidden space-y-0.5"
                   >
                     {COMPANY_SETUP_DROPDOWN.map((sub) => (
                       <a
@@ -244,9 +354,16 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
                         href={sub.path}
                         role="menuitem"
                         onClick={(e) => handleLinkClick(e, sub.path)}
-                        className="block px-4 py-2.5 text-[13px] font-medium text-[#ffffff] hover:text-[#c5a059] hover:bg-white/5 transition-colors"
+                        className="group block px-3.5 py-2.5 rounded-xl hover:bg-white/5 transition-colors whitespace-normal"
                       >
-                        {sub.label}
+                        <span className="block text-[13px] font-semibold text-white group-hover:text-[#c5a059] transition-colors">
+                          {sub.label}
+                        </span>
+                        {sub.description && (
+                          <span className="block text-[11px] text-[#cbd5e1]/75 mt-0.5">
+                            {sub.description}
+                          </span>
+                        )}
                       </a>
                     ))}
                   </div>
@@ -258,43 +375,72 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
             <a
               href="/pricing"
               onClick={(e) => handleLinkClick(e, "/pricing")}
-              className={`py-2 text-[12px] xl:text-[13px] font-semibold uppercase tracking-wider whitespace-nowrap shrink-0 transition-colors ${
+              className={`py-2 text-[11.5px] xl:text-[12.5px] font-semibold uppercase tracking-wide xl:tracking-wider whitespace-nowrap shrink-0 transition-colors ${
                 currentPath === "/pricing"
                   ? "text-[#c5a059]"
                   : "text-white hover:text-[#c5a059]"
               }`}
             >
-              PRICING
+              Pricing
             </a>
 
-            {/* Direct Link: TAX CALCULATOR */}
-            <a
-              href="/uae-tax-planner"
-              onClick={(e) => handleLinkClick(e, "/uae-tax-planner")}
-              className={`py-2 text-[12px] xl:text-[13px] font-semibold uppercase tracking-wider whitespace-nowrap shrink-0 transition-colors ${
-                currentPath === "/uae-tax-planner" ||
-                currentPath === "/tax-planner" ||
-                currentPath === "/corporate-tax-calculator" ||
-                currentPath === "/uae-vat-calculator"
-                  ? "text-[#c5a059]"
-                  : "text-white hover:text-[#c5a059]"
-              }`}
+            {/* Mega-Dropdown 3: CALCULATORS & RESOURCES */}
+            <div
+              className="relative shrink-0"
+              onMouseEnter={() => setOpenDesktopDropdown("resources")}
+              onMouseLeave={() => setOpenDesktopDropdown(null)}
             >
-              TAX CALCULATOR
-            </a>
+              <button
+                type="button"
+                onClick={() =>
+                  setOpenDesktopDropdown((prev) => (prev === "resources" ? null : "resources"))
+                }
+                aria-expanded={openDesktopDropdown === "resources"}
+                aria-haspopup="true"
+                className={`inline-flex items-center gap-1 py-2 text-[11.5px] xl:text-[12.5px] font-semibold uppercase tracking-wide xl:tracking-wider whitespace-nowrap transition-colors cursor-pointer ${
+                  isResourcesActive || openDesktopDropdown === "resources"
+                    ? "text-[#c5a059]"
+                    : "text-white hover:text-[#c5a059]"
+                }`}
+              >
+                <span>Calculators &amp; Resources</span>
+                <ChevronDown
+                  className={`w-3.5 h-3.5 transition-transform duration-150 ${
+                    openDesktopDropdown === "resources" ? "rotate-180 text-[#c5a059]" : ""
+                  }`}
+                />
+              </button>
 
-            {/* Direct Link: BLOGS */}
-            <a
-              href="/blogs"
-              onClick={(e) => handleLinkClick(e, "/blogs")}
-              className={`py-2 text-[12px] xl:text-[13px] font-semibold uppercase tracking-wider whitespace-nowrap shrink-0 transition-colors ${
-                isBlogsActive ? "text-[#c5a059]" : "text-white hover:text-[#c5a059]"
-              }`}
-            >
-              BLOGS
-            </a>
+              {openDesktopDropdown === "resources" && (
+                <div className="absolute left-0 top-full pt-2 w-[350px] z-50">
+                  <div
+                    role="menu"
+                    className="bg-[#0d1b2a] border border-[#c5a059]/35 border-t-2 border-t-[#c5a059] rounded-2xl shadow-2xl p-2.5 overflow-hidden space-y-0.5"
+                  >
+                    {RESOURCES_DROPDOWN.map((sub) => (
+                      <a
+                        key={sub.path}
+                        href={sub.path}
+                        role="menuitem"
+                        onClick={(e) => handleLinkClick(e, sub.path)}
+                        className="group block px-3.5 py-2.5 rounded-xl hover:bg-white/5 transition-colors whitespace-normal"
+                      >
+                        <span className="block text-[13px] font-semibold text-white group-hover:text-[#c5a059] transition-colors">
+                          {sub.label}
+                        </span>
+                        {sub.description && (
+                          <span className="block text-[11px] text-[#cbd5e1]/75 mt-0.5">
+                            {sub.description}
+                          </span>
+                        )}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
 
-            {/* Dropdown 3: ABOUT & REVIEWS */}
+            {/* Mega-Dropdown 4: ABOUT */}
             <div
               className="relative shrink-0"
               onMouseEnter={() => setOpenDesktopDropdown("about")}
@@ -307,13 +453,13 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
                 }
                 aria-expanded={openDesktopDropdown === "about"}
                 aria-haspopup="true"
-                className={`inline-flex items-center gap-1 py-2 text-[12px] xl:text-[13px] font-semibold uppercase tracking-wider whitespace-nowrap transition-colors cursor-pointer ${
+                className={`inline-flex items-center gap-1 py-2 text-[11.5px] xl:text-[12.5px] font-semibold uppercase tracking-wide xl:tracking-wider whitespace-nowrap transition-colors cursor-pointer ${
                   isAboutActive || openDesktopDropdown === "about"
                     ? "text-[#c5a059]"
                     : "text-white hover:text-[#c5a059]"
                 }`}
               >
-                <span>ABOUT &amp; REVIEWS</span>
+                <span>About</span>
                 <ChevronDown
                   className={`w-3.5 h-3.5 transition-transform duration-150 ${
                     openDesktopDropdown === "about" ? "rotate-180 text-[#c5a059]" : ""
@@ -325,7 +471,7 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
                 <div className="absolute right-0 top-full pt-2 w-60 z-50">
                   <div
                     role="menu"
-                    className="bg-[#0d1b2a] border border-[#c5a059] rounded-xl shadow-2xl py-2 overflow-hidden"
+                    className="bg-[#0d1b2a] border border-[#c5a059]/35 border-t-2 border-t-[#c5a059] rounded-2xl shadow-2xl py-2 overflow-hidden"
                   >
                     {ABOUT_DROPDOWN.map((sub) => (
                       <a
@@ -333,7 +479,7 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
                         href={sub.path}
                         role="menuitem"
                         onClick={(e) => handleLinkClick(e, sub.path)}
-                        className="block px-4 py-2.5 text-[13px] font-medium text-[#ffffff] hover:text-[#c5a059] hover:bg-white/5 transition-colors"
+                        className="block px-4 py-2.5 text-[13px] font-medium text-white hover:text-[#c5a059] hover:bg-white/5 transition-colors"
                       >
                         {sub.label}
                       </a>
@@ -342,41 +488,45 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
                 </div>
               )}
             </div>
+          </nav>
 
-            {/* Direct Link: CONTACT */}
+          {/* Right: Dual Conversion CTAs (Desktop >= 1024px) */}
+          <div className="hidden lg:flex items-center gap-2 shrink-0">
+            <a
+              href="/#instant-quote"
+              onClick={(e) => handleLinkClick(e, "/#instant-quote")}
+              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-[#c5a059] text-[#dec18c] hover:bg-[#c5a059]/15 hover:text-white font-display font-bold text-xs px-3.5 xl:px-4 py-2 whitespace-nowrap shrink-0 transition-colors cursor-pointer"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-[#c5a059] shrink-0" />
+              <span>Instant Quote</span>
+            </a>
+
             <a
               href="/#contact"
               onClick={(e) => handleLinkClick(e, "/#contact")}
-              className={`py-2 text-[12px] xl:text-[13px] font-semibold uppercase tracking-wider whitespace-nowrap shrink-0 transition-colors ${
-                currentPath === "/contact"
-                  ? "text-[#c5a059]"
-                  : "text-white hover:text-[#c5a059]"
-              }`}
+              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-[#c5a059] hover:bg-[#dec18c] text-[#070d19] font-display font-extrabold text-xs px-4 xl:px-5 py-2 whitespace-nowrap shrink-0 shadow-md shadow-[#c5a059]/20 transition-all cursor-pointer active:scale-95"
             >
-              CONTACT
-            </a>
-          </nav>
-
-          {/* Right: Compact Brushed Gold CTA Button (Desktop >= 1024px) */}
-          <div className="hidden lg:flex items-center shrink-0">
-            <a
-              href="/uae-tax-planner"
-              onClick={(e) => handleLinkClick(e, "/uae-tax-planner")}
-              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-[#c5a059] hover:bg-[#dec18c] text-[#070d19] font-display font-extrabold text-xs xl:text-[13px] px-4 xl:px-5 py-2.5 whitespace-nowrap shrink-0 shadow-md shadow-[#c5a059]/20 transition-all cursor-pointer active:scale-95"
-            >
-              <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
-              <span>Free Tax Check</span>
+              <Calendar className="w-3.5 h-3.5 shrink-0" />
+              <span>Consult Now</span>
             </a>
           </div>
 
           {/* Mobile & Tablet Controls (< 1024px) */}
-          <div className="flex lg:hidden items-center gap-2 sm:gap-2.5 shrink-0">
+          <div className="flex lg:hidden items-center gap-2 shrink-0">
             <a
-              href="/uae-tax-planner"
-              onClick={(e) => handleLinkClick(e, "/uae-tax-planner")}
+              href="/#instant-quote"
+              onClick={(e) => handleLinkClick(e, "/#instant-quote")}
+              className="hidden sm:inline-flex items-center justify-center rounded-full border border-[#c5a059] text-[#dec18c] hover:bg-[#c5a059]/15 font-display font-bold text-xs px-3 py-1.5 whitespace-nowrap cursor-pointer transition-colors"
+            >
+              Instant Quote
+            </a>
+
+            <a
+              href="/#contact"
+              onClick={(e) => handleLinkClick(e, "/#contact")}
               className="inline-flex items-center justify-center rounded-full bg-[#c5a059] hover:bg-[#dec18c] text-[#070d19] font-display font-extrabold text-[11px] sm:text-xs px-3.5 py-2 whitespace-nowrap shadow-xs cursor-pointer transition-colors"
             >
-              Free Tax Check
+              Consult Now
             </a>
 
             <a
@@ -401,7 +551,7 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
           </div>
         </div>
 
-        {/* Mobile & Tablet Navigation Drawer (< 1024px) with Expandable Accordions */}
+        {/* Mobile & Tablet Navigation Drawer (< 1024px) */}
         <div
           id="mobile-nav-menu"
           className={`lg:hidden absolute top-20 left-0 w-full bg-[#070d19] border-b border-[#c5a059]/50 shadow-2xl z-50 overflow-hidden flex flex-col transition-all duration-200 ease-out origin-top ${
@@ -412,15 +562,25 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
           aria-hidden={!mobileMenuOpen}
         >
           <div className="px-4 sm:px-6 pt-4 pb-6 space-y-3 overflow-y-auto flex-1">
-            {/* Primary Mobile CTA */}
-            <a
-              href="/uae-tax-planner"
-              onClick={(e) => handleLinkClick(e, "/uae-tax-planner")}
-              className="w-full py-3 px-4 rounded-full bg-[#c5a059] hover:bg-[#dec18c] text-[#070d19] font-display font-extrabold text-sm flex items-center justify-center gap-2 shadow-md cursor-pointer text-center"
-            >
-              <ShieldCheck className="w-4 h-4" />
-              <span>Free Tax Check</span>
-            </a>
+            {/* Dual Mobile CTAs */}
+            <div className="grid grid-cols-2 gap-2.5">
+              <a
+                href="/#instant-quote"
+                onClick={(e) => handleLinkClick(e, "/#instant-quote")}
+                className="py-2.5 px-3 rounded-full border border-[#c5a059] text-[#dec18c] font-display font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer text-center"
+              >
+                <Calculator className="w-3.5 h-3.5 text-[#c5a059]" />
+                <span>Instant Quote</span>
+              </a>
+              <a
+                href="/#contact"
+                onClick={(e) => handleLinkClick(e, "/#contact")}
+                className="py-2.5 px-3 rounded-full bg-[#c5a059] hover:bg-[#dec18c] text-[#070d19] font-display font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-md cursor-pointer text-center"
+              >
+                <Calendar className="w-3.5 h-3.5" />
+                <span>Consult Now</span>
+              </a>
+            </div>
 
             {/* Accordions & Direct Links */}
             <div className="divide-y divide-white/10">
@@ -432,7 +592,7 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
                   aria-expanded={openMobileAccordions.services}
                   className="w-full flex items-center justify-between py-3 text-xs font-bold uppercase tracking-wider text-white hover:text-[#c5a059] cursor-pointer"
                 >
-                  <span>SERVICES</span>
+                  <span>Services</span>
                   <ChevronDown
                     className={`w-4 h-4 text-[#c5a059] transition-transform duration-150 ${
                       openMobileAccordions.services ? "rotate-180" : ""
@@ -463,7 +623,7 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
                   aria-expanded={openMobileAccordions["company-setup"]}
                   className="w-full flex items-center justify-between py-3 text-xs font-bold uppercase tracking-wider text-white hover:text-[#c5a059] cursor-pointer"
                 >
-                  <span>COMPANY SETUP</span>
+                  <span>Company Setup</span>
                   <ChevronDown
                     className={`w-4 h-4 text-[#c5a059] transition-transform duration-150 ${
                       openMobileAccordions["company-setup"] ? "rotate-180" : ""
@@ -492,31 +652,42 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
                 onClick={(e) => handleLinkClick(e, "/pricing")}
                 className="flex items-center justify-between py-3 text-xs font-bold uppercase tracking-wider text-white hover:text-[#c5a059] transition-colors"
               >
-                <span>PRICING</span>
+                <span>Pricing</span>
                 <ChevronRight className="w-4 h-4 text-[#c5a059]" />
               </a>
 
-              {/* Mobile Direct Link: TAX CALCULATOR */}
-              <a
-                href="/uae-tax-planner"
-                onClick={(e) => handleLinkClick(e, "/uae-tax-planner")}
-                className="flex items-center justify-between py-3 text-xs font-bold uppercase tracking-wider text-white hover:text-[#c5a059] transition-colors"
-              >
-                <span>TAX CALCULATOR</span>
-                <ChevronRight className="w-4 h-4 text-[#c5a059]" />
-              </a>
+              {/* Mobile Accordion: CALCULATORS & RESOURCES */}
+              <div className="py-1">
+                <button
+                  type="button"
+                  onClick={() => toggleMobileAccordion("resources")}
+                  aria-expanded={openMobileAccordions.resources}
+                  className="w-full flex items-center justify-between py-3 text-xs font-bold uppercase tracking-wider text-white hover:text-[#c5a059] cursor-pointer"
+                >
+                  <span>Calculators &amp; Resources</span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-[#c5a059] transition-transform duration-150 ${
+                      openMobileAccordions.resources ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                {openMobileAccordions.resources && (
+                  <div className="pl-3 pb-2 space-y-1 border-l border-[#c5a059]/40 ml-1">
+                    {RESOURCES_DROPDOWN.map((sub) => (
+                      <a
+                        key={sub.path}
+                        href={sub.path}
+                        onClick={(e) => handleLinkClick(e, sub.path)}
+                        className="block py-2 px-2 text-sm text-[#cbd5e1] hover:text-[#c5a059] transition-colors"
+                      >
+                        {sub.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
 
-              {/* Mobile Direct Link: BLOGS */}
-              <a
-                href="/blogs"
-                onClick={(e) => handleLinkClick(e, "/blogs")}
-                className="flex items-center justify-between py-3 text-xs font-bold uppercase tracking-wider text-white hover:text-[#c5a059] transition-colors"
-              >
-                <span>BLOGS</span>
-                <ChevronRight className="w-4 h-4 text-[#c5a059]" />
-              </a>
-
-              {/* Mobile Accordion: ABOUT & REVIEWS */}
+              {/* Mobile Accordion: ABOUT */}
               <div className="py-1">
                 <button
                   type="button"
@@ -524,7 +695,7 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
                   aria-expanded={openMobileAccordions.about}
                   className="w-full flex items-center justify-between py-3 text-xs font-bold uppercase tracking-wider text-white hover:text-[#c5a059] cursor-pointer"
                 >
-                  <span>ABOUT &amp; REVIEWS</span>
+                  <span>About</span>
                   <ChevronDown
                     className={`w-4 h-4 text-[#c5a059] transition-transform duration-150 ${
                       openMobileAccordions.about ? "rotate-180" : ""
@@ -546,16 +717,6 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
                   </div>
                 )}
               </div>
-
-              {/* Mobile Direct Link: CONTACT */}
-              <a
-                href="/#contact"
-                onClick={(e) => handleLinkClick(e, "/#contact")}
-                className="flex items-center justify-between py-3 text-xs font-bold uppercase tracking-wider text-white hover:text-[#c5a059] transition-colors"
-              >
-                <span>CONTACT</span>
-                <ChevronRight className="w-4 h-4 text-[#c5a059]" />
-              </a>
             </div>
 
             {/* Utility Footer Row inside Mobile Drawer: Language & Phone */}
@@ -577,6 +738,9 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
           </div>
         </div>
       </header>
+
+      {/* Persistent Bottom-Right Conversion Pill Across All Pages */}
+      <FloatingConversionPill currentPath={currentPath} onNavigate={onNavigate} />
     </>
   );
 };
