@@ -21,7 +21,7 @@ function toIsoDate(dateStr?: string): string {
 
 export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact, onNavigate }) => {
   const canonicalPostUrl = blog
-    ? blog.externalUrl || `https://diasuae.ae/blogs/${blog.id}`
+    ? blog.externalUrl || `https://diasuae.ae/blog/${blog.id}`
     : "https://diasuae.ae/blogs";
 
   const blogPostingPayload = blog
@@ -77,8 +77,8 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact, 
   if (!blog) return null;
 
   const standaloneBlogUrl = blog?.externalUrl || (typeof window !== "undefined"
-    ? `${window.location.origin}/blog.html#${blog.id}`
-    : `https://diasuae.ae/blog.html#${blog.id}`);
+    ? `${window.location.origin}/blog/${blog.id}`
+    : `https://diasuae.ae/blog/${blog.id}`);
 
   const handleContactClick = () => {
     if (onContact) {

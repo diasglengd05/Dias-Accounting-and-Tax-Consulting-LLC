@@ -6,6 +6,8 @@
 
 import fs from "fs";
 import path from "path";
+import { blogsData } from "../src/data/blogsData.ts";
+import { draftPlaceholderPosts } from "../src/data/blogDrafts.ts";
 
 export interface MetaOverride {
   title?: string;
@@ -259,6 +261,22 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     let dynamicSchema: string | undefined = undefined;
 
     if (!blog) {
+      const staticMatch =
+        blogsData.find((b) => b.id.toLowerCase() === blogId) ||
+        draftPlaceholderPosts.find((b) => b.id.toLowerCase() === blogId);
+      if (staticMatch) {
+        blog = {
+          title: staticMatch.title,
+          summary: staticMatch.summary,
+          author: staticMatch.author?.name || "Glen Dias",
+          role: staticMatch.author?.role || "Managing Director & FTA Registered Tax Agent",
+          tag: staticMatch.tag || "Corporate Tax",
+          date: staticMatch.publishedIso || staticMatch.date || "2026-11-01",
+        };
+      }
+    }
+
+    if (!blog) {
       try {
         const dbFile = path.join(process.cwd(), "db_fallback.json");
         if (fs.existsSync(dbFile)) {
@@ -285,8 +303,8 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
 
     if (blog) {
       const ogImg = `${baseUrl}/api/og/blog/${blogId}`;
-      const canonicalPostUrl = `${baseUrl}/blogs/${blogId}`;
-      const publishedIso = `${blog.date}T09:00:00+04:00`;
+      const canonicalPostUrl = `${baseUrl}/blog/${blogId}`;
+      const publishedIso = blog.date.includes("T") ? blog.date : `${blog.date}T09:00:00+04:00`;
       const normalizedBlogSchema = JSON.stringify({
         "@context": "https://schema.org",
         "@graph": [
@@ -334,7 +352,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
       });
 
       return {
-        title: `${blog.title} | Dias Accounting Dubai`,
+        title: /\|\s*dias/i.test(blog.title) ? blog.title : `${blog.title} | Dias Accounting`,
         description: blog.summary,
         keywords: `UAE tax guide, ${blog.tag}, corporate tax Dubai, FTA compliance, ${blog.title.toLowerCase()}`,
         url: canonicalPostUrl,
@@ -345,6 +363,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
         section: blog.tag,
         isArabic,
         schemaMarkup: normalizedBlogSchema,
+        h1: blog.title,
       };
     }
   }
@@ -906,7 +925,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     };
   }
 
-  if (pathname === "/blogs" || pathname === "/insights") {
+  if (pathname === "/blog" || pathname === "/blogs" || pathname === "/insights") {
     const blogsTitle = "UAE Corporate Tax, VAT & Accounting Insights 2026 | Dias UAE";
     const blogsDesc =
       "Latest 2026 UAE Federal Tax Authority (FTA) updates, 9% Corporate Tax guides, 5% VAT audit checklists, and IFRS accounting insights by Dias Accounting.";

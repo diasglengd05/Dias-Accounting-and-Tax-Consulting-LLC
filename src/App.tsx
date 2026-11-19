@@ -92,6 +92,7 @@ const AboutPage = React.lazy(() => import("./pages/AboutPage"));
 const TermsPage = React.lazy(() => import("./pages/TermsPage"));
 const PrivacyPolicyPage = React.lazy(() => import("./pages/PrivacyPolicyPage"));
 import BlogsPage from "./pages/BlogsPage";
+import BlogDetailPage from "./pages/BlogDetailPage";
 import TestimonialsPage from "./pages/TestimonialsPage";
 const HomepageInsightsSection = React.lazy(() => import("./components/HomepageInsightsSection"));
 import FaqsPage from "./pages/FaqsPage";
@@ -103,6 +104,7 @@ const VatPlannerPage = React.lazy(() => import("./pages/VatPlannerPage"));
 const FtaDeadlinesPage = React.lazy(() => import("./pages/FtaDeadlinesPage"));
 import CookieConsentBanner from "./components/CookieConsentBanner";
 import HomepagePricingSection from "./components/HomepagePricingSection";
+import LatestTaxGuidesStrip from "./components/LatestTaxGuidesStrip";
 import QuickAnswersPricingTable from "./components/QuickAnswersPricingTable";
 import TaxToolsPromoBanner from "./components/TaxToolsPromoBanner";
 import ScopeInstantQuoteBuilder from "./components/ScopeInstantQuoteBuilder";
@@ -486,33 +488,11 @@ function MainApp() {
 
     const handleHashChange = () => {
       const hash = window.location.hash;
-      const pathname = window.location.pathname;
-      let targetBlogId = "";
 
       if (hash && hash.startsWith("#blog-")) {
-        targetBlogId = hash.replace("#blog-", "").trim().toLowerCase();
-      } else if (pathname.startsWith("/blog/")) {
-        targetBlogId = pathname.replace("/blog/", "").replace(/\/$/, "").trim().toLowerCase();
-      } else if (pathname.startsWith("/blogs/")) {
-        targetBlogId = pathname.replace("/blogs/", "").replace(/\/$/, "").trim().toLowerCase();
-      }
-
-      if (targetBlogId) {
-        const found =
-          blogsData.find(
-            (b) =>
-              b.id.toLowerCase() === targetBlogId ||
-              b.id.toLowerCase().startsWith(targetBlogId) ||
-              targetBlogId.startsWith(b.id.toLowerCase())
-          ) ||
-          allBlogs.find(
-            (b) =>
-              b.id.toLowerCase() === targetBlogId ||
-              b.id.toLowerCase().startsWith(targetBlogId) ||
-              targetBlogId.startsWith(b.id.toLowerCase())
-          );
-        if (found) {
-          setSelectedBlog(found);
+        const targetBlogId = hash.replace("#blog-", "").trim().toLowerCase();
+        if (targetBlogId) {
+          navigateTo(`/blog/${targetBlogId}`);
         }
       } else if (hash === "#seo-engine" || hash === "#cloud-function") {
         setSeoDashboardOpen(true);
@@ -759,7 +739,24 @@ function MainApp() {
     );
   }
 
-  if (currentPath === "/blogs" || currentPath === "/insights" || currentPath.startsWith("/blog/") || currentPath.startsWith("/blogs/")) {
+  if (currentPath.startsWith("/blog/") || currentPath.startsWith("/blogs/")) {
+    const blogSlug = currentPath
+      .replace(/^\/blogs?\//, "")
+      .replace(/\/+$/, "")
+      .trim();
+    return (
+      <BlogDetailPage
+        blogSlug={blogSlug}
+        allBlogs={allBlogs}
+        onNavigate={navigateTo}
+        onOpenAudit={() => setTaxHealthModalOpen(true)}
+        onOpenPrivacy={() => setPrivacyOpen(true)}
+        onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+      />
+    );
+  }
+
+  if (currentPath === "/blog" || currentPath === "/blogs" || currentPath === "/insights") {
     return (
       <BlogsPage
         onNavigate={navigateTo}
@@ -1966,7 +1963,7 @@ function MainApp() {
         <LazyMount minHeight={480} sectionId="blogs">
           <React.Suspense fallback={<div className="py-16 text-center text-xs text-slate-400 animate-pulse">Loading Insights...</div>}>
             <HomepageInsightsSection
-              onSelectBlog={(blog) => setSelectedBlog(blog)}
+              onSelectBlog={(blog) => navigateTo(`/blog/${blog.id}`)}
               onNavigate={navigateTo}
             />
           </React.Suspense>
@@ -2202,6 +2199,9 @@ function MainApp() {
 
       {/* 8.5 2-Column Promotional Banner Above Footer */}
       <TaxToolsPromoBanner onNavigate={navigateTo} />
+
+      {/* 8.75 Featured Latest UAE Tax & Compliance Guides Preview Strip */}
+      <LatestTaxGuidesStrip onNavigate={navigateTo} />
 
       {/* 9. Unified Footer */}
       <PageFooter

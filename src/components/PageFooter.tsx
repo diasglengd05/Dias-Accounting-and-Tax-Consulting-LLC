@@ -190,8 +190,8 @@ export const PageFooter: React.FC<PageFooterProps> = ({
                 </a>
               </li>
               <li>
-                <a href="/blogs" onClick={(e) => handleLink(e, "/blogs")} className="hover:text-gold-400 transition-colors">
-                  Blog / Insights
+                <a href="/blog" onClick={(e) => handleLink(e, "/blog")} className="hover:text-gold-400 transition-colors text-white font-semibold">
+                  Blog &amp; Tax Guides
                 </a>
               </li>
               <li>
@@ -199,10 +199,10 @@ export const PageFooter: React.FC<PageFooterProps> = ({
                   href="https://insights.diasuae.ae/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-gold-300 transition-colors inline-flex items-center gap-1.5 text-emerald-400 font-semibold"
+                  className="hover:text-gold-300 transition-colors inline-flex items-center gap-1.5 text-gold-400 font-semibold"
                 >
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  Tax &amp; Regulatory Blog (insights.diasuae.ae) ↗
+                  <span>UAE Tax Insights &amp; Briefings</span>
+                  <ExternalLink className="w-3 h-3 shrink-0" />
                 </a>
               </li>
               <li>

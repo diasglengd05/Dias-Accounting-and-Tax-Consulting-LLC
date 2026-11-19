@@ -1980,10 +1980,10 @@ async function bootstrap() {
     return res.sendFile(file);
   });
 
-  app.get(["/blog", "/blog.html"], (req, res) => {
+  app.get("/blog.html", (req, res) => {
     const qsIndex = req.originalUrl.indexOf("?");
     const qs = qsIndex !== -1 ? req.originalUrl.slice(qsIndex) : "";
-    return res.redirect(301, `/blogs${qs}`);
+    return res.redirect(301, `/blog${qs}`);
   });
 
   // Permanent consolidation: 301 Redirect /home, /home/, /home.html, and /index.html -> /

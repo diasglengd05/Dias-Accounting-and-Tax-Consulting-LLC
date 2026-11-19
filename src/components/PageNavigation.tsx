@@ -108,7 +108,7 @@ const RESOURCES_DROPDOWN: MegaDropdownItem[] = [
   {
     label: "Tax & IFRS Guides",
     description: "Expert UAE regulatory briefings",
-    path: "/blogs",
+    path: "/blog",
   },
 ];
 
@@ -195,10 +195,14 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
     currentPath === "/uae-tax-planner" ||
     currentPath === "/tax-planner" ||
     currentPath === "/corporate-tax-calculator" ||
-    currentPath === "/uae-vat-calculator" ||
+    currentPath === "/uae-vat-calculator";
+
+  const isBlogActive =
+    currentPath === "/blog" ||
     currentPath === "/blogs" ||
     currentPath === "/insights" ||
-    (currentPath.startsWith("/blog/") && !isSetupActive);
+    currentPath.startsWith("/blog/") ||
+    currentPath.startsWith("/blogs/");
 
   const isAboutActive =
     currentPath === "/about" ||
@@ -219,19 +223,19 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
         role="banner"
         className="sticky top-0 z-40 bg-[#070d19]/95 backdrop-blur-md border-b border-[#c5a059]/30 shadow-lg transition-all duration-200"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-2 lg:gap-4">
+        <div className="max-w-[1380px] mx-auto px-4 sm:px-6 lg:px-6 xl:px-8 h-20 flex items-center justify-between gap-2 lg:gap-3 xl:gap-5">
           {/* Left: Brand Logo linking to / */}
           <div className="flex items-center shrink-0">
             <a
               href="/"
               onClick={(e) => handleLinkClick(e, "/")}
-              className="group flex items-center gap-3 cursor-pointer select-none transition-opacity duration-150 hover:opacity-90"
+              className="group flex items-center gap-2.5 cursor-pointer select-none transition-opacity duration-150 hover:opacity-90"
               aria-label="Dias Accounting Home"
             >
               <DiasLogo
                 className="w-9 h-9 sm:w-10 sm:h-10"
                 showText={true}
-                textSize="text-base sm:text-xl"
+                textSize="text-base xl:text-lg"
                 textColor="text-white"
               />
             </a>
@@ -240,7 +244,7 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
           {/* Center: Single-Row Desktop Horizontal Menu (min-width: 1024px) */}
           <nav
             aria-label="Main Navigation"
-            className="hidden lg:flex items-center flex-nowrap whitespace-nowrap gap-3 xl:gap-5"
+            className="hidden lg:flex items-center flex-nowrap whitespace-nowrap gap-2.5 xl:gap-5"
           >
             {/* Mega-Dropdown 1: SERVICES */}
             <div
@@ -440,6 +444,19 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
               )}
             </div>
 
+            {/* Direct Link: BLOG */}
+            <a
+              href="/blog"
+              onClick={(e) => handleLinkClick(e, "/blog")}
+              className={`py-2 text-[11.5px] xl:text-[12.5px] font-semibold uppercase tracking-wide xl:tracking-wider whitespace-nowrap shrink-0 transition-colors ${
+                isBlogActive
+                  ? "text-[#c5a059]"
+                  : "text-white hover:text-[#c5a059]"
+              }`}
+            >
+              Blog
+            </a>
+
             {/* Mega-Dropdown 4: ABOUT */}
             <div
               className="relative shrink-0"
@@ -495,7 +512,7 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
             <a
               href="/#instant-quote"
               onClick={(e) => handleLinkClick(e, "/#instant-quote")}
-              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-[#c5a059] text-[#dec18c] hover:bg-[#c5a059]/15 hover:text-white font-display font-bold text-xs px-3.5 xl:px-4 py-2 whitespace-nowrap shrink-0 transition-colors cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 rounded-full border border-[#c5a059] text-[#dec18c] hover:bg-[#c5a059]/15 hover:text-white font-display font-bold text-xs px-3 xl:px-4 py-2 whitespace-nowrap shrink-0 transition-colors cursor-pointer"
             >
               <Sparkles className="w-3.5 h-3.5 text-[#c5a059] shrink-0" />
               <span>Instant Quote</span>
@@ -504,7 +521,7 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
             <a
               href="/#contact"
               onClick={(e) => handleLinkClick(e, "/#contact")}
-              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-[#c5a059] hover:bg-[#dec18c] text-[#070d19] font-display font-extrabold text-xs px-4 xl:px-5 py-2 whitespace-nowrap shrink-0 shadow-md shadow-[#c5a059]/20 transition-all cursor-pointer active:scale-95"
+              className="inline-flex items-center justify-center gap-1.5 rounded-full bg-[#c5a059] hover:bg-[#dec18c] text-[#070d19] font-display font-extrabold text-xs px-3.5 xl:px-5 py-2 whitespace-nowrap shrink-0 shadow-md shadow-[#c5a059]/20 transition-all cursor-pointer active:scale-95"
             >
               <Calendar className="w-3.5 h-3.5 shrink-0" />
               <span>Consult Now</span>
@@ -686,6 +703,16 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
                   </div>
                 )}
               </div>
+
+              {/* Mobile Direct Link: BLOG */}
+              <a
+                href="/blog"
+                onClick={(e) => handleLinkClick(e, "/blog")}
+                className="flex items-center justify-between py-3 text-xs font-bold uppercase tracking-wider text-white hover:text-[#c5a059] transition-colors"
+              >
+                <span>Blog</span>
+                <ChevronRight className="w-4 h-4 text-[#c5a059]" />
+              </a>
 
               {/* Mobile Accordion: ABOUT */}
               <div className="py-1">
