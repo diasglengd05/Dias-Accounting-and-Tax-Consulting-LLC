@@ -524,7 +524,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     });
     return {
       title: "UAE Accounting & Bookkeeping Packages From AED 400/Mo | Fixed-Fee Tax Retainers",
-      description: "Transparent fixed-fee monthly IFRS bookkeeping, 5% VAT Form 201 filing & 9% Corporate Tax compliance in Dubai & Sharjah. Request an instant quote.",
+      description: "Transparent fixed-fee monthly IFRS accounting, 5% VAT Form 201 & 9% Corporate Tax packages in Dubai & Sharjah. Zero hidden hourly fees — get an instant quote today.",
       keywords: "Corporate Tax, accounting packages dubai, monthly accounting package dubai, fixed fee bookkeeping uae, corporate tax return fee, corporate tax consultants in difc, accounting solutions in uae",
       url: `${baseUrl}/pricing`,
       ogImage: `${baseUrl}/api/og?title=UAE+Accounting+%26+Bookkeeping+Packages+From+AED+400%2FMo&author=Dias+Tax+Team&tag=Fixed-Fee+Tax+Retainers`,
@@ -872,7 +872,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
   if (pathname === "/company-setup") {
     return {
       title: "SHAMS Free Zone & Dubai Mainland Company Setup + Tax Registration (2026)",
-      description: "Launch your SHAMS Free Zone or Dubai Mainland LLC with full EmaraTax Corporate Tax & 5% VAT registration. Fixed-fee accounting from AED 400/mo.",
+      description: "Launch your SHAMS Free Zone or Dubai Mainland LLC with full EmaraTax Corporate Tax & 5% VAT registration. Fixed-fee monthly accounting from AED 400/mo.",
       keywords: "UAE Company Setup, Corporate Tax, company setup dubai, free zone license uae, shams incorporation, dmcc company formation, ifza visa setup, 0% QFZP corporate tax uae",
       url: `${baseUrl}/company-setup`,
       ogImage: `${baseUrl}/api/og?title=SHAMS+Free+Zone+%26+Dubai+Mainland+Company+Setup&author=Dias+Corporate+Desk&tag=Tax+Registration+2026`,
@@ -1030,10 +1030,10 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
   return {
     title: isArabic
       ? "استشارات ضريبة الشركات والمحاسبة في دبي | دياس للمحاسبة الإمارات"
-      : "UAE Corporate Tax & Accounting Firm Dubai | Dias Accounting",
+      : "FTA-Registered Tax Agents Dubai & Sharjah | Accounting From AED 400/Mo",
     description: isArabic
       ? "استشارات ضريبة الشركات، والامتثال لضريبة القيمة المضافة، والخدمات المحاسبية في دبي والإمارات. باقات محاسبية واضحة تبدأ من 400 درهم/شهرياً."
-      : "FTA-registered tax consultants & chartered accountants in Dubai & Sharjah. Fixed-fee IFRS bookkeeping, 9% Corporate Tax, 5% VAT & DIFC/DTEC audit services.",
+      : "Double-entry IFRS bookkeeping, 5% UAE VAT & 9% Corporate Tax filings by FTA-Registered Tax Agents in Dubai & Sharjah (SHAMS). Fixed fees from AED 400/mo — free 15-min check.",
     keywords: isArabic
       ? "ضريبة الشركات, خدمات المحاسبة والضرائب في دبي, شركات الضرائب في الإمارات, خدمات إعداد وتخطيط الضرائب, أفضل مكتب محاسبة في الإمارات, تدقيق مخاطر الغرامات 60 ثانية, تمثيل دفاعي الهيئة الاتحادية للضرائب, خيارات إعفاء ضريبة الشركات 0%, تسهيلات الأعمال الصغيرة 3 مليون, أفضل شركات المحاسبة في دبي, مستشار ضريبي معتمد, ضريبة الشركات دبي 9%, تسجيل ضريبة القيمة المضافة"
       : "Corporate Tax, Tax Services in Dubai, DIFC Tax Compliance, Corporate Tax Consultants in DIFC, tax and accounting services, tax accounting services, accounting services uae, tax firms in uae, tax and financial planning services, tax preparation and planning services, what tax advisory and accounting packages are available in dubai, accounting consultancy in dubai, taxation services dubai, accounting advisory services uae, accounting packages dubai, auditing firms in sharjah, Chartered Accountants in Dubai",
@@ -1054,6 +1054,10 @@ function escapeHtmlText(text: string): string {
     .replace(/>/g, "&gt;");
 }
 
+function escapeHtmlAttr(text: string): string {
+  return escapeHtmlText(text).replace(/"/g, "&quot;");
+}
+
 /**
  * Injects meta tags, semantic SSR H1, and schema markup into HTML template
  */
@@ -1061,31 +1065,36 @@ export function injectMetaIntoHtml(html: string, meta: MetaOverride): string {
   let modified = html;
 
   if (meta.keywords) {
-    modified = modified.replace(/<meta name="keywords" content="[\s\S]*?" \/>/i, `<meta name="keywords" content="${meta.keywords}" />`);
+    const safeKeywords = escapeHtmlAttr(meta.keywords);
+    modified = modified.replace(/<meta name="keywords" content="[\s\S]*?" \/>/i, `<meta name="keywords" content="${safeKeywords}" />`);
   }
 
   if (meta.title) {
+    const safeTitleText = escapeHtmlText(meta.title);
+    const safeTitleAttr = escapeHtmlAttr(meta.title);
     // Replace <title>
-    modified = modified.replace(/<title>[\s\S]*?<\/title>/i, `<title>${meta.title}</title>`);
+    modified = modified.replace(/<title>[\s\S]*?<\/title>/i, `<title>${safeTitleText}</title>`);
     // Replace meta title
-    modified = modified.replace(/<meta name="title" content="[\s\S]*?" \/>/i, `<meta name="title" content="${meta.title}" />`);
+    modified = modified.replace(/<meta name="title" content="[\s\S]*?" \/>/i, `<meta name="title" content="${safeTitleAttr}" />`);
     // Replace og:title
-    modified = modified.replace(/<meta property="og:title" content="[\s\S]*?" \/>/i, `<meta property="og:title" content="${meta.title}" />`);
+    modified = modified.replace(/<meta property="og:title" content="[\s\S]*?" \/>/i, `<meta property="og:title" content="${safeTitleAttr}" />`);
     // Replace twitter:title
-    modified = modified.replace(/<meta name="twitter:title" content="[\s\S]*?" \/>/i, `<meta name="twitter:title" content="${meta.title}" />`);
+    modified = modified.replace(/<meta name="twitter:title" content="[\s\S]*?" \/>/i, `<meta name="twitter:title" content="${safeTitleAttr}" />`);
   }
 
   if (meta.description) {
+    const safeDescText = escapeHtmlText(meta.description);
+    const safeDescAttr = escapeHtmlAttr(meta.description);
     // Replace meta description
-    modified = modified.replace(/<meta name="description" content="[\s\S]*?" \/>/i, `<meta name="description" content="${meta.description}" />`);
+    modified = modified.replace(/<meta name="description" content="[\s\S]*?" \/>/i, `<meta name="description" content="${safeDescAttr}" />`);
     // Replace og:description
-    modified = modified.replace(/<meta property="og:description" content="[\s\S]*?" \/>/i, `<meta property="og:description" content="${meta.description}" />`);
+    modified = modified.replace(/<meta property="og:description" content="[\s\S]*?" \/>/i, `<meta property="og:description" content="${safeDescAttr}" />`);
     // Replace twitter:description
-    modified = modified.replace(/<meta name="twitter:description" content="[\s\S]*?" \/>/i, `<meta name="twitter:description" content="${meta.description}" />`);
+    modified = modified.replace(/<meta name="twitter:description" content="[\s\S]*?" \/>/i, `<meta name="twitter:description" content="${safeDescAttr}" />`);
     // Sync SSR preloader subtitle
     modified = modified.replace(
       /(<p id="ssr-page-subtitle"[^>]*>)[\s\S]*?(<\/p>)/i,
-      `$1${escapeHtmlText(meta.description)}$2`
+      `$1${safeDescText}$2`
     );
   }
 

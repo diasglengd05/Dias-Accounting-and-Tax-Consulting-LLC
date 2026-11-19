@@ -16,8 +16,8 @@ export interface SEOConfig {
 // Master English SEO Metadata Dictionary
 export const SECTION_SEO_MAP_EN: Record<string, SEOConfig> = {
   home: {
-    title: "UAE Corporate Tax & Accounting Firm Dubai | Dias Accounting",
-    description: "FTA-registered tax consultants & chartered accountants in Dubai & Sharjah. Fixed-fee IFRS bookkeeping, 9% Corporate Tax, 5% VAT & DIFC/DTEC audit services.",
+    title: "FTA-Registered Tax Agents Dubai & Sharjah | Accounting From AED 400/Mo",
+    description: "Double-entry IFRS bookkeeping, 5% UAE VAT & 9% Corporate Tax filings by FTA-Registered Tax Agents in Dubai & Sharjah (SHAMS). Fixed fees from AED 400/mo — free 15-min check.",
     keywords: "Corporate Tax, Tax Services in Dubai, DIFC Tax Compliance, Corporate Tax Consultants in DIFC, tax and accounting services, tax accounting services, accounting services uae, tax firms in uae, tax and financial planning services, accounting consultancy in dubai, tax preparation and planning services, taxation services dubai, taxation services in uae, tax consulting services in uae, accounting advisory services uae, accounting packages dubai, auditing firms in sharjah, pricing & tax solutions uae, accounting services in dtec, dias accounting",
     hash: "#home",
     ogImage: "/api/og?title=UAE+Corporate+Tax+%26+Accounting+Firm+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Dias+Accounting&readTime=Top+Ranked",
@@ -31,7 +31,7 @@ export const SECTION_SEO_MAP_EN: Record<string, SEOConfig> = {
   },
   "company-setup": {
     title: "SHAMS Free Zone & Dubai Mainland Company Setup + Tax Registration (2026)",
-    description: "Launch your SHAMS Free Zone or Dubai Mainland LLC with full EmaraTax Corporate Tax & 5% VAT registration. Fixed-fee accounting from AED 400/mo.",
+    description: "Launch your SHAMS Free Zone or Dubai Mainland LLC with full EmaraTax Corporate Tax & 5% VAT registration. Fixed-fee monthly accounting from AED 400/mo.",
     keywords: "UAE Company Setup, Corporate Tax, company setup dubai, free zone business setup uae, shams free zone company formation, dubai mainland det license, tax structuring dubai, 0% free zone corporate tax uae",
     hash: "#company-setup",
     ogImage: "/api/og?title=SHAMS+Free+Zone+%26+Dubai+Mainland+Company+Setup&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Tax+Registration+2026&readTime=Turnkey+Setup",
@@ -59,7 +59,7 @@ export const SECTION_SEO_MAP_EN: Record<string, SEOConfig> = {
   },
   pricing: {
     title: "UAE Accounting & Bookkeeping Packages From AED 400/Mo | Fixed-Fee Tax Retainers",
-    description: "Transparent fixed-fee monthly IFRS bookkeeping, 5% VAT Form 201 filing & 9% Corporate Tax compliance in Dubai & Sharjah. Request an instant quote.",
+    description: "Transparent fixed-fee monthly IFRS accounting, 5% VAT Form 201 & 9% Corporate Tax packages in Dubai & Sharjah. Zero hidden hourly fees — get an instant quote today.",
     keywords: "Corporate Tax, accounting packages dubai, monthly accounting package dubai, fixed fee bookkeeping uae, corporate tax return fee, corporate tax consultants in difc, accounting solutions in uae",
     hash: "#pricing",
     ogImage: "/api/og?title=UAE+Accounting+%26+Bookkeeping+Packages+From+AED+400%2FMo&author=Dias+Tax+Team&role=Transparent+Fee+Schedule&tag=From+AED+400&readTime=Zero+Hidden+Fees",

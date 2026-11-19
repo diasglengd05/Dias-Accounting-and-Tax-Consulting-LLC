@@ -35,7 +35,7 @@ export const CompanySetupPage: React.FC<CompanySetupPageProps> = ({
     applyPageSEO({
       title: "SHAMS Free Zone & Dubai Mainland Company Setup + Tax Registration (2026)",
       description:
-        "Launch your SHAMS Free Zone or Dubai Mainland LLC with full EmaraTax Corporate Tax & 5% VAT registration. Fixed-fee accounting from AED 400/mo.",
+        "Launch your SHAMS Free Zone or Dubai Mainland LLC with full EmaraTax Corporate Tax & 5% VAT registration. Fixed-fee monthly accounting from AED 400/mo.",
       canonicalPath: "/company-setup",
       keywords:
         "UAE Company Setup, Corporate Tax, company setup dubai, free zone license uae, shams incorporation, dmcc company formation, ifza visa setup, 0% QFZP corporate tax uae, difc tax compliance",

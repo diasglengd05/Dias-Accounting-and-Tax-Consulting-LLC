@@ -72,7 +72,7 @@ export const PricingPage: React.FC<PricingPageProps> = ({
     applyPageSEO({
       title: "UAE Accounting & Bookkeeping Packages From AED 400/Mo | Fixed-Fee Tax Retainers",
       description:
-        "Transparent fixed-fee monthly IFRS bookkeeping, 5% VAT Form 201 filing & 9% Corporate Tax compliance in Dubai & Sharjah. Request an instant quote.",
+        "Transparent fixed-fee monthly IFRS accounting, 5% VAT Form 201 & 9% Corporate Tax packages in Dubai & Sharjah. Zero hidden hourly fees — get an instant quote today.",
       canonicalPath: "/pricing",
       keywords:
         "Corporate Tax, accounting packages dubai, monthly accounting package dubai, fixed fee bookkeeping uae, corporate tax return fee, corporate tax consultants in difc, tax services in dubai, difc tax compliance",
