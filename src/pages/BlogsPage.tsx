@@ -26,6 +26,7 @@ import { BlogPost } from "../types";
 import { applyPageSEO, removeJsonLd, upsertJsonLd } from "../lib/seo";
 import TaxToolsPromoBanner from "../components/TaxToolsPromoBanner";
 import BlogInstantAdvisorStrip from "../components/BlogInstantAdvisorStrip";
+import { fetchLiveBloggerPosts, LiveBloggerPost } from "../lib/bloggerFeed";
 
 interface BlogsPageProps {
   onNavigate: (path: string) => void;
@@ -83,7 +84,11 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const [allPosts, setAllPosts] = useState<BlogPost[]>(() => {
+  const [liveBriefings, setLiveBriefings] = useState<LiveBloggerPost[]>([]);
+  const [liveBriefingsLoading, setLiveBriefingsLoading] = useState(true);
+  const [liveBriefingsUnavailable, setLiveBriefingsUnavailable] = useState(false);
+  const [brokenThumbIds, setBrokenThumbIds] = useState<Record<string, boolean>>({});
+  const [allPosts] = useState<BlogPost[]>(() => {
     const seen: string[] = [];
     const uniqueStatic: BlogPost[] = [];
     for (const post of blogsData) {
@@ -162,150 +167,25 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
 
     window.scrollTo({ top: 0, behavior: "instant" });
 
-    // Fetch live Blogger posts with duplicate filtering while keeping hardcoded articles intact at the top
+    // Fetch latest live Blogger posts via cross-origin safe JSONP + fetch fallback
     let isMounted = true;
     async function loadLiveBloggerPosts() {
-      const proxyUrl = "/api/blogger-feed?max-results=20";
-      const directUrl = "https://insights.diasuae.ae/feeds/posts/default?alt=json&max-results=20";
-      let data: any = null;
-
+      setLiveBriefingsLoading(true);
+      setLiveBriefingsUnavailable(false);
       try {
-        const res = await fetch(proxyUrl);
-        if (res.ok) {
-          data = await res.json();
-        } else {
-          throw new Error("Proxy error " + res.status);
+        const fetched = await fetchLiveBloggerPosts(12);
+        if (!isMounted) return;
+        setLiveBriefings(fetched);
+        if (fetched.length === 0) {
+          setLiveBriefingsUnavailable(true);
         }
-      } catch (proxyErr) {
-        try {
-          const resDirect = await fetch(directUrl, { mode: "cors" });
-          if (resDirect.ok) {
-            data = await resDirect.json();
-          }
-        } catch (directErr) {
-          console.warn("Direct fetch error for live Blogger feed:", directErr);
-        }
+      } catch {
+        if (!isMounted) return;
+        setLiveBriefings([]);
+        setLiveBriefingsUnavailable(true);
+      } finally {
+        if (isMounted) setLiveBriefingsLoading(false);
       }
-
-      if (!isMounted || !data?.feed?.entry || !Array.isArray(data.feed.entry)) {
-        return;
-      }
-
-      // Track every existing title cumulatively (hardcoded + already-added live posts)
-      const existingTitles = blogsData.map((b) => b.title);
-      const newBloggerPosts: BlogPost[] = [];
-
-      data.feed.entry.forEach((entry: any) => {
-        const rawTitle = (entry.title && entry.title.$t) || "";
-        // Automatically skip any Blogger post whose title closely matches an existing article
-        if (!rawTitle || isDuplicateOfExisting(rawTitle, existingTitles)) {
-          return;
-        }
-        existingTitles.push(rawTitle);
-
-        const altLink = (entry.link || []).find((l: any) => l.rel === "alternate");
-        const liveUrl = altLink ? altLink.href : "https://insights.diasuae.ae/";
-
-        // Extract labels/categories
-        const rawCategories = Array.isArray(entry.category)
-          ? entry.category.map((c: any) => c.term || "").filter(Boolean)
-          : [];
-
-        // Map Blogger labels to site category tabs
-        let mappedTag = "Corporate Tax (9%)";
-        const catJoined = rawCategories.join(" ").toLowerCase();
-        const titleLower = rawTitle.toLowerCase();
-
-        if (catJoined.includes("vat") || titleLower.includes("vat")) {
-          mappedTag = "VAT & E-Invoicing";
-        } else if (
-          catJoined.includes("company setup") ||
-          catJoined.includes("free zone") ||
-          titleLower.includes("company") ||
-          titleLower.includes("formation")
-        ) {
-          mappedTag = "Free Zone Setup";
-        } else if (
-          catJoined.includes("accounting") ||
-          catJoined.includes("ifrs") ||
-          catJoined.includes("bookkeeping") ||
-          titleLower.includes("bookkeeping")
-        ) {
-          mappedTag = "Bookkeeping & IFRS";
-        } else if (catJoined.includes("corporate tax") || titleLower.includes("corporate tax") || titleLower.includes("tax")) {
-          mappedTag = "Corporate Tax (9%)";
-        } else if (catJoined.includes("compliance") || catJoined.includes("penalt") || titleLower.includes("penalty")) {
-          mappedTag = "Compliance & Penalties";
-        } else if (rawCategories.length > 0) {
-          mappedTag = rawCategories[0];
-        }
-
-        let pubDateStr = "Recent";
-        if (entry.published && entry.published.$t) {
-          try {
-            const d = new Date(entry.published.$t);
-            pubDateStr = d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-          } catch (e) {}
-        }
-
-        let excerpt = "";
-        const rawContent = (entry.content && entry.content.$t) || (entry.summary && entry.summary.$t) || "";
-        if (rawContent) {
-          const tmp = document.createElement("div");
-          tmp.innerHTML = rawContent;
-          excerpt = (tmp.textContent || tmp.innerText || "").replace(/\s+/g, " ").trim().substring(0, 175) + "...";
-        }
-
-        let image = "https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=700&q=80";
-        if (entry.media$thumbnail && entry.media$thumbnail.url) {
-          image = entry.media$thumbnail.url.replace(/\/s\d+-c\//, "/s800/");
-        } else if (rawContent.includes("<img")) {
-          const match = rawContent.match(/<img[^>]+src=["']([^"']+)["']/i);
-          if (match && match[1]) image = match[1];
-        }
-
-        const blogId =
-          "blogger-" +
-          (entry.id && entry.id.$t
-            ? entry.id.$t.split("post-")[1] || Math.random().toString(36).substr(2, 8)
-            : Math.random().toString(36).substr(2, 8));
-
-        newBloggerPosts.push({
-          id: blogId,
-          title: rawTitle,
-          summary: excerpt || "Read the latest UAE corporate tax and compliance updates on our live Blogger portal.",
-          content: rawContent || excerpt,
-          date: pubDateStr,
-          readTime: "4 min read",
-          tag: mappedTag,
-          author: {
-            name: "Glen Dias",
-            role: "Managing Director & Certified Tax Agent",
-            avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=120",
-          },
-          imageUrl: image,
-          externalUrl: liveUrl,
-          isLiveBlogger: true,
-          categories: rawCategories,
-          keywords: rawCategories,
-          publishedIso: (entry.published && entry.published.$t) || "",
-        });
-      });
-
-      // Always keep the latest published articles on the top, deduplicated
-      const seenCombined: string[] = [];
-      const merged: BlogPost[] = [];
-      const candidates = [...blogsData, ...newBloggerPosts].sort((a, b) => {
-        const timeA = parsePublishDate(a.publishedIso || a.date);
-        const timeB = parsePublishDate(b.publishedIso || b.date);
-        return timeB - timeA;
-      });
-      for (const post of candidates) {
-        if (!post?.title || isDuplicateOfExisting(post.title, seenCombined)) continue;
-        seenCombined.push(post.title);
-        merged.push(post);
-      }
-      setAllPosts(merged);
     }
 
     loadLiveBloggerPosts();
@@ -329,21 +209,27 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
   // Combine live articles and draft outlines (imported from shared blogDrafts)
   const combinedPosts = [...allPosts, ...draftPlaceholderPosts];
 
-  const filteredPosts = combinedPosts.filter((post) => {
+  const matchesFilter = (item: {
+    title: string;
+    summary: string;
+    tag?: string;
+    categories?: string[];
+  }): boolean => {
     const query = searchQuery.toLowerCase().trim();
+    const titleLower = item.title.toLowerCase();
+    const summaryLower = item.summary.toLowerCase();
+    const tagLower = (item.tag || "").toLowerCase();
+    const catList = (item.categories || []).map((c) => c.toLowerCase());
+
     const matchesSearch =
       !query ||
-      post.title.toLowerCase().includes(query) ||
-      post.summary.toLowerCase().includes(query) ||
-      (post.tag && post.tag.toLowerCase().includes(query)) ||
-      (post.categories && post.categories.some((c) => c.toLowerCase().includes(query)));
+      titleLower.includes(query) ||
+      summaryLower.includes(query) ||
+      tagLower.includes(query) ||
+      catList.some((c) => c.includes(query));
 
     if (!matchesSearch) return false;
     if (selectedCategory === "all") return true;
-
-    const tagLower = (post.tag || "").toLowerCase();
-    const catList = (post.categories || []).map((c) => c.toLowerCase());
-    const titleLower = post.title.toLowerCase();
 
     if (selectedCategory === "corporate-tax") {
       return (
@@ -352,16 +238,18 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
         catList.some((c) => c.includes("corporate tax") || c.includes("tax")) ||
         titleLower.includes("corporate tax") ||
         titleLower.includes("sbr") ||
-        titleLower.includes("small business relief")
+        titleLower.includes("small business relief") ||
+        summaryLower.includes("corporate tax")
       );
     }
     if (selectedCategory === "vat") {
       return (
         tagLower.includes("vat") ||
         tagLower.includes("e-invoicing") ||
-        catList.some((c) => c.includes("vat")) ||
+        catList.some((c) => c.includes("vat") || c.includes("e-invoic")) ||
         titleLower.includes("vat") ||
-        titleLower.includes("e-invoicing")
+        titleLower.includes("e-invoicing") ||
+        summaryLower.includes("vat")
       );
     }
     if (selectedCategory === "free-zone") {
@@ -371,11 +259,23 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
         tagLower.includes("formation") ||
         tagLower.includes("incorporation") ||
         tagLower.includes("setup") ||
-        catList.some((c) => c.includes("company setup") || c.includes("free zone") || c.includes("formation")) ||
+        catList.some(
+          (c) =>
+            c.includes("company setup") ||
+            c.includes("free zone") ||
+            c.includes("formation") ||
+            c.includes("difc") ||
+            c.includes("dtec") ||
+            c.includes("shams") ||
+            c.includes("qfzp")
+        ) ||
         titleLower.includes("company formation") ||
         titleLower.includes("free zone") ||
         titleLower.includes("company setup") ||
-        titleLower.includes("shams")
+        titleLower.includes("shams") ||
+        titleLower.includes("difc") ||
+        titleLower.includes("dtec") ||
+        titleLower.includes("qfzp")
       );
     }
     if (selectedCategory === "bookkeeping") {
@@ -386,6 +286,7 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
         catList.some((c) => c.includes("accounting") || c.includes("bookkeeping") || c.includes("ifrs")) ||
         titleLower.includes("bookkeeping") ||
         titleLower.includes("accounting") ||
+        titleLower.includes("ifrs") ||
         titleLower.includes("spreadsheets")
       );
     }
@@ -395,15 +296,35 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
         tagLower.includes("penalties") ||
         tagLower.includes("penalty") ||
         tagLower.includes("audit") ||
-        catList.some((c) => c.includes("compliance") || c.includes("penalt") || c.includes("audit")) ||
+        catList.some((c) => c.includes("compliance") || c.includes("penalt") || c.includes("audit") || c.includes("fta")) ||
         titleLower.includes("compliance") ||
         titleLower.includes("penalty") ||
-        titleLower.includes("audit")
+        titleLower.includes("penalties") ||
+        titleLower.includes("audit") ||
+        titleLower.includes("deadline")
       );
     }
 
     return true;
-  });
+  };
+
+  const filteredPosts = combinedPosts.filter((post) =>
+    matchesFilter({
+      title: post.title,
+      summary: post.summary,
+      tag: post.tag,
+      categories: post.categories,
+    })
+  );
+
+  const filteredLiveBriefings = liveBriefings.filter((post) =>
+    matchesFilter({
+      title: post.title,
+      summary: post.excerpt,
+      tag: post.primaryCategory,
+      categories: post.categories,
+    })
+  );
 
   const handleChecklistSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -528,7 +449,235 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
             </div>
           </div>
 
-          {/* Grid Layout: Articles + Lead Magnet Sidebar */}
+          {/* Live FTA Regulatory Briefings (insights.diasuae.ae) Section */}
+          <section
+            aria-labelledby="live-fta-briefings-heading"
+            className="mb-12"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6">
+              <div>
+                <span className="text-[11px] font-mono font-bold uppercase tracking-[0.16em] text-[#c5a059] block mb-1">
+                  AUTOMATICALLY SYNCED · INSIGHTS.DIASUAE.AE
+                </span>
+                <h2
+                  id="live-fta-briefings-heading"
+                  className="font-display text-xl sm:text-2xl font-bold text-[#070d19] tracking-tight"
+                >
+                  Live FTA Regulatory Briefings (insights.diasuae.ae)
+                </h2>
+              </div>
+              <a
+                href="https://insights.diasuae.ae/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-display font-bold text-[#070d19] hover:text-[#c5a059] transition-colors shrink-0"
+              >
+                <span>Browse All Briefings ↗</span>
+              </a>
+            </div>
+
+            {liveBriefingsLoading ? (
+              <div
+                aria-label="Loading live regulatory briefings"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+              >
+                {[0, 1, 2].map((skeletonIdx) => (
+                  <div
+                    key={skeletonIdx}
+                    className="rounded-2xl bg-[#0d1b2a] border border-[#c5a059]/20 overflow-hidden shadow-md"
+                  >
+                    <div className="h-32 w-full bg-[#070d19] border-b border-[#c5a059]/15 p-5 flex flex-col justify-between">
+                      <div className="h-3 w-32 rounded bg-white/10 animate-pulse" />
+                      <div className="h-4 w-44 rounded bg-[#c5a059]/20 animate-pulse" />
+                    </div>
+                    <div className="p-6 space-y-3.5">
+                      <div className="h-3 w-40 rounded bg-white/10 animate-pulse" />
+                      <div className="h-5 w-full rounded bg-white/15 animate-pulse" />
+                      <div className="h-5 w-4/5 rounded bg-white/15 animate-pulse" />
+                      <div className="space-y-2 pt-1">
+                        <div className="h-3 w-full rounded bg-white/10 animate-pulse" />
+                        <div className="h-3 w-11/12 rounded bg-white/10 animate-pulse" />
+                        <div className="h-3 w-2/3 rounded bg-white/10 animate-pulse" />
+                      </div>
+                      <div className="pt-4 border-t border-white/10">
+                        <div className="h-3.5 w-36 rounded bg-[#c5a059]/25 animate-pulse" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : liveBriefingsUnavailable ? (
+              <div className="rounded-2xl bg-[#0d1b2a] border border-[#c5a059]/35 p-6 sm:p-7 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-5 shadow-md">
+                <div className="space-y-1.5 max-w-2xl">
+                  <span className="text-[11px] font-mono font-bold uppercase tracking-[0.14em] text-[#c5a059] block">
+                    DIRECT REGULATORY PORTAL
+                  </span>
+                  <p className="text-sm sm:text-base font-display font-bold text-white">
+                    Read the latest UAE Corporate Tax, VAT &amp; FTA bulletins directly on insights.diasuae.ae
+                  </p>
+                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                    New legislative updates, EmaraTax filing reminders, and DIFC/DTEC tax briefs are published continuously on our Insights portal.
+                  </p>
+                </div>
+                <a
+                  href="https://insights.diasuae.ae/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#c5a059] hover:bg-[#dec18c] text-[#070d19] font-display font-extrabold text-xs sm:text-sm whitespace-nowrap transition-colors shrink-0"
+                >
+                  <span>Visit insights.diasuae.ae ↗</span>
+                </a>
+              </div>
+            ) : filteredLiveBriefings.length === 0 ? (
+              <div className="rounded-2xl bg-[#0d1b2a] border border-[#c5a059]/25 px-6 py-5 text-slate-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <p className="text-xs sm:text-sm">
+                  No live <span className="text-white font-semibold">insights.diasuae.ae</span> briefings match your current search or category filter.
+                </p>
+                <div className="flex items-center gap-4 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery("");
+                      setSelectedCategory("all");
+                    }}
+                    className="text-xs font-semibold text-[#dec18c] hover:text-white underline underline-offset-4 cursor-pointer"
+                  >
+                    Show All Briefings
+                  </button>
+                  <a
+                    href="https://insights.diasuae.ae/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs font-display font-bold text-[#c5a059] hover:text-[#dec18c] whitespace-nowrap"
+                  >
+                    Open insights.diasuae.ae ↗
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredLiveBriefings.map((briefing) => {
+                  const hasWorkingThumb = Boolean(briefing.thumbnail && !brokenThumbIds[briefing.id]);
+                  const labelText =
+                    briefing.categories.length > 0
+                      ? briefing.categories.slice(0, 2).join(" · ")
+                      : briefing.primaryCategory;
+
+                  return (
+                    <article
+                      key={briefing.id}
+                      className="rounded-2xl bg-[#0d1b2a] border border-[#c5a059]/25 hover:border-[#c5a059] transition-all duration-200 overflow-hidden flex flex-col justify-between group shadow-md hover:shadow-xl hover:shadow-[#070d19]/25"
+                    >
+                      <div>
+                        {hasWorkingThumb ? (
+                          <a
+                            href={briefing.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block h-44 w-full overflow-hidden bg-[#070d19] border-b border-[#c5a059]/20"
+                          >
+                            <img
+                              src={briefing.thumbnail}
+                              alt={briefing.title}
+                              loading="lazy"
+                              referrerPolicy="no-referrer"
+                              onError={() =>
+                                setBrokenThumbIds((prev) => ({
+                                  ...prev,
+                                  [briefing.id]: true,
+                                }))
+                              }
+                              className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
+                            />
+                          </a>
+                        ) : (
+                          <a
+                            href={briefing.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="h-32 w-full bg-[#070d19] border-b border-[#c5a059]/25 px-6 py-4 flex flex-col justify-between relative overflow-hidden"
+                          >
+                            <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-[#c5a059] via-[#dec18c] to-transparent" />
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-[#c5a059]">
+                                FTA REGULATORY BRIEFING
+                              </span>
+                              <BookOpen className="w-4 h-4 text-[#c5a059]/80 shrink-0" />
+                            </div>
+                            <div className="flex items-end justify-between gap-2">
+                              <span className="font-display text-sm font-bold text-white truncate">
+                                {briefing.primaryCategory}
+                              </span>
+                              <span className="text-[10px] font-mono text-[#dec18c]/80 shrink-0">
+                                insights.diasuae.ae
+                              </span>
+                            </div>
+                          </a>
+                        )}
+
+                        <div className="p-6 pb-4 space-y-3">
+                          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-mono">
+                            <span className="font-bold uppercase tracking-wider text-[#c5a059]">
+                              {labelText}
+                            </span>
+                            <span className="text-slate-500" aria-hidden="true">
+                              ·
+                            </span>
+                            <time
+                              dateTime={briefing.publishedIso || undefined}
+                              className="text-slate-400"
+                            >
+                              {briefing.publishedDate}
+                            </time>
+                          </div>
+
+                          <h3 className="font-display text-base sm:text-[1.06rem] font-bold text-white leading-snug group-hover:text-[#dec18c] transition-colors line-clamp-2">
+                            <a
+                              href={briefing.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="focus:outline-none focus-visible:underline"
+                            >
+                              {briefing.title}
+                            </a>
+                          </h3>
+
+                          <p className="text-slate-300 text-xs sm:text-[13px] leading-relaxed line-clamp-3">
+                            {briefing.excerpt}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="px-6 py-4 border-t border-white/10 flex items-center justify-between gap-3">
+                        <span className="text-[11px] font-mono text-slate-400">
+                          insights.diasuae.ae
+                        </span>
+                        <a
+                          href={briefing.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs font-display font-extrabold text-[#c5a059] hover:text-[#dec18c] transition-colors whitespace-nowrap"
+                        >
+                          <span>Read Full Briefing ↗</span>
+                        </a>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            )}
+          </section>
+
+          {/* Grid Layout: In-Depth Guides + Lead Magnet Sidebar */}
+          <div className="mb-5">
+            <span className="text-[11px] font-mono font-bold uppercase tracking-[0.16em] text-[#c5a059] block mb-1">
+              DIAS ACCOUNTING LIBRARY
+            </span>
+            <h2 className="font-display text-xl sm:text-2xl font-bold text-[#070d19] tracking-tight">
+              In-Depth UAE Tax &amp; Accounting Guides
+            </h2>
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
             
             {/* Left 8 Cols: Articles Grid */}
