@@ -1,28 +1,22 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
+import { ArrowRight, CheckCircle2, ShieldCheck } from "lucide-react";
+import TaxHubLayout from "../components/hub/TaxHubLayout";
 import {
-  Percent,
-  CheckCircle2,
-  AlertTriangle,
-  ArrowRight,
-  ShieldCheck,
-  Calculator,
-  Download,
-  Calendar,
-  Building2,
-  Clock,
-  Sparkles,
-  MessageCircle,
-  ChevronRight,
-  HelpCircle,
-  FileCheck2,
-  FileSpreadsheet,
-} from "lucide-react";
-import PageNavigation from "../components/PageNavigation";
-import PageFooter from "../components/PageFooter";
+  CalculatorToolBridge,
+  ComplianceTable,
+  ExecutiveAccordion,
+  ExecutiveCallout,
+} from "../components/hub/ExecutivePrimitives";
 import { submitToGoogleSheetsDirectly } from "../lib/sheetsService";
 import { useLanguage } from "../i18n/LanguageContext";
 import { validateEmailField, validatePhoneField } from "../lib/validation";
-import { applyPageSEO } from "../lib/seo";
+import {
+  applyPageSEO,
+  buildBreadcrumbSchema,
+  buildFAQPageSchema,
+  removeJsonLd,
+  upsertJsonLd,
+} from "../lib/seo";
 
 interface VatPlannerPageProps {
   onNavigate: (path: string) => void;
@@ -30,6 +24,37 @@ interface VatPlannerPageProps {
   onOpenPrivacy?: () => void;
   onOpenGooglePreferred?: () => void;
 }
+
+const TOC_ITEMS = [
+  { id: "planner", label: "Form 201 Estimator" },
+  { id: "thresholds", label: "Thresholds & Rates" },
+  { id: "pitfalls", label: "FTA Audit Pitfalls" },
+  { id: "assessment", label: "Request VAT Review" },
+  { id: "faqs", label: "VAT Compliance FAQs" },
+];
+
+const VAT_FAQS = [
+  {
+    question: "When is UAE VAT registration mandatory vs. voluntary?",
+    answer:
+      "VAT registration is mandatory once your taxable supplies and imports exceed AED 375,000 over the preceding 12 months or are expected to exceed AED 375,000 in the next 30 days. Voluntary registration is available once taxable supplies or taxable expenses exceed AED 187,500.",
+  },
+  {
+    question: "How quickly must I register after crossing AED 375,000?",
+    answer:
+      "You must submit your VAT registration application on EmaraTax within 30 days of crossing the AED 375,000 mandatory threshold. Late registration attracts an automatic AED 10,000 administrative fine.",
+  },
+  {
+    question: "Which UAE expenses are blocked from 5% input VAT recovery?",
+    answer:
+      "Under UAE VAT Executive Regulations, 5% VAT incurred on client entertainment, hospitality, motor vehicles available for personal or mixed use, and employee benefits not mandated by UAE law cannot be reclaimed on Form VAT 201.",
+  },
+  {
+    question: "What happens if my input VAT exceeds my output VAT in a quarter?",
+    answer:
+      "When recoverable input VAT exceeds output VAT (common for zero-rated exporters or high-investment startups), you carry a net VAT credit. You can either carry the balance forward to future tax periods or submit a Form VAT 311 cash refund claim directly to your UAE corporate bank account.",
+  },
+];
 
 export const VatPlannerPage: React.FC<VatPlannerPageProps> = ({
   onNavigate,
@@ -40,13 +65,13 @@ export const VatPlannerPage: React.FC<VatPlannerPageProps> = ({
   const { language } = useLanguage();
   const isAr = language === "ar";
 
-  // VAT Inputs
+  // Interactive Form 201 Planner State (preserved 100%)
   const [standardVatSales, setStandardVatSales] = useState<number>(1200000);
   const [zeroRatedSales, setZeroRatedSales] = useState<number>(300000);
   const [vatExpenses, setVatExpenses] = useState<number>(600000);
   const [filingFrequency, setFilingFrequency] = useState<"quarterly" | "monthly">("quarterly");
 
-  // Lead Form State
+  // Certified VAT Assessment Form State
   const [companyName, setCompanyName] = useState("");
   const [contactName, setContactName] = useState("");
   const [email, setEmail] = useState("");
@@ -56,19 +81,37 @@ export const VatPlannerPage: React.FC<VatPlannerPageProps> = ({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
+    const canonicalPath = "/uae-vat-calculator";
     applyPageSEO({
-      title: "UAE VAT Calculator & 5% Compliance Planner 2026 | Dias UAE",
+      title: "UAE 5% VAT Hub & Form 201 Calculator | Dias Accounting",
       description:
-        "Calculate net UAE 5% VAT payable or refundable for your quarterly FTA Form 201 return. Check AED 375,000 mandatory VAT registration thresholds.",
-      canonicalPath: "/uae-vat-calculator",
+        "Calculate net UAE 5% VAT payable or refundable for FTA Form 201 returns. Check AED 375,000 mandatory registration thresholds and blocked input VAT rules.",
+      canonicalPath,
       keywords:
         "UAE VAT calculator, 5% VAT planner Dubai, FTA Form 201 calculator, VAT registration threshold UAE AED 375k",
-      ogImage: "/api/og?title=UAE+5%25+VAT+Calculator+%26+Compliance+Planner&author=Glen+Dias&tag=FTA+Form+201",
     });
+    upsertJsonLd(
+      "page-faq-jsonld",
+      buildFAQPageSchema(VAT_FAQS, `https://diasuae.ae${canonicalPath}#faqs`)
+    );
+    upsertJsonLd(
+      "page-breadcrumb-jsonld",
+      buildBreadcrumbSchema(
+        [
+          { name: "Home", path: "/" },
+          { name: "Tax Compliance Hubs", path: "/uae-tax-planner" },
+          { name: "UAE VAT Compliance Hub", path: canonicalPath },
+        ],
+        `https://diasuae.ae${canonicalPath}#breadcrumb`
+      )
+    );
     window.scrollTo({ top: 0, behavior: "instant" });
+    return () => {
+      removeJsonLd("page-faq-jsonld");
+      removeJsonLd("page-breadcrumb-jsonld");
+    };
   }, []);
 
-  // Format currency
   const formatAED = (amount: number) => {
     const locale = isAr ? "ar-AE" : "en-AE";
     return new Intl.NumberFormat(locale, {
@@ -78,7 +121,7 @@ export const VatPlannerPage: React.FC<VatPlannerPageProps> = ({
     }).format(amount);
   };
 
-  // VAT Computations under Federal Decree-Law No. 8 of 2017
+  // Preserved VAT Computation under Federal Decree-Law No. 8 of 2017
   const vatCalculation = useMemo(() => {
     const VAT_RATE = 0.05;
     const totalSales = standardVatSales + zeroRatedSales;
@@ -143,463 +186,417 @@ export const VatPlannerPage: React.FC<VatPlannerPageProps> = ({
         company: `${companyName} (Sales: AED ${vatCalculation.totalSales.toLocaleString()} | Net VAT: AED ${vatCalculation.netVatPayable.toLocaleString()} | Status: ${vatCalculation.registrationStatus})`,
         serviceType: "UAE VAT 5% Compliance & Form 201 Filing Review",
       });
-
       setSubmitted(true);
-      setIsSubmitting(false);
     } catch (err) {
       console.error("VAT Lead submission failed:", err);
       setSubmitted(true);
+    } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleWhatsAppRedirect = () => {
-    const msg = `Hello Glen Dias,\nI used your UAE VAT Calculator for ${companyName || "my company"}:\n• Standard 5% Sales: ${formatAED(standardVatSales)}\n• Zero-Rated Exports: ${formatAED(zeroRatedSales)}\n• VAT Expenses: ${formatAED(vatExpenses)}\n• Output VAT (5%): ${formatAED(vatCalculation.outputVat)}\n• Input VAT Recovery: ${formatAED(vatCalculation.inputVat)}\n• Net VAT Position: ${vatCalculation.isRefund ? "Refund " + formatAED(Math.abs(vatCalculation.netVatPayable)) : "Payable " + formatAED(vatCalculation.netVatPayable)}\n\nPlease assist with our VAT return filing and FTA audit defense.`;
-    window.open(`https://wa.me/971529226958?text=${encodeURIComponent(msg)}`, "_blank");
-  };
-
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-800 antialiased selection:bg-gold-500/30 selection:text-navy-950">
-      <PageNavigation
-        currentPath="/uae-vat-calculator"
-        onNavigate={onNavigate}
-        onOpenAudit={onOpenAudit}
-      />
+    <TaxHubLayout
+      currentPath="/uae-vat-calculator"
+      breadcrumbName="UAE 5% VAT Hub"
+      updatedTag="Last Updated: 2026 UAE VAT Rules · Decree-Law No. 8"
+      title="UAE 5% VAT Compliance Hub & Form 201 Planner"
+      overview="Compute output VAT, recoverable input VAT, and net payable or refund balances for FTA Form 201, verify AED 375,000 mandatory registration thresholds, and avoid common VAT audit penalties."
+      keyFigures={[
+        { value: "5%", label: "UAE Standard VAT Rate" },
+        { value: "AED 375,000", label: "Mandatory Registration Cap" },
+        { value: "AED 187,500", label: "Voluntary Registration Cap" },
+        { value: "28th Day", label: "Post-Period Filing Deadline" },
+      ]}
+      tocItems={TOC_ITEMS}
+      guidancePrompt="Want an FTA-registered agent to audit your supplier tax invoices and prepare your next Form VAT 201?"
+      closingCta={{
+        eyebrow: "FTA Form 201 & Audit Defense",
+        title: "Eliminate UAE VAT Filing Errors & Penalties",
+        description:
+          "Our Corporate Growth retainer (from AED 600/month billed annually) bundles monthly IFRS bookkeeping, quarterly Form VAT 201 filing, and input tax recovery verification.",
+        ctaLabel: "Book Free Consultation",
+      }}
+      onNavigate={onNavigate}
+      onOpenAudit={onOpenAudit}
+      onOpenPrivacy={onOpenPrivacy}
+      onOpenGooglePreferred={onOpenGooglePreferred}
+    >
+      {/* 1. Interactive Quarterly Form 201 Estimator */}
+      <section id="planner" className="scroll-mt-28 space-y-6">
+        <div className="space-y-2">
+          <h2 className="font-display text-2xl font-bold text-[#0D1B2A] tracking-tight">
+            Quarterly Form VAT 201 Position Estimator
+          </h2>
+          <p className="text-sm sm:text-base text-[#475569] leading-[1.65] max-w-[68ch]">
+            Model standard-rated UAE domestic supplies, zero-rated international exports, and recoverable input expenses to preview your net FTA position.
+          </p>
+        </div>
 
-      <main id="main-content">
-        {/* 1. Hero Section */}
-        <section className="relative bg-gradient-to-b from-navy-950 via-navy-900 to-navy-950 text-white py-16 lg:py-24 border-b border-gold-500/30 overflow-hidden">
-          <div className="absolute -top-32 right-0 w-[550px] h-[550px] bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-[480px] h-[480px] bg-gold-600/5 rounded-full blur-3xl pointer-events-none" />
-
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            {/* Breadcrumb */}
-            <div className="flex items-center gap-2 text-xs font-mono text-gold-400 mb-6">
-              <button
-                type="button"
-                onClick={() => onNavigate("/")}
-                className="hover:underline cursor-pointer"
-              >
-                Home
-              </button>
-              <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-              <button
-                type="button"
-                onClick={() => onNavigate("/uae-tax-planner")}
-                className="hover:underline cursor-pointer"
-              >
-                Tax Planner
-              </button>
-              <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-              <span className="text-white">UAE VAT Calculator &amp; 5% Compliance</span>
+        <div className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-6 sm:p-8 shadow-[0_10px_32px_-16px_rgba(13,27,42,0.08)] space-y-7">
+          {/* Filing Frequency Toggle */}
+          <div className="flex flex-wrap items-center justify-between gap-3 pb-5 border-b border-[#E2E8F0]">
+            <span className="text-sm font-semibold text-[#0D1B2A]">FTA Assigned Filing Cycle</span>
+            <div className="inline-flex p-1 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0]">
+              {(["quarterly", "monthly"] as const).map((freq) => (
+                <button
+                  key={freq}
+                  type="button"
+                  onClick={() => setFilingFrequency(freq)}
+                  className={`min-h-[38px] px-4 py-1.5 rounded-lg text-xs font-semibold capitalize transition-colors cursor-pointer ${
+                    filingFrequency === freq
+                      ? "bg-[#1B4332] text-white"
+                      : "text-[#475569] hover:text-[#0D1B2A]"
+                  }`}
+                >
+                  {freq}
+                </button>
+              ))}
             </div>
+          </div>
 
-            <div className="text-center max-w-3xl mx-auto space-y-6">
-              <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-400/40 text-emerald-300 text-xs font-semibold uppercase tracking-wider">
-                <Percent className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>Federal Decree-Law No. 8 of 2017 · Form 201 Ready</span>
+          {/* Sliders */}
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <div className="flex justify-between items-baseline gap-4">
+                <label htmlFor="vat-std-sales" className="text-sm font-semibold text-[#0D1B2A]">
+                  Standard-Rated Domestic Sales (5% VAT)
+                </label>
+                <span className="font-display text-base font-bold text-[#0D1B2A] tabular-nums">
+                  {formatAED(standardVatSales)}
+                </span>
               </div>
-
-              <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight">
-                UAE VAT Calculator &amp; <span className="text-emerald-400">Quarterly Form 201 Planner</span>
-              </h1>
-
-              <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">
-                Accurately compute output tax, recover 100% of eligible input VAT on business purchases, determine mandatory registration thresholds (AED 375,000), and safeguard against FTA audit penalties.
+              <input
+                id="vat-std-sales"
+                type="range"
+                min="100000"
+                max="10000000"
+                step="50000"
+                value={standardVatSales}
+                onChange={(e) => setStandardVatSales(Number(e.target.value))}
+                className="w-full h-2 rounded-lg bg-[#E2E8F0] appearance-none cursor-pointer accent-[#1B4332]"
+              />
+              <p className="text-xs text-[#64748B]">
+                Commercial supplies of goods and services within UAE Mainland and non-designated Free Zones.
               </p>
+            </div>
 
-              {/* 3 Metric Pills */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 max-w-2xl mx-auto">
-                <div className="bg-navy-900/80 border border-emerald-500/30 rounded-2xl p-4 text-center">
-                  <span className="text-xl font-mono font-extrabold text-emerald-400 block">5% Rate</span>
-                  <span className="text-[11px] text-slate-300 mt-1 block">UAE Standard VAT</span>
-                </div>
-                <div className="bg-navy-900/80 border border-gold-500/30 rounded-2xl p-4 text-center">
-                  <span className="text-xl font-mono font-extrabold text-gold-400 block">AED 375K</span>
-                  <span className="text-[11px] text-slate-300 mt-1 block">Mandatory Threshold</span>
-                </div>
-                <div className="bg-navy-900/80 border border-slate-700 rounded-2xl p-4 text-center">
-                  <span className="text-xl font-mono font-extrabold text-white block">28th Day</span>
-                  <span className="text-[11px] text-slate-300 mt-1 block">Quarterly Filing Deadline</span>
-                </div>
+            <div className="space-y-2">
+              <div className="flex justify-between items-baseline gap-4">
+                <label htmlFor="vat-zero-sales" className="text-sm font-semibold text-[#0D1B2A]">
+                  Zero-Rated Exports &amp; Cross-Border Supplies (0% VAT)
+                </label>
+                <span className="font-display text-base font-bold text-[#0D1B2A] tabular-nums">
+                  {formatAED(zeroRatedSales)}
+                </span>
               </div>
+              <input
+                id="vat-zero-sales"
+                type="range"
+                min="0"
+                max="5000000"
+                step="25000"
+                value={zeroRatedSales}
+                onChange={(e) => setZeroRatedSales(Number(e.target.value))}
+                className="w-full h-2 rounded-lg bg-[#E2E8F0] appearance-none cursor-pointer accent-[#1B4332]"
+              />
+              <p className="text-xs text-[#64748B]">
+                Export of services or goods outside the GCC, international transport, and qualifying transfers.
+              </p>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex justify-between items-baseline gap-4">
+                <label htmlFor="vat-expenses" className="text-sm font-semibold text-[#0D1B2A]">
+                  Recoverable VAT-Bearing Business Expenses (5% Input VAT)
+                </label>
+                <span className="font-display text-base font-bold text-[#1B4332] tabular-nums">
+                  {formatAED(vatExpenses)}
+                </span>
+              </div>
+              <input
+                id="vat-expenses"
+                type="range"
+                min="0"
+                max="5000000"
+                step="25000"
+                value={vatExpenses}
+                onChange={(e) => setVatExpenses(Number(e.target.value))}
+                className="w-full h-2 rounded-lg bg-[#E2E8F0] appearance-none cursor-pointer accent-[#1B4332]"
+              />
+              <p className="text-xs text-[#64748B]">
+                Valid tax invoices displaying supplier TRN (commercial rent, software, legal &amp; professional fees).
+              </p>
             </div>
           </div>
-        </section>
 
-        {/* 2. Interactive VAT Calculator Suite */}
-        <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
-            {/* Left Column: Interactive VAT Inputs (7 Cols) */}
-            <div className="lg:col-span-7 bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-6">
-              <div className="border-b border-slate-100 pb-4">
-                <h2 className="font-display text-xl sm:text-2xl font-bold text-navy-950">
-                  Step 1: Transaction &amp; Turnover Breakdown
-                </h2>
-                <p className="text-xs text-slate-500 mt-1">
-                  Adjust standard supplies, zero-rated exports, and input purchases to model your quarterly tax position.
-                </p>
-              </div>
-
-              {/* Standard Rated Supplies */}
-              <div className="space-y-2">
-                <div className="flex justify-between items-center text-xs">
-                  <label className="font-bold text-navy-900">
-                    Standard Rated Domestic Sales (5% VAT)
-                  </label>
-                  <span className="font-mono font-bold text-navy-950 text-sm">
-                    {formatAED(standardVatSales)}
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min="100000"
-                  max="10000000"
-                  step="50000"
-                  value={standardVatSales}
-                  onChange={(e) => setStandardVatSales(Number(e.target.value))}
-                  className="w-full accent-navy-950 cursor-pointer"
-                />
-                <div className="flex justify-between text-[10px] font-mono text-slate-400">
-                  <span>AED 100K</span>
-                  <span className="text-emerald-600 font-bold">AED 375,000 (Mandatory Threshold)</span>
-                  <span>AED 10M+</span>
-                </div>
-                <span className="text-[11px] text-slate-500 block">
-                  Commercial supplies of goods and services inside the UAE mainland and non-designated free zones.
+          {/* Crisp Output Summary Card */}
+          <div className="rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] p-5 sm:p-6 space-y-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <span className="text-xs font-semibold text-[#475569] block">
+                  {vatCalculation.isRefund ? "Estimated VAT Refund from FTA" : "Net VAT Payable to FTA"}
                 </span>
+                <div className="font-display text-3xl sm:text-4xl font-bold text-[#0D1B2A] tracking-tight tabular-nums mt-1">
+                  {formatAED(Math.abs(vatCalculation.netVatPayable))}
+                </div>
               </div>
-
-              {/* Zero-Rated Exports */}
-              <div className="space-y-2">
-                <div className="flex justify-between items-center text-xs">
-                  <label className="font-bold text-navy-900">
-                    Zero-Rated International Exports &amp; Cross-Border Supplies (0% VAT)
-                  </label>
-                  <span className="font-mono font-bold text-gold-600 text-sm">
-                    {formatAED(zeroRatedSales)}
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="5000000"
-                  step="25000"
-                  value={zeroRatedSales}
-                  onChange={(e) => setZeroRatedSales(Number(e.target.value))}
-                  className="w-full accent-gold-500 cursor-pointer"
-                />
-                <span className="text-[11px] text-slate-500 block">
-                  Export of services/goods outside GCC, international transport, and certain designated free zone transfers.
-                </span>
-              </div>
-
-              {/* VAT-Bearing Business Expenses */}
-              <div className="space-y-2">
-                <div className="flex justify-between items-center text-xs">
-                  <label className="font-bold text-navy-900">
-                    VAT-Bearing Business Expenses &amp; Purchases (5% Input VAT)
-                  </label>
-                  <span className="font-mono font-bold text-emerald-600 text-sm">
-                    {formatAED(vatExpenses)}
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="5000000"
-                  step="25000"
-                  value={vatExpenses}
-                  onChange={(e) => setVatExpenses(Number(e.target.value))}
-                  className="w-full accent-emerald-500 cursor-pointer"
-                />
-                <span className="text-[11px] text-slate-500 block">
-                  Valid tax invoices showing supplier TRN (commercial rent, professional fees, software, materials).
-                </span>
-              </div>
-
-              {/* Registration Status Banner */}
-              <div className={`p-5 rounded-2xl border ${
-                vatCalculation.isMandatory
-                  ? "bg-amber-50/80 border-amber-300"
-                  : vatCalculation.isVoluntary
-                  ? "bg-emerald-50/80 border-emerald-300"
-                  : "bg-slate-50 border-slate-200"
-              } space-y-1.5`}>
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="w-5 h-5 text-navy-950" />
-                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-navy-950">
-                    FTA Registration Status
-                  </span>
-                </div>
-                <div className="text-sm font-bold text-navy-950">
-                  {vatCalculation.registrationStatus}
-                </div>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Gross turnover evaluated: <strong>{formatAED(vatCalculation.totalSales)}</strong>. Failure to register within 30 days of crossing AED 375,000 attracts an immediate <strong>AED 10,000 late registration fine</strong>.
-                </p>
-              </div>
-
-              {/* Other Calculator Landing Page Links */}
-              <div className="pt-4 border-t border-slate-100 flex flex-wrap gap-3">
-                <button
-                  type="button"
-                  onClick={() => onNavigate("/corporate-tax-calculator")}
-                  className="text-xs text-gold-700 hover:text-gold-900 font-semibold flex items-center gap-1.5 cursor-pointer"
-                >
-                  <span>Need Corporate Tax (9%) Simulator?</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-                <span className="text-slate-300">·</span>
-                <button
-                  type="button"
-                  onClick={() => onNavigate("/fta-deadlines")}
-                  className="text-xs text-navy-700 hover:text-navy-900 font-semibold flex items-center gap-1.5 cursor-pointer"
-                >
-                  <span>View FTA Deadlines Calendar</span>
-                  <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            </div>
-
-            {/* Right Column: Output Card & Lead Funnel (5 Cols) */}
-            <div className="lg:col-span-5 space-y-6">
-              {/* Output Card */}
-              <div className="bg-gradient-to-b from-navy-950 via-navy-900 to-navy-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-gold-500/30 space-y-6">
-                <div className="flex items-center justify-between border-b border-white/10 pb-4">
-                  <div className="flex items-center gap-2">
-                    <Percent className="w-5 h-5 text-emerald-400" />
-                    <span className="font-display font-bold text-base">Net VAT Position</span>
-                  </div>
-                  <span className="font-mono text-xs text-emerald-300 font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-400/30">
-                    Form 201 Breakdown
-                  </span>
-                </div>
-
-                <div className="text-center py-5 bg-white/5 rounded-2xl border border-white/10">
-                  <span className="text-xs uppercase tracking-wider text-slate-300 font-mono block mb-1">
-                    {vatCalculation.isRefund ? "Estimated VAT Refund from FTA" : "Net VAT Payable to FTA"}
-                  </span>
-                  <div className="text-4xl sm:text-5xl font-extrabold font-mono text-emerald-400 tabular-nums">
-                    {formatAED(Math.abs(vatCalculation.netVatPayable))}
-                  </div>
-                  <span className="text-xs text-slate-300 block mt-1.5">
-                    {vatCalculation.isRefund
-                      ? "Claim refund directly to UAE bank account or carry forward"
-                      : "Payable on or before the 28th following tax period close"}
-                  </span>
-                </div>
-
-                <div className="space-y-3 text-xs">
-                  <div className="flex justify-between py-2 border-b border-white/10">
-                    <span className="text-slate-300">Output VAT (5% on Sales):</span>
-                    <span className="font-mono font-bold text-white">
-                      {formatAED(vatCalculation.outputVat)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between py-2 border-b border-white/10">
-                    <span className="text-slate-300">Input VAT Recoverable (5% on Purchases):</span>
-                    <span className="font-mono font-bold text-emerald-400">
-                      - {formatAED(vatCalculation.inputVat)}
-                    </span>
-                  </div>
-                  <div className="flex justify-between py-2">
-                    <span className="text-slate-300">Filing Period:</span>
-                    <span className="font-mono font-bold text-gold-400 uppercase">
-                      {filingFrequency} (FTA Assigned)
-                    </span>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleWhatsAppRedirect}
-                  className="w-full py-4 px-4 rounded-xl bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold text-xs uppercase tracking-wider transition-all shadow-lg shadow-gold-500/20 cursor-pointer flex items-center justify-center gap-2 group"
-                >
-                  <MessageCircle className="w-4 h-4 text-emerald-950 group-hover:scale-110 transition-transform" />
-                  <span>Verify Numbers on WhatsApp With Glen Dias</span>
-                </button>
-              </div>
-
-              {/* Lead Capture Box */}
-              <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-8 shadow-xs space-y-5">
-                <div className="border-b border-slate-100 pb-3">
-                  <span className="text-[10px] font-mono text-gold-600 font-bold uppercase tracking-wider block">
-                    Zero FTA Penalties Guarantee
-                  </span>
-                  <h3 className="font-display text-lg font-bold text-navy-950">
-                    Get Glen Dias Certified VAT Assessment
-                  </h3>
-                  <p className="text-xs text-slate-500 mt-1">
-                    We review your tax invoice formatting, recover blocked input VAT, and ensure error-free Form 201 filing.
-                  </p>
-                </div>
-
-                {submitted ? (
-                  <div className="p-5 rounded-2xl bg-emerald-50 border border-emerald-300 text-center space-y-3">
-                    <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto" />
-                    <h4 className="font-display font-bold text-emerald-950 text-base">
-                      VAT Assessment Request Received
-                    </h4>
-                    <p className="text-xs text-emerald-800 leading-relaxed">
-                      Managing Partner Glen Dias will review your calculations and reach out within 2 hours.
-                    </p>
-                    <button
-                      type="button"
-                      onClick={handleWhatsAppRedirect}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-md cursor-pointer hover:bg-emerald-700 transition-colors"
-                    >
-                      <MessageCircle className="w-4 h-4" />
-                      <span>Chat Immediately on WhatsApp</span>
-                    </button>
-                  </div>
-                ) : (
-                  <form onSubmit={handleSubmitLead} className="space-y-3 text-xs">
-                    {errorMessage && (
-                      <div className="p-3 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 text-xs">
-                        {errorMessage}
-                      </div>
-                    )}
-
-                    <div>
-                      <label className="block text-slate-700 font-bold mb-1">Company Trade Name *</label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Apex Global Trading LLC"
-                        value={companyName}
-                        onChange={(e) => setCompanyName(e.target.value)}
-                        className="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-gold-500"
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-slate-700 font-bold mb-1">Contact Name *</label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Sarah Jenkins"
-                        value={contactName}
-                        onChange={(e) => setContactName(e.target.value)}
-                        className="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-gold-500"
-                        required
-                      />
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-slate-700 font-bold mb-1">Corporate Email *</label>
-                        <input
-                          type="email"
-                          placeholder="sarah@company.ae"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          className="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-gold-500"
-                          required
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-slate-700 font-bold mb-1">WhatsApp Mobile *</label>
-                        <input
-                          type="tel"
-                          placeholder="+971 50 000 0000"
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                          className="w-full p-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-gold-500"
-                          required
-                        />
-                      </div>
-                    </div>
-
-                    <button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full py-3.5 px-4 rounded-xl bg-navy-950 hover:bg-gold-500 hover:text-navy-950 text-white font-display font-bold text-xs uppercase tracking-wider transition-all shadow-md cursor-pointer disabled:opacity-50 mt-2"
-                    >
-                      {isSubmitting ? "Submitting Request..." : "Request Certified VAT Review"}
-                    </button>
-                  </form>
-                )}
-              </div>
-            </div>
-
-          </div>
-        </section>
-
-        {/* 3. Common VAT Audit Pitfalls in UAE */}
-        <section className="py-16 bg-white border-y border-slate-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-3xl mx-auto mb-12">
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-gold-600 block mb-2">
-                FTA Audit Risk Mitigation
+              <span
+                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${
+                  vatCalculation.isMandatory
+                    ? "bg-[#FFFFFF] border-[#C5A059] text-[#0D1B2A]"
+                    : "bg-emerald-50 border-emerald-200 text-[#1B4332]"
+                }`}
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-[#1B4332]" />
+                <span>{vatCalculation.registrationStatus}</span>
               </span>
-              <h2 className="font-display text-2xl sm:text-3xl font-bold text-navy-950">
-                The 4 Most Expensive VAT Mistakes UAE Businesses Make
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-600 mt-2">
-                The Federal Tax Authority enforces strict administrative penalties for documentation discrepancies.
-              </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="p-6 rounded-2xl border border-slate-200 bg-slate-50/50 space-y-2">
-                <div className="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-600 font-bold flex items-center justify-center">
-                  !
-                </div>
-                <h3 className="font-display font-bold text-sm text-navy-950">
-                  Defective Tax Invoices
-                </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Claiming input tax on purchase receipts that lack the words &quot;Tax Invoice&quot;, buyer TRN, or line-item tax details is prohibited.
-                </p>
+            <div className="divide-y divide-[#E2E8F0] border-t border-[#E2E8F0] text-sm">
+              <div className="py-2.5 flex justify-between gap-4">
+                <span className="text-[#475569]">Total Evaluated Taxable Turnover</span>
+                <span className="font-semibold text-[#0D1B2A] tabular-nums">
+                  {formatAED(vatCalculation.totalSales)}
+                </span>
               </div>
-
-              <div className="p-6 rounded-2xl border border-slate-200 bg-slate-50/50 space-y-2">
-                <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-600 font-bold flex items-center justify-center">
-                  !
-                </div>
-                <h3 className="font-display font-bold text-sm text-navy-950">
-                  Late VAT Registration
-                </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Missing the 30-day window after exceeding AED 375,000 turnover triggers an automatic AED 10,000 fine.
-                </p>
+              <div className="py-2.5 flex justify-between gap-4">
+                <span className="text-[#475569]">Output VAT (5% on Domestic Sales)</span>
+                <span className="font-semibold text-[#0D1B2A] tabular-nums">
+                  {formatAED(vatCalculation.outputVat)}
+                </span>
               </div>
-
-              <div className="p-6 rounded-2xl border border-slate-200 bg-slate-50/50 space-y-2">
-                <div className="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-600 font-bold flex items-center justify-center">
-                  !
-                </div>
-                <h3 className="font-display font-bold text-sm text-navy-950">
-                  Blocked Entertainment Costs
-                </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  VAT paid on client entertainment, sporting events, and gifts over AED 250 is legally blocked and non-recoverable.
-                </p>
+              <div className="py-2.5 flex justify-between gap-4">
+                <span className="text-[#475569]">Recoverable Input VAT (5% on Expenses)</span>
+                <span className="font-semibold text-[#1B4332] tabular-nums">
+                  − {formatAED(vatCalculation.inputVat)}
+                </span>
               </div>
-
-              <div className="p-6 rounded-2xl border border-slate-200 bg-slate-50/50 space-y-2">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 font-bold flex items-center justify-center">
-                  ✓
-                </div>
-                <h3 className="font-display font-bold text-sm text-navy-950">
-                  Dias Audit Defense
-                </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Our certified tax agents reconcile your ledgers line-by-line before submission, ensuring 100% compliant filings.
-                </p>
+              <div className="pt-2.5 flex justify-between gap-4">
+                <span className="font-semibold text-[#0D1B2A]">Submission Schedule</span>
+                <span className="font-semibold text-[#0D1B2A] capitalize">
+                  {filingFrequency} · Due 28th post-period
+                </span>
               </div>
             </div>
           </div>
-        </section>
-      </main>
+        </div>
+      </section>
 
-      <PageFooter
-        onNavigate={onNavigate}
-        onOpenPrivacy={onOpenPrivacy}
-        onOpenGooglePreferred={onOpenGooglePreferred}
-      />
-    </div>
+      {/* 2. Thresholds & VAT Treatment Table */}
+      <section id="thresholds" className="scroll-mt-28 pt-4 space-y-6">
+        <div className="space-y-2">
+          <h2 className="font-display text-2xl font-bold text-[#0D1B2A] tracking-tight">
+            UAE VAT Registration Thresholds &amp; Supply Categories
+          </h2>
+          <p className="text-sm sm:text-base text-[#475569] leading-[1.65] max-w-[68ch]">
+            Under Federal Decree-Law No. 8 of 2017, UAE businesses must monitor rolling 12-month taxable turnover and classify each supply correctly on Form 201.
+          </p>
+        </div>
+
+        <ComplianceTable
+          caption="UAE VAT registration thresholds and supply classifications"
+          columns={[
+            { key: "category", label: "VAT Category / Threshold" },
+            { key: "rate", label: "Rate / Cap", highlight: true },
+            { key: "rule", label: "FTA Compliance Rule" },
+          ]}
+          rows={[
+            {
+              category: "Mandatory VAT Registration",
+              rate: "AED 375,000",
+              rule: "Required within 30 days once taxable supplies & imports cross AED 375,000 (AED 10,000 fine if late).",
+            },
+            {
+              category: "Voluntary VAT Registration",
+              rate: "AED 187,500",
+              rule: "Optional registration allowing startups and growing firms to reclaim 5% input VAT on setup costs.",
+            },
+            {
+              category: "Standard-Rated Supplies",
+              rate: "5% VAT",
+              rule: "Most domestic UAE goods and services; full input tax recovery applies on valid tax invoices.",
+            },
+            {
+              category: "Zero-Rated Supplies",
+              rate: "0% VAT",
+              rule: "Exports outside GCC, international transport, qualifying education/healthcare; input VAT remains recoverable.",
+            },
+            {
+              category: "Exempt Supplies",
+              rate: "Exempt",
+              rule: "Residential real estate leases, local passenger transport, certain financial services; related input VAT is non-recoverable.",
+            },
+          ]}
+        />
+      </section>
+
+      {/* 3. Common VAT Audit Pitfalls */}
+      <section id="pitfalls" className="scroll-mt-28 pt-4 space-y-6">
+        <div className="space-y-2">
+          <h2 className="font-display text-2xl font-bold text-[#0D1B2A] tracking-tight">
+            The 4 Most Costly UAE VAT Audit Mistakes
+          </h2>
+          <p className="text-sm sm:text-base text-[#475569] leading-[1.65] max-w-[68ch]">
+            The Federal Tax Authority enforces strict administrative penalties for documentation gaps and blocked expense claims.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {[
+            {
+              title: "Defective Supplier Tax Invoices",
+              desc: "Claiming input VAT on invoices missing the words 'Tax Invoice', supplier TRN, or line-item VAT breakdown leads to automatic disallowance during audit.",
+            },
+            {
+              title: "Late VAT Registration (AED 10,000 Fine)",
+              desc: "Missing the 30-day EmaraTax registration window after crossing AED 375,000 in rolling taxable turnover triggers an immediate AED 10,000 penalty.",
+            },
+            {
+              title: "Blocked Client Entertainment & Vehicles",
+              desc: "Input VAT paid on client hospitality, sporting events, gifts exceeding AED 250, and mixed-use vehicles is legally non-recoverable on Form 201.",
+            },
+            {
+              title: "Missed Reverse-Charge Reporting",
+              desc: "Imported digital services and foreign SaaS subscriptions (AWS, Google, Meta, Stripe) must be self-accounted under the Reverse Charge Mechanism.",
+            },
+          ].map((item) => (
+            <div
+              key={item.title}
+              className="rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] p-5 space-y-1.5"
+            >
+              <h3 className="font-display font-bold text-sm sm:text-base text-[#0D1B2A]">
+                {item.title}
+              </h3>
+              <p className="text-sm text-[#475569] leading-relaxed">{item.desc}</p>
+            </div>
+          ))}
+        </div>
+
+        <ExecutiveCallout title="FTA Compliance Note: Voluntary Disclosure (Form 211)" accent="gold">
+          If you discover an error exceeding AED 10,000 on a previously submitted VAT 201 return, filing a Voluntary Disclosure (Form 211) proactively before an FTA audit notification significantly reduces percentage-based tax assessment penalties.
+        </ExecutiveCallout>
+
+        <CalculatorToolBridge
+          title="Check Expense-Level 5% Input VAT Recovery"
+          description="Add or extract 5% UAE VAT and instantly verify whether specific business expenses are reclaimable, blocked, or zero-rated."
+          ctaLabel="Open 5% VAT Recovery Tool"
+          onAction={() => onNavigate("/uae-tax-planner?tab=vat")}
+        />
+      </section>
+
+      {/* 4. Certified VAT Assessment Request */}
+      <section id="assessment" className="scroll-mt-28 pt-4 space-y-5">
+        <div className="space-y-2">
+          <h2 className="font-display text-2xl font-bold text-[#0D1B2A] tracking-tight">
+            Request a Certified Form 201 VAT Review
+          </h2>
+          <p className="text-sm sm:text-base text-[#475569] leading-[1.65] max-w-[68ch]">
+            Share your contact details for an FTA-registered review of your invoice formatting, input VAT eligibility, and upcoming Form 201 submission.
+          </p>
+        </div>
+
+        <div className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-6 sm:p-8 shadow-xs">
+          {submitted ? (
+            <div className="py-6 text-center space-y-3">
+              <CheckCircle2 className="w-10 h-10 text-[#1B4332] mx-auto" />
+              <h3 className="font-display font-bold text-lg text-[#0D1B2A]">
+                VAT Assessment Request Received
+              </h3>
+              <p className="text-sm text-[#475569] max-w-md mx-auto leading-relaxed">
+                Managing Partner Glen Dias and our VAT advisory team will review your figures and respond within 2 business hours.
+              </p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmitLead} className="space-y-4">
+              {errorMessage && (
+                <div className="p-3 rounded-xl bg-rose-50 text-rose-700 border border-rose-200 text-xs font-medium">
+                  {errorMessage}
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="vat-company" className="block text-xs font-semibold text-[#0D1B2A] mb-1.5">
+                    Company Trade Name *
+                  </label>
+                  <input
+                    id="vat-company"
+                    type="text"
+                    placeholder="e.g. Apex Global Trading LLC"
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
+                    className="w-full min-h-[46px] px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] text-sm text-[#0D1B2A] focus:outline-none focus:border-[#1B4332] focus:ring-2 focus:ring-[#1B4332]/15"
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="vat-contact" className="block text-xs font-semibold text-[#0D1B2A] mb-1.5">
+                    Contact Name *
+                  </label>
+                  <input
+                    id="vat-contact"
+                    type="text"
+                    placeholder="e.g. Sarah Jenkins"
+                    value={contactName}
+                    onChange={(e) => setContactName(e.target.value)}
+                    className="w-full min-h-[46px] px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] text-sm text-[#0D1B2A] focus:outline-none focus:border-[#1B4332] focus:ring-2 focus:ring-[#1B4332]/15"
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="vat-email" className="block text-xs font-semibold text-[#0D1B2A] mb-1.5">
+                    Corporate Email *
+                  </label>
+                  <input
+                    id="vat-email"
+                    type="email"
+                    placeholder="sarah@company.ae"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full min-h-[46px] px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] text-sm text-[#0D1B2A] focus:outline-none focus:border-[#1B4332] focus:ring-2 focus:ring-[#1B4332]/15"
+                    required
+                  />
+                </div>
+                <div>
+                  <label htmlFor="vat-phone" className="block text-xs font-semibold text-[#0D1B2A] mb-1.5">
+                    UAE Phone / WhatsApp *
+                  </label>
+                  <input
+                    id="vat-phone"
+                    type="tel"
+                    placeholder="+971 50 000 0000"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full min-h-[46px] px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] text-sm text-[#0D1B2A] focus:outline-none focus:border-[#1B4332] focus:ring-2 focus:ring-[#1B4332]/15"
+                    required
+                  />
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="min-h-[48px] px-6 py-3 rounded-xl bg-[#1B4332] hover:bg-[#143326] text-white text-sm font-semibold transition-colors cursor-pointer disabled:opacity-50 inline-flex items-center justify-center gap-2"
+              >
+                <span>{isSubmitting ? "Submitting Request..." : "Request Certified VAT Review"}</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </form>
+          )}
+        </div>
+      </section>
+
+      {/* 5. FAQs */}
+      <section id="faqs" className="scroll-mt-28 pt-4 space-y-5">
+        <h2 className="font-display text-2xl font-bold text-[#0D1B2A] tracking-tight">
+          UAE VAT Compliance FAQs
+        </h2>
+        <div className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] px-6 sm:px-8 py-2">
+          <ExecutiveAccordion items={VAT_FAQS} defaultOpenIndex={0} />
+        </div>
+      </section>
+    </TaxHubLayout>
   );
 };
 

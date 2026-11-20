@@ -103,14 +103,9 @@ export default function DiasLogo({
         </svg>
       </div>
       {showText && (
-        <div className="flex flex-col leading-none">
-          <span className={`${textSize} font-display font-bold tracking-tight ${textColor}`}>
-            DIAS
-          </span>
-          <span className="text-[10px] font-sans font-semibold tracking-[0.2em] text-emerald-600 uppercase">
-            ACCOUNTING
-          </span>
-        </div>
+        <span className={`${textSize} font-display font-bold tracking-tight whitespace-nowrap ${textColor}`}>
+          Dias Accounting
+        </span>
       )}
     </div>
   );

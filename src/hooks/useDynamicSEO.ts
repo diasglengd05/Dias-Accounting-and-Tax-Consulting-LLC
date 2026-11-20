@@ -1,198 +1,52 @@
 import { useEffect } from "react";
 import { Service, BlogPost } from "../types";
 import { Language } from "../i18n/translations";
-import { getBlogOgImageUrl } from "../lib/ogImage";
-import { CORE_HOMEPAGE_FAQS, buildFAQPageSchema, upsertJsonLd } from "../lib/seo";
+import {
+  CORE_HOMEPAGE_FAQS,
+  buildBlogPostingSchema,
+  buildFAQPageSchema,
+  buildServiceSchema,
+  clearRouteJsonLd,
+  upsertJsonLd,
+} from "../lib/seo";
+import {
+  DEFAULT_OG_IMAGE,
+  DEFAULT_OG_IMAGE_HEIGHT,
+  DEFAULT_OG_IMAGE_WIDTH,
+  SITE_NAME,
+  SITE_URL,
+} from "../lib/seoConfig";
 
 export interface SEOConfig {
   title: string;
   description: string;
   keywords: string;
   hash: string;
-  ogType?: string;
+  ogType?: "website" | "article";
   ogImage?: string;
 }
 
-// Master English SEO Metadata Dictionary
 export const SECTION_SEO_MAP_EN: Record<string, SEOConfig> = {
   home: {
-    title: "FTA-Registered Tax Agents Dubai & Sharjah | Accounting From AED 400/Mo",
-    description: "Double-entry IFRS bookkeeping, 5% UAE VAT & 9% Corporate Tax filings by FTA-Registered Tax Agents in Dubai & Sharjah (SHAMS). Fixed fees from AED 400/mo — free 15-min check.",
-    keywords: "Corporate Tax, Tax Services in Dubai, DIFC Tax Compliance, Corporate Tax Consultants in DIFC, tax and accounting services, tax accounting services, accounting services uae, tax firms in uae, tax and financial planning services, accounting consultancy in dubai, tax preparation and planning services, taxation services dubai, taxation services in uae, tax consulting services in uae, accounting advisory services uae, accounting packages dubai, auditing firms in sharjah, pricing & tax solutions uae, accounting services in dtec, dias accounting",
+    title: "UAE Corporate Tax & Fixed-Fee Accounting | Dias Accounting",
+    description:
+      "FTA-Registered Tax Agents in Dubai & Sharjah (SHAMS). Fixed-fee IFRS bookkeeping from AED 400/mo, 5% UAE VAT & 9% Corporate Tax filings. Free 15-min check.",
+    keywords:
+      "UAE Corporate Tax, UAE VAT Compliance, IFRS Bookkeeping Dubai, FTA Registered Tax Agent, Fixed-Fee Accounting Packages UAE, SHAMS Accounting Firm, DIFC Tax Compliance, Dias Accounting",
     hash: "#home",
-    ogImage: "/api/og?title=UAE+Corporate+Tax+%26+Accounting+Firm+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Dias+Accounting&readTime=Top+Ranked",
-  },
-  services: {
-    title: "Corporate Tax, VAT & Accounting Services in Dubai | Dias UAE",
-    description: "Certified Corporate Tax, VAT filing, backlog bookkeeping, and DIFC tax compliance across Dubai and all 7 UAE Emirates. Schedule a free consultation today.",
-    keywords: "Corporate Tax, Tax Services in Dubai, DIFC Tax Compliance, tax and accounting services, tax accounting services, tax preparation and planning services, accounting services uae, corporate tax advisory uae, vat compliance dubai, accounting consultancy in dubai",
-    hash: "#services",
-    ogImage: "/api/og?title=Corporate+Tax%2C+VAT+%26+Accounting+Services+in+Dubai&author=Glen+Dias&role=Senior+Tax+Consultant&tag=FTA+Certified+Services&readTime=Full+Service",
-  },
-  "company-setup": {
-    title: "SHAMS Free Zone & Dubai Mainland Company Setup + Tax Registration (2026)",
-    description: "Launch your SHAMS Free Zone or Dubai Mainland LLC with full EmaraTax Corporate Tax & 5% VAT registration. Fixed-fee monthly accounting from AED 400/mo.",
-    keywords: "UAE Company Setup, Corporate Tax, company setup dubai, free zone business setup uae, shams free zone company formation, dubai mainland det license, tax structuring dubai, 0% free zone corporate tax uae",
-    hash: "#company-setup",
-    ogImage: "/api/og?title=SHAMS+Free+Zone+%26+Dubai+Mainland+Company+Setup&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Tax+Registration+2026&readTime=Turnkey+Setup",
-  },
-  "tax-planning-difc": {
-    title: "DIFC & DTEC Accounting, 0% QFZP Tax & Dividend Audits Dubai | Dias Accounting",
-    description: "FTA-Registered Tax Agents serving DIFC & DTEC companies. Statutory interim/final dividend audits, 0% QFZP compliance & monthly IFRS bookkeeping from AED 400/mo.",
-    keywords: "DIFC Corporate Tax Planning, DTEC Accounting & Bookkeeping, 0% Qualifying Free Zone Person (QFZP) Compliance, DIFC Interim & Final Dividend Distribution Audits, 5% UAE VAT Filing, DIFC Tax Compliance, Corporate Tax Consultants in DIFC",
-    hash: "/tax-planning-difc",
-    ogImage: "/api/og?title=DIFC+%26+DTEC+Accounting%2C+0%25+QFZP+Tax+%26+Dividend+Audits+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=From+AED+400%2Fmo",
-  },
-  "why-choose-us": {
-    title: "Why Choose Dias Accounting | Tax Advisory Services in Dubai & UAE",
-    description: "Discover why 500+ UAE enterprises trust Dias Accounting for FTA-accredited tax consulting services in UAE, IFRS accuracy, and cloud accounting automation.",
-    keywords: "why choose dias accounting, best tax advisory services in dubai, fta certified tax consultants uae, ifrs accounting firm dubai",
-    hash: "#why-choose-us",
-    ogImage: "/api/og?title=6+Core+Pillars+of+Institutional+Tax+%26+Accounting+Excellence&author=Glen+Dias&role=Managing+Partner&tag=Why+Choose+Dias&readTime=100%25+Compliance",
-  },
-  about: {
-    title: "About Dias Accounting | Chartered Tax Consultants in Dubai & UAE",
-    description: "Led by Senior Tax Advisor Glen Dias, Dias Accounting delivers high-precision Corporate Tax advisory, VAT compliance, and IFRS accounting services across Dubai, Sharjah & UAE.",
-    keywords: "Glen Dias tax advisor, Dias Accounting LLC, certified tax consultant Dubai, tax consulting services in uae, tax advisory services in dubai",
-    hash: "#about",
-    ogImage: "/api/og?title=About+Glen+Dias+%26+Certified+Tax+Advisors+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Zero+Penalty+Guarantee&readTime=15%2B+Yrs+Exp",
-  },
-  pricing: {
-    title: "UAE Accounting & Bookkeeping Packages From AED 400/Mo | Fixed-Fee Tax Retainers",
-    description: "Transparent fixed-fee monthly IFRS accounting, 5% VAT Form 201 & 9% Corporate Tax packages in Dubai & Sharjah. Zero hidden hourly fees — get an instant quote today.",
-    keywords: "Corporate Tax, accounting packages dubai, monthly accounting package dubai, fixed fee bookkeeping uae, corporate tax return fee, corporate tax consultants in difc, accounting solutions in uae",
-    hash: "#pricing",
-    ogImage: "/api/og?title=UAE+Accounting+%26+Bookkeeping+Packages+From+AED+400%2FMo&author=Dias+Tax+Team&role=Transparent+Fee+Schedule&tag=From+AED+400&readTime=Zero+Hidden+Fees",
-  },
-  jurisdictions: {
-    title: "Dubai & UAE Free Zone Tax Compliance | SHAMS, DMCC, IFZA, DIFC | Dias UAE",
-    description: "Specialized tax advisory services in Dubai Mainland (DET), SHAMS Sharjah, DMCC, IFZA, Meydan, and DIFC. Ensure 0% QFZP tax and IFRS audit compliance.",
-    keywords: "tax advisory services in dubai, shams free zone tax agent sharjah, dmcc accounting firm dubai, ifza corporate tax filing, difc tax compliance",
-    hash: "#jurisdictions",
-    ogImage: "/api/og?title=UAE+Jurisdictions+%26+Free+Zone+Tax+Authority&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=All+7+Emirates&readTime=Local+Compliance",
-  },
-  caseStudies: {
-    title: "Client Case Studies & Proven Tax Savings | Dias Accounting UAE",
-    description: "See how Dias Accounting helps UAE businesses optimize corporate tax, claim Small Business Relief, and clear historical accounting backlogs with zero FTA penalties.",
-    keywords: "uae corporate tax case study, vat compliance dubai results, backlog accounting case study uae",
-    hash: "#case-studies",
-    ogImage: "/api/og?title=Proven+UAE+Tax+Savings+%26+Client+Case+Studies&author=Dias+Tax+Team&role=E-E-A-T+Verified&tag=AED+180k%2B+Saved&readTime=Case+Studies",
-  },
-  calculator: {
-    title: "UAE Corporate Tax & 5% VAT Calculator (2026) | Free Zone QFZP & SBR Tool | Dias Accounting",
-    description: "Free 2026 UAE Corporate Tax (9%, 0% Small Business Relief & Free Zone QFZP) and 5% VAT Input Recovery Calculator by FTA-Registered Tax Agents in Dubai & Sharjah.",
-    keywords: "UAE Corporate Tax Calculator 2026, 5% UAE VAT Calculator, Free Zone QFZP Calculator, Small Business Relief AED 3M, UAE VAT Input Recovery Tool, Dias Accounting",
-    hash: "#calculator",
-    ogImage: "/api/og?title=UAE+Corporate+Tax+%26+5%25+VAT+Calculator+(2026)&author=Glen+Dias&tag=Free+Zone+QFZP+%26+SBR+Tool",
-  },
-  testimonials: {
-    title: "Verified Client Reviews (5.0★ Google Rating) | Dias Tax Consulting UAE",
-    description: "Read verified 5.0-star Google reviews from UAE managing directors and founders who rely on Dias Accounting for Corporate Tax advisory, VAT compliance, and backlog accounting.",
-    keywords: "Dias Accounting reviews, tax consultant Dubai reviews, corporate tax advisory testimonials UAE",
-    hash: "#testimonials",
-    ogImage: "/api/og?title=Client+Reviews+%26+5.0-Star+Ratings+Dubai+UAE&author=Verified+Clients&role=Google+Reviews+5.0%E2%98%85&tag=Trusted+by+500%2B+SMEs&readTime=Verified+Feedback",
-  },
-  faqs: {
-    title: "UAE Corporate Tax, VAT Compliance & Accounting FAQ | Dias UAE",
-    description: "Expert answers to UAE Corporate Tax (9%), 0% Free Zone QFZP rules, Small Business Relief (AED 3M), mandatory VAT registration, and backlog accounting deadlines.",
-    keywords: "UAE corporate tax FAQ, VAT compliance rules UAE, Freezone 0 percent tax rules, FTA late registration penalty",
-    hash: "#faqs",
-    ogImage: "/api/og?title=UAE+Corporate+Tax+%26+VAT+Compliance+FAQ+2026&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=FTA+Regulations&readTime=Comprehensive+Guide",
-  },
-  blogs: {
-    title: "UAE Corporate Tax, VAT & Accounting Insights 2026 | Dias UAE",
-    description: "Latest 2026 UAE Federal Tax Authority (FTA) updates, 9% Corporate Tax guides, 5% VAT audit checklists, and IFRS accounting insights by Dias Accounting.",
-    keywords: "Corporate Tax, DIFC Tax Compliance, Tax Services in Dubai, UAE tax insights, corporate tax guide Dubai, FTA ministerial decisions, SHAMS free zone tax guide, accounting and bookkeeping UAE",
-    hash: "#blogs",
-    ogImage: "/api/og?title=UAE+Corporate+Tax%2C+VAT+%26+Accounting+Insights+2026&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=UAE+Tax+Articles&readTime=Weekly+Insights",
-  },
-  contact: {
-    title: "Book a Free Tax Consultation | Tax Advisory Services in Dubai & UAE | Dias",
-    description: "Schedule a complimentary consultation with Dias Accounting & Tax Consulting. Serving Dubai, Sharjah (SHAMS), Abu Dhabi, and all UAE Emirates (+971 52 922 6958).",
-    keywords: "contact tax consultant Dubai, book tax consultation UAE, tax advisory services in dubai contact, Dias Accounting phone number",
-    hash: "#contact",
-    ogImage: "/api/og?title=Book+Free+UAE+Tax+%26+Accounting+Consultation&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Free+Assessment&readTime=Call+%2B971-52-922-6958",
+    ogImage: DEFAULT_OG_IMAGE,
   },
 };
 
-// Master Arabic SEO Metadata Dictionary
 export const SECTION_SEO_MAP_AR: Record<string, SEOConfig> = {
   home: {
-    title: "خدمات الاستشارات الضريبية في الإمارات ودبي | دياس للمحاسبة والاستشارات الضريبية",
-    description: "أفضل خدمات الاستشارات الضريبية في الإمارات ودبي. استشارات ضريبة الشركات (9% وإعفاء 0% للمناطق الحرة)، الامتثال لضريبة القيمة المضافة، مسك الدفاتر، وإغلاق المتأخرات المحاسبية.",
-    keywords: "خدمات الاستشارات الضريبية في الإمارات, استشارات ضريبية في دبي, ضريبة الشركات الإمارات, الامتثال لضريبة القيمة المضافة, خدمات المحاسبة ومسك الدفاتر دبي, تأسيس شركات المنطقة الحرة شمس",
+    title: "خدمات الاستشارات الضريبية والمحاسبة في الإمارات ودبي | دياس للمحاسبة",
+    description:
+      "وكيل ضريبي معتمد لدى الهيئة الاتحادية للضرائب في دبي والشارقة (شمس). مسك الدفاتر وفق معايير IFRS من 400 درهم/شهرياً، وضريبة القيمة المضافة 5% وضريبة الشركات 9%.",
+    keywords:
+      "خدمات الاستشارات الضريبية في الإمارات, استشارات ضريبية في دبي, ضريبة الشركات الإمارات, الامتثال لضريبة القيمة المضافة, خدمات المحاسبة ومسك الدفاتر دبي",
     hash: "#home",
-    ogImage: "/api/og?title=Tax+Consulting+Services+in+UAE+%26+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=UAE+Tax+Compliance&readTime=FTA+Certified",
-  },
-  services: {
-    title: "خدمات ضريبة الشركات والقيمة المضافة ومسك الدفاتر | دياز للمحاسبة دبي",
-    description: "استكشف خدماتنا المحاسبية المعتمدة: إقرارات ضريبة الشركات 9%، ضريبة القيمة المضافة، استشارات نسبة 0% للمناطق الحرة المؤهلة، مسك الدفاتر السحابي، واستشارات CFO في دبي.",
-    keywords: "إقرار ضريبة الشركات الإمارات, الإفصاح الطوعي ضريبة القيمة المضافة, الشخص المؤهل في المنطقة الحرة 0%, محاسب برنامج وافق دبي, محاسب زوهو بوكس الإمارات, تدقيق القوائم المالية دبي",
-    hash: "#services",
-    ogImage: "/api/og?title=Corporate+Tax%2C+VAT+Filing+%26+Bookkeeping+Services&author=Glen+Dias&role=Senior+Tax+Consultant&tag=FTA+Certified+Services&readTime=Full+Service",
-  },
-  about: {
-    title: "عن المستشار غلين دياز وفريقنا المحاسبي المعتمد | دياز للمحاسبة دبي",
-    description: "بقيادة المستشار الضريبي الأول غلين دياز، تقدم دياز للمحاسبة حلولاً محاسبية عالية الدقة متوافقة مع أنظمة الهيئة الاتحادية للضرائب ومعايير التقارير المالية الدولية IFRS.",
-    keywords: "المستشار غلين دياز, شركة دياز للمحاسبة, مستشار ضريبي معتمد دبي, وكيل ضريبي الإمارات, محاسبون قانونيون الخليج التجاري دبي, محاسب معتمد CPA ACCA دبي",
-    hash: "#about",
-    ogImage: "/api/og?title=About+Glen+Dias+%26+Certified+Tax+Advisors+Dubai&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=Zero+Penalty+Guarantee&readTime=15%2B+Yrs+Exp",
-  },
-  pricing: {
-    title: "باقات وأسعار خدمات المحاسبة وضريبة الشركات في دبي | دياز للمحاسبة",
-    description: "باقات محاسبة شهرية واضحة ومحددة لضريبة الشركات ومسك الدفاتر تبدأ من 500 درهم/شهرياً لشركات البر الرئيسي والمناطق الحرة والشركات الناشئة في دبي.",
-    keywords: "تكلفة المحاسبة في دبي, رسوم إقرار ضريبة الشركات الإمارات, باقات مسك الدفاتر الشهرية دبي, أسعار الوكيل الضريبي دبي, محاسب شركات بأسعار مناسبة دبي",
-    hash: "#pricing",
-    ogImage: "/api/og?title=Fixed-Fee+UAE+Accounting+%26+Corporate+Tax+Packages&author=Dias+Tax+Team&role=Affordable+SME+Packages&tag=From+AED+500%2Fmo&readTime=Transparent+Pricing",
-  },
-  jurisdictions: {
-    title: "الامتثال لضريبة الشركات في دبي والمناطق الحرة | شمس، DMCC، إفزا | دياز",
-    description: "استشارات ضريبية ومحاسبية متخصصة في دبي البر الرئيسي، مدينة الشارقة للإعلام شمس، ومركز دبي للسلع المتعددة. ضمان نسبة 0% للشخص المؤهل والتدقيق المالي.",
-    keywords: "مستشار ضريبي الخليج التجاري دبي, مكتب محاسبة DMCC JLT, وكيل ضريبي مدينة الشارقة للإعلام شمس, ضريبة شركات إفزا, محاسبة ميدان",
-    hash: "#jurisdictions",
-    ogImage: "/api/og?title=UAE+Jurisdictions+%26+Free+Zone+Tax+Authority&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=All+7+Emirates&readTime=Local+Compliance",
-  },
-  caseStudies: {
-    title: "دراسات حالة موثقة ووفورات ضريبية للعملاء | دياز للمحاسبة دبي",
-    description: "اكتشف كيف ساعدت دياز للمحاسبة شركات الإمارات في توفير أكثر من 180,000 درهم في ضريبة الشركات وإسقاط الغرامات عبر الإفصاح الطوعي المعتمد لدى الهيئة.",
-    keywords: "دراسة حالة ضريبة الشركات الإمارات, إسقاط غرامات القيمة المضافة دبي, إفصاح طوعي الهيئة الاتحادية للضرائب, تقييمات عملاء دياز",
-    hash: "#case-studies",
-    ogImage: "/api/og?title=Proven+UAE+Tax+Savings+%26+Client+Case+Studies&author=Dias+Tax+Team&role=E-E-A-T+Verified&tag=AED+180k%2B+Saved&readTime=Case+Studies",
-  },
-  calculator: {
-    title: "حاسبة ضريبة الشركات الإماراتية 2026 | أداة حساب ضريبة 9% وتسهيلات المشاريع الصغيرة",
-    description: "احسب التزام ضريبة الشركات التقديري لشركتك فوراً بدقة. احسب نسبة 9% لما فوق 375,000 درهم وتحقق من أهليتك لتسهيلات الأعمال الصغيرة حتى 3 مليون درهم.",
-    keywords: "حاسبة ضريبة الشركات الإمارات, حساب ضريبة 9 بالمئة دبي, حاسبة تسهيلات الأعمال الصغيرة الإمارات, حساب الضريبة التقديرية 2026, حاسبة منصة إماراتاكس",
-    hash: "#calculator",
-    ogImage: "/api/og?title=UAE+Corporate+Tax+Calculator+2026+(Free+9%25+Tool)&author=Glen+Dias&role=FTA+Tax+Agent&tag=Free+Interactive+Tool&readTime=Instant+Estimate",
-  },
-  testimonials: {
-    title: "آراء وتقييمات العملاء 5.0★ موثقة على Google | دياز للمحاسبة دبي",
-    description: "اقرأ تقييمات موثقة من مدراء ومؤسسي الشركات في دبي الذين يعتمدون على دياز للمحاسبة لتجنب الغرامات والامتثال لضريبة الشركات والقيمة المضافة.",
-    keywords: "تقييمات شركة دياز للمحاسبة, أفضل مستشار ضريبي دبي تقييمات, أفضل محاسب في دبي, مراجعات عملاء دياز للضرائب, خدمات ضريبية موثوقة الإمارات",
-    hash: "#testimonials",
-    ogImage: "/api/og?title=Client+Reviews+%26+5.0-Star+Ratings+Dubai+UAE&author=Verified+Clients&role=Google+Reviews+5.0%E2%98%85&tag=Trusted+by+120%2B+SMEs&readTime=Verified+Feedback",
-  },
-  faqs: {
-    title: "الأسئلة الشائعة حول ضريبة الشركات والقيمة المضافة في الإمارات 2026 | دياز للمحاسبة",
-    description: "إجابات الخبراء عن أهم استفسارات ضريبة الشركات في الإمارات: حد الـ 9%، مواعيد التسجيل الإلزامية في إماراتاكس، شروط إعفاء 0% للمناطق الحرة، وتجنب غرامة 10,000 درهم.",
-    keywords: "أسئلة شائعة ضريبة الشركات الإمارات, الموعد النهائي لضريبة الشركات, شروط ضريبة الصفر للمنطقة الحرة, غرامة تأخير التسجيل الضريبي 10 آلاف, حد التسجيل في القيمة المضافة",
-    hash: "#faqs",
-    ogImage: "/api/og?title=UAE+Corporate+Tax+%26+VAT+Compliance+FAQ+2026&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=FTA+Regulations&readTime=Comprehensive+Guide",
-  },
-  blogs: {
-    title: "المقالات والأدلة الضريبية والأنظمة المالية في الإمارات | دياز للمحاسبة دبي",
-    description: "دليلك للبقاء على اطلاع دائم بأنظمة وقرارات الهيئة الاتحادية للضرائب، والامتثال لضريبة الشركات، واسترداد ضريبة القيمة المضافة، والقوائم المالية المدققة.",
-    keywords: "أخبار الضرائب في الإمارات, دليل ضريبة الشركات دبي, قرارات مجلس الوزراء الضريبية, شروط استرداد القيمة المضافة, المحاسبة القانونية دبي",
-    hash: "#blogs",
-    ogImage: "/api/og?title=UAE+Tax+Insights%2C+FTA+Guides+%26+Regulatory+Updates&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=UAE+Tax+Articles&readTime=Weekly+Insights",
-  },
-  contact: {
-    title: "تواصل مع دياز للمحاسبة دبي | احجز استشارة ضريبية مجانية 15 دقيقة",
-    description: "تواصل مباشرة مع المستشار الضريبي المعتمد غلين دياز في الخليج التجاري، دبي. دعم فوري عبر واتساب (+971 52 922 6958) أو احجز استشارة مجانية.",
-    keywords: "رقم محاسب في دبي, رقم مستشار ضريبي دبي, واتساب غلين دياز, مكتب محاسبة الخليج التجاري دبي, حجز استشارة ضريبية الإمارات",
-    hash: "#contact",
-    ogImage: "https://images.unsplash.com/photo-1423666639041-f56000c27a9a?auto=format&fit=crop&q=80&w=1200",
+    ogImage: DEFAULT_OG_IMAGE,
   },
 };
 
@@ -205,12 +59,8 @@ interface UseDynamicSEOMetadataProps {
   enabled?: boolean;
 }
 
-/**
- * Helper to update or create a `<meta>` element by name or property
- */
 function setMetaTag(attributeName: "name" | "property", attributeValue: string, content: string) {
   if (typeof document === "undefined") return;
-
   let element = document.querySelector(`meta[${attributeName}="${attributeValue}"]`);
   if (!element) {
     element = document.createElement("meta");
@@ -220,12 +70,8 @@ function setMetaTag(attributeName: "name" | "property", attributeValue: string, 
   element.setAttribute("content", content);
 }
 
-/**
- * Helper to update or create the canonical link tag
- */
 function setCanonical(url: string) {
   if (typeof document === "undefined") return;
-
   let link = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
   if (!link) {
     link = document.createElement("link");
@@ -234,286 +80,125 @@ function setCanonical(url: string) {
   }
   link.setAttribute("href", url);
 
-  const hreflangEn = document.querySelector('link[rel="alternate"][hreflang="en"]') as HTMLLinkElement | null;
+  const hreflangEn = document.querySelector(
+    'link[rel="alternate"][hreflang="en"]'
+  ) as HTMLLinkElement | null;
   if (hreflangEn) hreflangEn.setAttribute("href", url);
 
-  const hreflangDefault = document.querySelector('link[rel="alternate"][hreflang="x-default"]') as HTMLLinkElement | null;
+  const hreflangDefault = document.querySelector(
+    'link[rel="alternate"][hreflang="x-default"]'
+  ) as HTMLLinkElement | null;
   if (hreflangDefault) hreflangDefault.setAttribute("href", url);
 }
 
-/**
- * Custom React Hook to dynamically synchronize document title and SEO meta tags
- * (title, description, keywords, Open Graph, Twitter cards, locale, and canonical URL)
- * based on the user's currently active view/section, language, or open service/blog modal.
- */
+function toSafeIsoDate(raw?: string): string {
+  if (!raw) return "2026-01-01";
+  const parsed = Date.parse(raw);
+  if (Number.isNaN(parsed)) return "2026-01-01";
+  return new Date(parsed).toISOString().slice(0, 10);
+}
+
 export function useDynamicSEO({
   activeSection,
   selectedService = null,
   selectedBlog = null,
   language = "en",
-  updateUrlHash = true,
   enabled = true,
 }: UseDynamicSEOMetadataProps) {
   useEffect(() => {
     if (typeof document === "undefined" || !enabled) return;
 
     try {
-      const baseUrl = "https://diasuae.ae";
       const isAr = language === "ar";
       const sectionMap = isAr ? SECTION_SEO_MAP_AR : SECTION_SEO_MAP_EN;
-      let seoConfig: SEOConfig;
+      let seoConfig: SEOConfig = sectionMap.home;
 
-      // Case 1: Specific Service Modal is open
       if (selectedService) {
-        const inclusions = Array.isArray(selectedService.inclusions) ? selectedService.inclusions : [];
-        if (isAr) {
-          seoConfig = {
-            title: `${selectedService.title} في دبي، الإمارات | دياز للمحاسبة والاستشارات الضريبية`,
-            description: `${selectedService.shortDesc || ""} مستشارون معتمدون لدى الهيئة الاتحادية للضرائب في الخليج التجاري دبي لتقديم خدمات ${selectedService.title} وتجنب الغرامات.`,
-            keywords: `${selectedService.title} دبي, ${selectedService.title} الإمارات, وكيل ضريبي معتمد, دياز للمحاسبة, ${inclusions.slice(0, 3).join(", ")}`,
-            hash: `#services-${selectedService.id}`,
-            ogType: "article",
-          };
-        } else {
-          seoConfig = {
-            title: `${selectedService.title} in Dubai, UAE | Dias Accounting & Tax Consulting`,
-            description: `${selectedService.shortDesc || ""} Certified FTA tax advisors in Business Bay Dubai providing full ${(selectedService.title || "").toLowerCase()} support. Avoid penalties with zero-error compliance.`,
-            keywords: `${(selectedService.title || "").toLowerCase()} Dubai, ${(selectedService.title || "").toLowerCase()} UAE, FTA tax agent, Dias Accounting, ${inclusions.slice(0, 3).join(", ").toLowerCase()}`,
-            hash: `#services-${selectedService.id}`,
-            ogType: "article",
-          };
-        }
-      }
-    // Case 2: Specific Blog Post Reader is open (Uses on-the-fly generated dynamic OG image)
-    else if (selectedBlog) {
-      const dynamicBlogOg = getBlogOgImageUrl({
-        id: selectedBlog.id,
-        title: selectedBlog.title,
-        authorName: selectedBlog.author?.name || "Glen Dias",
-        authorRole: selectedBlog.author?.role || "Senior Tax Consultant",
-        tag: selectedBlog.tag || "UAE Tax Insights",
-        date: selectedBlog.date,
-        readTime: selectedBlog.readTime,
-        summary: selectedBlog.summary,
-      }, baseUrl);
-
-      if (isAr) {
         seoConfig = {
-          title: `${selectedBlog.title} | مقالات الضرائب في الإمارات | دياز للمحاسبة`,
-          description: selectedBlog.summary || "اقرأ أحدث الرؤى والأنظمة حول ضريبة الشركات وضريبة القيمة المضافة في دولة الإمارات من خبراء دياز للمحاسبة.",
-          keywords: `دليل الضرائب الإمارات, ${selectedBlog.tag}, ضريبة الشركات دبي, الامتثال الضريبي, ${selectedBlog.title}`,
+          title: `${selectedService.title} in UAE | Dias Accounting`,
+          description: selectedService.shortDesc || sectionMap.home.description,
+          keywords: `${selectedService.title} UAE, ${selectedService.title} Dubai, FTA tax agent, Dias Accounting`,
+          hash: `#services-${selectedService.id}`,
+          ogType: "website",
+          ogImage: DEFAULT_OG_IMAGE,
+        };
+      } else if (selectedBlog) {
+        seoConfig = {
+          title: `${selectedBlog.title} | Dias Accounting`,
+          description: selectedBlog.summary || sectionMap.home.description,
+          keywords: `UAE tax guide, ${selectedBlog.tag}, corporate tax Dubai, FTA compliance`,
           hash: `#blog-${selectedBlog.id}`,
           ogType: "article",
-          ogImage: dynamicBlogOg,
-        };
-      } else {
-        seoConfig = {
-          title: `${selectedBlog.title} | UAE Tax Insights | Dias Accounting`,
-          description: selectedBlog.summary || "Read the latest UAE Corporate Tax and VAT regulatory insights from Dias Accounting Dubai.",
-          keywords: `UAE tax guide, ${selectedBlog.tag}, corporate tax Dubai, FTA compliance, ${selectedBlog.title.toLowerCase()}`,
-          hash: `#blog-${selectedBlog.id}`,
-          ogType: "article",
-          ogImage: dynamicBlogOg,
+          ogImage: DEFAULT_OG_IMAGE,
         };
       }
-    }
-    // Case 3: Homepage root view (preserve authoritative Homepage title/description even while scrolling)
-    else {
-      seoConfig = sectionMap.home;
-    }
 
-    const sectionHashConfig = sectionMap[activeSection] || sectionMap.home;
-    const fullUrl = sectionHashConfig.hash === "#home" ? `${baseUrl}/` : `${baseUrl}/${sectionHashConfig.hash}`;
-    const cleanPath = typeof window !== "undefined" && window.location.pathname && window.location.pathname !== "/"
-      ? window.location.pathname.replace(/\/+$/, "")
-      : "/";
-    const canonicalUrl = `${baseUrl}${cleanPath}`;
+      const canonicalUrl = `${SITE_URL}/`;
 
-    // 1. Update Document Title
-    document.title = seoConfig.title;
+      document.title = seoConfig.title;
+      setMetaTag("name", "title", seoConfig.title);
+      setMetaTag("name", "description", seoConfig.description);
+      setMetaTag("name", "keywords", seoConfig.keywords);
 
-    // 2. Standard Meta Tags
-    setMetaTag("name", "title", seoConfig.title);
-    setMetaTag("name", "description", seoConfig.description);
-    setMetaTag("name", "keywords", seoConfig.keywords);
+      setMetaTag("property", "og:site_name", SITE_NAME);
+      setMetaTag("property", "og:title", seoConfig.title);
+      setMetaTag("property", "og:description", seoConfig.description);
+      setMetaTag("property", "og:url", canonicalUrl);
+      setMetaTag("property", "og:type", seoConfig.ogType || "website");
+      setMetaTag("property", "og:locale", isAr ? "ar_AE" : "en_AE");
 
-    // 3. Open Graph Tags
-    setMetaTag("property", "og:title", seoConfig.title);
-    setMetaTag("property", "og:description", seoConfig.description);
-    setMetaTag("property", "og:url", canonicalUrl);
-    setMetaTag("property", "og:type", seoConfig.ogType || "website");
-    setMetaTag("property", "og:site_name", "Dias Accounting & Tax Consulting LLC");
-    setMetaTag("property", "og:locale", isAr ? "ar_AE" : "en_US");
-    setMetaTag("property", "og:locale:alternate", isAr ? "en_US" : "ar_AE");
+      const resolvedOgImage = seoConfig.ogImage || DEFAULT_OG_IMAGE;
+      setMetaTag("property", "og:image", resolvedOgImage);
+      setMetaTag("property", "og:image:secure_url", resolvedOgImage);
+      setMetaTag("property", "og:image:width", DEFAULT_OG_IMAGE_WIDTH);
+      setMetaTag("property", "og:image:height", DEFAULT_OG_IMAGE_HEIGHT);
+      setMetaTag("property", "og:image:alt", seoConfig.title);
 
-    // Local Business Geographic Meta Tags (Targeting Dubai & UAE authority)
-    setMetaTag("property", "business:contact_data:street_address", "Sharjah Media City (SHAMS) & Business Bay");
-    setMetaTag("property", "business:contact_data:locality", "Dubai");
-    setMetaTag("property", "business:contact_data:region", "Dubai");
-    setMetaTag("property", "business:contact_data:postal_code", "00000");
-    setMetaTag("property", "business:contact_data:country_name", "United Arab Emirates");
-    setMetaTag("property", "place:location:latitude", "25.2048");
-    setMetaTag("property", "place:location:longitude", "55.2708");
-    setMetaTag("name", "geo.region", "AE-DU");
-    setMetaTag("name", "geo.placename", "Dubai");
-    setMetaTag("name", "geo.position", "25.2048;55.2708");
-    setMetaTag("name", "ICBM", "25.2048, 55.2708");
+      setMetaTag("name", "twitter:card", "summary_large_image");
+      setMetaTag("name", "twitter:title", seoConfig.title);
+      setMetaTag("name", "twitter:description", seoConfig.description);
+      setMetaTag("name", "twitter:url", canonicalUrl);
+      setMetaTag("name", "twitter:image", resolvedOgImage);
+      setMetaTag("name", "twitter:image:alt", seoConfig.title);
 
-    const resolvedOgImage = seoConfig.ogImage
-      ? (seoConfig.ogImage.startsWith("http") ? seoConfig.ogImage : `${baseUrl}${seoConfig.ogImage}`)
-      : `${baseUrl}/api/og?title=Corporate+Tax%2C+VAT+%26+Bookkeeping+Experts+Dubai&author=Glen+Dias&tag=UAE+Tax+Compliance`;
+      setCanonical(canonicalUrl);
 
-    setMetaTag("property", "og:image", resolvedOgImage);
-    setMetaTag("property", "og:image:secure_url", resolvedOgImage);
-    setMetaTag("property", "og:image:type", "image/svg+xml");
-    setMetaTag("property", "og:image:width", "1200");
-    setMetaTag("property", "og:image:height", "630");
-    setMetaTag("property", "og:image:alt", seoConfig.title);
-
-    // Article Specific Meta (For Facebook, LinkedIn & Pinterest)
-    if (selectedBlog) {
-      setMetaTag("property", "article:published_time", selectedBlog.date ? `${selectedBlog.date}T09:00:00+04:00` : new Date().toISOString());
-      setMetaTag("property", "article:author", selectedBlog.author?.name || "Glen Dias");
-      setMetaTag("property", "article:section", selectedBlog.tag || "Tax Compliance");
-      setMetaTag("property", "article:tag", selectedBlog.tag || "Corporate Tax");
-      setMetaTag("property", "article:publisher", "https://www.linkedin.com/company/dias-accounting-and-tax-consulting");
-    }
-
-    // 4. Twitter / X Card Tags
-    setMetaTag("name", "twitter:card", "summary_large_image");
-    setMetaTag("name", "twitter:site", "@DiasAccounting");
-    setMetaTag("name", "twitter:creator", "@glendias");
-    setMetaTag("name", "twitter:domain", "diasuae.ae");
-    setMetaTag("name", "twitter:title", seoConfig.title);
-    setMetaTag("name", "twitter:description", seoConfig.description);
-    setMetaTag("name", "twitter:url", canonicalUrl);
-    setMetaTag("name", "twitter:image", resolvedOgImage);
-    setMetaTag("name", "twitter:image:alt", seoConfig.title);
-
-    // 5. Advanced Search Bot Directives
-    setMetaTag("name", "robots", "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1");
-    setMetaTag("name", "googlebot", "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1");
-    setMetaTag("name", "bingbot", "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1");
-
-    // 6. Canonical URL (Clean preferred domain URL without hash fragment)
-    setCanonical(canonicalUrl);
-
-    // 7. Dynamic JSON-LD Structured Data Schema for Rich Results
-    if (typeof document !== "undefined") {
-      let dynamicSchemaScript = document.getElementById("dynamic-seo-jsonld") as HTMLScriptElement | null;
-      if (!dynamicSchemaScript) {
-        dynamicSchemaScript = document.createElement("script");
-        dynamicSchemaScript.id = "dynamic-seo-jsonld";
-        dynamicSchemaScript.type = "application/ld+json";
-        document.head.appendChild(dynamicSchemaScript);
-      }
+      clearRouteJsonLd(["homepage-faq-jsonld"]);
 
       if (selectedBlog) {
-        dynamicSchemaScript.textContent = JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "BlogPosting",
-          "@id": `${fullUrl}#article`,
-          "headline": selectedBlog.title,
-          "description": selectedBlog.summary || seoConfig.description,
-          "image": [resolvedOgImage],
-          "datePublished": selectedBlog.date ? `${selectedBlog.date}T09:00:00+04:00` : "2026-01-01T09:00:00+04:00",
-          "dateModified": new Date().toISOString(),
-          "mainEntityOfPage": {
-            "@type": "WebPage",
-            "@id": fullUrl
-          },
-          "author": {
-            "@type": "Person",
-            "name": selectedBlog.author?.name || "Glen Dias",
-            "jobTitle": selectedBlog.author?.role || "Senior Tax Consultant",
-            "worksFor": {
-              "@type": "AccountingService",
-              "name": "Dias Accounting and Tax Consulting LLC",
-              "url": baseUrl
-            }
-          },
-          "publisher": {
-            "@type": "Organization",
-            "name": "Dias Accounting and Tax Consulting LLC",
-            "url": baseUrl,
-            "logo": {
-              "@type": "ImageObject",
-              "url": `${baseUrl}/assets/logo.png`
-            }
-          },
-          "articleSection": selectedBlog.tag || "Tax Regulations",
-          "inLanguage": isAr ? "ar" : "en"
-        });
+        upsertJsonLd(
+          "page-article-jsonld",
+          buildBlogPostingSchema({
+            headline: selectedBlog.title,
+            description: selectedBlog.summary || seoConfig.description,
+            canonicalPath: `/blog/${selectedBlog.id}`,
+            datePublished: toSafeIsoDate(selectedBlog.publishedIso || selectedBlog.date),
+            authorName: selectedBlog.author?.name,
+            authorRole: selectedBlog.author?.role,
+            articleSection: selectedBlog.tag,
+            keywords: selectedBlog.keywords,
+          })
+        );
       } else if (selectedService) {
-        dynamicSchemaScript.textContent = JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Service",
-          "@id": `${fullUrl}#service`,
-          "name": selectedService.title,
-          "description": selectedService.shortDesc || seoConfig.description,
-          "serviceType": selectedService.title,
-          "provider": {
-            "@type": "AccountingService",
-            "name": "Dias Accounting and Tax Consulting LLC",
-            "url": baseUrl,
-            "telephone": "+971-52-922-6958"
-          },
-          "areaServed": {
-            "@type": "Country",
-            "name": "United Arab Emirates"
-          },
-          "hasOfferCatalog": {
-            "@type": "OfferCatalog",
-            "name": selectedService.title,
-            "itemListElement": (Array.isArray(selectedService.inclusions) ? selectedService.inclusions : []).map((inc) => ({
-              "@type": "Offer",
-              "itemOffered": {
-                "@type": "Service",
-                "name": inc
-              }
-            }))
-          }
-        });
-      } else {
-        dynamicSchemaScript.textContent = JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          "itemListElement": [
-            {
-              "@type": "ListItem",
-              "position": 1,
-              "name": "Home",
-              "item": `${baseUrl}/`
-            },
-            {
-              "@type": "ListItem",
-              "position": 2,
-              "name": activeSection ? activeSection.charAt(0).toUpperCase() + activeSection.slice(1) : "Home",
-              "item": fullUrl
-            }
-          ]
-        });
+        upsertJsonLd(
+          "page-service-jsonld",
+          buildServiceSchema({
+            name: selectedService.title,
+            description: selectedService.shortDesc || seoConfig.description,
+            canonicalPath: `/services/${selectedService.id}`,
+          })
+        );
       }
 
-      // Ensure the Homepage FAQPage JSON-LD matches the 5 core visible FAQs on /
-      upsertJsonLd("homepage-faq-jsonld", buildFAQPageSchema(CORE_HOMEPAGE_FAQS, `${baseUrl}/#faqs`));
+      upsertJsonLd(
+        "homepage-faq-jsonld",
+        buildFAQPageSchema(CORE_HOMEPAGE_FAQS, `${SITE_URL}/#faqs`)
+      );
+    } catch (err) {
+      console.warn("useDynamicSEO safe bypass:", err);
     }
-
-    // 8. Non-intrusive URL Hash synchronization
-    if (updateUrlHash && typeof window !== "undefined" && window.history && window.history.replaceState) {
-      const currentHash = window.location.hash;
-      const hashSource = selectedService || selectedBlog ? seoConfig.hash : sectionHashConfig.hash;
-      const targetHash = hashSource === "#home" ? "" : hashSource;
-      
-      if (currentHash !== targetHash && !(currentHash === "" && targetHash === "")) {
-        const newUrl = targetHash ? `${window.location.pathname}${targetHash}` : window.location.pathname;
-        window.history.replaceState(null, "", newUrl);
-      }
-    }
-  } catch (err) {
-    console.warn("useDynamicSEO safe bypass:", err);
-  }
-  }, [activeSection, selectedService, selectedBlog, language, updateUrlHash, enabled]);
+  }, [activeSection, selectedService, selectedBlog, language, enabled]);
 }
 
 export default useDynamicSEO;
+

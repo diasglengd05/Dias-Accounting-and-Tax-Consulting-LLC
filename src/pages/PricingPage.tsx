@@ -1,28 +1,25 @@
 import React, { useEffect, useState } from "react";
 import {
-  Check,
-  X,
-  ChevronRight,
-  Shield,
   ArrowRight,
-  HelpCircle,
-  Sparkles,
-  FileSpreadsheet,
-  AlertCircle,
-  MessageCircle,
-  Clock,
-  Calendar,
-  Building,
-  CheckCircle2,
-  FileCheck,
+  Check,
+  ChevronDown,
+  ChevronRight,
+  Minus,
+  Plus,
+  ShieldCheck,
+  Star,
+  UserCheck,
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
-import StandalonePricingCards from "../components/StandalonePricingCards";
-import LeadQuoteSection from "../components/LeadQuoteSection";
-import QuickAnswersPricingTable from "../components/QuickAnswersPricingTable";
-import ScopeInstantQuoteBuilder from "../components/ScopeInstantQuoteBuilder";
-import { applyPageSEO, buildFAQPageSchema, upsertJsonLd, removeJsonLd, FAQSchemaItem } from "../lib/seo";
+import {
+  applyPageSEO,
+  buildBreadcrumbSchema,
+  buildFAQPageSchema,
+  FAQSchemaItem,
+  removeJsonLd,
+  upsertJsonLd,
+} from "../lib/seo";
 
 interface PricingPageProps {
   onNavigate: (path: string) => void;
@@ -31,31 +28,278 @@ interface PricingPageProps {
   onOpenGooglePreferred?: () => void;
 }
 
+type ServiceCategory = "monthly" | "backlog" | "standalone";
+type BillingPeriod = "monthly" | "annual";
+
+interface PricingTier {
+  id: string;
+  name: string;
+  bestFor: string;
+  priceMonthly?: string;
+  priceAnnual?: string;
+  fixedPrice?: string;
+  unit: string;
+  billingNoteMonthly?: string;
+  billingNoteAnnual?: string;
+  fixedBillingNote?: string;
+  popular?: boolean;
+  ctaLabel: string;
+  features: string[];
+}
+
+const MONTHLY_TIERS: PricingTier[] = [
+  {
+    id: "business-starter",
+    name: "Business Starter",
+    bestFor: "Best for new UAE startups and solo founders.",
+    priceAnnual: "400",
+    priceMonthly: "500",
+    unit: "/ month",
+    billingNoteAnnual: "Billed AED 4,000 / year + 5% VAT",
+    billingNoteMonthly: "Billed monthly at AED 500 + 5% VAT",
+    ctaLabel: "Get Started",
+    features: [
+      "Monthly IFRS double-entry bookkeeping",
+      "Bank & card reconciliation (up to 50 txns/mo)",
+      "Monthly Balance Sheet & P&L statements",
+      "Annual Corporate Tax return & 0% SBR election",
+      "Dedicated Senior Accountant email support",
+    ],
+  },
+  {
+    id: "corporate-growth",
+    name: "Corporate Growth",
+    bestFor: "Best for growing SMEs with active VAT & CT.",
+    priceAnnual: "600",
+    priceMonthly: "750",
+    unit: "/ month",
+    billingNoteAnnual: "Billed AED 6,000 / year + 5% VAT",
+    billingNoteMonthly: "Billed monthly at AED 750 + 5% VAT",
+    popular: true,
+    ctaLabel: "Get Started",
+    features: [
+      "Everything in Business Starter included",
+      "Quarterly VAT 201 preparation & EmaraTax filing",
+      "Input VAT recovery & invoice compliance check",
+      "Annual Corporate Tax filing & 9% adjustments",
+      "UAE E-Invoicing Phase 1 readiness guidance",
+      "Priority phone & direct advisor support",
+    ],
+  },
+  {
+    id: "enterprise-cfo",
+    name: "Enterprise & CFO Advisory",
+    bestFor: "Best for multi-license groups and Free Zone QFZPs.",
+    priceAnnual: "1,000",
+    priceMonthly: "1,250",
+    unit: "/ month",
+    billingNoteAnnual: "Billed AED 10,000 / year + 5% VAT",
+    billingNoteMonthly: "Billed monthly at AED 1,250 + 5% VAT",
+    ctaLabel: "Book Consultation",
+    features: [
+      "Everything in Corporate Growth included",
+      "Monthly fractional CFO review & cash forecasts",
+      "0% Free Zone QFZP substance & De Minimis review",
+      "Statutory audit file & external auditor liaison",
+      "Connected Persons & Related Party review",
+      "Managing Partner oversight & board reporting",
+    ],
+  },
+];
+
+const BACKLOG_TIERS: PricingTier[] = [
+  {
+    id: "single-fy-backlog",
+    name: "Single FY Backlog + CT",
+    bestFor: "Best for 12-month catch-up and EmaraTax CT filing.",
+    fixedPrice: "2,500",
+    unit: "/ financial year",
+    fixedBillingNote: "Starting fee (up to 150 txns/yr) + 5% VAT",
+    popular: true,
+    ctaLabel: "Get Started",
+    features: [
+      "12-month bank & card ledger reconstruction",
+      "IFRS-compliant Balance Sheet and P&L",
+      "0% Small Business Relief qualification check",
+      "Official Corporate Tax filing on EmaraTax",
+      "Completed within 5 to 7 business days",
+    ],
+  },
+  {
+    id: "multi-year-backlog",
+    name: "Multi-Year Catch-Up (2 FYs)",
+    bestFor: "Best for unreconciled books since incorporation.",
+    fixedPrice: "4,800",
+    unit: "/ 2 financial years",
+    fixedBillingNote: "Starting fee for 2 fiscal years + 5% VAT",
+    ctaLabel: "Get Started",
+    features: [
+      "24-month ledger & multi-account reconciliation",
+      "Opening balance setup & shareholder loan cleanup",
+      "Filing of 2 consecutive Corporate Tax returns",
+      "Historical VAT compliance & threshold review",
+      "Audit-ready trial balance & supporting schedules",
+    ],
+  },
+  {
+    id: "ecommerce-cleanup",
+    name: "High-Volume & E-Commerce",
+    bestFor: "Best for Stripe, Amazon & Noon online retailers.",
+    fixedPrice: "7,500",
+    unit: "/ project",
+    fixedBillingNote: "Starting fee for multi-channel ledgers + 5% VAT",
+    ctaLabel: "Book Consultation",
+    features: [
+      "Payment gateway settlement reconciliations",
+      "COGS, shipping & inventory valuation adjustments",
+      "Cross-border & marketplace VAT reconciliation",
+      "Full IFRS statements & Corporate Tax computation",
+      "Dedicated senior reconstruction lead",
+    ],
+  },
+];
+
+const STANDALONE_TIERS: PricingTier[] = [
+  {
+    id: "microbiz-ct",
+    name: "MicroBiz Corporate Tax",
+    bestFor: "Best for SMEs under AED 3M claiming 0% SBR.",
+    fixedPrice: "500",
+    unit: "/ filing",
+    fixedBillingNote: "One-time annual filing + 5% VAT",
+    ctaLabel: "Get Started",
+    features: [
+      "Small Business Relief (SBR) eligibility check",
+      "EmaraTax Corporate Tax return preparation",
+      "0% tax election submission with the FTA",
+      "Late-registration penalty mitigation check",
+      "FTA submission receipt & archive copy",
+    ],
+  },
+  {
+    id: "qfzp-shield-pro",
+    name: "QFZP Shield Pro",
+    bestFor: "Best for Free Zone entities protecting 0% status.",
+    fixedPrice: "1,499",
+    unit: "/ annual review",
+    fixedBillingNote: "Annual structuring & compliance + 5% VAT",
+    popular: true,
+    ctaLabel: "Get Started",
+    features: [
+      "Qualifying vs. non-qualifying income mapping",
+      "De Minimis rule test (5% or AED 5M cap)",
+      "Adequate substance & office verification",
+      "Transfer Pricing disclosure form alignment",
+      "Written QFZP compliance memorandum",
+    ],
+  },
+  {
+    id: "audit-readiness",
+    name: "Statutory Audit Readiness",
+    bestFor: "Best for Mainland & Free Zone annual renewals.",
+    fixedPrice: "Custom",
+    unit: "/ engagement",
+    fixedBillingNote: "Scoped to license & transaction volume",
+    ctaLabel: "Book Consultation",
+    features: [
+      "Pre-audit ledger scrub & IFRS compliance review",
+      "Direct liaison with UAE-approved auditors",
+      "Audit findings remediation & adjusting entries",
+      "DIFC / DTEC dividend & statutory audit prep",
+      "Signed financial statements for license renewal",
+    ],
+  },
+];
+
+interface ComparisonRow {
+  capability: string;
+  starter: string;
+  growth: string;
+  enterprise: string;
+}
+
+const COMPARISON_ROWS: ComparisonRow[] = [
+  {
+    capability: "Monthly IFRS Double-Entry Bookkeeping",
+    starter: "Included",
+    growth: "Included",
+    enterprise: "Included",
+  },
+  {
+    capability: "Monthly Balance Sheet & P&L Statements",
+    starter: "Included",
+    growth: "Included",
+    enterprise: "Included + Forecasts",
+  },
+  {
+    capability: "Annual Corporate Tax (9% & 0% SBR) Return",
+    starter: "Included",
+    growth: "Included",
+    enterprise: "Included + Structuring",
+  },
+  {
+    capability: "Quarterly VAT 201 Return Filing",
+    starter: "Optional Add-on",
+    growth: "Included",
+    enterprise: "Included",
+  },
+  {
+    capability: "Input VAT Recovery & Invoice Review",
+    starter: "Not included",
+    growth: "Included",
+    enterprise: "Included",
+  },
+  {
+    capability: "UAE E-Invoicing Phase 1 Readiness",
+    starter: "Basic Guidance",
+    growth: "Full Setup",
+    enterprise: "Full Setup & ASP",
+  },
+  {
+    capability: "0% Free Zone QFZP Substance Review",
+    starter: "Not included",
+    growth: "Optional Add-on",
+    enterprise: "Included",
+  },
+  {
+    capability: "Statutory Audit File Preparation",
+    starter: "Not included",
+    growth: "Optional Add-on",
+    enterprise: "Full Auditor File",
+  },
+  {
+    capability: "Advisory Channel & Response SLA",
+    starter: "Email (48h)",
+    growth: "Email & Direct (24h)",
+    enterprise: "Dedicated CFO & Call",
+  },
+];
+
 const PRICING_FAQS: FAQSchemaItem[] = [
   {
     question: "What is included in Dias Accounting's fixed-fee accounting packages in Dubai?",
     answer:
-      "Our monthly retainers (starting from AED 400 to AED 2,500/month) cover a dedicated chartered accountant, cloud software setup (Zoho Books, QuickBooks, Xero), monthly bank and card reconciliations, IFRS Profit & Loss and Balance Sheet statements, quarterly VAT 201 return filings, and annual Corporate Tax return preparation on EmaraTax. There are zero hourly fees or surprise billing charges.",
+      "Our monthly retainers (starting from AED 400 to AED 1,250/month) cover a dedicated chartered accountant, cloud software setup (Zoho Books, QuickBooks, Xero), monthly bank and card reconciliations, IFRS Profit & Loss and Balance Sheet statements, quarterly VAT 201 return filings on applicable tiers, and annual Corporate Tax return preparation on EmaraTax. There are zero hourly fees or surprise billing charges.",
   },
   {
-    question: "How much does corporate tax filing cost for UAE mainland and Free Zone companies?",
+    question: "How much does corporate tax filing cost for UAE Mainland and Free Zone companies?",
     answer:
-      "For businesses maintaining clean monthly books with Dias Accounting, annual Corporate Tax return filing is bundled into our comprehensive tiers. For standalone Corporate Tax filing without monthly bookkeeping, our fixed preparation fee starts at AED 1,500 for entities claiming 0% Small Business Relief (SBR) up to AED 3M, and AED 2,500 to AED 4,500 for standard 9% or 0% QFZP Free Zone returns.",
+      "For businesses maintaining clean monthly books with Dias Accounting, annual Corporate Tax return filing is bundled into our monthly retainers. For standalone filings without monthly bookkeeping, our MicroBiz SBR filing is a flat AED 500, and our QFZP Shield Pro Free Zone structuring review is AED 1,499.",
   },
   {
-    question: "Are Corporate Tax returns (9%) and VAT 201 filings included in the monthly accounting fee?",
+    question: "Are Corporate Tax returns (9%) and VAT 201 filings included in the monthly fee?",
     answer:
-      "Yes. Our Growth and Enterprise plans include full quarterly VAT 201 return submissions and annual Corporate Tax return filing on the FTA EmaraTax portal. Our Essential tier (from AED 400/month on annual billing) covers ongoing bookkeeping and quarterly VAT, with an optional discounted annual corporate tax filing add-on.",
+      "Yes. Our Corporate Growth and Enterprise plans include full quarterly VAT 201 return submissions and annual Corporate Tax return filing on the FTA EmaraTax portal. Business Starter (from AED 400/month billed annually) covers ongoing IFRS bookkeeping and annual Corporate Tax filing, with quarterly VAT available as an add-on.",
   },
   {
     question: "What are the penalties if my UAE company delays historical backlog bookkeeping?",
     answer:
-      "Under Cabinet Decision No. 75 of 2023, failing to register for Corporate Tax on time incurs an automatic AED 10,000 fine. Failing to maintain required accounting records for at least 5 years triggers penalties starting at AED 10,000 for a first violation and AED 20,000 for repeats. Our Backlog Catch-Up packages (from AED 2,500/year) reconstruct missing ledgers within 5 to 7 business days to eliminate fine exposure.",
+      "Under Cabinet Decision No. 75 of 2023, failing to register for Corporate Tax on time incurs an automatic AED 10,000 fine, and failing to maintain proper accounting records triggers penalties starting at AED 10,000. Our Backlog Catch-Up packages (from AED 2,500/year) reconstruct missing ledgers within 5 to 7 business days.",
   },
   {
-    question: "Can DIFC, DTEC, and Free Zone companies choose standard SME accounting packages?",
+    question: "Can DIFC, DTEC, and Free Zone companies use these fixed-fee packages?",
     answer:
-      "Yes. We offer specialized Free Zone and DIFC accounting tiers that factor in annual IFRS audited accounts, 0% Qualifying Free Zone Person (QFZP) de minimis tests, and OECD Article 34 transfer pricing compliance. Check out our dedicated DIFC Tax Compliance Hub for financial institutions and common-law entities.",
+      "Yes. Our Enterprise & CFO Advisory tier and QFZP Shield Pro package are built for Free Zone, DIFC, and DTEC entities requiring annual IFRS audited financial statements, 0% QFZP De Minimis monitoring, and Transfer Pricing compliance.",
   },
 ];
 
@@ -65,39 +309,75 @@ export const PricingPage: React.FC<PricingPageProps> = ({
   onOpenPrivacy,
   onOpenGooglePreferred,
 }) => {
-  const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annual">("annual");
-  const [pricingPath, setPricingPath] = useState<"prospective" | "retrospective">("prospective");
+  const [activeCategory, setActiveCategory] = useState<ServiceCategory>("monthly");
+  const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("annual");
+  const [comparisonOpen, setComparisonOpen] = useState<boolean>(() =>
+    typeof window !== "undefined" ? window.innerWidth >= 768 : true
+  );
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   useEffect(() => {
     applyPageSEO({
-      title: "UAE Accounting & Bookkeeping Packages From AED 400/Mo | Fixed-Fee Tax Retainers",
+      title: "UAE Accounting & Tax Pricing From AED 400 | Dias Accounting",
       description:
-        "Transparent fixed-fee monthly IFRS accounting, 5% VAT Form 201 & 9% Corporate Tax packages in Dubai & Sharjah. Zero hidden hourly fees — get an instant quote today.",
+        "Transparent fixed-fee monthly IFRS bookkeeping, 5% UAE VAT Form 201 & 9% Corporate Tax packages in Dubai & Sharjah from AED 400/mo with zero hidden fees.",
       canonicalPath: "/pricing",
       keywords:
-        "Corporate Tax, accounting packages dubai, monthly accounting package dubai, fixed fee bookkeeping uae, corporate tax return fee, corporate tax consultants in difc, tax services in dubai, difc tax compliance",
-      ogImage: "/api/og?title=UAE+Accounting+%26+Bookkeeping+Packages+From+AED+400%2FMo&author=Dias+Tax+Team&tag=Fixed-Fee+Tax+Retainers",
+        "UAE accounting packages, monthly bookkeeping pricing Dubai, fixed fee corporate tax filing UAE, VAT return filing cost Dubai",
     });
-    upsertJsonLd("pricing-faq-jsonld", buildFAQPageSchema(PRICING_FAQS, "https://diasuae.ae/pricing#faqs"));
-
+    upsertJsonLd(
+      "page-faq-jsonld",
+      buildFAQPageSchema(PRICING_FAQS, "https://diasuae.ae/pricing#faqs")
+    );
+    upsertJsonLd(
+      "page-breadcrumb-jsonld",
+      buildBreadcrumbSchema(
+        [
+          { name: "Home", path: "/" },
+          { name: "Pricing", path: "/pricing" },
+        ],
+        "https://diasuae.ae/pricing#breadcrumb"
+      )
+    );
     window.scrollTo({ top: 0, behavior: "instant" });
+
     return () => {
-      removeJsonLd("pricing-faq-jsonld");
+      removeJsonLd("page-faq-jsonld");
+      removeJsonLd("page-breadcrumb-jsonld");
     };
   }, []);
 
-  const handleSelectPackage = (packageName: string) => {
+  const currentTiers =
+    activeCategory === "monthly"
+      ? MONTHLY_TIERS
+      : activeCategory === "backlog"
+        ? BACKLOG_TIERS
+        : STANDALONE_TIERS;
+
+  const handleSelectTier = (tier: PricingTier) => {
+    const rateLabel =
+      tier.fixedPrice !== undefined
+        ? tier.fixedPrice === "Custom"
+          ? "Custom Quote"
+          : `AED ${tier.fixedPrice} ${tier.unit}`
+        : `AED ${billingPeriod === "annual" ? tier.priceAnnual : tier.priceMonthly}/mo (${
+            billingPeriod === "annual" ? "Annual" : "Monthly"
+          })`;
+
     if (typeof window !== "undefined") {
-      sessionStorage.setItem("dias_selected_service", packageName);
+      sessionStorage.setItem("dias_selected_service", `${tier.name} — ${rateLabel}`);
     }
-    const text = `Hi Dias Accounting, I would like to choose the ${packageName} (${
-      billingPeriod === "annual" ? "Annual Billing" : "Monthly Billing"
-    }) for my UAE business.`;
-    window.open(`https://wa.me/971529226958?text=${encodeURIComponent(text)}`, "_blank");
+
+    if (tier.ctaLabel === "Book Consultation" && onOpenAudit) {
+      onOpenAudit();
+      return;
+    }
+
+    onNavigate("/contact");
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-800 antialiased selection:bg-gold-500/30 selection:text-navy-950">
+    <div className="min-h-screen bg-[#FFFFFF] font-sans text-[#0D1B2A] antialiased">
       <PageNavigation
         currentPath="/pricing"
         onNavigate={onNavigate}
@@ -105,815 +385,376 @@ export const PricingPage: React.FC<PricingPageProps> = ({
       />
 
       <main id="main-content">
-        {/* Hero Section */}
-        <section className="relative bg-gradient-to-b from-navy-950 via-navy-900 to-navy-950 text-white py-16 lg:py-24 border-b border-gold-500/20 overflow-hidden">
-          <div className="absolute -top-32 right-0 w-[500px] h-[500px] bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="flex items-center gap-2 text-xs font-mono text-gold-400 mb-4">
+        {/* Clean Header & Dual Controls */}
+        <section className="bg-[#FFFFFF] pt-12 pb-10 lg:pt-16 lg:pb-12 border-b border-[#E2E8F0]">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Quiet Breadcrumb */}
+            <nav
+              aria-label="Breadcrumb"
+              className="flex items-center justify-center gap-1.5 text-xs font-medium text-[#475569] mb-6"
+            >
               <button
                 type="button"
                 onClick={() => onNavigate("/")}
-                className="hover:underline cursor-pointer"
+                className="hover:text-[#0D1B2A] transition-colors cursor-pointer"
               >
                 Home
               </button>
               <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-              <span className="text-white">Pricing &amp; Packages</span>
+              <span className="text-[#0D1B2A] font-semibold">Pricing</span>
+            </nav>
+
+            {/* Compact Centered Title & 1-Line Subtitle */}
+            <div className="max-w-2xl mx-auto text-center space-y-3">
+              <h1 className="font-display text-3xl sm:text-4xl lg:text-[44px] font-bold text-[#0D1B2A] tracking-tight leading-[1.15]">
+                Transparent, Fixed-Fee UAE Accounting
+              </h1>
+              <p className="text-[#475569] text-base sm:text-lg leading-relaxed">
+                Predictable fixed-fee bookkeeping, VAT, and Corporate Tax support by FTA-registered specialists—zero hidden charges.
+              </p>
             </div>
 
-            <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-500/10 border border-gold-400/30 text-gold-300 text-xs font-semibold uppercase tracking-wider mb-4">
-                <Shield className="w-3.5 h-3.5 text-gold-400" />
-                <span>FTA Registered Tax Agency · Transparent Fixed Pricing</span>
-              </div>
-              <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-6">
-                Fixed-Fee UAE Accounting, Bookkeeping &amp; Tax Packages (From AED 400/Mo)
-              </h1>
-              <p className="text-slate-300 text-base sm:text-lg leading-relaxed mb-6">
-                No hidden surprises, surprise hourly billing, or transaction markups. Get complete peace of mind with FTA-compliant Corporate Tax (9%), DIFC tax compliance, quarterly VAT filing, and monthly bookkeeping at predictable monthly rates from AED 400/month.
-              </p>
-              
-              {/* Important Pricing Note Banner */}
-              <div className="p-4 rounded-xl bg-gold-500/15 border border-gold-400/40 text-gold-200 text-xs sm:text-sm leading-relaxed flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-gold-400 shrink-0 mt-0.5" />
-                <p>
-                  <strong>Note:</strong> Final pricing depends on your business activity, transaction volume, and filing requirements. Book a free consultation for an accurate quote.
-                </p>
+            {/* Dual Controls: Segmented Service Tabs + Billing Toggle */}
+            <div className="mt-9 flex flex-col items-center gap-5">
+              {/* Service Category Segmented Switcher */}
+              <div
+                role="tablist"
+                aria-label="Pricing categories"
+                className="inline-flex flex-wrap sm:flex-nowrap justify-center gap-1 p-1.5 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] w-full sm:w-auto"
+              >
+                {(
+                  [
+                    { id: "monthly", label: "Monthly Retainers" },
+                    { id: "backlog", label: "Backlog Catch-Up" },
+                    { id: "standalone", label: "Standalone Filings" },
+                  ] as const
+                ).map((tab) => {
+                  const isActive = activeCategory === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      role="tab"
+                      aria-selected={isActive}
+                      onClick={() => setActiveCategory(tab.id)}
+                      className={`flex-1 sm:flex-none min-h-[44px] px-5 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer whitespace-nowrap ${
+                        isActive
+                          ? "bg-[#1B4332] text-white shadow-xs"
+                          : "text-[#475569] hover:text-[#0D1B2A]"
+                      }`}
+                    >
+                      {tab.label}
+                    </button>
+                  );
+                })}
               </div>
 
-              {/* Subtle Quick-Scroll Anchor to Lead Capture Section */}
-              <div className="pt-6 flex flex-wrap items-center gap-3">
-                <a
-                  href="#get-quote"
-                  className="inline-flex items-center gap-2 rounded-xl bg-[#0d1b2a] hover:bg-[#c5a059] text-[#dec18c] hover:text-[#070d19] font-display font-bold text-xs sm:text-sm px-5 py-3 transition-all border border-[#c5a059]"
-                >
-                  <span>Get a Custom Quote in 60 Seconds ↓</span>
-                </a>
-                <a
-                  href="https://wa.me/971529226958?text=Hi%20Dias%20Accounting%2C%20I%20would%20like%20a%20quote%20for%20UAE%20accounting%20and%20tax%20compliance."
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-xl bg-white/5 hover:bg-white/10 text-white font-display font-semibold text-xs sm:text-sm px-5 py-3 transition-all border border-white/15"
-                >
-                  <MessageCircle className="w-4 h-4 text-emerald-400" />
-                  <span>Chat on WhatsApp (+971 52 922 6958)</span>
-                </a>
-              </div>
+              {/* Monthly / Annual Billing Pill Toggle (Monthly Retainers only) */}
+              {activeCategory === "monthly" && (
+                <div className="inline-flex items-center gap-1 p-1 rounded-full bg-[#F8FAFC] border border-[#E2E8F0]">
+                  <button
+                    type="button"
+                    onClick={() => setBillingPeriod("monthly")}
+                    className={`min-h-[38px] px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
+                      billingPeriod === "monthly"
+                        ? "bg-[#FFFFFF] text-[#0D1B2A] shadow-xs border border-[#E2E8F0]"
+                        : "text-[#475569] hover:text-[#0D1B2A]"
+                    }`}
+                  >
+                    Monthly
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setBillingPeriod("annual")}
+                    className={`min-h-[38px] px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer inline-flex items-center gap-2 ${
+                      billingPeriod === "annual"
+                        ? "bg-[#FFFFFF] text-[#0D1B2A] shadow-xs border border-[#E2E8F0]"
+                        : "text-[#475569] hover:text-[#0D1B2A]"
+                    }`}
+                  >
+                    <span>Annual</span>
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-[#1B4332] border border-emerald-200/80 text-[11px] font-semibold">
+                      Save 33%
+                    </span>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </section>
 
-        {/* Pricing Mode Toggle: Ongoing vs Backlog */}
-        <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-center mb-10">
-            <div className="inline-flex p-1.5 bg-navy-950 border border-gold-500/30 rounded-2xl shadow-xl max-w-lg w-full">
+        {/* Tier Cards Grid (Max 3 Across) */}
+        <section className="bg-[#F8FAFC] py-14 lg:py-20">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-7 items-stretch">
+              {currentTiers.map((tier) => {
+                const isCustom = tier.fixedPrice === "Custom";
+                const displayPrice =
+                  tier.fixedPrice !== undefined
+                    ? tier.fixedPrice
+                    : billingPeriod === "annual"
+                      ? tier.priceAnnual
+                      : tier.priceMonthly;
+
+                const billingNote =
+                  tier.fixedBillingNote !== undefined
+                    ? tier.fixedBillingNote
+                    : billingPeriod === "annual"
+                      ? tier.billingNoteAnnual
+                      : tier.billingNoteMonthly;
+
+                return (
+                  <article
+                    key={tier.id}
+                    className={`relative rounded-2xl bg-[#FFFFFF] flex flex-col justify-between p-7 sm:p-8 transition-shadow ${
+                      tier.popular
+                        ? "border-2 border-[#0D1B2A] shadow-[0_14px_38px_-14px_rgba(13,27,42,0.16)] overflow-hidden"
+                        : "border border-[#E2E8F0] shadow-[0_6px_24px_-12px_rgba(13,27,42,0.06)] hover:shadow-[0_12px_32px_-14px_rgba(13,27,42,0.1)]"
+                    }`}
+                  >
+                    {/* Subtle Metallic Gold Top Accent on Recommended Tier Only */}
+                    {tier.popular && (
+                      <div
+                        className="absolute top-0 inset-x-0 h-[3px] bg-[#C5A059]"
+                        aria-hidden="true"
+                      />
+                    )}
+
+                    <div>
+                      {/* a. Tier Name + Optional Subtle "Most Popular" Badge */}
+                      <div className="flex items-center justify-between gap-3 mb-2">
+                        <h2 className="font-display text-xl font-bold text-[#0D1B2A] tracking-tight">
+                          {tier.name}
+                        </h2>
+                        {tier.popular && (
+                          <span className="shrink-0 px-2.5 py-0.5 rounded-full border border-[#C5A059]/60 bg-[#C5A059]/10 text-[#7A5A1A] text-xs font-semibold">
+                            Most Popular
+                          </span>
+                        )}
+                      </div>
+
+                      {/* b. One concise "Best for..." line */}
+                      <p className="text-sm text-[#475569] leading-relaxed min-h-[42px]">
+                        {tier.bestFor}
+                      </p>
+
+                      {/* c. Large AED Price (tabular-nums) */}
+                      <div className="mt-6 mb-6">
+                        <div className="flex items-baseline gap-1.5">
+                          {!isCustom && (
+                            <span className="text-sm font-semibold text-[#475569]">AED</span>
+                          )}
+                          <span className="font-display text-4xl sm:text-[42px] font-bold text-[#0D1B2A] tracking-tight tabular-nums leading-none">
+                            {displayPrice}
+                          </span>
+                          <span className="text-sm text-[#475569] font-medium">{tier.unit}</span>
+                        </div>
+                        <p className="mt-2 text-xs text-[#64748B] tabular-nums">{billingNote}</p>
+                      </div>
+
+                      {/* d. ONE Full-Width CTA Button */}
+                      <button
+                        type="button"
+                        onClick={() => handleSelectTier(tier)}
+                        className={`w-full min-h-[46px] px-5 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer inline-flex items-center justify-center gap-2 ${
+                          tier.popular
+                            ? "bg-[#1B4332] hover:bg-[#143326] text-white shadow-xs"
+                            : "bg-[#FFFFFF] hover:bg-[#1B4332] text-[#0D1B2A] hover:text-white border border-[#0D1B2A] hover:border-[#1B4332]"
+                        }`}
+                      >
+                        <span>{tier.ctaLabel}</span>
+                        <ArrowRight className="w-4 h-4 shrink-0" />
+                      </button>
+
+                      {/* e. Thin Horizontal Divider + 5–6 Crisp Single-Line Checkmarks */}
+                      <hr className="my-6 border-[#E2E8F0]" />
+
+                      <ul className="space-y-3 text-sm text-[#334155]">
+                        {tier.features.map((feature) => (
+                          <li key={feature} className="flex items-start gap-2.5 leading-snug">
+                            <Check
+                              className="w-4 h-4 text-[#1B4332] shrink-0 mt-0.5"
+                              strokeWidth={2.25}
+                            />
+                            <span>{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+
+            {/* Compact Single-Row Trust Bar */}
+            <div className="mt-10 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] px-5 py-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-2.5 text-sm text-[#0D1B2A]">
+              <span className="inline-flex items-center gap-2 font-medium">
+                <ShieldCheck className="w-4 h-4 text-[#1B4332] shrink-0" />
+                <span>FTA Registered</span>
+              </span>
+              <span className="hidden sm:inline text-[#CBD5E1]" aria-hidden="true">
+                •
+              </span>
+              <span className="inline-flex items-center gap-2 font-medium">
+                <Star className="w-4 h-4 text-[#C5A059] fill-[#C5A059] shrink-0" />
+                <span>5.0★ Google Rating (48 Reviews)</span>
+              </span>
+              <span className="hidden sm:inline text-[#CBD5E1]" aria-hidden="true">
+                •
+              </span>
+              <span className="inline-flex items-center gap-2 font-medium">
+                <UserCheck className="w-4 h-4 text-[#1B4332] shrink-0" />
+                <span>Dedicated Account Manager</span>
+              </span>
+            </div>
+
+            <p className="mt-4 text-center text-xs text-[#64748B]">
+              Final fee depends on business activity, monthly transaction volume, and filing scope. All rates exclude 5% UAE VAT.
+            </p>
+          </div>
+        </section>
+
+        {/* Progressive Disclosure: Collapsible Feature Comparison Table */}
+        <section className="bg-[#FFFFFF] py-14 lg:py-20 border-t border-[#E2E8F0]">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-[#E2E8F0]">
+              <div>
+                <h2 className="font-display text-2xl font-bold text-[#0D1B2A] tracking-tight">
+                  Compare All Plan Features
+                </h2>
+                <p className="text-sm text-[#475569] mt-1">
+                  Detailed side-by-side deliverables across our monthly accounting retainers.
+                </p>
+              </div>
               <button
                 type="button"
-                onClick={() => setPricingPath("prospective")}
-                className={`flex-1 py-3 px-4 rounded-xl text-xs sm:text-sm font-display font-bold transition-all cursor-pointer text-center ${
-                  pricingPath === "prospective"
-                    ? "bg-gold-500 text-navy-950 shadow-md font-extrabold"
-                    : "text-slate-300 hover:text-white"
-                }`}
+                aria-expanded={comparisonOpen}
+                onClick={() => setComparisonOpen((prev) => !prev)}
+                className="min-h-[44px] px-4 py-2.5 rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] hover:border-[#0D1B2A] text-sm font-semibold text-[#0D1B2A] inline-flex items-center justify-center gap-2 transition-colors cursor-pointer self-start sm:self-auto"
               >
-                Ongoing Monthly Retainers
-              </button>
-              <button
-                type="button"
-                onClick={() => setPricingPath("retrospective")}
-                className={`flex-1 py-3 px-4 rounded-xl text-xs sm:text-sm font-display font-bold transition-all cursor-pointer text-center flex items-center justify-center gap-1.5 ${
-                  pricingPath === "retrospective"
-                    ? "bg-gold-500 text-navy-950 shadow-md font-extrabold"
-                    : "text-slate-300 hover:text-white"
-                }`}
-              >
-                <span>Backlog Catch-Up</span>
-                <span className="px-1.5 py-0.5 rounded-full bg-rose-500 text-white text-[9px] font-mono">
-                  TAX URGENT
-                </span>
+                <span>{comparisonOpen ? "Hide Comparison" : "Compare All Plan Features"}</span>
+                <ChevronDown
+                  className={`w-4 h-4 text-[#475569] transition-transform duration-200 ${
+                    comparisonOpen ? "rotate-180" : ""
+                  }`}
+                />
               </button>
             </div>
-          </div>
 
-          {pricingPath === "prospective" ? (
-            <>
-              {/* Billing Interval Switcher */}
-              <div className="flex justify-center items-center gap-4 mb-12">
-                <span className={`text-xs sm:text-sm font-bold ${billingPeriod === "monthly" ? "text-navy-950" : "text-slate-500"}`}>
-                  Billed Monthly
-                </span>
-                <button
-                  type="button"
-                  onClick={() => setBillingPeriod(billingPeriod === "monthly" ? "annual" : "monthly")}
-                  className="w-14 h-8 bg-navy-950 rounded-full p-1 cursor-pointer transition-colors relative"
-                  aria-label="Toggle annual billing"
-                >
-                  <div
-                    className={`w-6 h-6 rounded-full bg-gold-400 shadow-md transition-transform duration-200 ${
-                      billingPeriod === "annual" ? "translate-x-6" : "translate-x-0"
-                    }`}
-                  />
-                </button>
-                <span className={`text-xs sm:text-sm font-bold flex items-center gap-1.5 ${billingPeriod === "annual" ? "text-navy-950" : "text-slate-500"}`}>
-                  <span>Billed Annually</span>
-                  <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-mono text-[10px] font-bold">
-                    Save up to 33% Annually
-                  </span>
-                </span>
-              </div>
-
-              {/* 3 Main Package Cards */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch mb-16">
-                
-                {/* 1. Starter Package */}
-                <div className="bg-white rounded-3xl border border-slate-200 p-8 shadow-xs hover:border-gold-400 transition-all flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">
-                        TIER 01
-                      </span>
-                      <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 font-display text-[10px] font-bold">
-                        FOUNDATIONS
-                      </span>
-                    </div>
-
-                    <h2 className="font-display text-2xl font-bold text-navy-950 mb-2">
-                      Business Starter
-                    </h2>
-                    <p className="text-xs text-slate-600 leading-relaxed mb-6">
-                      Essential double-entry bookkeeping and annual Corporate Tax compliance for new entities.
-                    </p>
-
-                    <div className="p-3.5 bg-slate-50 rounded-2xl mb-6 border border-slate-100">
-                      <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-navy-900 block mb-1">
-                        BEST FOR:
-                      </span>
-                      <p className="text-xs text-slate-600">
-                        Startups, solo entrepreneurs, and micro-SMEs setting up Corporate Tax and financial compliance for the first time.
-                      </p>
-                    </div>
-
-                    {/* Price Block */}
-                    <div className="border-y border-slate-100 py-6 mb-6">
-                      <div className="flex items-baseline gap-1.5">
-                        <span className="text-sm font-bold text-slate-700">AED</span>
-                        <span className="font-display text-4xl sm:text-5xl font-extrabold text-navy-950">
-                          {billingPeriod === "annual" ? "400" : "500"}
-                        </span>
-                        <span className="text-xs text-slate-500">/ month</span>
-                      </div>
-                      <span className="text-[11px] text-slate-400 block mt-1">
-                        {billingPeriod === "annual" ? "Billed AED 4,000 / year (Save AED 2,000) + 5% VAT" : "Billed monthly at AED 500/mo + 5% VAT"}
-                      </span>
-                    </div>
-
-                    {/* What is Included */}
-                    <div className="space-y-4 mb-6">
-                      <span className="font-display font-bold text-xs uppercase tracking-wider text-emerald-800 block">
-                        ✓ What is Included:
-                      </span>
-                      <ul className="space-y-2 text-xs text-slate-700">
-                        <li className="flex items-start gap-2">
-                          <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                          <span>Monthly IFRS double-entry bookkeeping &amp; ledger maintenance</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                          <span>Bank &amp; corporate card reconciliation (up to 50 transactions/month)</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                          <span>Monthly Balance Sheet and Profit &amp; Loss statements</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                          <span>Annual Corporate Tax return preparation &amp; 0% SBR election</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                          <span>Dedicated Senior Accountant email support</span>
-                        </li>
-                      </ul>
-                    </div>
-
-                    {/* What is NOT Included */}
-                    <div className="space-y-3 pt-4 border-t border-slate-100 mb-8">
-                      <span className="font-display font-bold text-xs uppercase tracking-wider text-slate-500 block">
-                        ✕ What is Not Included:
-                      </span>
-                      <ul className="space-y-1.5 text-xs text-slate-500">
-                        <li className="flex items-start gap-2">
-                          <X className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
-                          <span>Quarterly VAT 201 return filing (available in Corporate Growth)</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <X className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
-                          <span>External statutory audit report sign-off</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <X className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
-                          <span>Transfer Pricing Local/Master File documentation</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <a
-                    href={`https://wa.me/971529226958?text=${encodeURIComponent(
-                      `Hi Dias Accounting, I would like to choose the Business Starter Package (${
-                        billingPeriod === "annual" ? "AED 400/mo billed annually" : "AED 500/mo"
-                      }) for my UAE business.`
-                    )}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-3.5 px-4 rounded-xl border-2 border-navy-950 text-navy-950 hover:bg-navy-950 hover:text-white font-display font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer text-center flex items-center justify-center gap-2"
-                  >
-                    <MessageCircle className="w-4 h-4 text-emerald-600" />
-                    <span>Choose Business Starter</span>
-                  </a>
-                </div>
-
-                {/* 2. Corporate Growth (Recommended / Most Popular) */}
-                <div className="bg-white rounded-3xl border-2 border-gold-500 p-8 shadow-xl relative flex flex-col justify-between">
-                  <div className="absolute -top-3.5 right-8 px-3.5 py-1 rounded-full bg-gold-500 text-navy-950 font-display font-extrabold text-[11px] uppercase tracking-wider shadow-md">
-                    MOST POPULAR
-                  </div>
-
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-xs font-mono font-bold text-gold-600 uppercase tracking-wider">
-                        TIER 02 · RECOMMENDED
-                      </span>
-                      <span className="px-2.5 py-1 rounded-full bg-gold-50 text-gold-700 font-display text-[10px] font-bold">
-                        FULL COMPLIANCE
-                      </span>
-                    </div>
-
-                    <h2 className="font-display text-2xl font-bold text-navy-950 mb-2">
-                      Corporate Growth
-                    </h2>
-                    <p className="text-xs text-slate-600 leading-relaxed mb-6">
-                      Full-scope tax and accounting handling both Corporate Tax (9%) and quarterly VAT compliance.
-                    </p>
-
-                    <div className="p-3.5 bg-gold-50/60 rounded-2xl mb-6 border border-gold-100">
-                      <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-navy-900 block mb-1">
-                        BEST FOR:
-                      </span>
-                      <p className="text-xs text-slate-700">
-                        Growing UAE SMEs, trading entities, service companies, and e-commerce brands with active VAT and Corporate Tax obligations.
-                      </p>
-                    </div>
-
-                    {/* Price Block */}
-                    <div className="border-y border-slate-100 py-6 mb-6">
-                      <div className="flex items-baseline gap-1.5">
-                        <span className="text-sm font-bold text-slate-700">AED</span>
-                        <span className="font-display text-4xl sm:text-5xl font-extrabold text-navy-950">
-                          {billingPeriod === "annual" ? "600" : "750"}
-                        </span>
-                        <span className="text-xs text-slate-500">/ month</span>
-                      </div>
-                      <span className="text-[11px] text-slate-400 block mt-1">
-                        {billingPeriod === "annual" ? "Billed AED 6,000 / year (Save AED 3,000) + 5% VAT" : "Billed monthly at AED 750/mo + 5% VAT"}
-                      </span>
-                    </div>
-
-                    {/* What is Included */}
-                    <div className="space-y-4 mb-6">
-                      <span className="font-display font-bold text-xs uppercase tracking-wider text-emerald-800 block">
-                        ✓ What is Included:
-                      </span>
-                      <ul className="space-y-2 text-xs text-slate-700">
-                        <li className="flex items-start gap-2">
-                          <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                          <span><strong>Everything in Business Starter</strong> included</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                          <span>Quarterly VAT 201 return computation &amp; electronic EmaraTax filing</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                          <span>Input VAT recovery optimization &amp; invoice compliance verification</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                          <span>Annual Corporate Tax return filing &amp; 9% statutory profit adjustments</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                          <span>E-invoicing Phase 1 readiness &amp; ASP setup guidance</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                          <span>Priority phone &amp; direct WhatsApp advisory channel</span>
-                        </li>
-                      </ul>
-                    </div>
-
-                    {/* What is NOT Included */}
-                    <div className="space-y-3 pt-4 border-t border-slate-100 mb-8">
-                      <span className="font-display font-bold text-xs uppercase tracking-wider text-slate-500 block">
-                        ✕ What is Not Included:
-                      </span>
-                      <ul className="space-y-1.5 text-xs text-slate-500">
-                        <li className="flex items-start gap-2">
-                          <X className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
-                          <span>Multi-year historical backlog ledger reconstruction (quoted separately)</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <X className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
-                          <span>Cross-border transfer pricing economic benchmarking studies</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <a
-                    href={`https://wa.me/971529226958?text=${encodeURIComponent(
-                      `Hi Dias Accounting, I would like to choose the Corporate Growth Package (${
-                        billingPeriod === "annual" ? "AED 600/mo billed annually" : "AED 750/mo"
-                      }) for my UAE business.`
-                    )}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-3.5 px-4 rounded-xl bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-extrabold text-xs uppercase tracking-wider transition-all shadow-md shadow-gold-500/20 cursor-pointer text-center flex items-center justify-center gap-2"
-                  >
-                    <MessageCircle className="w-4 h-4 text-emerald-800" />
-                    <span>Choose Corporate Growth</span>
-                  </a>
-                </div>
-
-                {/* 3. Enterprise & CFO Advisory */}
-                <div className="bg-white rounded-3xl border border-slate-200 p-8 shadow-xs hover:border-gold-400 transition-all flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <span className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider">
-                        TIER 03
-                      </span>
-                      <span className="px-2.5 py-1 rounded-full bg-slate-900 text-white font-display text-[10px] font-bold">
-                        EXECUTIVE
-                      </span>
-                    </div>
-
-                    <h2 className="font-display text-2xl font-bold text-navy-950 mb-2">
-                      Enterprise &amp; CFO Advisory
-                    </h2>
-                    <p className="text-xs text-slate-600 leading-relaxed mb-6">
-                      Advanced strategic finance, Free Zone 0% QFZP structuring, and fractional CFO leadership.
-                    </p>
-
-                    <div className="p-3.5 bg-slate-50 rounded-2xl mb-6 border border-slate-100">
-                      <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-navy-900 block mb-1">
-                        BEST FOR:
-                      </span>
-                      <p className="text-xs text-slate-600">
-                        Multi-license corporate groups, Free Zone QFZP entities, and high-revenue companies needing senior strategic financial direction.
-                      </p>
-                    </div>
-
-                    {/* Price Block */}
-                    <div className="border-y border-slate-100 py-6 mb-6">
-                      <div className="flex items-baseline gap-1.5">
-                        <span className="text-sm font-bold text-slate-700">AED</span>
-                        <span className="font-display text-4xl sm:text-5xl font-extrabold text-navy-950">
-                          {billingPeriod === "annual" ? "1,000" : "1,250"}
-                        </span>
-                        <span className="text-xs text-slate-500">/ month</span>
-                      </div>
-                      <span className="text-[11px] text-slate-400 block mt-1">
-                        {billingPeriod === "annual" ? "Billed AED 10,000 / year (Save AED 5,000) + 5% VAT" : "Billed monthly at AED 1,250/mo + 5% VAT"}
-                      </span>
-                    </div>
-
-                    {/* What is Included */}
-                    <div className="space-y-4 mb-6">
-                      <span className="font-display font-bold text-xs uppercase tracking-wider text-emerald-800 block">
-                        ✓ What is Included:
-                      </span>
-                      <ul className="space-y-2 text-xs text-slate-700">
-                        <li className="flex items-start gap-2">
-                          <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                          <span><strong>Everything in Corporate Growth</strong> included</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                          <span>Monthly fractional CFO strategy review &amp; rolling cash flow forecasts</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                          <span>0% Free Zone Qualifying Free Zone Person (QFZP) substance compliance</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                          <span>Statutory audit facilitation &amp; external auditor file coordination</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                          <span>Connected Persons &amp; Related Party market benchmarking</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                          <span>Managing Partner direct oversight &amp; quarterly board reports</span>
-                        </li>
-                      </ul>
-                    </div>
-
-                    {/* What is NOT Included */}
-                    <div className="space-y-3 pt-4 border-t border-slate-100 mb-8">
-                      <span className="font-display font-bold text-xs uppercase tracking-wider text-slate-500 block">
-                        ✕ What is Not Included:
-                      </span>
-                      <ul className="space-y-1.5 text-xs text-slate-500">
-                        <li className="flex items-start gap-2">
-                          <X className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
-                          <span>Government official authority registration fees</span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <X className="w-3.5 h-3.5 text-slate-400 shrink-0 mt-0.5" />
-                          <span>Legal court litigation representation</span>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <a
-                    href={`https://wa.me/971529226958?text=${encodeURIComponent(
-                      `Hi Dias Accounting, I would like to choose the Enterprise & CFO Advisory Package (${
-                        billingPeriod === "annual" ? "AED 1,000/mo billed annually" : "AED 1,250/mo"
-                      }) for my UAE business.`
-                    )}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-3.5 px-4 rounded-xl border-2 border-navy-950 text-navy-950 hover:bg-navy-950 hover:text-white font-display font-bold text-xs uppercase tracking-wider transition-colors cursor-pointer text-center flex items-center justify-center gap-2"
-                  >
-                    <MessageCircle className="w-4 h-4 text-emerald-600" />
-                    <span>Choose Enterprise Package</span>
-                  </a>
-                </div>
-
-              </div>
-
-              {/* Comprehensive Feature Comparison Table */}
-              <div className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-xs mb-16">
-                <div className="p-6 sm:p-8 bg-slate-900 text-white">
-                  <h3 className="font-display text-xl sm:text-2xl font-bold">
-                    Package Feature Comparison Matrix
-                  </h3>
-                  <p className="text-slate-400 text-xs sm:text-sm mt-1">
-                    Compare deliverables side-by-side to choose the exact level of support your business needs.
-                  </p>
-                </div>
-
+            {comparisonOpen && (
+              <div className="mt-6 rounded-2xl border border-[#E2E8F0] overflow-hidden shadow-xs">
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse text-xs sm:text-sm">
+                  <table className="w-full min-w-[640px] text-left border-collapse text-sm">
                     <thead>
-                      <tr className="border-b border-slate-200 bg-slate-50 text-navy-950 font-display font-bold">
-                        <th className="py-4 px-6">Core Capability</th>
-                        <th className="py-4 px-6 text-center">Business Starter</th>
-                        <th className="py-4 px-6 text-center bg-gold-50/50 text-gold-900">Corporate Growth (Popular)</th>
-                        <th className="py-4 px-6 text-center">Enterprise &amp; CFO</th>
+                      <tr className="bg-[#0D1B2A] text-white">
+                        <th className="py-4 px-5 font-semibold">Deliverable</th>
+                        <th className="py-4 px-5 font-semibold text-center">Business Starter</th>
+                        <th className="py-4 px-5 font-semibold text-center">
+                          <span className="inline-flex items-center gap-1.5">
+                            <span>Corporate Growth</span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#C5A059]" aria-hidden="true" />
+                          </span>
+                        </th>
+                        <th className="py-4 px-5 font-semibold text-center">Enterprise &amp; CFO</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 text-slate-700">
-                      <tr>
-                        <td className="py-4 px-6 font-medium text-navy-950">Monthly IFRS Bookkeeping</td>
-                        <td className="py-4 px-6 text-center text-emerald-600 font-bold">✓ Included</td>
-                        <td className="py-4 px-6 text-center text-emerald-600 font-bold bg-gold-50/20">✓ Included</td>
-                        <td className="py-4 px-6 text-center text-emerald-600 font-bold">✓ Included</td>
-                      </tr>
-                      <tr>
-                        <td className="py-4 px-6 font-medium text-navy-950">Balance Sheet &amp; P&amp;L Statements</td>
-                        <td className="py-4 px-6 text-center text-emerald-600 font-bold">✓ Monthly</td>
-                        <td className="py-4 px-6 text-center text-emerald-600 font-bold bg-gold-50/20">✓ Monthly</td>
-                        <td className="py-4 px-6 text-center text-emerald-600 font-bold">✓ Monthly + Forecasts</td>
-                      </tr>
-                      <tr>
-                        <td className="py-4 px-6 font-medium text-navy-950">Annual Corporate Tax (9% &amp; SBR) Return</td>
-                        <td className="py-4 px-6 text-center text-emerald-600 font-bold">✓ Included</td>
-                        <td className="py-4 px-6 text-center text-emerald-600 font-bold bg-gold-50/20">✓ Included</td>
-                        <td className="py-4 px-6 text-center text-emerald-600 font-bold">✓ Included + Structural Advisory</td>
-                      </tr>
-                      <tr>
-                        <td className="py-4 px-6 font-medium text-navy-950">Quarterly VAT 201 Return Filing</td>
-                        <td className="py-4 px-6 text-center text-slate-400">✕ Optional Add-on</td>
-                        <td className="py-4 px-6 text-center text-emerald-600 font-bold bg-gold-50/20">✓ Included</td>
-                        <td className="py-4 px-6 text-center text-emerald-600 font-bold">✓ Included</td>
-                      </tr>
-                      <tr>
-                        <td className="py-4 px-6 font-medium text-navy-950">Input VAT Recovery Optimization</td>
-                        <td className="py-4 px-6 text-center text-slate-400">✕</td>
-                        <td className="py-4 px-6 text-center text-emerald-600 font-bold bg-gold-50/20">✓ Included</td>
-                        <td className="py-4 px-6 text-center text-emerald-600 font-bold">✓ Included</td>
-                      </tr>
-                      <tr>
-                        <td className="py-4 px-6 font-medium text-navy-950">E-Invoicing Phase 1 Readiness</td>
-                        <td className="py-4 px-6 text-center text-slate-500">Basic Guidance</td>
-                        <td className="py-4 px-6 text-center text-emerald-600 font-bold bg-gold-50/20">✓ Full Setup</td>
-                        <td className="py-4 px-6 text-center text-emerald-600 font-bold">✓ Full Setup &amp; ASP</td>
-                      </tr>
-                      <tr>
-                        <td className="py-4 px-6 font-medium text-navy-950">0% Free Zone QFZP Substance Review</td>
-                        <td className="py-4 px-6 text-center text-slate-400">✕</td>
-                        <td className="py-4 px-6 text-center text-slate-400 bg-gold-50/20">✕ Optional Add-on</td>
-                        <td className="py-4 px-6 text-center text-emerald-600 font-bold">✓ Included</td>
-                      </tr>
-                      <tr>
-                        <td className="py-4 px-6 font-medium text-navy-950">Statutory Audit File Preparation</td>
-                        <td className="py-4 px-6 text-center text-slate-400">✕</td>
-                        <td className="py-4 px-6 text-center text-slate-400 bg-gold-50/20">✕ Optional</td>
-                        <td className="py-4 px-6 text-center text-emerald-600 font-bold">✓ Full Auditor File</td>
-                      </tr>
-                      <tr>
-                        <td className="py-4 px-6 font-medium text-navy-950">Advisory Channel &amp; Turnaround</td>
-                        <td className="py-4 px-6 text-center text-slate-600">Email (48h)</td>
-                        <td className="py-4 px-6 text-center text-slate-900 font-semibold bg-gold-50/20">Email + WhatsApp (24h)</td>
-                        <td className="py-4 px-6 text-center text-slate-900 font-semibold">Dedicated WhatsApp &amp; Direct Call</td>
-                      </tr>
+                    <tbody className="divide-y divide-[#E2E8F0]">
+                      {COMPARISON_ROWS.map((row) => (
+                        <tr key={row.capability} className="odd:bg-[#FFFFFF] even:bg-[#F8FAFC]">
+                          <td className="py-3.5 px-5 font-medium text-[#0D1B2A]">{row.capability}</td>
+                          <td className="py-3.5 px-5 text-center">
+                            <ComparisonCell value={row.starter} />
+                          </td>
+                          <td className="py-3.5 px-5 text-center">
+                            <ComparisonCell value={row.growth} highlight />
+                          </td>
+                          <td className="py-3.5 px-5 text-center">
+                            <ComparisonCell value={row.enterprise} />
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
               </div>
-            </>
-          ) : (
-            /* Dedicated Backlog Accounting View */
-            <div className="space-y-10 max-w-6xl mx-auto mb-16">
-              <div className="bg-gradient-to-r from-amber-500/15 via-gold-500/10 to-amber-500/15 border-2 border-amber-400/60 rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-500 text-navy-950 flex items-center justify-center shrink-0 shadow-lg font-bold">
-                    <AlertCircle className="w-6 h-6" />
-                  </div>
-                  <div className="space-y-1">
-                    <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 text-[10px] font-mono font-bold uppercase tracking-wider">
-                      <span>FTA Late Filing Protection</span>
-                    </div>
-                    <h3 className="font-display font-extrabold text-lg sm:text-xl text-navy-950">
-                      UAE Corporate Tax Deadline Alert: Avoid AED 10,000 Late Registration Penalties
-                    </h3>
-                    <p className="text-xs sm:text-sm text-slate-700 leading-relaxed max-w-2xl">
-                      Under Cabinet Decision No. 75/2023, businesses that fail to maintain historical books or file on time face AED 10,000+ in mandatory fines. Dias reconstructs, reconciles, and submits your tax return within <strong>5 to 7 business days</strong>.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto shrink-0">
-                  <a
-                    href="https://wa.me/971529226958?text=Hi,%20I'd%20like%20to%20know%20more%20about%20your%20tax%20services."
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="bg-emerald-600 hover:bg-emerald-500 text-white font-display font-bold py-3.5 px-6 rounded-xl text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer"
-                  >
-                    <MessageCircle className="w-4 h-4" />
-                    <span>WhatsApp Urgent Line</span>
-                  </a>
-                  <button
-                    type="button"
-                    onClick={() => onNavigate("/contact")}
-                    className="bg-navy-950 hover:bg-gold-500 hover:text-navy-950 text-white font-display font-bold py-3.5 px-5 rounded-xl text-xs uppercase tracking-wider transition-colors cursor-pointer"
-                  >
-                    Book Audit Call
-                  </button>
-                </div>
-              </div>
-
-              {/* 3 Dedicated Backlog Packages */}
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
-                <div className="bg-white border-2 border-gold-500 rounded-3xl p-8 flex flex-col justify-between relative shadow-xl">
-                  <div className="absolute -top-3.5 right-6 px-3 py-1 rounded-full bg-gold-500 text-navy-950 font-display font-black text-[10px] uppercase tracking-wider shadow-md">
-                    MOST REQUESTED
-                  </div>
-                  <div>
-                    <span className="text-xs font-mono font-bold text-slate-400">PACKAGE 01</span>
-                    <h3 className="font-display text-xl font-extrabold text-navy-950 mt-1 mb-2">
-                      Single FY Backlog + Tax Return
-                    </h3>
-                    <p className="text-slate-500 text-xs leading-relaxed mb-6">
-                      For UAE companies needing full 12-month historical books, ledger reconciliation, and official FTA corporate tax filing.
-                    </p>
-                    <div className="border-y border-slate-100 py-5 mb-6">
-                      <div className="flex items-baseline gap-1.5">
-                        <span className="text-xs font-bold text-slate-500">AED</span>
-                        <span className="text-4xl font-extrabold font-mono text-navy-950">2,500</span>
-                        <span className="text-xs text-slate-500">/ full financial year</span>
-                      </div>
-                      <span className="text-[11px] text-slate-400 block mt-1">Starting fee for up to 150 transactions / year + 5% VAT</span>
-                    </div>
-                    <ul className="space-y-2 text-xs text-slate-700 mb-8">
-                      <li className="flex gap-2 items-start"><Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" /><span>12-month bank &amp; card transaction reconstruction</span></li>
-                      <li className="flex gap-2 items-start"><Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" /><span>IFRS compliant Balance Sheet and Profit &amp; Loss</span></li>
-                      <li className="flex gap-2 items-start"><Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" /><span>0% Small Business Relief qualification check</span></li>
-                      <li className="flex gap-2 items-start"><Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" /><span>Official filing on FTA EmaraTax portal</span></li>
-                    </ul>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => handleSelectPackage("Single FY Backlog (AED 2,500)")}
-                    className="w-full py-3 px-4 rounded-xl font-display font-bold text-xs text-center bg-gold-500 hover:bg-gold-400 text-navy-950 cursor-pointer shadow-md"
-                  >
-                    Select Single FY Backlog
-                  </button>
-                </div>
-
-                <div className="bg-white border border-slate-200 rounded-3xl p-8 flex flex-col justify-between relative shadow-sm hover:border-gold-400 transition-all">
-                  <div>
-                    <span className="text-xs font-mono font-bold text-slate-400">PACKAGE 02</span>
-                    <h3 className="font-display text-xl font-extrabold text-navy-950 mt-1 mb-2">
-                      Multi-Year Full Catch-Up (2 FYs)
-                    </h3>
-                    <p className="text-slate-500 text-xs leading-relaxed mb-6">
-                      For businesses that have not maintained regular books since incorporation and need audit readiness.
-                    </p>
-                    <div className="border-y border-slate-100 py-5 mb-6">
-                      <div className="flex items-baseline gap-1.5">
-                        <span className="text-xs font-bold text-slate-500">AED</span>
-                        <span className="text-4xl font-extrabold font-mono text-navy-950">4,800</span>
-                        <span className="text-xs text-slate-500">/ 2 full financial years</span>
-                      </div>
-                      <span className="text-[11px] text-slate-400 block mt-1">Starting fee for 2 consecutive fiscal years + 5% VAT</span>
-                    </div>
-                    <ul className="space-y-2 text-xs text-slate-700 mb-8">
-                      <li className="flex gap-2 items-start"><Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" /><span>24-month ledger &amp; multi-account reconciliation</span></li>
-                      <li className="flex gap-2 items-start"><Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" /><span>Opening balance generation &amp; loan cleanups</span></li>
-                      <li className="flex gap-2 items-start"><Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" /><span>Filing of 2 consecutive Corporate Tax returns</span></li>
-                      <li className="flex gap-2 items-start"><Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" /><span>Historical VAT compliance risk review</span></li>
-                    </ul>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => handleSelectPackage("Multi-Year Backlog (2 FYs)")}
-                    className="w-full py-3 px-4 rounded-xl font-display font-bold text-xs text-center bg-navy-950 hover:bg-gold-500 hover:text-navy-950 text-white cursor-pointer transition-colors"
-                  >
-                    Select 2-Year Catchup
-                  </button>
-                </div>
-
-                <div className="bg-white border border-slate-200 rounded-3xl p-8 flex flex-col justify-between relative shadow-sm hover:border-gold-400 transition-all">
-                  <div>
-                    <span className="text-xs font-mono font-bold text-slate-400">PACKAGE 03</span>
-                    <h3 className="font-display text-xl font-extrabold text-navy-950 mt-1 mb-2">
-                      E-Commerce / High-Volume Cleanup
-                    </h3>
-                    <p className="text-slate-500 text-xs leading-relaxed mb-6">
-                      For online retailers with payment gateways (Stripe, Amazon, Noon) and high monthly transaction batches.
-                    </p>
-                    <div className="border-y border-slate-100 py-5 mb-6">
-                      <div className="flex items-baseline gap-1.5">
-                        <span className="text-xs font-bold text-slate-500">AED</span>
-                        <span className="text-4xl font-extrabold font-mono text-navy-950">7,500</span>
-                        <span className="text-xs text-slate-500">/ project</span>
-                      </div>
-                      <span className="text-[11px] text-slate-400 block mt-1">Starting fee for complex multi-channel inventory &amp; gateway reconciliation + 5% VAT</span>
-                    </div>
-                    <ul className="space-y-2 text-xs text-slate-700 mb-8">
-                      <li className="flex gap-2 items-start"><Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" /><span>Payment gateway settlement reconciliations</span></li>
-                      <li className="flex gap-2 items-start"><Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" /><span>COGS, shipping &amp; inventory valuation adjustments</span></li>
-                      <li className="flex gap-2 items-start"><Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" /><span>Cross-border digital VAT reconciliation</span></li>
-                    </ul>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => handleSelectPackage("E-Commerce / High-Volume Cleanup")}
-                    className="w-full py-3 px-4 rounded-xl font-display font-bold text-xs text-center bg-navy-950 hover:bg-gold-500 hover:text-navy-950 text-white cursor-pointer transition-colors"
-                  >
-                    Request Custom Quote
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Standalone Professional Services */}
-          <div className="pt-8">
-            <StandalonePricingCards
-              onSelectService={() => onNavigate("/contact")}
-            />
+            )}
           </div>
-          {/* Quick Answers & Transparent UAE Pricing Table */}
         </section>
 
-        <ScopeInstantQuoteBuilder id="instant-quote" onNavigate={onNavigate} />
-
-        <QuickAnswersPricingTable variant="pricing" onNavigate={onNavigate} />
-
-        {/* Pricing FAQs Section */}
-        <section className="py-16 bg-white border-t border-slate-200">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-            <div className="text-center space-y-2 max-w-2xl mx-auto">
-              <span className="text-xs font-mono font-bold text-gold-600 uppercase tracking-widest block">
-                PRICING &amp; PACKAGES FAQ
-              </span>
-              <h2 className="font-display text-2xl sm:text-3xl font-bold text-navy-950">
-                Frequently Asked Questions About UAE Accounting Packages &amp; Corporate Tax Fees
+        {/* Minimal 5-Item Pricing FAQ Accordion */}
+        <section id="faqs" className="bg-[#F8FAFC] py-16 lg:py-20 border-t border-[#E2E8F0]">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-10">
+              <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#0D1B2A] tracking-tight">
+                Pricing Questions, Answered
               </h2>
-              <p className="text-slate-600 text-xs sm:text-sm">
-                Transparent answers to common questions CFOs, managing directors, and founders ask before engaging Dias Accounting:
+              <p className="text-[#475569] text-sm sm:text-base mt-2">
+                Clear details on retainers, VAT &amp; Corporate Tax filings, and backlog catch-up.
               </p>
             </div>
 
-            <div className="space-y-4 pt-4">
-              {[
-                {
-                  q: "What is included in Dias Accounting's fixed-fee accounting packages in Dubai?",
-                  a: "Our monthly retainers (starting from AED 400 to AED 2,500/month) cover a dedicated chartered accountant, cloud software setup (Zoho Books, QuickBooks, Xero), monthly bank and card reconciliations, IFRS Profit & Loss and Balance Sheet statements, quarterly VAT 201 return filings, and annual Corporate Tax return preparation on EmaraTax. There are zero hourly fees or surprise billing charges.",
-                },
-                {
-                  q: "How much does corporate tax filing cost for UAE mainland and Free Zone companies?",
-                  a: "For businesses maintaining clean monthly books with Dias Accounting, annual Corporate Tax return filing is bundled into our comprehensive tiers. For standalone Corporate Tax filing without monthly bookkeeping, our fixed preparation fee starts at AED 1,500 for entities claiming 0% Small Business Relief (SBR) up to AED 3M, and AED 2,500 to AED 4,500 for standard 9% or 0% QFZP Free Zone returns.",
-                },
-                {
-                  q: "Are Corporate Tax returns (9%) and VAT 201 filings included in the monthly accounting fee?",
-                  a: "Yes. Our Growth and Enterprise plans include full quarterly VAT 201 return submissions and annual Corporate Tax return filing on the FTA EmaraTax portal. Our Essential tier (from AED 400/month on annual billing) covers ongoing bookkeeping and quarterly VAT, with an optional discounted annual corporate tax filing add-on.",
-                },
-                {
-                  q: "What are the penalties if my UAE company delays historical backlog bookkeeping?",
-                  a: "Under Cabinet Decision No. 75 of 2023, failing to register for Corporate Tax on time incurs an automatic AED 10,000 fine. Failing to maintain required accounting records for at least 5 years triggers penalties starting at AED 10,000 for a first violation and AED 20,000 for repeats. Our Backlog Catch-Up packages (from AED 2,500/year) reconstruct missing ledgers within 5 to 7 business days to eliminate fine exposure.",
-                },
-                {
-                  q: "Can DIFC, DTEC, and Free Zone companies choose standard SME accounting packages?",
-                  a: "Yes. We offer specialized Free Zone and DIFC accounting tiers that factor in annual IFRS audited accounts, 0% Qualifying Free Zone Person (QFZP) de minimis tests, and OECD Article 34 transfer pricing compliance. Check out our dedicated DIFC Tax Compliance Hub for financial institutions and common-law entities.",
-                },
-              ].map((faq, idx) => (
-                <details
-                  key={idx}
-                  className="group border border-slate-200 rounded-2xl p-5 open:bg-slate-50 transition-colors"
-                >
-                  <summary className="font-display font-bold text-navy-950 text-sm sm:text-base cursor-pointer list-none flex items-center justify-between gap-4">
-                    <span>{faq.q}</span>
-                    <ChevronRight className="w-4 h-4 text-gold-500 transition-transform group-open:rotate-90 shrink-0" />
-                  </summary>
-                  <p className="mt-3 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
-                    {faq.a}
-                  </p>
-                </details>
-              ))}
+            <div className="divide-y divide-[#E2E8F0] border-y border-[#E2E8F0]">
+              {PRICING_FAQS.map((faq, idx) => {
+                const isOpen = openFaq === idx;
+                return (
+                  <div key={faq.question}>
+                    <button
+                      type="button"
+                      aria-expanded={isOpen}
+                      onClick={() => setOpenFaq(isOpen ? null : idx)}
+                      className="w-full min-h-[56px] py-5 text-left flex items-center justify-between gap-4 cursor-pointer group"
+                    >
+                      <span className="font-semibold text-base text-[#0D1B2A] group-hover:text-[#1B4332] transition-colors">
+                        {faq.question}
+                      </span>
+                      <span
+                        className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[#475569] group-hover:text-[#0D1B2A] transition-colors"
+                        aria-hidden="true"
+                      >
+                        {isOpen ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                      </span>
+                    </button>
+                    {isOpen && (
+                      <div className="pb-5 pr-8 text-sm sm:text-[15px] text-[#475569] leading-relaxed">
+                        {faq.answer}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
+          </div>
+        </section>
 
-            <div className="pt-6 border-t border-slate-100 flex flex-wrap gap-4 text-xs font-semibold text-navy-950">
-              <span>Related Resources &amp; Guides:</span>
+        {/* Clean Multi-Entity / Custom Scope Strip */}
+        <section className="bg-[#FFFFFF] py-14 lg:py-16 border-t border-[#E2E8F0]">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#0D1B2A] tracking-tight">
+              Need a Custom or Multi-Entity Fee Schedule?
+            </h2>
+            <p className="text-[#475569] text-sm sm:text-base max-w-xl mx-auto leading-relaxed">
+              Holding multiple UAE trade licenses or unsure which tier fits? Speak directly with an FTA-registered specialist for a fixed written proposal.
+            </p>
+            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
               <button
                 type="button"
-                onClick={() => onNavigate("/tax-planning-difc")}
-                className="text-gold-600 hover:underline flex items-center gap-1 cursor-pointer"
+                onClick={() => (onOpenAudit ? onOpenAudit() : onNavigate("/contact"))}
+                className="w-full sm:w-auto min-h-[46px] px-7 py-3 rounded-xl bg-[#1B4332] hover:bg-[#143326] text-white text-sm font-semibold transition-colors cursor-pointer inline-flex items-center justify-center gap-2"
               >
-                <span>DIFC Tax Compliance &amp; Advisory</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <span>Book a Consultation</span>
+                <ArrowRight className="w-4 h-4" />
               </button>
               <button
                 type="button"
                 onClick={() => onNavigate("/uae-tax-planner")}
-                className="text-gold-600 hover:underline flex items-center gap-1 cursor-pointer"
+                className="w-full sm:w-auto min-h-[46px] px-6 py-3 rounded-xl border border-[#E2E8F0] hover:border-[#0D1B2A] text-[#0D1B2A] text-sm font-semibold transition-colors cursor-pointer"
               >
-                <span>UAE Tax Liability Planner</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                Estimate 2026 Tax Liability
               </button>
-              <button
-                type="button"
-                onClick={() => onNavigate("/company-setup")}
-                className="text-gold-600 hover:underline flex items-center gap-1 cursor-pointer"
-              >
-                <span>Free Zone Company Formation</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            </div>
-          </div>
-        </section>
-
-        {/* Final CTA Banner */}
-        <section className="bg-navy-950 text-white py-14 border-t border-slate-800">
-          <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
-            <h2 className="font-display text-2xl sm:text-3xl font-bold">
-              Need a Custom Engagement or Multi-Company Package?
-            </h2>
-            <p className="text-slate-300 text-sm max-w-xl mx-auto">
-              If your corporate group holds multiple trade licenses or cross-border entities, contact our senior tax consultants for tailored group fee schedules.
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <a
-                href={`https://wa.me/971529226958?text=${encodeURIComponent(
-                  "Hello Dias Accounting, I would like to request a Custom Group Fee Proposal for our multi-entity UAE company."
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold px-7 py-3.5 rounded-xl text-sm transition-all cursor-pointer shadow-lg flex items-center gap-2"
-              >
-                <MessageCircle className="w-4 h-4 text-navy-950" />
-                <span>Request Custom Group Fee Proposal</span>
-              </a>
-              <a
-                href="https://wa.me/971529226958?text=Hi,%20I'd%20like%20to%20know%20more%20about%20your%20tax%20services."
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-display font-bold px-6 py-3.5 rounded-xl text-sm transition-all flex items-center gap-2"
-              >
-                <MessageCircle className="w-4 h-4 text-gold-400" />
-                <span>Chat on WhatsApp</span>
-              </a>
             </div>
           </div>
         </section>
       </main>
-
-      <LeadQuoteSection variant="pricing" />
 
       <PageFooter
         onNavigate={onNavigate}
@@ -921,6 +762,31 @@ export const PricingPage: React.FC<PricingPageProps> = ({
         onOpenGooglePreferred={onOpenGooglePreferred}
       />
     </div>
+  );
+};
+
+const ComparisonCell: React.FC<{ value: string; highlight?: boolean }> = ({
+  value,
+  highlight = false,
+}) => {
+  if (value === "Not included") {
+    return <span className="text-slate-400">—</span>;
+  }
+  if (value === "Optional Add-on") {
+    return <span className="text-xs font-medium text-[#64748B]">Optional</span>;
+  }
+  if (value === "Included") {
+    return (
+      <span className="inline-flex items-center justify-center gap-1 text-[#1B4332] font-semibold">
+        <Check className="w-4 h-4 shrink-0" strokeWidth={2.25} />
+        <span className="sr-only">Included</span>
+      </span>
+    );
+  }
+  return (
+    <span className={`text-xs sm:text-sm ${highlight ? "font-semibold text-[#0D1B2A]" : "text-[#475569]"}`}>
+      {value}
+    </span>
   );
 };
 

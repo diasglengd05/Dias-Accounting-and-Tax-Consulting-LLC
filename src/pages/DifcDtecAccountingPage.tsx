@@ -1,31 +1,30 @@
 import React, { useEffect } from "react";
 import {
-  ArrowLeft,
-  Mail,
-  Phone,
-  CheckCircle2,
-  AlertTriangle,
   Building2,
-  Calendar,
-  FileCheck2,
-  HelpCircle,
-  ExternalLink,
-  ChevronRight,
-  ShieldCheck,
-  Award,
-  Layers,
+  Check,
   Cpu,
+  FileCheck2,
+  Scale,
+  ShieldCheck,
   TrendingUp,
-  MessageCircle,
-  ArrowRight,
 } from "lucide-react";
-import DiasLogo from "../components/DiasLogo";
-import LeadQuoteSection from "../components/LeadQuoteSection";
-import PageNavigation from "../components/PageNavigation";
-import { applyPageSEO, buildFAQPageSchema, FAQSchemaItem, removeJsonLd, upsertJsonLd } from "../lib/seo";
+import {
+  applyPageSEO,
+  buildBreadcrumbSchema,
+  buildFAQPageSchema,
+  buildServiceSchema,
+  FAQSchemaItem,
+  removeJsonLd,
+  upsertJsonLd,
+} from "../lib/seo";
+import ServicePageTemplate from "../components/hub/ServicePageTemplate";
+import { ComplianceTable, ExecutiveCallout } from "../components/hub/ExecutivePrimitives";
 
 interface PageProps {
   onNavigate?: (path: string) => void;
+  onOpenAudit?: () => void;
+  onOpenPrivacy?: () => void;
+  onOpenGooglePreferred?: () => void;
 }
 
 export const DIFC_DTEC_FAQS: FAQSchemaItem[] = [
@@ -56,14 +55,25 @@ export const DIFC_DTEC_FAQS: FAQSchemaItem[] = [
   },
 ];
 
-export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
+export const DifcDtecAccountingPage: React.FC<PageProps> = ({
+  onNavigate,
+  onOpenAudit,
+  onOpenPrivacy,
+  onOpenGooglePreferred,
+}) => {
+  const navigate = (path: string) => {
+    if (onNavigate) {
+      onNavigate(path);
+    } else if (typeof window !== "undefined") {
+      window.location.href = path;
+    }
+  };
+
   useEffect(() => {
-    const isDifcExplicit =
-      typeof window !== "undefined" && window.location.pathname.toLowerCase().includes("tax-planning-difc");
-    const canonicalPath = isDifcExplicit ? "/tax-planning-difc" : "/difc-dtec-accounting";
-    const pageTitle = "DIFC & DTEC Accounting, 0% QFZP Tax & Dividend Audits Dubai | Dias Accounting";
+    const canonicalPath = "/tax-planning-difc";
+    const pageTitle = "DIFC & DTEC Accounting & 0% QFZP Tax | Dias Accounting";
     const pageDesc =
-      "FTA-Registered Tax Agents serving DIFC & DTEC companies. Statutory interim/final dividend audits, 0% QFZP compliance & monthly IFRS bookkeeping from AED 400/mo.";
+      "FTA-Registered Tax Agents serving DIFC & DTEC companies. Statutory dividend audits, 0% QFZP Corporate Tax compliance & IFRS bookkeeping from AED 400/mo.";
     const pageUrl = `https://diasuae.ae${canonicalPath}`;
 
     applyPageSEO({
@@ -71,526 +81,279 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({ onNavigate }) => {
       description: pageDesc,
       canonicalPath,
       keywords:
-        "DIFC Corporate Tax Planning, DTEC Accounting & Bookkeeping, 0% Qualifying Free Zone Person (QFZP) Compliance, DIFC Interim & Final Dividend Distribution Audits, 5% UAE VAT Filing, DIFC Tax Compliance, Corporate Tax Consultants in DIFC",
+        "DIFC Corporate Tax Planning, DTEC Accounting & Bookkeeping, 0% Qualifying Free Zone Person (QFZP) Compliance, DIFC Dividend Audits, 5% UAE VAT Filing",
       ogType: "website",
-      ogImage:
-        "/api/og?title=DIFC+%26+DTEC+Corporate+Tax+Planning%2C+0%25+QFZP+%26+Dividend+Audits&author=Glen+Dias&role=FTA+Registered+Tax+Agent&tag=From+AED+400%2Fmo",
     });
 
-    upsertJsonLd("schema-difc-dtec", {
-      "@context": "https://schema.org",
-      "@type": ["AccountingService", "LocalBusiness", "ProfessionalService"],
-      name: "Dias Accounting and Tax Consulting LLC",
-      url: pageUrl,
-      description:
-        "FTA-Registered Tax Agents headquartered in Sharjah Media City (SHAMS), serving DIFC, DTEC, and Dubai Free Zones with DIFC Corporate Tax Planning, DTEC Accounting & Bookkeeping, 0% QFZP Compliance, DIFC Interim & Final Dividend Distribution Audits, and 5% UAE VAT Filing starting from AED 400/month.",
-      telephone: "+971-52-922-6958",
-      email: "info@diasuae.ae",
-      priceRange: "From AED 400/month",
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "Sharjah Media City (SHAMS), Al Messaned",
-        addressLocality: "Sharjah",
-        addressRegion: "Sharjah",
-        postOfficeBoxNumber: "P.O. Box 515000",
-        addressCountry: "AE",
-      },
-      areaServed: ["DIFC", "DTEC", "Dubai Free Zones", "Dubai", "Sharjah", "United Arab Emirates"],
-      knowsAbout: [
-        "DIFC Corporate Tax Planning",
-        "DTEC Accounting & Bookkeeping",
-        "0% Qualifying Free Zone Person (QFZP) Compliance",
-        "DIFC Interim & Final Dividend Distribution Audits",
-        "5% UAE VAT Filing",
-      ],
-      hasOfferCatalog: {
-        "@type": "OfferCatalog",
-        name: "DIFC & DTEC Tax Planning, Accounting & Audit Services (From AED 400/month)",
-        itemListElement: [
-          { "@type": "Offer", price: "400", priceCurrency: "AED", itemOffered: { "@type": "Service", name: "DIFC Corporate Tax Planning" } },
-          { "@type": "Offer", price: "400", priceCurrency: "AED", itemOffered: { "@type": "Service", name: "DTEC Accounting & Bookkeeping" } },
-          { "@type": "Offer", itemOffered: { "@type": "Service", name: "0% Qualifying Free Zone Person (QFZP) Compliance" } },
-          { "@type": "Offer", itemOffered: { "@type": "Service", name: "DIFC Interim & Final Dividend Distribution Audits" } },
-          { "@type": "Offer", price: "400", priceCurrency: "AED", itemOffered: { "@type": "Service", name: "5% UAE VAT Filing" } },
+    upsertJsonLd(
+      "page-service-jsonld",
+      buildServiceSchema({
+        name: "DIFC & DTEC Accounting, 0% QFZP Corporate Tax & Dividend Audits",
+        description: pageDesc,
+        canonicalPath,
+      })
+    );
+
+    upsertJsonLd("page-faq-jsonld", buildFAQPageSchema(DIFC_DTEC_FAQS, `${pageUrl}#faqs`));
+    upsertJsonLd(
+      "page-breadcrumb-jsonld",
+      buildBreadcrumbSchema(
+        [
+          { name: "Home", path: "/" },
+          { name: "Services", path: "/services" },
+          { name: "DIFC & DTEC Tax Planning", path: canonicalPath },
         ],
-      },
-    });
-
-    upsertJsonLd("schema-difc-faq", buildFAQPageSchema(DIFC_DTEC_FAQS, `${pageUrl}#faqs`));
-
-    upsertJsonLd("schema-difc-breadcrumb", {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "Home",
-          item: "https://diasuae.ae/",
-        },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "Free Zone Services",
-          item: "https://diasuae.ae/services",
-        },
-        {
-          "@type": "ListItem",
-          position: 3,
-          name: "DIFC & DTEC Tax Planning & Accounting",
-          item: pageUrl,
-        },
-      ],
-    });
+        `${pageUrl}#breadcrumb`
+      )
+    );
 
     window.scrollTo({ top: 0, behavior: "instant" });
-
     return () => {
-      removeJsonLd("schema-difc-dtec");
-      removeJsonLd("schema-difc-faq");
-      removeJsonLd("schema-difc-breadcrumb");
+      removeJsonLd("page-service-jsonld");
+      removeJsonLd("page-faq-jsonld");
+      removeJsonLd("page-breadcrumb-jsonld");
     };
   }, []);
 
-  const handleBackHome = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (onNavigate) {
-      onNavigate("/");
-    } else {
-      window.location.href = "/";
-    }
-  };
+  const currentPath = "/tax-planning-difc";
 
-  return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-gold-500 selection:text-navy-950">
-      <PageNavigation
-        currentPath={typeof window !== "undefined" ? window.location.pathname : "/tax-planning-difc"}
-        onNavigate={(path) => (onNavigate ? onNavigate(path) : (window.location.href = path))}
-      />
+  const jurisdictionSection = (
+    <section className="bg-[#FFFFFF] py-16 lg:py-24 border-b border-[#E2E8F0]">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+        <div className="max-w-2xl space-y-2.5">
+          <span className="inline-block text-xs font-semibold uppercase tracking-wider text-[#856422]">
+            Jurisdiction Specialization
+          </span>
+          <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#0D1B2A] tracking-tight">
+            DIFC vs. DTEC Compliance Requirements
+          </h2>
+          <p className="text-[#475569] text-base leading-[1.65] max-w-[65ch]">
+            Regulated financial firms in DIFC and venture-backed technology startups in DTEC (Dubai Silicon Oasis) face distinct reporting and economic substance expectations.
+          </p>
+        </div>
 
-      {/* Breadcrumb Bar */}
-      <div className="bg-slate-100/80 border-b border-slate-200/60 py-2.5 text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2">
-          <a href="/" onClick={handleBackHome} className="hover:text-navy-950 transition-colors">
-            Home
-          </a>
-          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-          <a href="/#services" onClick={handleBackHome} className="hover:text-navy-950 transition-colors">
-            Free Zone Services
-          </a>
-          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-          <span className="text-navy-950 font-semibold">DIFC & DTEC Accounting & Tax</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] p-7 sm:p-8 space-y-4">
+            <div className="w-10 h-10 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] flex items-center justify-center text-[#0D1B2A]">
+              <Building2 className="w-5 h-5" />
+            </div>
+            <h3 className="font-display text-xl font-bold text-[#0D1B2A]">
+              DIFC (Dubai International Financial Centre)
+            </h3>
+            <p className="text-sm text-[#475569] leading-[1.65]">
+              Common-law financial, holding, and advisory entities operating under DIFC Companies Law and DFSA oversight require rigorous full IFRS accounts, capital adequacy controls, and arm&apos;s-length intercompany documentation.
+            </p>
+            <ul className="space-y-2.5 pt-2 text-sm text-[#334155]">
+              <li className="flex items-start gap-2.5">
+                <Check className="w-4 h-4 text-[#1B4332] shrink-0 mt-0.5" strokeWidth={2.25} />
+                <span>Annual statutory audit preparation under DIFC Companies Law</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <Check className="w-4 h-4 text-[#1B4332] shrink-0 mt-0.5" strokeWidth={2.25} />
+                <span>QFZP Qualifying Income mapping for treasury, holding &amp; advisory entities</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <Check className="w-4 h-4 text-[#1B4332] shrink-0 mt-0.5" strokeWidth={2.25} />
+                <span>Interim &amp; final dividend audit certification for board resolutions</span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] p-7 sm:p-8 space-y-4">
+            <div className="w-10 h-10 rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] flex items-center justify-center text-[#0D1B2A]">
+              <Cpu className="w-5 h-5" />
+            </div>
+            <h3 className="font-display text-xl font-bold text-[#0D1B2A]">
+              DTEC (Dubai Technology Entrepreneur Campus — DSO)
+            </h3>
+            <p className="text-sm text-[#475569] leading-[1.65]">
+              SaaS ventures, AI companies, and e-commerce founders inside Dubai Silicon Oasis need clean monthly cloud accounting, R&amp;D capitalization, and optimal elections between 0% QFZP and Small Business Relief.
+            </p>
+            <ul className="space-y-2.5 pt-2 text-sm text-[#334155]">
+              <li className="flex items-start gap-2.5">
+                <Check className="w-4 h-4 text-[#1B4332] shrink-0 mt-0.5" strokeWidth={2.25} />
+                <span>Cloud ERP setup on Zoho Books, Xero, or QuickBooks Online</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <Check className="w-4 h-4 text-[#1B4332] shrink-0 mt-0.5" strokeWidth={2.25} />
+                <span>Strategic assessment: 0% QFZP vs. Small Business Relief (AED 3M cap)</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <Check className="w-4 h-4 text-[#1B4332] shrink-0 mt-0.5" strokeWidth={2.25} />
+                <span>Monthly burn-rate, gross margin &amp; investor financial packets</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* 5 Statutory QFZP Conditions Table */}
+        <div className="space-y-5">
+          <div className="max-w-2xl space-y-2">
+            <h3 className="font-display text-xl sm:text-2xl font-bold text-[#0D1B2A]">
+              5 Statutory Conditions for 0% QFZP Status
+            </h3>
+            <p className="text-sm text-[#475569] leading-[1.65]">
+              Under Cabinet Decision No. 55 of 2023 and Ministerial Decision No. 139 of 2023, DIFC and DTEC entities must satisfy all five tests each tax period.
+            </p>
+          </div>
+
+          <ComplianceTable
+            caption="Five statutory conditions for 0% Qualifying Free Zone Person status"
+            columns={[
+              { key: "condition", label: "Statutory Condition" },
+              { key: "requirement", label: "FTA Requirement" },
+              { key: "threshold", label: "Benchmark", highlight: true },
+            ]}
+            rows={[
+              {
+                condition: "01. Economic Substance",
+                requirement: "Adequate qualified personnel, physical Free Zone premises, and operational expenditure.",
+                threshold: "Core Income Generating Activities in Free Zone",
+              },
+              {
+                condition: "02. Qualifying Income",
+                requirement: "Revenue from Free Zone persons or enumerated Qualifying Activities (holding, treasury, HQ).",
+                threshold: "0% Corporate Tax Rate",
+              },
+              {
+                condition: "03. Audited IFRS Statements",
+                requirement: "Annual financial statements prepared under IFRS and audited by a UAE-licensed auditor.",
+                threshold: "Mandatory regardless of revenue",
+              },
+              {
+                condition: "04. De Minimis Rule",
+                requirement: "Non-qualifying revenue from mainland or excluded activities stays within statutory limit.",
+                threshold: "Lower of 5% revenue or AED 5,000,000",
+              },
+              {
+                condition: "05. Transfer Pricing",
+                requirement: "All related-party and connected-person transactions meet Article 34 arm's-length rules.",
+                threshold: "OECD Local/Master File & Disclosure",
+              },
+            ]}
+          />
+
+          <ExecutiveCallout title="5-Year Disqualification Warning" accent="gold">
+            Failing any single QFZP condition—including skipping audited IFRS financial statements or breaching the 5% / AED 5,000,000 De Minimis cap—automatically disqualifies the entity from the 0% regime for the current period and the next 4 consecutive tax periods.
+          </ExecutiveCallout>
         </div>
       </div>
+    </section>
+  );
 
-      {/* 2. Hero Section */}
-      <section className="relative bg-gradient-to-br from-navy-950 via-navy-900 to-slate-900 text-white py-20 overflow-hidden">
-        <div className="absolute inset-0 opacity-5 bg-[radial-gradient(#d4af37_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
-        <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs font-bold tracking-wide">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>DIFC Registered &amp; DTEC Tech Hub Compliance Experts</span>
-          </div>
-
-          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight max-w-4xl leading-tight">
-            DIFC &amp; DTEC Corporate Tax Planning, <span className="text-gold-400">0% QFZP</span> &amp; Dividend Audits
-          </h1>
-
-          <p className="text-slate-300 text-base sm:text-lg max-w-3xl leading-relaxed">
-            Protect your Free Zone entity against disqualification. We deliver IFRS financial statement preparation, statutory audit coordination, and corporate tax compliance for regulated financial firms in <strong>DIFC</strong> and venture-backed tech startups in <strong>DTEC (Dubai Silicon Oasis)</strong>.
-          </p>
-
-          <div className="flex flex-wrap gap-4 pt-4">
-            <a
-              href="https://wa.me/971529226958?text=Hi%20Dias%20Accounting,%20I%20would%20like%20to%20consult%20regarding%20DIFC%20Tax%20Compliance%20and%20QFZP%20Structuring."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-gold-500 hover:bg-gold-400 text-navy-950 font-bold px-6 py-3.5 rounded-xl text-sm shadow-xl hover:shadow-gold-500/20 transition-all active:scale-95 cursor-pointer"
-            >
-              <MessageCircle className="w-4 h-4 text-emerald-900" />
-              <span>WhatsApp Glen Dias (+971 52 922 6958)</span>
-            </a>
-            <a
-              href="/pricing"
-              onClick={(e) => {
-                if (onNavigate) {
-                  e.preventDefault();
-                  onNavigate("/pricing");
-                }
-              }}
-              className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-3.5 rounded-xl text-sm border border-white/15 transition-all"
-            >
-              <span>View Fixed-Fee Packages</span>
-              <ChevronRight className="w-4 h-4 text-gold-400" />
-            </a>
-            <a
-              href="#get-quote"
-              className="inline-flex items-center gap-2 bg-[#0d1b2a] hover:bg-[#c5a059] text-[#dec18c] hover:text-[#070d19] font-semibold px-5 py-3.5 rounded-xl text-sm border border-[#c5a059] transition-all"
-            >
-              <span>Book Free 15-Min Review ↓</span>
-            </a>
-          </div>
-
-          {/* Core Metric Highlights */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 border-t border-white/10">
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-              <span className="text-2xl sm:text-3xl font-extrabold text-emerald-400 font-display block">0% QFZP</span>
-              <span className="text-xs text-slate-300">Qualifying Free Zone Rate</span>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-              <span className="text-2xl sm:text-3xl font-extrabold text-gold-400 font-display block">IFRS Full</span>
-              <span className="text-xs text-slate-300">Audited Financial Standards</span>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-              <span className="text-2xl sm:text-3xl font-extrabold text-white font-display block">5% / AED 5M</span>
-              <span className="text-xs text-slate-300">De Minimis Threshold</span>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-              <span className="text-2xl sm:text-3xl font-extrabold text-gold-400 font-display block">DFSA &amp; DSO</span>
-              <span className="text-xs text-slate-300">Regulatory Frameworks</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. Main Content: DIFC & DTEC Specific Requirements */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-16 flex-1">
-        
-        {/* Hub Comparison Grid */}
-        <section className="space-y-6">
-          <div className="max-w-3xl space-y-2">
-            <span className="text-xs font-bold text-gold-600 uppercase tracking-wider">Free Zone Specializations</span>
-            <h2 className="text-2xl sm:text-3xl font-bold font-display text-navy-950">
-              What Are the UAE Corporate Tax Compliance Rules for DIFC &amp; Free Zone Entities?
-            </h2>
-            <p className="text-slate-600 text-sm sm:text-base">
-              Each jurisdiction has distinct regulatory, economic substance, and auditing expectations. Dias Accounting bridges the gap with dedicated solutions for both zones:
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* DIFC Column */}
-            <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-xs space-y-6 flex flex-col justify-between">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-2xl bg-navy-50 border border-navy-200 flex items-center justify-center text-navy-900">
-                    <Building2 className="w-6 h-6" />
-                  </div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-navy-800 bg-navy-100/80 px-3 py-1 rounded-full">
-                    Financial &amp; Professional Hub
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold font-display text-navy-950">
-                  DIFC (Dubai International Financial Centre)
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  DIFC entities operate under common law frameworks and often fall under DFSA oversight. Maintaining rigorous IFRS accounting, managing capital adequacy, and documenting arm’s length cross-border management fees are critical for compliance.
-                </p>
-                <ul className="space-y-2 text-xs text-slate-700">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                    <span>Annual statutory audit preparation in accordance with DIFC Companies Law</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                    <span>QFZP Qualifying Income analysis for treasury, holding, and advisory operations</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                    <span>Economic substance compliance (adequate physical office &amp; qualified staff)</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="pt-4 border-t border-slate-100">
-                <a
-                  href="mailto:info@diasuae.ae?subject=Inquiry%20regarding%20DIFC%20Accounting%20Services"
-                  className="inline-flex items-center gap-2 text-xs font-bold text-navy-950 hover:text-gold-600 transition-colors"
-                >
-                  <span>Request DIFC Audit Readiness Review</span>
-                  <ChevronRight className="w-4 h-4" />
-                </a>
-              </div>
-            </div>
-
-            {/* DTEC Column */}
-            <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-xs space-y-6 flex flex-col justify-between">
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700">
-                    <Cpu className="w-6 h-6" />
-                  </div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100/80 px-3 py-1 rounded-full">
-                    Technology &amp; Startup Campus
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold font-display text-navy-950">
-                  DTEC (Dubai Technology Entrepreneur Campus - DSO)
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  Located within Dubai Silicon Oasis (DSO), DTEC is the epicenter for software companies, SaaS ventures, e-commerce, and venture-backed innovators. We manage lean bookkeeping, investor cap table reporting, and R&amp;D capitalization accounting.
-                </p>
-                <ul className="space-y-2 text-xs text-slate-700">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                    <span>Cloud ERP setup (Zoho Books, QuickBooks Online, Xero) tailored for tech</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                    <span>Evaluation between 0% QFZP status vs. Small Business Relief (SBR)</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                    <span>Monthly burn rate, gross margin, and investor financial packet preparation</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="pt-4 border-t border-slate-100">
-                <a
-                  href="mailto:info@diasuae.ae?subject=Inquiry%20regarding%20DTEC%20Accounting%20Services"
-                  className="inline-flex items-center gap-2 text-xs font-bold text-navy-950 hover:text-gold-600 transition-colors"
-                >
-                  <span>Request DTEC Tech Accounting Proposal</span>
-                  <ChevronRight className="w-4 h-4" />
-                </a>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Section 2: QFZP 0% Compliance Safeguards */}
-        <section className="bg-slate-100/70 border border-slate-200 rounded-3xl p-8 sm:p-12 space-y-8">
-          <div className="max-w-3xl space-y-3">
-            <span className="text-xs font-bold text-gold-600 uppercase tracking-wider">Corporate Tax Law Deep Dive</span>
-            <h2 className="text-2xl sm:text-3xl font-bold font-display text-navy-950">
-              How Do DIFC Companies Qualify for 0% Corporate Tax under the QFZP Regime?
-            </h2>
-            <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-              Under <strong>Cabinet Decision No. 55 of 2023</strong> and <strong>Ministerial Decision No. 139 of 2023</strong>, an entity in DIFC or DTEC qualifies for 0% Corporate Tax only if it satisfies all 5 statutory conditions. Failing any single condition disqualifies the company for <strong>5 consecutive tax periods</strong>:
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-white rounded-2xl p-6 border border-slate-200/80 space-y-2">
-              <span className="text-xs font-bold text-gold-600 block">Condition 01</span>
-              <h3 className="font-bold text-navy-950 text-sm">Physical Economic Substance</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Maintain adequate qualified personnel, physical premises in the Free Zone, and adequate operational expenditures. Flexi-desks without resident staff risk disqualification upon FTA audit.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-2xl p-6 border border-slate-200/80 space-y-2">
-              <span className="text-xs font-bold text-gold-600 block">Condition 02</span>
-              <h3 className="font-bold text-navy-950 text-sm">Derives Qualifying Income</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Income must stem from transactions with other Free Zone persons or specifically enumerated Qualifying Activities (such as fund management, treasury services, headquarters operations).
-              </p>
-            </div>
-
-            <div className="bg-white rounded-2xl p-6 border border-slate-200/80 space-y-2">
-              <span className="text-xs font-bold text-gold-600 block">Condition 03</span>
-              <h3 className="font-bold text-navy-950 text-sm">Audited Financial Statements</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Mandatory annual financial statements prepared under IFRS and audited by an accredited UAE auditor. Un-audited accounts automatically void QFZP status.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-2xl p-6 border border-slate-200/80 space-y-2">
-              <span className="text-xs font-bold text-gold-600 block">Condition 04</span>
-              <h3 className="font-bold text-navy-950 text-sm">De Minimis Rule Compliance</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Non-qualifying revenue derived from mainland UAE or non-qualifying activities must not exceed the lower of <strong>5% of total revenue</strong> or <strong>AED 5,000,000</strong>.
-              </p>
-            </div>
-
-            <div className="bg-white rounded-2xl p-6 border border-slate-200/80 space-y-2">
-              <span className="text-xs font-bold text-gold-600 block">Condition 05</span>
-              <h3 className="font-bold text-navy-950 text-sm">Arm's Length Transfer Pricing</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                All connected person and related party dealings must satisfy Article 34 OECD transfer pricing guidelines, supported by written intercompany agreements.
-              </p>
-            </div>
-
-            <div className="bg-navy-900 text-white rounded-2xl p-6 border border-navy-800 space-y-2 flex flex-col justify-between">
-              <div>
-                <span className="text-xs font-bold text-gold-400 block">Need a QFZP Audit?</span>
-                <h3 className="font-bold text-white text-sm">Our Team Evaluates Your Exposure</h3>
-                <p className="text-xs text-slate-300 leading-relaxed mt-1">
-                  We calculate your de minimis ratio and verify qualifying income before you submit your return on EmaraTax.
-                </p>
-              </div>
-              <a
-                href="mailto:info@diasuae.ae?subject=QFZP%20Substance%20and%20De%20Minimis%20Audit%20Request"
-                className="inline-flex items-center gap-1.5 text-xs text-gold-400 font-bold hover:text-gold-300 pt-3"
-              >
-                <span>Contact info@diasuae.ae</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </a>
-            </div>
-          </div>
-        </section>
-
-        {/* Section 3: Engagement Workflow */}
-        <section className="bg-navy-950 text-white rounded-3xl p-8 sm:p-12 space-y-8">
-          <div className="max-w-2xl space-y-3">
-            <span className="text-xs font-bold text-gold-400 uppercase tracking-widest">Enterprise Support Suite</span>
-            <h2 className="text-2xl sm:text-3xl font-bold font-display text-white">
-              Why Rely on Certified Corporate Tax Consultants in DIFC Over Traditional Audit Firms?
-            </h2>
-            <p className="text-slate-300 text-sm leading-relaxed">
-              Serving hundreds of companies across Dubai's specialized zones, our chartered team delivers full-lifecycle financial oversight without hourly billing surprises:
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-2">
-              <span className="text-emerald-400 font-bold text-lg font-display">01. Bookkeeping</span>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Monthly double-entry general ledger maintenance, cloud invoice processing, and continuous bank reconciliation.
-              </p>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-2">
-              <span className="text-emerald-400 font-bold text-lg font-display">02. VAT Filing</span>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Quarterly Form VAT201 preparation, reverse charge accounting on foreign software purchases, and input VAT recoveries.
-              </p>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-2">
-              <span className="text-emerald-400 font-bold text-lg font-display">03. Audit Dossier</span>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Drafting balance sheet working papers, trial balances, and management representations for independent auditor sign-off.
-              </p>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-2">
-              <span className="text-emerald-400 font-bold text-lg font-display">04. EmaraTax Submission</span>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Finalizing the annual Corporate Tax return with proper QFZP or SBR elections, guaranteeing zero administrative fines.
-              </p>
-            </div>
-          </div>
-
-          <div className="pt-4 flex flex-wrap items-center gap-4">
-            <a
-              href={`https://wa.me/971529226958?text=${encodeURIComponent(
-                "Hi Dias Accounting, I would like to consult regarding DIFC & DTEC Accounting Services."
-              )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-gold-500 hover:bg-gold-400 text-navy-950 font-bold px-6 py-3.5 rounded-xl text-sm transition-all active:scale-95 cursor-pointer"
-            >
-              <MessageCircle className="w-4 h-4 text-emerald-800" />
-              <span>WhatsApp Us: +971 52 922 6958</span>
-            </a>
-            <a
-              href="tel:+971529226958"
-              className="inline-flex items-center gap-2 text-gold-400 hover:text-gold-300 text-sm font-semibold transition-colors"
-            >
-              <Phone className="w-4 h-4" />
-              <span>Direct Advisory Desk: +971 52 922 6958</span>
-            </a>
-          </div>
-        </section>
-
-        {/* Section 4: Search Console FAQs */}
-        <section className="bg-white border border-slate-200 rounded-3xl p-8 sm:p-12 space-y-6">
-          <div className="max-w-3xl space-y-2">
-            <span className="text-xs font-bold text-gold-600 uppercase tracking-wider">Search Console Insights</span>
-            <h2 className="text-2xl sm:text-3xl font-bold font-display text-navy-950">
-              Frequently Asked Questions: DIFC Tax Compliance, Audits &amp; Transfer Pricing
-            </h2>
-            <p className="text-slate-600 text-sm">
-              Authoritative answers to the most common queries CFOs and founders search for in the UAE:
-            </p>
-          </div>
-
-          <div className="space-y-4 pt-4">
-            {DIFC_DTEC_FAQS.map((faq, idx) => (
-              <details
-                key={idx}
-                open={idx === 0}
-                className="group border border-slate-200 rounded-2xl p-5 open:bg-slate-50 transition-colors"
-              >
-                <summary className="font-display font-bold text-navy-950 text-sm sm:text-base cursor-pointer list-none flex items-center justify-between gap-4">
-                  <span>{faq.question}</span>
-                  <ChevronRight className="w-4 h-4 text-gold-500 transition-transform group-open:rotate-90 shrink-0" />
-                </summary>
-                <p className="mt-3 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
-                  {faq.answer}
-                </p>
-              </details>
-            ))}
-          </div>
-
-          <div className="pt-6 border-t border-slate-100 flex flex-wrap gap-4 text-xs font-semibold text-navy-950">
-            <span>Explore Related Resources:</span>
-            <a
-              href="/pricing"
-              onClick={(e) => {
-                if (onNavigate) {
-                  e.preventDefault();
-                  onNavigate("/pricing");
-                }
-              }}
-              className="text-gold-600 hover:underline flex items-center gap-1"
-            >
-              <span>Fixed-Fee Retainer Packages</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </a>
-            <a
-              href="/company-setup"
-              onClick={(e) => {
-                if (onNavigate) {
-                  e.preventDefault();
-                  onNavigate("/company-setup");
-                }
-              }}
-              className="text-gold-600 hover:underline flex items-center gap-1"
-            >
-              <span>UAE Free Zone Setup Hub</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </a>
-            <a
-              href="/uae-tax-planner"
-              onClick={(e) => {
-                if (onNavigate) {
-                  e.preventDefault();
-                  onNavigate("/uae-tax-planner");
-                }
-              }}
-              className="text-gold-600 hover:underline flex items-center gap-1"
-            >
-              <span>UAE Tax Planner</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </a>
-          </div>
-        </section>
-
-      </main>
-
-      <LeadQuoteSection variant="difc" />
-
-      {/* 4. Footer */}
-      <footer className="bg-navy-950 text-white border-t border-white/5 py-12 text-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-white/10 pb-6">
-            <DiasLogo className="w-10 h-10" showText={true} textSize="text-xl" textColor="text-white" />
-            <div className="flex flex-wrap gap-6 text-slate-400">
-              <a href="/small-business-tax-relief" className="hover:text-gold-400 transition-colors">Small Business Tax Relief</a>
-              <a href="/difc-dtec-accounting" className="text-gold-400 font-semibold">DIFC & DTEC Accounting</a>
-              <a href="/dividends-audit" className="hover:text-gold-400 transition-colors">Dividends Audit</a>
-              <a href="/#contact" onClick={handleBackHome} className="hover:text-gold-400 transition-colors">Contact</a>
-            </div>
-          </div>
-          <div className="flex flex-col md:flex-row justify-between items-center gap-2 text-slate-500 text-[11px]">
-            <p>© {new Date().getFullYear()} Dias Accounting and Tax Consulting LLC. Trade Licence: 2646813.01. Shams, Sharjah, UAE.</p>
-            <p>Direct Inquiries: <a href="mailto:info@diasuae.ae" className="text-gold-400 underline">info@diasuae.ae</a> | Tel: +971 52 922 6958</p>
-          </div>
-        </div>
-      </footer>
-    </div>
+  return (
+    <ServicePageTemplate
+      currentPath={currentPath}
+      breadcrumbName="DIFC & DTEC Accounting & Tax"
+      eyebrow="DIFC & DTEC Compliance Practice"
+      title="DIFC & DTEC Accounting, 0% QFZP & Dividend Audits"
+      subtitle="Full IFRS bookkeeping, statutory interim and final dividend audits, and 0% Qualifying Free Zone Person tax compliance for financial firms in DIFC and venture-backed startups in DTEC."
+      metadataStrip={[
+        { label: "Qualifying Free Zone Rate", value: "0% QFZP on Qualifying Income" },
+        { label: "De Minimis Ceiling", value: "Lower of 5% or AED 5,000,000" },
+        { label: "Monthly Retainers", value: "Fixed Fees From AED 400 / Month" },
+      ]}
+      customTopSection={jurisdictionSection}
+      deliverablesHeading="What's Included for DIFC & DTEC Entities"
+      deliverablesSubheading="End-to-end financial reporting, quarterly VAT 201 returns, and annual EmaraTax Corporate Tax submissions without hourly billing surprises."
+      deliverables={[
+        {
+          title: "Monthly IFRS Bookkeeping",
+          description:
+            "Double-entry general ledger maintenance, cloud invoice coding, and continuous bank reconciliation.",
+          icon: <FileCheck2 className="w-5 h-5" />,
+        },
+        {
+          title: "0% QFZP De Minimis Monitoring",
+          description:
+            "Quarterly tracking of qualifying vs. non-qualifying income to protect against 5-year disqualification.",
+          icon: <ShieldCheck className="w-5 h-5" />,
+        },
+        {
+          title: "Statutory Audit Dossier",
+          description:
+            "Complete IFRS trial balances, working papers, and direct coordination with approved DIFC/DSO auditors.",
+          icon: <Scale className="w-5 h-5" />,
+        },
+        {
+          title: "Interim & Final Dividend Audits",
+          description:
+            "Verified distributable reserves certification and board resolution packs under DIFC Companies Law.",
+          icon: <TrendingUp className="w-5 h-5" />,
+        },
+        {
+          title: "Quarterly 5% VAT Form 201",
+          description:
+            "Accurate reverse-charge accounting on cross-border software, input VAT recovery, and timely filing.",
+          icon: <Building2 className="w-5 h-5" />,
+        },
+        {
+          title: "Transfer Pricing & EmaraTax Filing",
+          description:
+            "Article 34 connected-person benchmarking, TP disclosure schedules, and annual CT submission.",
+          icon: <Cpu className="w-5 h-5" />,
+        },
+      ]}
+      processHeading="How We Deliver DIFC & DTEC Compliance"
+      processSteps={[
+        {
+          number: "01",
+          title: "Bookkeeping & Close",
+          description:
+            "Monthly IFRS double-entry ledgers, cloud invoice processing, and multi-currency bank reconciliations.",
+        },
+        {
+          number: "02",
+          title: "Quarterly VAT Filing",
+          description:
+            "Form VAT 201 computation, reverse-charge checks on international SaaS, and full input tax recovery.",
+        },
+        {
+          number: "03",
+          title: "Audit Dossier Prep",
+          description:
+            "Balance sheet schedules, working papers, and management representations ready for independent auditor sign-off.",
+        },
+        {
+          number: "04",
+          title: "EmaraTax Submission",
+          description:
+            "Annual Corporate Tax return with verified QFZP or SBR elections submitted ahead of statutory deadlines.",
+        },
+      ]}
+      whoIsItForHeading="Who This Practice Serves"
+      whoIsItForItems={[
+        "DFSA-regulated advisory, wealth, and financial institutions registered in DIFC",
+        "DIFC holding companies, SPVs, and family offices requiring dividend audit certification",
+        "DTEC & Dubai Silicon Oasis SaaS, fintech, and venture-backed technology startups",
+        "Free Zone entities verifying 0% QFZP substance, audited IFRS accounts, and Transfer Pricing",
+      ]}
+      regulatorySnapshot={{
+        law: "Federal Decree-Law No. 47/2022, Cabinet Decision 55/2023 & DIFC Companies Law",
+        authority: "FTA EmaraTax, DFSA, DIFC Authority & Dubai Silicon Oasis (DTEC)",
+        deadline: "Audited IFRS accounts annually; Corporate Tax return within 9 months of year-end",
+        plan: "Retainers from AED 400/mo | QFZP Shield Pro AED 1,499",
+      }}
+      faqsHeading="DIFC & DTEC Tax Compliance FAQs"
+      faqs={DIFC_DTEC_FAQS.map((f) => ({ question: f.question, answer: f.answer }))}
+      relatedServices={[
+        { label: "Dividends Audit & Certification", path: "/dividends-audit" },
+        { label: "Corporate Tax Advisory", path: "/services/corporate-tax-advisory" },
+        { label: "Transfer Pricing Services", path: "/services/transfer-pricing" },
+        { label: "2026 UAE Tax Calculator", path: "/uae-tax-planner" },
+      ]}
+      closingCta={{
+        eyebrow: "DIFC & DTEC Specialist Desk",
+        title: "Protect Your 0% QFZP Status Before Filing",
+        description:
+          "Book a confidential 15-minute review with our FTA-registered tax specialists to verify your De Minimis ratio, IFRS audit readiness, and dividend compliance.",
+        ctaLabel: "Book Free Consultation",
+      }}
+      onNavigate={navigate}
+      onOpenAudit={onOpenAudit}
+      onOpenPrivacy={onOpenPrivacy}
+      onOpenGooglePreferred={onOpenGooglePreferred}
+    />
   );
 };
 

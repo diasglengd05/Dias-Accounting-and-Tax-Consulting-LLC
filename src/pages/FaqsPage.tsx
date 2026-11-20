@@ -4,17 +4,18 @@ import {
   ChevronRight,
   ChevronDown,
   Search,
-  MessageCircle,
-  Phone,
-  ArrowRight,
-  ShieldCheck,
-  Building,
-  CheckCircle2,
-  FileCheck,
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
-import { applyPageSEO, CORE_HOMEPAGE_FAQS, buildFAQPageSchema, upsertJsonLd, removeJsonLd } from "../lib/seo";
+import SectionCTA from "../components/editorial/SectionCTA";
+import {
+  applyPageSEO,
+  CORE_HOMEPAGE_FAQS,
+  buildBreadcrumbSchema,
+  buildFAQPageSchema,
+  upsertJsonLd,
+  removeJsonLd,
+} from "../lib/seo";
 
 interface FaqsPageProps {
   onNavigate: (path: string) => void;
@@ -240,219 +241,195 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
 
   useEffect(() => {
     applyPageSEO({
-      title: "UAE Tax & Accounting FAQs | Dias UAE",
+      title: "UAE Corporate Tax, VAT & Accounting FAQs | Dias UAE",
       description:
-        "Instant, authoritative answers to top questions on the 9% UAE Corporate Tax, AED 3M Small Business Relief, 0% QFZP Free Zone conditions, and VAT201 filing.",
+        "Clear answers to top UAE tax questions: 9% Corporate Tax, AED 3M Small Business Relief, 0% QFZP Free Zone rules, VAT 201 filing, and fixed-fee pricing.",
       canonicalPath: "/faqs",
       keywords:
         "uae tax faqs, corporate tax questions dubai, small business relief faq, vat compliance answers",
-      ogImage: "/api/og?title=UAE+Tax+%26+Accounting+FAQs&author=Glen+Dias&tag=Authoritative+Answers",
     });
 
-    // Replace homepage FAQ script with full /faqs FAQPage + BreadcrumbList schema to prevent duplicate FAQPage blocks
-    removeJsonLd("homepage-faq-jsonld");
-    upsertJsonLd("faqs-page-jsonld", faqPageSchema);
-    upsertJsonLd("faqs-breadcrumb-jsonld", {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "Home",
-          item: "https://diasuae.ae/",
-        },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "UAE Tax & Accounting FAQs",
-          item: "https://diasuae.ae/faqs",
-        },
-      ],
-    });
+    upsertJsonLd("page-faq-jsonld", faqPageSchema);
+    upsertJsonLd(
+      "page-breadcrumb-jsonld",
+      buildBreadcrumbSchema([
+        { name: "Home", path: "/" },
+        { name: "FAQs", path: "/faqs" },
+      ])
+    );
 
     window.scrollTo({ top: 0, behavior: "instant" });
 
     return () => {
-      removeJsonLd("faqs-page-jsonld");
-      removeJsonLd("faqs-breadcrumb-jsonld");
+      removeJsonLd("page-faq-jsonld");
+      removeJsonLd("page-breadcrumb-jsonld");
     };
   }, [faqPageSchema]);
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-800 antialiased selection:bg-gold-500/30 selection:text-navy-950">
+    <div className="min-h-screen flex flex-col bg-[#FFFFFF] font-sans text-[#0D1B2A] antialiased">
       <PageNavigation
         currentPath="/faqs"
         onNavigate={onNavigate}
         onOpenAudit={onOpenAudit}
       />
 
-      <main id="main-content">
-        {/* Hero Section */}
-        <section className="relative bg-gradient-to-b from-navy-950 via-navy-900 to-navy-950 text-white py-16 lg:py-24 border-b border-gold-500/20 overflow-hidden">
-          <div className="absolute -top-32 right-0 w-[500px] h-[500px] bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="flex items-center gap-2 text-xs font-mono text-gold-400 mb-4">
+      <main id="main-content" className="flex-1">
+        {/* Executive Light Hero */}
+        <section className="bg-[#FFFFFF] border-b border-[#E2E8F0] pt-12 pb-14 lg:pt-16 lg:pb-18">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav
+              aria-label="Breadcrumb"
+              className="flex items-center gap-2 text-xs text-[#64748B] mb-8"
+            >
               <button
                 type="button"
                 onClick={() => onNavigate("/")}
-                className="hover:underline cursor-pointer"
+                className="hover:text-[#0D1B2A] transition-colors cursor-pointer"
               >
                 Home
               </button>
               <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-              <span className="text-white">Frequently Asked Questions</span>
-            </div>
+              <span className="text-[#0D1B2A] font-medium">FAQs</span>
+            </nav>
 
-            <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-500/10 border border-gold-400/30 text-gold-300 text-xs font-semibold uppercase tracking-wider mb-4">
-                <HelpCircle className="w-3.5 h-3.5 text-gold-400" />
-                <span>Authoritative Legal &amp; Accounting Guidance</span>
-              </div>
-              <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-6">
+            <div className="max-w-3xl space-y-4">
+              <span className="inline-block text-xs font-semibold uppercase tracking-wider text-[#856422]">
+                Authoritative UAE Tax &amp; Accounting Guidance
+              </span>
+              <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0D1B2A] tracking-tight leading-[1.12]">
                 UAE Corporate Tax, VAT &amp; Bookkeeping FAQs
               </h1>
-              <p className="text-slate-300 text-base sm:text-lg leading-relaxed mb-8">
+              <p className="text-base sm:text-lg text-[#475569] leading-[1.65] max-w-[62ch]">
                 Clear, definitive answers to the most common tax registration, 0% Small Business Relief eligibility, audit filing, and pricing questions faced by UAE businesses.
               </p>
 
               {/* Search Bar */}
-              <div className="relative max-w-xl">
-                <Search className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
-                <input
-                  type="text"
-                  placeholder="Type a question or topic (e.g. SBR, 9% threshold, pricing, penalties)..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-xl pl-12 pr-4 py-3.5 text-sm text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-gold-500"
-                />
+              <div className="pt-3 max-w-xl">
+                <label htmlFor="faqs-search" className="sr-only">
+                  Search UAE tax and accounting FAQs
+                </label>
+                <div className="relative">
+                  <Search className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <input
+                    id="faqs-search"
+                    type="search"
+                    placeholder="Search a topic (e.g. SBR, 9% threshold, pricing, penalties)..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full min-h-[48px] bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-11 pr-4 py-3 text-sm text-[#0D1B2A] placeholder:text-slate-400 focus:bg-[#FFFFFF] focus:outline-none focus:ring-2 focus:ring-[#1B4332]/20 focus:border-[#1B4332] transition-colors"
+                  />
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* Content Section */}
-        <section className="py-12 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          {/* Category Filter Tabs */}
-          <div className="flex flex-wrap items-center gap-2 mb-10 pb-4 border-b border-slate-200">
-            {categoryList.map((cat) => (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`py-2 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
-                  selectedCategory === cat.id
-                    ? "bg-navy-950 text-white font-bold shadow-xs"
-                    : "bg-white text-slate-600 hover:text-navy-950 border border-slate-200 hover:border-slate-300"
-                }`}
-              >
-                {cat.label}
-              </button>
-            ))}
-          </div>
+        <section className="bg-[#F8FAFC] py-14 lg:py-20">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* Category Filter Tabs */}
+            <div
+              role="tablist"
+              aria-label="Filter FAQs by category"
+              className="flex flex-wrap items-center gap-2 mb-10 pb-5 border-b border-[#E2E8F0]"
+            >
+              {categoryList.map((cat) => {
+                const isActive = selectedCategory === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={isActive}
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={`min-h-[44px] py-2 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
+                      isActive
+                        ? "bg-[#1B4332] text-white"
+                        : "bg-[#FFFFFF] text-[#475569] hover:text-[#0D1B2A] border border-[#E2E8F0] hover:border-slate-300"
+                    }`}
+                  >
+                    {cat.label}
+                  </button>
+                );
+              })}
+            </div>
 
-          {/* Accordion List */}
-          <div className="space-y-4">
-            {filteredFaqs.map((faq) => {
-              const isOpen = openFaq === faq.id;
-              return (
-                <div
-                  key={faq.id}
-                  className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:border-gold-400/60 transition-colors"
-                >
+            {/* Accordion List */}
+            <div className="space-y-3.5">
+              {filteredFaqs.map((faq) => {
+                const isOpen = openFaq === faq.id;
+                return (
+                  <div
+                    key={faq.id}
+                    className="bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0] overflow-hidden shadow-[0_4px_16px_-12px_rgba(13,27,42,0.06)] transition-colors"
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setOpenFaq(isOpen ? null : faq.id)}
+                      aria-expanded={isOpen}
+                      className="w-full min-h-[60px] p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer"
+                    >
+                      <div className="space-y-1">
+                        <span className="block text-xs font-semibold uppercase tracking-wider text-[#856422]">
+                          {faq.category}
+                        </span>
+                        <h2 className="font-display text-base sm:text-lg font-bold text-[#0D1B2A] leading-snug">
+                          {faq.question}
+                        </h2>
+                      </div>
+                      <ChevronDown
+                        className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-200 ${
+                          isOpen ? "rotate-180 text-[#1B4332]" : ""
+                        }`}
+                        aria-hidden="true"
+                      />
+                    </button>
+
+                    {isOpen && (
+                      <div className="px-5 sm:px-6 pb-6 pt-3 text-sm sm:text-[15px] text-[#475569] leading-[1.65] border-t border-slate-100">
+                        <p className="whitespace-pre-line max-w-[68ch]">{faq.answer}</p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {filteredFaqs.length === 0 && (
+              <div className="text-center py-14 bg-[#FFFFFF] rounded-2xl border border-[#E2E8F0] p-8 space-y-3">
+                <HelpCircle className="w-10 h-10 text-slate-300 mx-auto" aria-hidden="true" />
+                <h2 className="font-display text-lg font-bold text-[#0D1B2A]">
+                  No matching answers found
+                </h2>
+                <p className="text-[#475569] text-sm max-w-sm mx-auto">
+                  Speak directly with our FTA-registered tax advisors for guidance tailored to your entity.
+                </p>
+                <div className="pt-2">
                   <button
                     type="button"
-                    onClick={() => setOpenFaq(isOpen ? null : faq.id)}
-                    className="w-full p-6 text-left flex items-center justify-between gap-4 cursor-pointer"
+                    onClick={() => onNavigate("/contact")}
+                    className="min-h-[44px] inline-flex items-center justify-center rounded-xl bg-[#1B4332] hover:bg-[#143326] text-white font-semibold px-5 py-2.5 text-sm transition-colors cursor-pointer"
                   >
-                    <div>
-                      <span className="inline-block px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-600 font-mono text-[10px] font-bold uppercase tracking-wider mb-2">
-                        {faq.category}
-                      </span>
-                      <h2 className="font-display text-base sm:text-lg font-bold text-navy-950">
-                        {faq.question}
-                      </h2>
-                    </div>
-                    <div className="w-8 h-8 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0">
-                      <ChevronDown
-                        className={`w-4 h-4 text-slate-600 transition-transform duration-200 ${
-                          isOpen ? "rotate-180 text-gold-600" : ""
-                        }`}
-                      />
-                    </div>
+                    Ask a Tax Advisor
                   </button>
-
-                  {isOpen && (
-                    <div className="px-6 pb-6 pt-2 text-xs sm:text-sm text-slate-600 leading-relaxed border-t border-slate-100 bg-slate-50/40">
-                      <p className="whitespace-pre-line">{faq.answer}</p>
-                    </div>
-                  )}
                 </div>
-              );
-            })}
+              </div>
+            )}
           </div>
-
-          {filteredFaqs.length === 0 && (
-            <div className="text-center py-16 bg-white rounded-2xl border border-slate-200 p-8">
-              <HelpCircle className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-              <h3 className="font-display text-lg font-bold text-navy-950 mb-1">
-                No matching answers found
-              </h3>
-              <p className="text-slate-500 text-xs max-w-sm mx-auto mb-4">
-                Ask our senior tax advisors directly for personalized answers to your questions.
-              </p>
-              <a
-                href={`https://wa.me/971529226958?text=${encodeURIComponent(
-                  "Hello Glen Dias, I have a specific question about UAE tax compliance and company formation that was not answered in your FAQ."
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold px-5 py-2.5 rounded-xl text-xs cursor-pointer inline-flex items-center gap-1.5 transition-all shadow-sm"
-              >
-                <MessageCircle className="w-3.5 h-3.5" />
-                <span>Ask Question on WhatsApp</span>
-              </a>
-            </div>
-          )}
-
-          {/* Bottom Help Desk Card */}
-          <div className="mt-14 p-8 rounded-3xl bg-navy-950 text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
-            <div className="space-y-1 text-center md:text-left">
-              <h3 className="font-display text-xl font-bold">
-                Have a specific question not covered here?
-              </h3>
-              <p className="text-xs text-slate-300">
-                Contact Glen Dias and our FTA registered tax agents for a direct consultation.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-3">
-              <a
-                href={`https://wa.me/971529226958?text=${encodeURIComponent(
-                  "Hello Dias UAE Advisory Team, I have a question regarding UAE Corporate Tax, VAT, or Company Formation and would like to chat."
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-emerald-600 hover:bg-emerald-500 text-white font-display font-bold px-5 py-3 rounded-xl text-xs flex items-center gap-2 shadow-md cursor-pointer transition-all"
-              >
-                <MessageCircle className="w-4 h-4" />
-                <span>Chat on WhatsApp</span>
-              </a>
-              <a
-                href={`https://wa.me/971529226958?text=${encodeURIComponent(
-                  "Hello Glen Dias, I would like to schedule a free 30-minute consultation regarding my UAE company setup and tax obligations."
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold px-5 py-3 rounded-xl text-xs cursor-pointer flex items-center gap-2 shadow-md transition-all"
-              >
-                <MessageCircle className="w-4 h-4 text-navy-950" />
-                <span>Schedule Consultation on WhatsApp</span>
-              </a>
-            </div>
-          </div>
-
         </section>
+
+        {/* Unified Single-CTA Footer Strip */}
+        <SectionCTA
+          eyebrow="Direct Advisory Support"
+          title="Have a specific UAE tax question not covered here?"
+          description="Speak directly with Glen Dias and our FTA-registered tax agents for clear guidance on Corporate Tax, VAT, and IFRS compliance."
+          ctaLabel="Book Free Consultation"
+          onCtaClick={() => onNavigate("/contact")}
+          secondaryLabel="Try 2026 Tax Calculator"
+          onSecondaryClick={() => onNavigate("/uae-tax-planner")}
+          variant="navy"
+        />
       </main>
 
       <PageFooter

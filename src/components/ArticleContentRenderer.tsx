@@ -7,22 +7,13 @@ import React from "react";
 export function renderFormattedInline(text: string): React.ReactNode {
   if (!text) return null;
 
-  // Clean any leading markdown heading hashes or bullet asterisks if passed directly
   const cleanedText = text.replace(/^[*#]+\s*/, "");
-
-  // Tokenize by inline markdown tokens:
-  // 1. [text](url)
-  // 2. ***bold italic***
-  // 3. **bold**
-  // 4. *italic*
-  // 5. `code`
   const regex = /(\[[^\]]+\]\([^)]+\)|\*\*\*[^*]+\*\*\*|\*\*[^*]+\*\*|\*[^*]+\*|`[^`]+`)/g;
   const parts = cleanedText.split(regex);
 
   return parts.map((part, index) => {
     if (!part) return null;
 
-    // Link: [text](url)
     const linkMatch = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
     if (linkMatch) {
       const linkText = linkMatch[1].replace(/[*#]/g, "");
@@ -33,57 +24,52 @@ export function renderFormattedInline(text: string): React.ReactNode {
           href={linkUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-gold-600 hover:text-gold-700 underline font-medium"
+          className="text-[#1B4332] hover:text-[#0D1B2A] underline underline-offset-2 font-medium transition-colors"
         >
           {linkText}
         </a>
       );
     }
 
-    // Bold-italic: ***text***
     const boldItalicMatch = part.match(/^\*\*\*([^*]+)\*\*\*$/);
     if (boldItalicMatch) {
       const content = boldItalicMatch[1].replace(/[*#]/g, "");
       return (
-        <strong key={index} className="font-bold text-navy-950">
+        <strong key={index} className="font-semibold text-[#0D1B2A]">
           <em>{content}</em>
         </strong>
       );
     }
 
-    // Bold: **text**
     const boldMatch = part.match(/^\*\*([^*]+)\*\*$/);
     if (boldMatch) {
       const content = boldMatch[1].replace(/[*#]/g, "");
       return (
-        <strong key={index} className="font-semibold text-navy-950">
+        <strong key={index} className="font-semibold text-[#0D1B2A]">
           {content}
         </strong>
       );
     }
 
-    // Italic: *text*
     const italicMatch = part.match(/^\*([^*]+)\*$/);
     if (italicMatch) {
       const content = italicMatch[1].replace(/[*#]/g, "");
       return (
-        <em key={index} className="italic text-slate-800">
+        <em key={index} className="italic text-[#334155]">
           {content}
         </em>
       );
     }
 
-    // Inline code: `code`
     const codeMatch = part.match(/^`([^`]+)`$/);
     if (codeMatch) {
       return (
-        <code key={index} className="bg-slate-100 text-navy-900 text-xs px-1.5 py-0.5 rounded font-mono">
+        <code key={index} className="bg-[#F8FAFC] border border-[#E2E8F0] text-[#0D1B2A] text-xs px-1.5 py-0.5 rounded font-mono">
           {codeMatch[1]}
         </code>
       );
     }
 
-    // Plain text: safely remove any remaining stray * or # symbols
     const sanitized = part.replace(/[*#]/g, "");
     return <React.Fragment key={index}>{sanitized}</React.Fragment>;
   });
@@ -94,8 +80,8 @@ interface ArticleContentRendererProps {
 }
 
 /**
- * ArticleContentRenderer transforms raw markdown articles into beautifully
- * styled typography without showing any raw '#' (hashes) or '*' (asterisks).
+ * Transforms raw markdown articles into executive editorial typography
+ * with zebra-striped compliance tables and subtle gold-accent callout boxes.
  */
 export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ content }) => {
   if (!content) return null;
@@ -108,20 +94,17 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
     const rawLine = lines[i];
     const trimmed = rawLine.trim();
 
-    // Skip empty lines
     if (!trimmed) {
       i++;
       continue;
     }
 
-    // Horizontal Rule: --- or *** or ___
     if (/^(\-{3,}|\*{3,}|_{3,})$/.test(trimmed)) {
-      elements.push(<hr key={`hr-${i}`} className="my-6 border-slate-200" />);
+      elements.push(<hr key={`hr-${i}`} className="my-8 border-[#E2E8F0]" />);
       i++;
       continue;
     }
 
-    // Markdown Table: lines starting and ending with |
     if (trimmed.startsWith("|") && trimmed.endsWith("|")) {
       const tableLines: string[] = [];
       while (i < lines.length && lines[i].trim().startsWith("|") && lines[i].trim().endsWith("|")) {
@@ -138,27 +121,35 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
         const bodyLines = isSeparator ? tableLines.slice(2) : tableLines.slice(1);
 
         elements.push(
-          <div key={`table-${i}`} className="my-6 overflow-x-auto rounded-xl border border-slate-200 shadow-xs">
-            <table className="min-w-full divide-y divide-slate-200 text-left text-xs sm:text-sm">
-              <thead className="bg-slate-50 text-navy-950 font-bold uppercase tracking-wider text-[11px]">
-                <tr>
+          <div
+            key={`table-${i}`}
+            className="my-8 overflow-x-auto rounded-2xl border border-[#E2E8F0] bg-[#FFFFFF] shadow-[0_6px_24px_-16px_rgba(13,27,42,0.06)]"
+          >
+            <table className="min-w-full border-collapse text-left text-sm">
+              <thead>
+                <tr className="bg-[#0D1B2A] text-white">
                   {headerCells.map((cell, cIdx) => (
-                    <th key={cIdx} className="px-3.5 py-3 border-r border-slate-200/60 last:border-r-0">
+                    <th key={cIdx} className="px-4 py-3.5 font-semibold text-xs sm:text-sm tracking-tight">
                       {renderFormattedInline(cell)}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 bg-white text-slate-700">
+              <tbody className="divide-y divide-[#E2E8F0] text-[#475569]">
                 {bodyLines.map((rowLine, rIdx) => {
                   const cells = rowLine
                     .split("|")
                     .slice(1, -1)
                     .map((c) => c.trim());
                   return (
-                    <tr key={rIdx} className={rIdx % 2 === 1 ? "bg-slate-50/50 hover:bg-slate-50" : "hover:bg-slate-50"}>
+                    <tr key={rIdx} className="odd:bg-[#FFFFFF] even:bg-[#F8FAFC]">
                       {cells.map((cell, cIdx) => (
-                        <td key={cIdx} className="px-3.5 py-2.5 border-r border-slate-100 last:border-r-0 leading-normal">
+                        <td
+                          key={cIdx}
+                          className={`px-4 py-3.5 align-top leading-relaxed tabular-nums ${
+                            cIdx === 0 ? "font-semibold text-[#0D1B2A]" : "text-[#475569]"
+                          }`}
+                        >
                           {renderFormattedInline(cell)}
                         </td>
                       ))}
@@ -173,11 +164,10 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
       }
     }
 
-    // Headings (strip all '#' symbols and render cleanly styled headings)
     if (/^#\s+/.test(trimmed)) {
       const headingText = trimmed.replace(/^#\s+/, "");
       elements.push(
-        <h2 key={`h1-${i}`} className="font-display text-xl sm:text-2xl font-bold text-navy-950 mt-7 mb-3 tracking-tight">
+        <h2 key={`h1-${i}`} className="font-display text-2xl sm:text-[1.65rem] font-bold text-[#0D1B2A] mt-10 mb-4 tracking-tight leading-snug">
           {renderFormattedInline(headingText)}
         </h2>
       );
@@ -188,7 +178,7 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
     if (/^##\s+/.test(trimmed)) {
       const headingText = trimmed.replace(/^##\s+/, "");
       elements.push(
-        <h2 key={`h2-${i}`} className="font-display text-lg sm:text-xl font-bold text-navy-950 mt-6 mb-3 tracking-tight">
+        <h2 key={`h2-${i}`} className="font-display text-xl sm:text-2xl font-bold text-[#0D1B2A] mt-10 mb-3.5 tracking-tight leading-snug">
           {renderFormattedInline(headingText)}
         </h2>
       );
@@ -199,7 +189,7 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
     if (/^###\s+/.test(trimmed)) {
       const headingText = trimmed.replace(/^###\s+/, "");
       elements.push(
-        <h3 key={`h3-${i}`} className="font-display text-base sm:text-lg font-bold text-navy-950 mt-5 mb-2.5">
+        <h3 key={`h3-${i}`} className="font-display text-lg sm:text-xl font-bold text-[#0D1B2A] mt-7 mb-2.5 leading-snug">
           {renderFormattedInline(headingText)}
         </h3>
       );
@@ -210,7 +200,7 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
     if (/^#{4,}\s+/.test(trimmed)) {
       const headingText = trimmed.replace(/^#{4,}\s+/, "");
       elements.push(
-        <h4 key={`h4-${i}`} className="font-display text-sm sm:text-base font-bold text-navy-900 mt-4 mb-2">
+        <h4 key={`h4-${i}`} className="font-display text-base font-bold text-[#0D1B2A] mt-6 mb-2">
           {renderFormattedInline(headingText)}
         </h4>
       );
@@ -218,7 +208,6 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
       continue;
     }
 
-    // Blockquote: starts with '>'
     if (trimmed.startsWith(">")) {
       const quoteLines: string[] = [];
       while (i < lines.length && lines[i].trim().startsWith(">")) {
@@ -228,10 +217,10 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
       elements.push(
         <blockquote
           key={`quote-${i}`}
-          className="border-l-4 border-gold-500 bg-amber-50/70 p-4 rounded-r-xl my-4 text-slate-800 text-sm sm:text-base leading-relaxed italic"
+          className="my-6 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] border-l-[3px] border-l-[#C5A059] p-5 sm:p-6 text-[#334155] text-sm sm:text-[15.5px] leading-[1.65]"
         >
           {quoteLines.map((ql, qIdx) => (
-            <p key={qIdx} className={qIdx > 0 ? "mt-2" : ""}>
+            <p key={qIdx} className={qIdx > 0 ? "mt-2.5" : ""}>
               {renderFormattedInline(ql)}
             </p>
           ))}
@@ -240,8 +229,6 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
       continue;
     }
 
-    // Bullet List: lines starting with '*' or '-' or '+' or '•'
-    // Strips the bullet symbol completely so no '*' appears
     if (/^(\*|-|\+|\•)\s+/.test(trimmed)) {
       const listItems: string[] = [];
       while (i < lines.length && /^(\*|-|\+|\•)\s+/.test(lines[i].trim())) {
@@ -249,10 +236,10 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
         i++;
       }
       elements.push(
-        <ul key={`ul-${i}`} className="my-3 space-y-2 list-none pl-1">
+        <ul key={`ul-${i}`} className="my-5 space-y-2.5 list-none pl-0">
           {listItems.map((item, itemIdx) => (
-            <li key={itemIdx} className="flex items-start gap-2.5 text-sm sm:text-base leading-relaxed text-slate-700">
-              <span className="mt-2 w-1.5 h-1.5 rounded-full bg-gold-500 shrink-0" aria-hidden="true" />
+            <li key={itemIdx} className="flex items-start gap-3 text-[15px] sm:text-base leading-[1.65] text-[#475569]">
+              <span className="mt-2.5 w-1.5 h-1.5 rounded-full bg-[#C5A059] shrink-0" aria-hidden="true" />
               <div className="flex-1">{renderFormattedInline(item)}</div>
             </li>
           ))}
@@ -261,7 +248,6 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
       continue;
     }
 
-    // Numbered List: lines starting with '1. ', '2. ', etc.
     if (/^\d+\.\s+/.test(trimmed)) {
       const listItems: { num: string; text: string }[] = [];
       while (i < lines.length && /^\d+\.\s+/.test(lines[i].trim())) {
@@ -272,10 +258,10 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
         i++;
       }
       elements.push(
-        <ol key={`ol-${i}`} className="my-3 space-y-2 list-none pl-1">
+        <ol key={`ol-${i}`} className="my-5 space-y-3 list-none pl-0">
           {listItems.map((item, itemIdx) => (
-            <li key={itemIdx} className="flex items-start gap-2.5 text-sm sm:text-base leading-relaxed text-slate-700">
-              <span className="font-bold text-xs text-navy-900 mt-0.5 shrink-0 bg-slate-100 border border-slate-200/80 rounded px-1.5 py-0.5 min-w-[22px] text-center">
+            <li key={itemIdx} className="flex items-start gap-3 text-[15px] sm:text-base leading-[1.65] text-[#475569]">
+              <span className="font-semibold text-xs text-[#0D1B2A] mt-1 shrink-0 bg-[#F8FAFC] border border-[#E2E8F0] rounded-md px-2 py-0.5 min-w-[26px] text-center tabular-nums">
                 {item.num}
               </span>
               <div className="flex-1">{renderFormattedInline(item.text)}</div>
@@ -286,7 +272,6 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
       continue;
     }
 
-    // Standard Paragraph
     const paragraphLines: string[] = [];
     while (
       i < lines.length &&
@@ -299,7 +284,7 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
 
     if (paragraphLines.length > 0) {
       elements.push(
-        <p key={`p-${i}`} className="text-sm sm:text-base leading-relaxed text-slate-700 mb-3.5">
+        <p key={`p-${i}`} className="text-[15px] sm:text-base leading-[1.7] text-[#475569] mb-4">
           {renderFormattedInline(paragraphLines.join(" "))}
         </p>
       );
@@ -308,7 +293,7 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
     }
   }
 
-  return <div className="article-body space-y-2">{elements}</div>;
+  return <div className="article-body">{elements}</div>;
 };
 
 export default ArticleContentRenderer;

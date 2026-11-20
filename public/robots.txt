@@ -1,50 +1,9 @@
-# Robots.txt for Dias Accounting and Tax Consulting LLC (https://diasuae.ae)
 User-agent: *
 Allow: /
-Allow: /pricing
-Allow: /uae-tax-planner
-Allow: /corporate-tax-calculator
-Allow: /tax-planning-difc
-Allow: /tax-services-dubai
-Allow: /accounting-services-uae
-Allow: /dividends-audit
-Allow: /company-setup
-Allow: /blogs
-Allow: /faqs
-Allow: /services/
-Allow: /assets/
-Allow: /llms.txt
-Allow: /llms-full.txt
-Allow: /sitemap.xml
+Disallow: /api/
+Disallow: /admin
+Disallow: /inquiries
+Disallow: /inquiry-sheet
+Disallow: /seo-dashboard.html
 
-# AI Search & Generative Answer Crawlers
-User-agent: GPTBot
-Allow: /
-
-User-agent: OAI-SearchBot
-Allow: /
-
-User-agent: ChatGPT-User
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
-
-User-agent: Google-Extended
-Allow: /
-
-User-agent: ClaudeBot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-User-agent: Googlebot
-Allow: /
-
-User-agent: Applebot
-Allow: /
-
-# Host & Sitemap
-Host: https://diasuae.ae
 Sitemap: https://diasuae.ae/sitemap.xml

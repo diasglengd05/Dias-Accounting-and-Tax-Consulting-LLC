@@ -3,236 +3,89 @@ import path from "path";
 import { servicesData, blogsData } from "../src/data/staticData.ts";
 
 /**
- * Automated Sitemap Generator for Dias Accounting & Tax Consulting LLC
- * Generates an SEO-compliant XML sitemap based on the latest service definitions,
- * knowledge base articles, and core landing endpoints.
+ * Clean Sitemap Generator for Dias Accounting & Tax Consulting LLC (https://diasuae.ae)
+ * - Outputs ONLY canonical, indexable HTTP 200 absolute HTTPS URLs (no hash fragments, no aliases/redirects)
+ * - Omits deprecated <priority> and <changefreq> tags
+ * - Emits genuine ISO YYYY-MM-DD <lastmod> dates parsed from actual published post dates only
  */
 
 interface SitemapUrl {
   loc: string;
-  lastmod: string;
-  changefreq: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
-  priority: string;
-  comment?: string;
+  lastmod?: string;
 }
 
+function escapeXml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+function parseGenuineIsoDate(raw?: string): string | undefined {
+  if (!raw || typeof raw !== "string") return undefined;
+  const trimmed = raw.trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed;
+  if (/^\d{4}-\d{2}-\d{2}T/.test(trimmed)) return trimmed.slice(0, 10);
+  const parsed = Date.parse(trimmed);
+  if (Number.isNaN(parsed)) return undefined;
+  const dt = new Date(parsed);
+  if (dt.getUTCFullYear() < 2020 || dt.getUTCFullYear() > 2030) return undefined;
+  return dt.toISOString().slice(0, 10);
+}
+
+const CANONICAL_STATIC_PATHS: string[] = [
+  "/",
+  "/services",
+  "/tax-planning-difc",
+  "/dividends-audit",
+  "/company-setup",
+  "/pricing",
+  "/uae-tax-planner",
+  "/uae-vat-calculator",
+  "/small-business-tax-relief",
+  "/fta-deadlines",
+  "/blog",
+  "/about",
+  "/why-choose-us",
+  "/testimonials",
+  "/faqs",
+  "/contact",
+  "/privacy-policy",
+  "/terms",
+];
+
 export function generateSitemapXml(domain = "https://diasuae.ae"): string {
-  const today = new Date().toISOString().split("T")[0];
+  const cleanDomain = domain.replace(/\/+$/, "");
+  const seenLocs = new Set<string>();
+  const urls: SitemapUrl[] = [];
 
-  const urls: SitemapUrl[] = [
-    // 1. Core Homepage & High-Priority Landing Views
-    {
-      loc: `${domain}/`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "1.00",
-      comment: "Primary Homepage & Company Authority Hub",
-    },
-    {
-      loc: `${domain}/#services`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.95",
-      comment: "Core Accounting, Tax, and CFO Advisory Services",
-    },
-    {
-      loc: `${domain}/#service-comparison`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.90",
-      comment: "Standard Accounting vs. CFO Advisory Matrix",
-    },
-    {
-      loc: `${domain}/#calculator`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.90",
-      comment: "Interactive UAE 9% Corporate Tax Estimator",
-    },
-    {
-      loc: `${domain}/#pricing`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.85",
-      comment: "Transparent Monthly & Annual Accounting Tiers",
-    },
-    {
-      loc: `${domain}/#reviews`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.85",
-      comment: "Verified 5.0 Google Business Reviews & Client Testimonials",
-    },
-    {
-      loc: `${domain}/#faqs`,
-      lastmod: today,
-      changefreq: "monthly",
-      priority: "0.80",
-      comment: "UAE Corporate Tax & VAT Regulatory FAQs",
-    },
-    {
-      loc: `${domain}/#blogs`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.85",
-      comment: "UAE Tax Knowledge Base & Regulatory News",
-    },
-    {
-      loc: `${domain}/#contact`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.95",
-      comment: "Consultation Scheduler & Lead Capture",
-    },
-    // Dedicated High-Authority SEO Service Landing Pages
-    {
-      loc: `${domain}/tax-services-dubai`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.99",
-      comment: "Dedicated Page: Expert Tax Services in Dubai (VAT & Corporate Tax Agency)",
-    },
-    {
-      loc: `${domain}/accounting-services-uae`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.99",
-      comment: "Dedicated Page: Trusted Accounting Services UAE (Expert Bookkeeping)",
-    },
-    {
-      loc: `${domain}/tax-planning-difc`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.99",
-      comment: "Dedicated Page: DIFC Tax Planning Services (Strategic Financial Advisory)",
-    },
-    {
-      loc: `${domain}/corporate-tax-consulting-dubai`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.99",
-      comment: "Dedicated Page: Corporate Tax Services UAE Mainland & Free Zone",
-    },
-    {
-      loc: `${domain}/blogs`,
-      lastmod: today,
-      changefreq: "daily",
-      priority: "0.90",
-      comment: "UAE Accounting, Corporate Tax & VAT Knowledge Hub",
-    },
-    {
-      loc: `${domain}/pricing`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.98",
-      comment: "Pricing & Tax Solutions in UAE (Fixed-Fee Bookkeeping, CT & VAT)",
-    },
-    {
-      loc: `${domain}/uae-tax-planner`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.96",
-      comment: "UAE Tax Planner & Comprehensive Compliance Hub 2026",
-    },
-    {
-      loc: `${domain}/corporate-tax-calculator`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.96",
-      comment: "UAE Corporate Tax Calculator (9%) & Tax Savings Assessment",
-    },
-    {
-      loc: `${domain}/uae-vat-calculator`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.96",
-      comment: "UAE VAT Calculator & 5% Compliance Planner (Form 201)",
-    },
-    {
-      loc: `${domain}/fta-deadlines`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.96",
-      comment: "FTA Tax Deadlines & Statutory Penalty Calendar (Cabinet Decision 75/2023)",
-    },
-    {
-      loc: `${domain}/small-business-tax-relief`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.95",
-      comment: "Small Business Corporate Tax Relief Dubai (AED 3M SBR Extended to 2029)",
-    },
-    {
-      loc: `${domain}/difc-dtec-accounting`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.95",
-      comment: "Tax and Accounting Services in DIFC & DTEC Free Zones (QFZP 0% Tax)",
-    },
-    {
-      loc: `${domain}/dividends-audit`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.95",
-      comment: "Dividend Audit & Distribution Advisory Dubai (Commercial Companies Law)",
-    },
-    {
-      loc: `${domain}/company-setup`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.95",
-      comment: "UAE Mainland & Free Zone Company Formation & Tax Registration",
-    },
-    {
-      loc: `${domain}/testimonials`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.90",
-      comment: "Verified Client Testimonials & 5.0 Star Reviews",
-    },
-    {
-      loc: `${domain}/faqs`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.90",
-      comment: "UAE Corporate Tax, VAT & Bookkeeping FAQs",
-    },
-    {
-      loc: `${domain}/services`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.92",
-      comment: "UAE Corporate Tax, VAT & Accounting Services Hub",
-    },
-    {
-      loc: `${domain}/about`,
-      lastmod: today,
-      changefreq: "monthly",
-      priority: "0.85",
-      comment: "About Dias Accounting & FTA Registered Tax Agent Glen Dias",
-    },
-    {
-      loc: `${domain}/contact`,
-      lastmod: today,
-      changefreq: "monthly",
-      priority: "0.88",
-      comment: "Contact Dias Accounting SHAMS HQ & Dubai Advisory Desk",
-    },
-  ];
+  const pushUrl = (routePath: string, lastmod?: string) => {
+    const cleanPath =
+      routePath === "/"
+        ? "/"
+        : `/${routePath.replace(/^\/+/, "").replace(/\/+$/, "")}`;
+    const loc = `${cleanDomain}${cleanPath}`;
+    if (seenLocs.has(loc)) return;
+    seenLocs.add(loc);
+    urls.push(lastmod ? { loc, lastmod } : { loc });
+  };
 
-  // 2. Canonical Individual Service Landing Pages (Indexed by Google)
-  servicesData.forEach((service) => {
-    urls.push({
-      loc: `${domain}/services/${service.id}`,
-      lastmod: today,
-      changefreq: "weekly",
-      priority: "0.92",
-      comment: `Service: ${service.title}`,
-    });
-  });
+  // 1. Canonical Core Pages, Tax Hubs & Tools
+  for (const staticPath of CANONICAL_STATIC_PATHS) {
+    pushUrl(staticPath);
+  }
 
-  // 3. Knowledge Base / Blog Articles (Static + Dynamic 24h AI Grounded, deduplicated)
-  const normSitemapTitle = (t: string) =>
+  // 2. Canonical Individual Service Pages (/services/:id)
+  for (const service of servicesData) {
+    if (service?.id) {
+      pushUrl(`/services/${service.id}`);
+    }
+  }
+
+  // 3. Deduplicated Published Insights Articles (/blog/:id) with genuine ISO publication dates
+  const normTitle = (t: string) =>
     (t || "")
       .toLowerCase()
       .replace(/&amp;/g, "and")
@@ -244,11 +97,17 @@ export function generateSitemapXml(domain = "https://diasuae.ae"): string {
   const seenBlogTitles = new Set<string>();
   let seenAuditThresholds = false;
   let seenEnforcement = false;
-  const combinedBlogs: any[] = [];
+  const combinedBlogs: Array<{
+    id: string;
+    title: string;
+    date?: string;
+    publishedIso?: string;
+  }> = [];
 
   const pushUniqueBlog = (post: any) => {
     if (!post || !post.id || !post.title) return;
-    const norm = normSitemapTitle(post.title);
+    if (String(post.id).startsWith("draft-")) return;
+    const norm = normTitle(post.title);
     const isAuditThresholds =
       norm.includes("uae corporate tax return preparation") && norm.includes("audit threshold");
     const isEnforcement = norm.includes("uae corporate tax enforcement");
@@ -274,57 +133,37 @@ export function generateSitemapXml(domain = "https://diasuae.ae"): string {
       const rawList = Array.isArray(fallbackData.blogs)
         ? fallbackData.blogs
         : fallbackData.blog_posts && typeof fallbackData.blog_posts === "object"
-        ? Object.values(fallbackData.blog_posts)
-        : [];
+          ? Object.values(fallbackData.blog_posts)
+          : [];
       rawList.forEach(pushUniqueBlog);
     }
   } catch {
-    // Graceful fallback
+    // Graceful fallback when local db_fallback.json is absent
   }
 
-  combinedBlogs.forEach((blog) => {
-    urls.push({
-      loc: `${domain}/blog/${blog.id}`,
-      lastmod: today,
-      changefreq: blog.isAiGenerated ? "daily" : "weekly",
-      priority: blog.isAiGenerated ? "0.85" : "0.88",
-      comment: `Article: ${blog.title}`,
-    });
-  });
+  for (const blog of combinedBlogs) {
+    const genuineDate = parseGenuineIsoDate(blog.publishedIso || blog.date);
+    pushUrl(`/blog/${blog.id}`, genuineDate);
+  }
 
-  // Build formatted XML
   const xmlEntries = urls
     .map((item) => {
-      const commentBlock = item.comment ? `\n  <!-- ${item.comment} -->` : "";
-      return `${commentBlock}
-  <url>
-    <loc>${item.loc}</loc>
-    <lastmod>${item.lastmod}</lastmod>
-    <changefreq>${item.changefreq}</changefreq>
-    <priority>${item.priority}</priority>
-  </url>`;
+      const lastmodLine = item.lastmod ? `\n    <lastmod>${item.lastmod}</lastmod>` : "";
+      return `  <url>\n    <loc>${escapeXml(item.loc)}</loc>${lastmodLine}\n  </url>`;
     })
-    .join("");
+    .join("\n");
 
-  return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-${xmlEntries}
-
-</urlset>
-`;
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${xmlEntries}\n</urlset>\n`;
 }
 
 /**
- * Write sitemap to /public/sitemap.xml
+ * Writes clean canonical sitemap to /public/sitemap.xml (and /dist/sitemap.xml if present).
  */
 export function writeSitemapFile(): { success: boolean; path: string; totalUrls: number } {
   const xml = generateSitemapXml();
   const publicPath = path.join(process.cwd(), "public", "sitemap.xml");
   fs.writeFileSync(publicPath, xml, "utf-8");
 
-  // Also write to dist/sitemap.xml if dist folder exists
   const distDir = path.join(process.cwd(), "dist");
   if (fs.existsSync(distDir)) {
     fs.writeFileSync(path.join(distDir, "sitemap.xml"), xml, "utf-8");
@@ -333,11 +172,10 @@ export function writeSitemapFile(): { success: boolean; path: string; totalUrls:
   const urlMatches = xml.match(/<url>/g);
   const totalUrls = urlMatches ? urlMatches.length : 0;
 
-  console.log(`[Sitemap] Successfully updated sitemap.xml with ${totalUrls} URLs.`);
+  console.log(`[Sitemap] Successfully updated sitemap.xml with ${totalUrls} canonical URLs.`);
   return { success: true, path: publicPath, totalUrls };
 }
 
-// Execute standalone if executed directly via tsx/node
 if (process.argv[1] && process.argv[1].includes("generate-sitemap")) {
   writeSitemapFile();
 }

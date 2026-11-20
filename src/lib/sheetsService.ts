@@ -295,8 +295,6 @@ export async function submitToGoogleSheetsDirectly(data: DirectSyncPayload): Pro
     bodyData.append(key, val);
   });
 
-  console.log(`Submitting direct Sheet synchronization (single-request mode to prevent duplicates)...`);
-
   try {
     // We send a single POST request with mode: "no-cors" to avoid CORS blocks and preflight checks
     await fetch(urlObj.toString(), {
@@ -308,7 +306,6 @@ export async function submitToGoogleSheetsDirectly(data: DirectSyncPayload): Pro
       body: bodyData
     });
 
-    console.log("Direct Google Sheets synchronization request sent successfully.");
     return true;
   } catch (error) {
     console.error("Direct Google Sheets sync request failed:", error);

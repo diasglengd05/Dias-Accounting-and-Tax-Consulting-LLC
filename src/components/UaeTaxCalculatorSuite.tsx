@@ -1,20 +1,28 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
+  ArrowLeft,
   ArrowRight,
   Building2,
   Calculator,
+  Check,
   CheckCircle2,
   ChevronDown,
+  Download,
+  Globe,
+  HelpCircle,
   Info,
   Percent,
+  RotateCcw,
   Search,
   ShieldAlert,
   ShieldCheck,
+  UserCheck,
   XCircle,
 } from "lucide-react";
 
 export type CalculatorSuiteTab = "corporate-tax" | "vat";
 export type CorporateJurisdiction = "mainland" | "freezone";
+export type EntityProfileType = "mainland-llc" | "freezone" | "sole-establishment";
 export type VatMode = "add" | "extract";
 export type VatRecoveryType = "reclaimable" | "blocked" | "zero-rated";
 
@@ -93,11 +101,18 @@ interface UaeTaxCalculatorSuiteProps {
   onWhatsAppClicked?: () => void;
 }
 
-const WhatsAppSvgIcon: React.FC<{ className?: string }> = ({ className = "w-4 h-4" }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
-    <path d="M12.031 2c-5.516 0-9.969 4.453-9.969 9.969 0 1.766.469 3.484 1.344 5l-1.406 5.156 5.281-1.375c1.469.797 3.109 1.219 4.75 1.219 5.516 0 9.969-4.453 9.969-9.969S17.547 2 12.031 2zm5.813 14.125c-.25.703-1.438 1.344-2 1.422-.531.078-1.203.109-1.938-.125-.453-.141-1.031-.328-1.766-.656-3.094-1.344-5.109-4.469-5.266-4.672-.156-.203-1.266-1.688-1.266-3.219 0-1.531.797-2.281 1.078-2.594.281-.313.625-.391.828-.391.203 0 .422.016.609.016.188 0 .453-.078.703.531.266.625.891 2.188.969 2.344.078.156.125.344.031.547-.094.203-.156.344-.313.516-.156.172-.328.391-.469.516-.156.141-.313.297-.141.609.172.313.781 1.297 1.672 2.094 1.156 1.031 2.125 1.359 2.438 1.516.313.156.5.125.688-.078.188-.203.797-.922 1.016-1.234.219-.313.422-.266.719-.156.297.109 1.875.891 2.203 1.047.328.156.547.234.625.375.078.141.078.813-.172 1.516z" />
-  </svg>
-);
+const STEP_LABELS = [
+  "Entity & Jurisdiction",
+  "Annual Revenue",
+  "Profit & Tax Status",
+  "Tax Summary",
+] as const;
+
+const REVENUE_PRESETS = [
+  { label: "Under AED 3M", value: "2,400,000", min: 0, max: 3000000 },
+  { label: "AED 3M – 10M", value: "4,200,000", min: 3000001, max: 10000000 },
+  { label: "AED 10M+", value: "12,000,000", min: 10000001, max: Infinity },
+] as const;
 
 function formatIntegerAed(value: number): string {
   return `AED ${Math.round(value).toLocaleString("en-US")}`;
@@ -132,13 +147,55 @@ function parseNumericInput(formatted: string): number {
   return Number.isFinite(num) && num >= 0 ? num : 0;
 }
 
+const HelpTooltip: React.FC<{ text: string; label: string }> = ({ text, label }) => {
+  const [open, setOpen] = useState(false);
+  const tipRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handleOutside = (e: MouseEvent) => {
+      if (tipRef.current && !tipRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
+  }, [open]);
+
+  return (
+    <span ref={tipRef} className="relative inline-flex items-center">
+      <button
+        type="button"
+        aria-label={label}
+        aria-expanded={open}
+        onClick={() => setOpen((prev) => !prev)}
+        onMouseEnter={() => setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
+        className="w-5 h-5 rounded-full inline-flex items-center justify-center text-[#64748B] hover:text-[#0D1B2A] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1B4332] cursor-pointer"
+      >
+        <HelpCircle className="w-3.5 h-3.5" />
+      </button>
+      {open && (
+        <span
+          role="tooltip"
+          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 z-30 w-60 sm:w-64 rounded-xl bg-[#0D1B2A] text-white text-xs leading-relaxed px-3.5 py-2.5 shadow-lg pointer-events-none"
+        >
+          {text}
+        </span>
+      )}
+    </span>
+  );
+};
+
 interface CommaNumberInputProps {
   id: string;
   label: string;
   valueStr: string;
   onChangeStr: (next: string) => void;
   allowDecimal?: boolean;
+  tooltip?: string;
   helperText?: string;
+  large?: boolean;
 }
 
 const CommaNumberInput: React.FC<CommaNumberInputProps> = ({
@@ -147,15 +204,20 @@ const CommaNumberInput: React.FC<CommaNumberInputProps> = ({
   valueStr,
   onChangeStr,
   allowDecimal = false,
+  tooltip,
   helperText,
+  large = false,
 }) => {
   return (
     <div className="space-y-1.5">
-      <label htmlFor={id} className="block text-xs font-semibold text-[#cbd5e1] tracking-wide">
-        {label}
-      </label>
+      <div className="flex items-center gap-1.5">
+        <label htmlFor={id} className="block text-sm font-semibold text-[#0D1B2A]">
+          {label}
+        </label>
+        {tooltip && <HelpTooltip text={tooltip} label={`About ${label}`} />}
+      </div>
       <div className="relative flex items-center">
-        <span className="absolute left-4 text-xs font-mono font-bold text-[#c5a059] pointer-events-none select-none">
+        <span className="absolute left-4 text-xs font-semibold tracking-wide text-[#64748B] pointer-events-none select-none">
           AED
         </span>
         <input
@@ -165,10 +227,12 @@ const CommaNumberInput: React.FC<CommaNumberInputProps> = ({
           value={valueStr}
           onChange={(e) => onChangeStr(formatCommaInput(e.target.value, allowDecimal))}
           placeholder="0"
-          className="w-full rounded-xl bg-[#070d19] border border-white/15 focus:border-[#c5a059] focus:ring-1 focus:ring-[#c5a059] pl-14 pr-4 py-3 text-base font-mono font-semibold text-white placeholder:text-slate-500 outline-none transition-colors tabular-nums"
+          className={`w-full rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] hover:border-slate-300 focus:border-[#1B4332] focus:ring-2 focus:ring-[#1B4332]/15 pl-14 pr-4 font-semibold text-[#0D1B2A] placeholder:text-slate-400 outline-none transition-all tabular-nums ${
+            large ? "py-3.5 text-xl min-h-[54px]" : "py-3 text-base min-h-[48px]"
+          }`}
         />
       </div>
-      {helperText && <p className="text-[11px] text-slate-400">{helperText}</p>}
+      {helperText && <p className="text-xs text-[#64748B]">{helperText}</p>}
     </div>
   );
 };
@@ -177,6 +241,7 @@ interface ToggleSwitchProps {
   id: string;
   label: string;
   subtext: string;
+  tooltip?: string;
   checked: boolean;
   disabled?: boolean;
   onChange: (next: boolean) => void;
@@ -186,6 +251,7 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
   id,
   label,
   subtext,
+  tooltip,
   checked,
   disabled = false,
   onChange,
@@ -194,18 +260,23 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
     <div
       className={`flex items-center justify-between gap-4 rounded-xl border p-4 transition-colors ${
         disabled
-          ? "bg-[#070d19]/60 border-white/10 opacity-70"
-          : "bg-[#070d19] border-white/15 hover:border-[#c5a059]/40"
+          ? "bg-[#F8FAFC] border-[#E2E8F0] opacity-70"
+          : "bg-[#FFFFFF] border-[#E2E8F0] hover:border-slate-300"
       }`}
     >
       <div className="space-y-0.5 min-w-0">
-        <label
-          htmlFor={id}
-          className={`block text-sm font-semibold text-white ${disabled ? "cursor-not-allowed" : "cursor-pointer"}`}
-        >
-          {label}
-        </label>
-        <p className="text-xs text-[#cbd5e1]/80 leading-relaxed">{subtext}</p>
+        <div className="flex items-center gap-1.5">
+          <label
+            htmlFor={id}
+            className={`block text-sm font-semibold text-[#0D1B2A] ${
+              disabled ? "cursor-not-allowed" : "cursor-pointer"
+            }`}
+          >
+            {label}
+          </label>
+          {tooltip && <HelpTooltip text={tooltip} label={`About ${label}`} />}
+        </div>
+        <p className="text-xs text-[#475569] leading-relaxed">{subtext}</p>
       </div>
       <button
         id={id}
@@ -218,13 +289,13 @@ const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
           disabled ? "cursor-not-allowed" : "cursor-pointer"
         } ${
           checked
-            ? "bg-[#c5a059] border-[#c5a059]"
-            : "bg-[#1a3050] border-white/20"
+            ? "bg-[#1B4332] border-[#1B4332]"
+            : "bg-slate-200 border-slate-300"
         }`}
       >
         <span
-          className={`inline-block h-5 w-5 transform rounded-full transition-transform ${
-            checked ? "translate-x-6 bg-[#070d19]" : "translate-x-1 bg-white"
+          className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-xs transition-transform ${
+            checked ? "translate-x-6" : "translate-x-1"
           }`}
         />
       </button>
@@ -240,6 +311,7 @@ export const UaeTaxCalculatorSuite: React.FC<UaeTaxCalculatorSuiteProps> = ({
   onWhatsAppClicked,
 }) => {
   const [activeTab, setActiveTab] = useState<CalculatorSuiteTab>(defaultTab);
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
 
   useEffect(() => {
     setActiveTab(defaultTab);
@@ -248,9 +320,10 @@ export const UaeTaxCalculatorSuite: React.FC<UaeTaxCalculatorSuiteProps> = ({
   // ==========================
   // TAB 1: Corporate Tax State
   // ==========================
-  const [jurisdiction, setJurisdiction] = useState<CorporateJurisdiction>("mainland");
+  const [entityProfile, setEntityProfile] = useState<EntityProfileType>("mainland-llc");
+  const jurisdiction: CorporateJurisdiction = entityProfile === "freezone" ? "freezone" : "mainland";
 
-  // Mainland inputs
+  // Mainland / Sole Establishment inputs
   const [mainlandRevenueStr, setMainlandRevenueStr] = useState("4,200,000");
   const [mainlandProfitStr, setMainlandProfitStr] = useState("1,150,000");
   const [sbrPreferred, setSbrPreferred] = useState(true);
@@ -282,7 +355,9 @@ export const UaeTaxCalculatorSuite: React.FC<UaeTaxCalculatorSuiteProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Corporate Tax Calculations
+  // =========================================================================
+  // PRESERVED 2026 UAE CORPORATE TAX FORMULAS (100% UNCHANGED)
+  // =========================================================================
   const ctResult = useMemo(() => {
     const STATUTORY_BAND = 375000;
     const SBR_REVENUE_CAP = 3000000;
@@ -388,7 +463,7 @@ export const UaeTaxCalculatorSuite: React.FC<UaeTaxCalculatorSuiteProps> = ({
   ]);
 
   useEffect(() => {
-    if (!onResultViewed) return;
+    if (!onResultViewed || step !== 4) return;
     if (ctResult.mode === "mainland") {
       onResultViewed({
         liability: ctResult.taxAmount,
@@ -402,9 +477,11 @@ export const UaeTaxCalculatorSuite: React.FC<UaeTaxCalculatorSuiteProps> = ({
         netProfit: ctResult.totalProfit,
       });
     }
-  }, [ctResult, onResultViewed]);
+  }, [ctResult, onResultViewed, step]);
 
-  // VAT Calculations
+  // =========================================================================
+  // PRESERVED 5% UAE VAT FORMULAS (100% UNCHANGED)
+  // =========================================================================
   const selectedCategory = useMemo(
     () => VAT_EXPENSE_CATEGORIES.find((cat) => cat.id === selectedCategoryId) || VAT_EXPENSE_CATEGORIES[0],
     [selectedCategoryId]
@@ -447,62 +524,179 @@ export const UaeTaxCalculatorSuite: React.FC<UaeTaxCalculatorSuiteProps> = ({
     };
   }, [vatAmountStr, vatMode, selectedCategory]);
 
-  const handleBookReviewClick = (ctaType: string) => {
-    if (onCtaClicked) onCtaClicked(ctaType);
-    onNavigate("/#contact");
+  // Active revenue value helpers for Step 2
+  const activeRevenueStr = jurisdiction === "mainland" ? mainlandRevenueStr : fzRevenueStr;
+  const setActiveRevenueStr = (next: string) => {
+    if (jurisdiction === "mainland") {
+      setMainlandRevenueStr(next);
+    } else {
+      setFzRevenueStr(next);
+    }
   };
+  const activeRevenueNum = parseNumericInput(activeRevenueStr);
 
-  const handleCorporateWhatsApp = () => {
-    if (onWhatsAppClicked) onWhatsAppClicked();
+  // Stacked breakdown bar ratios
+  const totalTaxableIncome = ctResult.mode === "mainland" ? ctResult.profit : ctResult.totalProfit;
+  const zeroPercentWidth =
+    totalTaxableIncome > 0
+      ? Math.min(100, Math.round((ctResult.zeroBandProfit / totalTaxableIncome) * 100))
+      : 100;
+  const ninePercentWidth = Math.max(0, 100 - zeroPercentWidth);
+
+  const entityDisplayLabel =
+    entityProfile === "mainland-llc"
+      ? "UAE Mainland LLC"
+      : entityProfile === "freezone"
+        ? "UAE Free Zone Entity"
+        : "Freelancer / Sole Establishment";
+
+  const buildCorporateSummaryText = () => {
     const lines =
       ctResult.mode === "mainland"
         ? [
-            `Jurisdiction: UAE Mainland`,
+            `Entity Type: ${entityDisplayLabel}`,
             `Annual Revenue: ${formatIntegerAed(ctResult.revenue)}`,
-            `Taxable Profit: ${formatIntegerAed(ctResult.profit)}`,
-            `Small Business Relief (0%): ${ctResult.sbrActive ? "Elected (0%)" : "Not applied"}`,
-            `Estimated Corporate Tax: ${formatIntegerAed(ctResult.taxAmount)} (${ctResult.effectiveRate.toFixed(2)}% effective)`,
+            `Taxable Net Profit: ${formatIntegerAed(ctResult.profit)}`,
+            `Small Business Relief (0%): ${ctResult.sbrActive ? "Eligible & Elected (0%)" : "Not Applied"}`,
+            `0% Tax-Free Portion: ${formatIntegerAed(ctResult.zeroBandProfit)}`,
+            `9% Taxable Portion: ${formatIntegerAed(ctResult.nineBandProfit)}`,
+            `Estimated 2026 Corporate Tax: ${formatIntegerAed(ctResult.taxAmount)} (${ctResult.effectiveRate.toFixed(2)}% effective)`,
           ]
         : [
-            `Jurisdiction: UAE Free Zone`,
+            `Entity Type: ${entityDisplayLabel}`,
             `Annual Revenue: ${formatIntegerAed(ctResult.revenue)}`,
             `Qualifying Profit: ${formatIntegerAed(ctResult.qualifyingProfit)}`,
             `Non-Qualifying Profit: ${formatIntegerAed(ctResult.nonQualifyingProfit)}`,
             `De Minimis Status: ${ctResult.deMinimisPassed ? "Passed" : "Exceeded"}`,
-            `Estimated Corporate Tax: ${formatIntegerAed(ctResult.taxAmount)} (${ctResult.effectiveRate.toFixed(2)}% effective)`,
+            `Estimated 2026 Corporate Tax: ${formatIntegerAed(ctResult.taxAmount)} (${ctResult.effectiveRate.toFixed(2)}% effective)`,
           ];
-    const msg = `Hi Dias Accounting, I used the 2026 UAE Corporate Tax Calculator:\n• ${lines.join("\n• ")}\n\nI would like to book a free 15-min tax review.`;
+    return lines;
+  };
+
+  const handleBookCorporateReview = () => {
+    if (onCtaClicked) onCtaClicked("ct-review");
+    if (onWhatsAppClicked) onWhatsAppClicked();
+    const lines = buildCorporateSummaryText();
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem("dias_selected_service", `2026 Corporate Tax Review — ${formatIntegerAed(ctResult.taxAmount)}`);
+      sessionStorage.setItem("dias_tax_summary", lines.join(" | "));
+    }
+    const msg = `Hi Dias Accounting, I completed the 2026 UAE Corporate Tax Calculator:\n• ${lines.join("\n• ")}\n\nI would like to book a free 15-min tax review.`;
     window.open(`https://wa.me/971529226958?text=${encodeURIComponent(msg)}`, "_blank", "noopener,noreferrer");
   };
 
-  const handleVatWhatsApp = () => {
+  const handleDownloadSummary = () => {
+    const lines = [
+      "DIAS ACCOUNTING & TAX CONSULTING LLC",
+      "2026 UAE Corporate Tax Indicative Estimate",
+      "--------------------------------------------------",
+      ...buildCorporateSummaryText(),
+      "--------------------------------------------------",
+      "Statutory Note: Corporate Tax returns are due on EmaraTax within 9 months of financial year-end.",
+      "FTA-Registered Support: +971 52 922 6958 | info@diasuae.ae | https://diasuae.ae",
+    ];
+    const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "dias-2026-uae-corporate-tax-summary.txt";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleBookVatReview = () => {
+    if (onCtaClicked) onCtaClicked("vat-form-201-audit");
     if (onWhatsAppClicked) onWhatsAppClicked();
-    const msg = `Hi Dias Accounting, I used the 5% UAE VAT Calculator:\n• Mode: ${vatMode === "add" ? "Add VAT (Excl. -> Incl.)" : "Extract VAT (Incl. -> Excl.)"}\n• Expense Category: ${selectedCategory.label}\n• Net (excl. VAT): ${formatDecimalAed(vatResult.netAmount)}\n• VAT Amount: ${formatDecimalAed(vatResult.vatAmount)}\n• Gross (incl. VAT): ${formatDecimalAed(vatResult.grossAmount)}\n• Recovery Treatment: ${selectedCategory.treatmentLabel}\n\nPlease share a Form 201 VAT audit check.`;
+    const msg = `Hi Dias Accounting, I used the 5% UAE VAT Calculator:\n• Mode: ${vatMode === "add" ? "Add VAT (Excl. -> Incl.)" : "Extract VAT (Incl. -> Excl.)"}\n• Expense Category: ${selectedCategory.label}\n• Net (excl. VAT): ${formatDecimalAed(vatResult.netAmount)}\n• VAT Amount: ${formatDecimalAed(vatResult.vatAmount)}\n• Gross (incl. VAT): ${formatDecimalAed(vatResult.grossAmount)}\n• Recovery Treatment: ${selectedCategory.treatmentLabel}\n\nI would like a free 15-min Form 201 VAT review.`;
     window.open(`https://wa.me/971529226958?text=${encodeURIComponent(msg)}`, "_blank", "noopener,noreferrer");
   };
+
+  const handleWizardKeyDown = (e: React.KeyboardEvent<HTMLFormElement>) => {
+    if (e.key === "Enter" && step < 4) {
+      e.preventDefault();
+      setStep((prev) => (prev < 4 ? ((prev + 1) as 1 | 2 | 3 | 4) : prev));
+    }
+  };
+
+  const handleNextStep = () => {
+    if (step < 4) {
+      setStep((prev) => (prev + 1) as 1 | 2 | 3 | 4);
+    }
+  };
+
+  const handlePrevStep = () => {
+    if (step > 1) {
+      setStep((prev) => (prev - 1) as 1 | 2 | 3 | 4);
+    }
+  };
+
+  const handleRecalculate = () => {
+    setStep(1);
+  };
+
+  // Status badge logic for Results Dashboard
+  const statusPill = useMemo(() => {
+    if (ctResult.mode === "mainland") {
+      if (ctResult.sbrActive) {
+        return {
+          text: "Eligible for Small Business Relief — 0% Tax",
+          tone: "emerald" as const,
+        };
+      }
+      if (ctResult.taxAmount === 0) {
+        return {
+          text: "Within AED 375,000 0% Threshold",
+          tone: "emerald" as const,
+        };
+      }
+      return {
+        text: "Standard 9% Tier Applies",
+        tone: "slate" as const,
+      };
+    }
+
+    if (ctResult.qfzpZeroApplies) {
+      return {
+        text: "0% QFZP Regime — De Minimis Passed",
+        tone: "emerald" as const,
+      };
+    }
+    if (isQfzp && !ctResult.deMinimisPassed) {
+      return {
+        text: "De Minimis Exceeded — Standard 9% Applies",
+        tone: "rose" as const,
+      };
+    }
+    return {
+      text: "Free Zone — Standard 9% Tier Applies",
+      tone: "slate" as const,
+    };
+  }, [ctResult, isQfzp]);
 
   return (
-    <div className="space-y-8">
-      {/* Top Tab Switcher */}
+    <div className="space-y-6">
+      {/* Centered Mode Switcher: Corporate Tax vs 5% VAT */}
       <div className="flex justify-center">
         <div
           role="tablist"
           aria-label="UAE Tax Calculator Tools"
-          className="inline-flex w-full sm:w-auto flex-col sm:flex-row gap-1.5 p-1.5 rounded-2xl bg-[#0d1b2a] border border-[#c5a059]/40 shadow-xl"
+          className="inline-flex w-full sm:w-auto gap-1 p-1.5 rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] shadow-xs"
         >
           <button
             type="button"
             role="tab"
             aria-selected={activeTab === "corporate-tax"}
             onClick={() => setActiveTab("corporate-tax")}
-            className={`px-6 py-3 rounded-xl text-sm font-display font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${
+            className={`flex-1 sm:flex-none min-h-[44px] px-5 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer inline-flex items-center justify-center gap-2 ${
               activeTab === "corporate-tax"
-                ? "bg-[#c5a059] text-[#070d19] shadow-md"
-                : "text-[#cbd5e1] hover:text-white hover:bg-white/5"
+                ? "bg-[#1B4332] text-white shadow-xs"
+                : "text-[#475569] hover:text-[#0D1B2A]"
             }`}
           >
             <Calculator className="w-4 h-4 shrink-0" />
-            <span>Corporate Tax Calculator</span>
+            <span>Corporate Tax</span>
           </button>
 
           <button
@@ -510,654 +704,761 @@ export const UaeTaxCalculatorSuite: React.FC<UaeTaxCalculatorSuiteProps> = ({
             role="tab"
             aria-selected={activeTab === "vat"}
             onClick={() => setActiveTab("vat")}
-            className={`px-6 py-3 rounded-xl text-sm font-display font-bold transition-all cursor-pointer flex items-center justify-center gap-2 ${
+            className={`flex-1 sm:flex-none min-h-[44px] px-5 py-2.5 rounded-xl text-sm font-semibold transition-all cursor-pointer inline-flex items-center justify-center gap-2 ${
               activeTab === "vat"
-                ? "bg-[#c5a059] text-[#070d19] shadow-md"
-                : "text-[#cbd5e1] hover:text-white hover:bg-white/5"
+                ? "bg-[#1B4332] text-white shadow-xs"
+                : "text-[#475569] hover:text-[#0D1B2A]"
             }`}
           >
             <Percent className="w-4 h-4 shrink-0" />
-            <span>5% UAE VAT Calculator</span>
+            <span>5% UAE VAT</span>
           </button>
         </div>
       </div>
 
       {/* ================================================= */}
-      {/* TAB 1: UAE Corporate Tax Calculator               */}
+      {/* TAB 1: GUIDED 4-STEP CORPORATE TAX WIZARD         */}
       {/* ================================================= */}
       {activeTab === "corporate-tax" && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
-          {/* LEFT CARD: Your Numbers */}
-          <div className="lg:col-span-6 bg-[#0d1b2a] border border-white/15 rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col justify-between space-y-6">
-            <div className="space-y-6">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-5 border-b border-white/10">
-                <div>
-                  <span className="text-[11px] font-mono uppercase tracking-widest text-[#c5a059] font-bold block">
-                    Live Inputs
-                  </span>
-                  <h2 className="font-display text-xl sm:text-2xl font-bold text-white mt-0.5">
-                    Your Numbers
-                  </h2>
-                </div>
-
-                {/* Mainland | Free Zone Segmented Pill */}
-                <div
-                  role="group"
-                  aria-label="Entity Jurisdiction"
-                  className="inline-flex p-1 rounded-xl bg-[#070d19] border border-white/15 self-start sm:self-auto"
-                >
-                  <button
-                    type="button"
-                    onClick={() => setJurisdiction("mainland")}
-                    className={`px-4 py-2 rounded-lg text-xs font-display font-bold transition-all cursor-pointer ${
-                      jurisdiction === "mainland"
-                        ? "bg-[#c5a059] text-[#070d19] shadow-sm"
-                        : "text-[#cbd5e1] hover:text-white"
-                    }`}
-                  >
-                    Mainland
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setJurisdiction("freezone")}
-                    className={`px-4 py-2 rounded-lg text-xs font-display font-bold transition-all cursor-pointer ${
-                      jurisdiction === "freezone"
-                        ? "bg-[#c5a059] text-[#070d19] shadow-sm"
-                        : "text-[#cbd5e1] hover:text-white"
-                    }`}
-                  >
-                    Free Zone
-                  </button>
-                </div>
-              </div>
-
-              {jurisdiction === "mainland" ? (
-                <div className="space-y-5">
-                  <CommaNumberInput
-                    id="ct-mainland-revenue"
-                    label="Annual Revenue (AED)"
-                    valueStr={mainlandRevenueStr}
-                    onChangeStr={setMainlandRevenueStr}
-                  />
-
-                  <CommaNumberInput
-                    id="ct-mainland-profit"
-                    label="Taxable Profit (AED)"
-                    valueStr={mainlandProfitStr}
-                    onChangeStr={setMainlandProfitStr}
-                  />
-
-                  <ToggleSwitch
-                    id="ct-mainland-sbr"
-                    label="Small Business Relief (0% CT)"
-                    subtext={
-                      ctResult.mode === "mainland" && ctResult.isRevenueWithinSbrCap
-                        ? "Available up to AED 3M revenue through 2029"
-                        : "Revenue is above the AED 3M cap"
-                    }
-                    checked={ctResult.mode === "mainland" ? ctResult.sbrActive : false}
-                    disabled={ctResult.mode === "mainland" ? !ctResult.isRevenueWithinSbrCap : true}
-                    onChange={setSbrPreferred}
-                  />
-                </div>
-              ) : (
-                <div className="space-y-5">
-                  <CommaNumberInput
-                    id="ct-fz-revenue"
-                    label="Annual Revenue (AED)"
-                    valueStr={fzRevenueStr}
-                    onChangeStr={setFzRevenueStr}
-                  />
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <CommaNumberInput
-                      id="ct-fz-qualifying-profit"
-                      label="Qualifying Taxable Profit (AED)"
-                      valueStr={fzQualifyingProfitStr}
-                      onChangeStr={setFzQualifyingProfitStr}
-                    />
-                    <CommaNumberInput
-                      id="ct-fz-non-qualifying-profit"
-                      label="Non-Qualifying Taxable Profit (AED)"
-                      valueStr={fzNonQualifyingProfitStr}
-                      onChangeStr={setFzNonQualifyingProfitStr}
-                    />
-                  </div>
-
-                  <div className="space-y-3">
-                    <CommaNumberInput
-                      id="ct-fz-non-qualifying-revenue"
-                      label="Non-Qualifying Revenue (AED)"
-                      valueStr={fzNonQualifyingRevenueStr}
-                      onChangeStr={setFzNonQualifyingRevenueStr}
-                    />
-
-                    {/* De Minimis Progress Bar */}
-                    {ctResult.mode === "freezone" && (
-                      <div className="rounded-xl bg-[#070d19] border border-white/10 p-3.5 space-y-2">
-                        <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
-                          <span className="font-semibold text-[#cbd5e1]">
-                            De Minimis Test (5% of Revenue or AED 5M cap)
-                          </span>
-                          <span
-                            className={`font-mono font-bold ${
-                              ctResult.deMinimisPassed ? "text-[#c5a059]" : "text-rose-400"
-                            }`}
-                          >
-                            {formatIntegerAed(ctResult.nonQualifyingRevenue)} /{" "}
-                            {formatIntegerAed(ctResult.deMinimisCap)}
-                          </span>
-                        </div>
-                        <div className="h-2.5 w-full rounded-full bg-white/10 overflow-hidden">
-                          <div
-                            className={`h-full rounded-full transition-all duration-300 ${
-                              ctResult.deMinimisPassed ? "bg-[#c5a059]" : "bg-rose-500"
-                            }`}
-                            style={{ width: `${Math.max(2, ctResult.deMinimisRatio)}%` }}
-                          />
-                        </div>
-                        <p
-                          className={`text-[11px] font-medium ${
-                            ctResult.deMinimisPassed ? "text-emerald-400" : "text-rose-400"
-                          }`}
-                        >
-                          {ctResult.deMinimisPassed
-                            ? `Within De Minimis threshold (${ctResult.deMinimisRatio.toFixed(1)}% of limit used)`
-                            : "De Minimis threshold exceeded — 0% QFZP status lost for this period"}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="space-y-3">
-                    <ToggleSwitch
-                      id="ct-fz-qfzp"
-                      label="Qualifying Free Zone Person (QFZP)"
-                      subtext="Substance, audited accounts, transfer pricing"
-                      checked={isQfzp}
-                      onChange={setIsQfzp}
-                    />
-                    <ToggleSwitch
-                      id="ct-fz-sbr"
-                      label="Small Business Relief"
-                      subtext="Not available alongside Free Zone 0%"
-                      checked={false}
-                      disabled={true}
-                      onChange={() => {}}
-                    />
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="pt-4 border-t border-white/10 flex items-start gap-2.5 text-[11px] text-slate-400">
-              <Info className="w-4 h-4 text-[#c5a059] shrink-0 mt-0.5" />
-              <span>
-                Calculates instantly on every keystroke using UAE Federal Decree-Law No. 47 of 2022 &amp; Cabinet
-                Decision No. 100 of 2023.
+        <div className="max-w-[760px] mx-auto bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl shadow-[0_14px_40px_-16px_rgba(13,27,42,0.1)] overflow-hidden">
+          {/* Top Progress Indicator */}
+          <div className="px-6 sm:px-10 lg:px-12 pt-6 sm:pt-8 pb-5 border-b border-[#E2E8F0] bg-[#FFFFFF]">
+            <div className="flex items-center justify-between gap-4 mb-3">
+              <span className="text-xs font-semibold text-[#1B4332] tabular-nums">
+                Step {step} of 4
               </span>
+              <span className="text-xs font-medium text-[#475569]">
+                {STEP_LABELS[step - 1]}
+              </span>
+            </div>
+            <div
+              className="h-1.5 w-full rounded-full bg-[#E2E8F0] overflow-hidden"
+              role="progressbar"
+              aria-valuenow={step * 25}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            >
+              <div
+                className="h-full rounded-full bg-[#1B4332] transition-all duration-300 ease-out"
+                style={{ width: `${step * 25}%` }}
+              />
             </div>
           </div>
 
-          {/* RIGHT CARD: Estimated Corporate Tax + Conversion Box */}
-          <div className="lg:col-span-6 bg-[#0d1b2a] border border-[#c5a059]/60 rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col justify-between space-y-6">
-            <div className="space-y-6">
-              {/* Hero Estimated Output */}
-              <div className="space-y-3 pb-5 border-b border-white/10">
-                <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#dec18c] font-bold block">
-                  ESTIMATED CORPORATE TAX
-                </span>
-
-                <div className="font-display text-4xl sm:text-5xl font-extrabold text-[#c5a059] tabular-nums tracking-tight">
-                  {formatIntegerAed(ctResult.taxAmount)}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleNextStep();
+            }}
+            onKeyDown={handleWizardKeyDown}
+            className="p-6 sm:p-10 lg:p-12"
+          >
+            {/* STEP 1: Business Jurisdiction & Entity Type */}
+            {step === 1 && (
+              <div className="space-y-6">
+                <div className="space-y-1.5">
+                  <h2 className="font-display text-xl sm:text-2xl font-bold text-[#0D1B2A] tracking-tight">
+                    Select your UAE entity structure
+                  </h2>
+                  <p className="text-sm text-[#475569]">
+                    We apply the exact 2026 Federal Tax Authority regime for your license type.
+                  </p>
                 </div>
 
-                {/* Status Pill Badges */}
-                <div className="flex flex-wrap items-center gap-2 pt-1">
-                  {ctResult.mode === "mainland" ? (
-                    ctResult.sbrActive ? (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/40 text-emerald-300 text-xs font-semibold">
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        Mainland · 0% Small Business Relief elected
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[#cbd5e1] text-xs font-semibold">
-                        <Building2 className="w-3.5 h-3.5 text-[#c5a059]" />
-                        Mainland, standard rates
-                      </span>
-                    )
-                  ) : (
-                    <>
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/15 text-[#cbd5e1] text-xs font-semibold">
-                        <Building2 className="w-3.5 h-3.5 text-[#c5a059]" />
-                        {isQfzp ? "Qualifying Free Zone Person" : "Free Zone · Standard 9% Regime"}
-                      </span>
-                      {isQfzp && (
-                        <span
-                          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-semibold ${
-                            ctResult.deMinimisPassed
-                              ? "bg-emerald-500/15 border-emerald-400/40 text-emerald-300"
-                              : "bg-rose-500/15 border-rose-400/40 text-rose-300"
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+                  {(
+                    [
+                      {
+                        id: "mainland-llc" as const,
+                        title: "Mainland LLC",
+                        desc: "DED-licensed UAE mainland company",
+                        icon: Building2,
+                      },
+                      {
+                        id: "freezone" as const,
+                        title: "Free Zone Entity",
+                        desc: "DMCC, DIFC, IFZA, SHAMS & other zones",
+                        icon: Globe,
+                      },
+                      {
+                        id: "sole-establishment" as const,
+                        title: "Freelancer / Sole Est.",
+                        desc: "Natural person or sole proprietorship",
+                        icon: UserCheck,
+                      },
+                    ] as const
+                  ).map((option) => {
+                    const Icon = option.icon;
+                    const isSelected = entityProfile === option.id;
+                    return (
+                      <button
+                        key={option.id}
+                        type="button"
+                        onClick={() => setEntityProfile(option.id)}
+                        className={`relative text-left rounded-xl p-5 min-h-[124px] border transition-all cursor-pointer flex flex-col justify-between gap-3 ${
+                          isSelected
+                            ? "border-[#1B4332] bg-[#1B4332]/[0.04] ring-1 ring-[#1B4332]"
+                            : "border-[#E2E8F0] bg-[#FFFFFF] hover:border-slate-300"
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div
+                            className={`w-9 h-9 rounded-lg flex items-center justify-center ${
+                              isSelected
+                                ? "bg-[#1B4332] text-white"
+                                : "bg-[#F8FAFC] text-[#0D1B2A] border border-[#E2E8F0]"
+                            }`}
+                          >
+                            <Icon className="w-4 h-4" />
+                          </div>
+                          {isSelected && (
+                            <span className="w-5 h-5 rounded-full bg-[#1B4332] text-white flex items-center justify-center">
+                              <Check className="w-3 h-3" strokeWidth={2.5} />
+                            </span>
+                          )}
+                        </div>
+                        <div>
+                          <div className="font-semibold text-sm text-[#0D1B2A]">{option.title}</div>
+                          <p className="text-xs text-[#475569] mt-0.5 leading-snug">{option.desc}</p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* STEP 2: Annual Revenue & Financial Profile */}
+            {step === 2 && (
+              <div className="space-y-6">
+                <div className="space-y-1.5">
+                  <h2 className="font-display text-xl sm:text-2xl font-bold text-[#0D1B2A] tracking-tight">
+                    What is your estimated annual revenue?
+                  </h2>
+                  <p className="text-sm text-[#475569]">
+                    Used to check Small Business Relief (AED 3M cap) or Free Zone De Minimis limits.
+                  </p>
+                </div>
+
+                <CommaNumberInput
+                  id="wizard-annual-revenue"
+                  label="Annual Revenue (AED)"
+                  valueStr={activeRevenueStr}
+                  onChangeStr={setActiveRevenueStr}
+                  large
+                />
+
+                {/* Quick-Select Preset Chips */}
+                <div className="space-y-2">
+                  <span className="block text-xs font-medium text-[#64748B]">Quick select band</span>
+                  <div className="flex flex-wrap gap-2">
+                    {REVENUE_PRESETS.map((preset) => {
+                      const isPresetActive =
+                        activeRevenueNum >= preset.min && activeRevenueNum <= preset.max;
+                      return (
+                        <button
+                          key={preset.label}
+                          type="button"
+                          onClick={() => setActiveRevenueStr(preset.value)}
+                          className={`min-h-[40px] px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold border transition-all cursor-pointer tabular-nums ${
+                            isPresetActive
+                              ? "bg-[#1B4332] border-[#1B4332] text-white"
+                              : "bg-[#F8FAFC] border-[#E2E8F0] text-[#0D1B2A] hover:border-slate-300"
                           }`}
                         >
-                          {ctResult.deMinimisPassed ? (
-                            <>
-                              <CheckCircle2 className="w-3.5 h-3.5" />
-                              De minimis passed
-                            </>
-                          ) : (
-                            <>
-                              <ShieldAlert className="w-3.5 h-3.5" />
-                              De minimis exceeded — 9% applies above AED 375k
-                            </>
-                          )}
-                        </span>
-                      )}
-                    </>
+                          {preset.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Smooth Slider */}
+                <div className="pt-1 space-y-2">
+                  <input
+                    type="range"
+                    min={0}
+                    max={15000000}
+                    step={50000}
+                    value={Math.min(15000000, activeRevenueNum)}
+                    onChange={(e) =>
+                      setActiveRevenueStr(Number(e.target.value).toLocaleString("en-US"))
+                    }
+                    aria-label="Annual revenue slider"
+                    className="w-full h-2 rounded-lg bg-[#E2E8F0] appearance-none cursor-pointer accent-[#1B4332]"
+                  />
+                  <div className="flex justify-between text-[11px] font-medium text-[#64748B] tabular-nums">
+                    <span>AED 0</span>
+                    <span>AED 3M (SBR Cap)</span>
+                    <span>AED 10M</span>
+                    <span>AED 15M+</span>
+                  </div>
+                </div>
+
+                {/* Live 1-Line Threshold Feedback */}
+                <div className="rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] px-4 py-3 text-xs text-[#475569] flex items-center gap-2">
+                  <Info className="w-4 h-4 text-[#1B4332] shrink-0" />
+                  {jurisdiction === "mainland" ? (
+                    <span>
+                      {activeRevenueNum <= 3000000
+                        ? "Revenue is within the AED 3,000,000 Small Business Relief threshold (0% election available)."
+                        : "Revenue exceeds AED 3,000,000 — standard 0% up to AED 375,000 and 9% above applies."}
+                    </span>
+                  ) : (
+                    <span className="tabular-nums">
+                      Free Zone De Minimis non-qualifying cap (lower of 5% or AED 5M):{" "}
+                      <strong className="text-[#0D1B2A]">
+                        {formatIntegerAed(Math.min(activeRevenueNum * 0.05, 5000000))}
+                      </strong>
+                    </span>
                   )}
                 </div>
               </div>
+            )}
 
-              {/* Itemized Breakdown Rows */}
-              <div className="divide-y divide-white/10 text-sm">
-                {ctResult.mode === "mainland" ? (
-                  <>
-                    <div className="py-3 flex items-center justify-between gap-4">
-                      <span className="text-[#cbd5e1]">Taxable profit</span>
-                      <span className="font-mono font-semibold text-white tabular-nums">
-                        {formatIntegerAed(ctResult.profit)}
-                      </span>
-                    </div>
-                    <div className="py-3 flex items-center justify-between gap-4">
-                      <span className="text-[#cbd5e1]">
-                        {ctResult.sbrActive
-                          ? "Small Business Relief (0% up to AED 3M revenue)"
-                          : "First AED 375,000 at 0%"}
-                      </span>
-                      <span className="font-mono font-semibold text-emerald-400 tabular-nums">
-                        AED 0
-                      </span>
-                    </div>
-                    <div className="py-3 flex items-center justify-between gap-4">
-                      <span className="text-[#cbd5e1]">
-                        Above AED 375,000 at 9%{" "}
-                        {!ctResult.sbrActive && ctResult.nineBandProfit > 0
-                          ? `(${formatIntegerAed(ctResult.nineBandProfit)})`
-                          : ""}
-                      </span>
-                      <span className="font-mono font-semibold text-white tabular-nums">
-                        {formatIntegerAed(ctResult.taxAmount)}
-                      </span>
-                    </div>
-                  </>
-                ) : ctResult.qfzpZeroApplies ? (
-                  <>
-                    <div className="py-3 flex items-center justify-between gap-4">
-                      <span className="text-[#cbd5e1]">
-                        Qualifying income at 0% ({formatIntegerAed(ctResult.qualifyingProfit)})
-                      </span>
-                      <span className="font-mono font-semibold text-emerald-400 tabular-nums">
-                        AED 0
-                      </span>
-                    </div>
-                    <div className="py-3 flex items-center justify-between gap-4">
-                      <span className="text-[#cbd5e1]">
-                        Non-qualifying income at 9%{" "}
-                        <span className="block text-[11px] text-slate-400">
-                          No AED 375,000 band for QFZPs ({formatIntegerAed(ctResult.nonQualifyingProfit)})
-                        </span>
-                      </span>
-                      <span className="font-mono font-semibold text-white tabular-nums">
-                        {formatIntegerAed(ctResult.taxAmount)}
-                      </span>
-                    </div>
-                  </>
+            {/* STEP 3: Net Profit & Qualifying Status / Deductions */}
+            {step === 3 && (
+              <div className="space-y-6">
+                <div className="space-y-1.5">
+                  <h2 className="font-display text-xl sm:text-2xl font-bold text-[#0D1B2A] tracking-tight">
+                    {jurisdiction === "mainland"
+                      ? "Net profit & relief eligibility"
+                      : "Free Zone profit split & QFZP status"}
+                  </h2>
+                  <p className="text-sm text-[#475569]">
+                    {jurisdiction === "mainland"
+                      ? "Enter your expected annual net profit and confirm whether you elect Small Business Relief."
+                      : "Split qualifying vs. non-qualifying income to verify your 0% QFZP De Minimis position."}
+                  </p>
+                </div>
+
+                {jurisdiction === "mainland" ? (
+                  <div className="space-y-5">
+                    <CommaNumberInput
+                      id="ct-mainland-profit"
+                      label="Annual Taxable Net Profit (AED)"
+                      valueStr={mainlandProfitStr}
+                      onChangeStr={setMainlandProfitStr}
+                      tooltip="Accounting net profit before corporate tax, adjusted for non-deductible expenses such as 50% of client entertainment."
+                      large
+                    />
+
+                    <ToggleSwitch
+                      id="ct-mainland-sbr"
+                      label="Elect Small Business Relief (0% CT)"
+                      tooltip="Under Ministerial Decision No. 73 of 2023, resident businesses with revenue up to AED 3M can elect 0% Corporate Tax through Dec 31, 2029."
+                      subtext={
+                        ctResult.mode === "mainland" && ctResult.isRevenueWithinSbrCap
+                          ? "Available up to AED 3M annual revenue through 2029."
+                          : "Unavailable because annual revenue exceeds AED 3,000,000."
+                      }
+                      checked={ctResult.mode === "mainland" ? ctResult.sbrActive : false}
+                      disabled={ctResult.mode === "mainland" ? !ctResult.isRevenueWithinSbrCap : true}
+                      onChange={setSbrPreferred}
+                    />
+                  </div>
                 ) : (
-                  <>
+                  <div className="space-y-5">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <CommaNumberInput
+                        id="ct-fz-qualifying-profit"
+                        label="Qualifying Taxable Profit (AED)"
+                        valueStr={fzQualifyingProfitStr}
+                        onChangeStr={setFzQualifyingProfitStr}
+                        tooltip="Net profit derived from Qualifying Activities or transactions with other Free Zone Persons (eligible for 0% if QFZP)."
+                      />
+                      <CommaNumberInput
+                        id="ct-fz-non-qualifying-profit"
+                        label="Non-Qualifying Profit (AED)"
+                        valueStr={fzNonQualifyingProfitStr}
+                        onChangeStr={setFzNonQualifyingProfitStr}
+                        tooltip="Net profit from Excluded Activities or non-qualifying UAE mainland sales (taxed at 9% without the AED 375,000 band)."
+                      />
+                    </div>
+
+                    <div className="space-y-3">
+                      <CommaNumberInput
+                        id="ct-fz-non-qualifying-revenue"
+                        label="Non-Qualifying Revenue (AED)"
+                        valueStr={fzNonQualifyingRevenueStr}
+                        onChangeStr={setFzNonQualifyingRevenueStr}
+                        tooltip="To keep 0% QFZP status, non-qualifying revenue must not exceed 5% of total revenue or AED 5,000,000 (whichever is lower)."
+                      />
+
+                      {ctResult.mode === "freezone" && (
+                        <div className="rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] p-3.5 space-y-2">
+                          <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                            <span className="font-medium text-[#475569]">De Minimis usage</span>
+                            <span
+                              className={`font-semibold tabular-nums ${
+                                ctResult.deMinimisPassed ? "text-[#1B4332]" : "text-rose-600"
+                              }`}
+                            >
+                              {formatIntegerAed(ctResult.nonQualifyingRevenue)} /{" "}
+                              {formatIntegerAed(ctResult.deMinimisCap)}
+                            </span>
+                          </div>
+                          <div className="h-2 w-full rounded-full bg-[#E2E8F0] overflow-hidden">
+                            <div
+                              className={`h-full rounded-full transition-all duration-300 ${
+                                ctResult.deMinimisPassed ? "bg-[#1B4332]" : "bg-rose-500"
+                              }`}
+                              style={{ width: `${Math.max(2, ctResult.deMinimisRatio)}%` }}
+                            />
+                          </div>
+                          <p
+                            className={`text-xs font-medium ${
+                              ctResult.deMinimisPassed ? "text-[#1B4332]" : "text-rose-600"
+                            }`}
+                          >
+                            {ctResult.deMinimisPassed
+                              ? `Within threshold (${ctResult.deMinimisRatio.toFixed(1)}% of limit used)`
+                              : "De Minimis cap exceeded — standard 9% rules apply across total profit"}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="space-y-3">
+                      <ToggleSwitch
+                        id="ct-fz-qfzp"
+                        label="Qualifying Free Zone Person (QFZP)"
+                        tooltip="Requires adequate UAE substance, audited IFRS financial statements, and arm's-length Transfer Pricing compliance."
+                        subtext="Adequate UAE substance, audited IFRS accounts & transfer pricing met."
+                        checked={isQfzp}
+                        onChange={setIsQfzp}
+                      />
+                      <ToggleSwitch
+                        id="ct-fz-sbr"
+                        label="Small Business Relief"
+                        subtext="Not available alongside the 0% Free Zone QFZP regime."
+                        checked={false}
+                        disabled={true}
+                        onChange={() => {}}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* STEP 4: Executive Results Dashboard */}
+            {step === 4 && (
+              <div className="space-y-7">
+                {/* Top Hero Metric + Status Pill */}
+                <div className="space-y-3">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-xs font-semibold text-[#475569] tracking-wide">
+                      Estimated 2026 UAE Corporate Tax Liability
+                    </span>
+                    <span
+                      className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold border ${
+                        statusPill.tone === "emerald"
+                          ? "bg-emerald-50 text-[#1B4332] border-emerald-200"
+                          : statusPill.tone === "rose"
+                            ? "bg-rose-50 text-rose-700 border-rose-200"
+                            : "bg-[#F8FAFC] text-[#0D1B2A] border-[#E2E8F0]"
+                      }`}
+                    >
+                      {statusPill.tone === "emerald" ? (
+                        <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                      ) : statusPill.tone === "rose" ? (
+                        <ShieldAlert className="w-3.5 h-3.5 shrink-0" />
+                      ) : (
+                        <Building2 className="w-3.5 h-3.5 text-[#475569] shrink-0" />
+                      )}
+                      <span>{statusPill.text}</span>
+                    </span>
+                  </div>
+
+                  <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                    <span className="font-display text-4xl sm:text-5xl font-bold text-[#0D1B2A] tracking-tight tabular-nums">
+                      {formatIntegerAed(ctResult.taxAmount)}
+                    </span>
+                    <span className="text-sm font-semibold text-[#475569] tabular-nums">
+                      {ctResult.effectiveRate.toFixed(2)}% effective tax rate
+                    </span>
+                  </div>
+                </div>
+
+                {/* Visual Breakdown Card: Stacked Bar + Crisp 3-Row Ledger */}
+                <div className="rounded-xl border border-[#E2E8F0] bg-[#FFFFFF] p-5 sm:p-6 space-y-5">
+                  {/* Minimal Horizontal Stacked Proportion Bar */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between text-xs text-[#475569] tabular-nums">
+                      <span>0% Portion ({zeroPercentWidth}%)</span>
+                      <span>9% Portion ({ninePercentWidth}%)</span>
+                    </div>
+                    <div className="h-2.5 w-full rounded-full bg-[#F1F5F9] overflow-hidden flex">
+                      {zeroPercentWidth > 0 && (
+                        <div
+                          className="h-full bg-[#1B4332] transition-all duration-300"
+                          style={{ width: `${zeroPercentWidth}%` }}
+                        />
+                      )}
+                      {ninePercentWidth > 0 && (
+                        <div
+                          className="h-full bg-[#C5A059] transition-all duration-300"
+                          style={{ width: `${ninePercentWidth}%` }}
+                        />
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Crisp 3-Row Ledger */}
+                  <div className="divide-y divide-[#E2E8F0] text-sm">
                     <div className="py-3 flex items-center justify-between gap-4">
-                      <span className="text-[#cbd5e1]">Total taxable profit</span>
-                      <span className="font-mono font-semibold text-white tabular-nums">
-                        {formatIntegerAed(ctResult.totalProfit)}
+                      <span className="text-[#475569]">Taxable Income</span>
+                      <span className="font-semibold text-[#0D1B2A] tabular-nums">
+                        {formatIntegerAed(totalTaxableIncome)}
                       </span>
                     </div>
+
                     <div className="py-3 flex items-center justify-between gap-4">
-                      <span className="text-[#cbd5e1]">First AED 375,000 at 0%</span>
-                      <span className="font-mono font-semibold text-emerald-400 tabular-nums">
-                        AED 0
+                      <span className="text-[#475569]">
+                        {ctResult.mode === "mainland"
+                          ? ctResult.sbrActive
+                            ? "0% Small Business Relief (Revenue ≤ AED 3M)"
+                            : "0% Tax-Free Threshold (up to AED 375,000)"
+                          : ctResult.qfzpZeroApplies
+                            ? `Qualifying Free Zone Income at 0% (${formatIntegerAed(ctResult.qualifyingProfit)})`
+                            : "0% Tax-Free Threshold (up to AED 375,000)"}
                       </span>
+                      <span className="font-semibold text-[#1B4332] tabular-nums">AED 0</span>
                     </div>
+
                     <div className="py-3 flex items-center justify-between gap-4">
-                      <span className="text-[#cbd5e1]">
-                        Above AED 375,000 at 9%{" "}
-                        {ctResult.nineBandProfit > 0 ? `(${formatIntegerAed(ctResult.nineBandProfit)})` : ""}
+                      <span className="text-[#475569]">
+                        9% Taxable Portion{" "}
+                        {ctResult.nineBandProfit > 0 ? (
+                          <span className="text-xs text-[#64748B] tabular-nums">
+                            ({formatIntegerAed(ctResult.nineBandProfit)} × 9%)
+                          </span>
+                        ) : null}
                       </span>
-                      <span className="font-mono font-semibold text-white tabular-nums">
+                      <span className="font-bold text-[#0D1B2A] tabular-nums">
                         {formatIntegerAed(ctResult.taxAmount)}
                       </span>
                     </div>
-                  </>
+                  </div>
+                </div>
+
+                {/* Key Compliance Note (Muted Slate Background + Subtle Gold Left Accent Border) */}
+                <div className="rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] border-l-[3px] border-l-[#C5A059] p-4 text-xs sm:text-sm text-[#475569] leading-relaxed">
+                  <strong className="font-semibold text-[#0D1B2A] block mb-0.5">
+                    2026 FTA Compliance Note
+                  </strong>
+                  {ctResult.mode === "freezone" && ctResult.qfzpZeroApplies
+                    ? "To preserve your 0% QFZP rate, audited IFRS financial statements and Transfer Pricing documentation are mandatory. Your EmaraTax Corporate Tax return is due within 9 months of financial year-end."
+                    : ctResult.mode === "mainland" && ctResult.sbrActive
+                      ? "Even with AED 0 tax under Small Business Relief, you must formally elect SBR on your annual EmaraTax Corporate Tax return within 9 months of financial year-end and keep IFRS books for 7 years."
+                      : "Your UAE Corporate Tax return and payment are due on EmaraTax within 9 months of your financial year-end. Maintaining monthly IFRS books avoids late-filing and record-keeping penalties."}
+                </div>
+
+                {/* Single Contextual CTA Strip */}
+                <div className="pt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <button
+                    type="button"
+                    onClick={handleBookCorporateReview}
+                    className="w-full sm:w-auto min-h-[48px] px-6 py-3 rounded-xl bg-[#1B4332] hover:bg-[#143326] text-white text-sm font-semibold transition-colors cursor-pointer inline-flex items-center justify-center gap-2 shadow-xs"
+                  >
+                    <span>Book Free 15-Min Tax Review</span>
+                    <ArrowRight className="w-4 h-4 shrink-0" />
+                  </button>
+
+                  <div className="flex items-center justify-center sm:justify-end gap-4">
+                    <button
+                      type="button"
+                      onClick={handleDownloadSummary}
+                      className="min-h-[44px] px-2 text-xs sm:text-sm font-semibold text-[#0D1B2A] hover:text-[#1B4332] inline-flex items-center gap-1.5 cursor-pointer transition-colors"
+                    >
+                      <Download className="w-4 h-4 shrink-0" />
+                      <span>Download Summary</span>
+                    </button>
+                    <span className="text-[#CBD5E1]" aria-hidden="true">
+                      |
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleRecalculate}
+                      className="min-h-[44px] px-2 text-xs sm:text-sm font-semibold text-[#475569] hover:text-[#0D1B2A] inline-flex items-center gap-1.5 cursor-pointer transition-colors"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5 shrink-0" />
+                      <span>Recalculate</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Wizard Navigation Footer (Steps 1–3) */}
+            {step < 4 && (
+              <div className="mt-8 pt-6 border-t border-[#E2E8F0] flex items-center justify-between gap-4">
+                {step > 1 ? (
+                  <button
+                    type="button"
+                    onClick={handlePrevStep}
+                    className="min-h-[44px] px-3 py-2 rounded-xl text-sm font-semibold text-[#475569] hover:text-[#0D1B2A] inline-flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <ArrowLeft className="w-4 h-4" />
+                    <span>Back</span>
+                  </button>
+                ) : (
+                  <span className="text-xs text-[#64748B]">Press Enter or click Continue</span>
                 )}
 
-                <div className="py-3.5 flex items-center justify-between gap-4">
-                  <span className="font-bold text-white">Corporate tax</span>
-                  <span className="font-mono font-extrabold text-[#c5a059] text-base tabular-nums">
-                    {formatIntegerAed(ctResult.taxAmount)}
-                  </span>
-                </div>
-
-                <div className="pt-3 flex items-center justify-between gap-4">
-                  <span className="text-[#cbd5e1]">Effective rate on profit (%)</span>
-                  <span className="font-mono font-bold text-white tabular-nums">
-                    {ctResult.effectiveRate.toFixed(2)}%
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Dias Accounting Lead Conversion Box */}
-            <div className="rounded-2xl bg-[#070d19] border border-[#c5a059]/50 p-5 sm:p-6 space-y-4">
-              <div className="space-y-1.5">
-                <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-[#c5a059] block">
-                  OPTIMIZE &amp; FILE WITH AN FTA-REGISTERED TAX AGENT
-                </span>
-                <h3 className="font-display text-lg sm:text-xl font-bold text-white">
-                  Lock In Your 2026 Corporate Tax Filing
-                </h3>
-                <p className="text-xs sm:text-sm text-[#cbd5e1] leading-relaxed">
-                  Avoid the AED 10,000 late-registration penalty and ensure your IFRS accounts &amp; QFZP schedules
-                  pass FTA review. Fixed-fee plans from AED 400/month.
-                </p>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-3">
                 <button
-                  type="button"
-                  onClick={() => handleBookReviewClick("ct-review")}
-                  className="flex-1 bg-[#c5a059] hover:bg-[#dec18c] text-[#070d19] font-display font-bold px-5 py-3 rounded-xl text-xs sm:text-sm transition-all cursor-pointer inline-flex items-center justify-center gap-2 shadow-lg shadow-[#c5a059]/15"
+                  type="submit"
+                  className="min-h-[46px] px-6 py-2.5 rounded-xl bg-[#1B4332] hover:bg-[#143326] text-white text-sm font-semibold transition-colors cursor-pointer inline-flex items-center gap-2 shadow-xs"
                 >
-                  <span>Book Free 15-Min Tax Review</span>
-                  <ArrowRight className="w-4 h-4 shrink-0" />
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleCorporateWhatsApp}
-                  className="flex-1 border border-[#c5a059]/70 hover:border-[#c5a059] hover:bg-[#c5a059]/10 text-[#dec18c] hover:text-white font-display font-semibold px-4 py-3 rounded-xl text-xs sm:text-sm transition-all cursor-pointer inline-flex items-center justify-center gap-2"
-                >
-                  <WhatsAppSvgIcon className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>WhatsApp an Advisor (+971 52 922 6958)</span>
+                  <span>{step === 3 ? "View Tax Summary" : "Continue"}</span>
+                  <ArrowRight className="w-4 h-4" />
                 </button>
               </div>
-            </div>
-          </div>
+            )}
+          </form>
         </div>
       )}
 
       {/* ================================================= */}
-      {/* TAB 2: UAE 5% VAT & Input Recovery Calculator     */}
+      {/* TAB 2: 5% UAE VAT & INPUT RECOVERY CALCULATOR     */}
       {/* ================================================= */}
       {activeTab === "vat" && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
-          {/* LEFT CARD: Calculate 5% VAT for UAE */}
-          <div className="lg:col-span-6 bg-[#0d1b2a] border border-white/15 rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col justify-between space-y-6">
-            <div className="space-y-6">
-              <div className="pb-5 border-b border-white/10">
-                <span className="text-[11px] font-mono uppercase tracking-widest text-[#c5a059] font-bold block">
-                  5% UAE Value Added Tax
-                </span>
-                <h2 className="font-display text-xl sm:text-2xl font-bold text-white mt-0.5">
-                  Calculate 5% VAT for UAE
-                </h2>
-              </div>
-
-              <CommaNumberInput
-                id="vat-amount-input"
-                label="Amount (AED)"
-                valueStr={vatAmountStr}
-                onChangeStr={setVatAmountStr}
-                allowDecimal={true}
-              />
-
-              {/* Searchable Expense Category Dropdown */}
-              <div className="space-y-1.5" ref={dropdownRef}>
-                <label
-                  htmlFor="vat-category-trigger"
-                  className="block text-xs font-semibold text-[#cbd5e1] tracking-wide"
-                >
-                  Expense Category (auto-sets VAT recovery treatment)
-                </label>
-
-                <div className="relative">
-                  <button
-                    id="vat-category-trigger"
-                    type="button"
-                    aria-expanded={categoryOpen}
-                    onClick={() => setCategoryOpen((prev) => !prev)}
-                    className="w-full rounded-xl bg-[#070d19] border border-white/15 hover:border-[#c5a059]/60 focus:border-[#c5a059] px-4 py-3 text-left flex items-center justify-between gap-3 cursor-pointer transition-colors"
-                  >
-                    <div className="min-w-0">
-                      <span className="block text-sm font-semibold text-white truncate">
-                        {selectedCategory.label}
-                      </span>
-                      <span
-                        className={`block text-[11px] mt-0.5 ${
-                          selectedCategory.recovery === "reclaimable"
-                            ? "text-emerald-400"
-                            : selectedCategory.recovery === "blocked"
-                              ? "text-rose-400"
-                              : "text-[#dec18c]"
-                        }`}
-                      >
-                        {selectedCategory.treatmentLabel}
-                      </span>
-                    </div>
-                    <ChevronDown
-                      className={`w-4 h-4 text-[#c5a059] shrink-0 transition-transform ${
-                        categoryOpen ? "rotate-180" : ""
-                      }`}
-                    />
-                  </button>
-
-                  {categoryOpen && (
-                    <div className="absolute z-30 mt-2 w-full rounded-2xl bg-[#070d19] border border-[#c5a059]/60 shadow-2xl overflow-hidden">
-                      <div className="p-2.5 border-b border-white/10">
-                        <div className="relative flex items-center">
-                          <Search className="w-4 h-4 text-slate-400 absolute left-3 pointer-events-none" />
-                          <input
-                            type="text"
-                            value={categorySearch}
-                            onChange={(e) => setCategorySearch(e.target.value)}
-                            placeholder="Search expense category..."
-                            className="w-full rounded-lg bg-[#0d1b2a] border border-white/10 focus:border-[#c5a059] pl-9 pr-3 py-2 text-xs text-white placeholder:text-slate-400 outline-none"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="max-h-64 overflow-y-auto divide-y divide-white/5">
-                        {filteredCategories.length === 0 ? (
-                          <div className="p-4 text-xs text-slate-400 text-center">
-                            No matching expense category found.
-                          </div>
-                        ) : (
-                          filteredCategories.map((cat) => {
-                            const isSelected = cat.id === selectedCategory.id;
-                            return (
-                              <button
-                                key={cat.id}
-                                type="button"
-                                onClick={() => {
-                                  setSelectedCategoryId(cat.id);
-                                  setCategoryOpen(false);
-                                  setCategorySearch("");
-                                }}
-                                className={`w-full px-4 py-3 text-left transition-colors cursor-pointer flex items-center justify-between gap-3 ${
-                                  isSelected ? "bg-[#c5a059]/15" : "hover:bg-white/5"
-                                }`}
-                              >
-                                <div className="min-w-0">
-                                  <span className="block text-xs sm:text-sm font-semibold text-white">
-                                    {cat.label}
-                                  </span>
-                                  <span
-                                    className={`block text-[11px] mt-0.5 ${
-                                      cat.recovery === "reclaimable"
-                                        ? "text-emerald-400"
-                                        : cat.recovery === "blocked"
-                                          ? "text-rose-400"
-                                          : "text-[#dec18c]"
-                                    }`}
-                                  >
-                                    {cat.treatmentLabel}
-                                  </span>
-                                </div>
-                                {isSelected && <CheckCircle2 className="w-4 h-4 text-[#c5a059] shrink-0" />}
-                              </button>
-                            );
-                          })
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
+        <div className="max-w-[760px] mx-auto bg-[#FFFFFF] border border-[#E2E8F0] rounded-2xl shadow-[0_14px_40px_-16px_rgba(13,27,42,0.1)] p-6 sm:p-10 lg:p-12 space-y-7">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-6 border-b border-[#E2E8F0]">
+            <div>
+              <h2 className="font-display text-xl sm:text-2xl font-bold text-[#0D1B2A] tracking-tight">
+                5% UAE VAT &amp; Input Recovery
+              </h2>
+              <p className="text-sm text-[#475569] mt-0.5">
+                Add or extract 5% VAT and verify FTA Form 201 reclaim eligibility.
+              </p>
             </div>
 
-            {/* Bottom Summary Card */}
-            <div className="rounded-2xl bg-[#070d19] border border-white/15 p-5 divide-y divide-white/10">
-              <div className="pb-3 flex items-center justify-between gap-4">
-                <span className="text-xs sm:text-sm text-[#cbd5e1]">Net (excl. VAT)</span>
-                <span className="font-mono text-base sm:text-lg font-bold text-white tabular-nums">
+            <div
+              role="group"
+              aria-label="VAT Calculation Mode"
+              className="inline-flex p-1 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] self-start sm:self-auto"
+            >
+              <button
+                type="button"
+                onClick={() => setVatMode("add")}
+                className={`min-h-[40px] px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  vatMode === "add"
+                    ? "bg-[#1B4332] text-white shadow-xs"
+                    : "text-[#475569] hover:text-[#0D1B2A]"
+                }`}
+              >
+                Add VAT
+              </button>
+              <button
+                type="button"
+                onClick={() => setVatMode("extract")}
+                className={`min-h-[40px] px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  vatMode === "extract"
+                    ? "bg-[#1B4332] text-white shadow-xs"
+                    : "text-[#475569] hover:text-[#0D1B2A]"
+                }`}
+              >
+                Extract VAT
+              </button>
+            </div>
+          </div>
+
+          {/* Inputs */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <CommaNumberInput
+              id="vat-amount-input"
+              label={vatMode === "add" ? "Net Amount Excl. VAT (AED)" : "Gross Amount Incl. VAT (AED)"}
+              valueStr={vatAmountStr}
+              onChangeStr={setVatAmountStr}
+              allowDecimal={true}
+            />
+
+            {/* Expense Category Dropdown */}
+            <div className="space-y-1.5" ref={dropdownRef}>
+              <label htmlFor="vat-category-trigger" className="block text-sm font-semibold text-[#0D1B2A]">
+                Expense Category
+              </label>
+
+              <div className="relative">
+                <button
+                  id="vat-category-trigger"
+                  type="button"
+                  aria-expanded={categoryOpen}
+                  onClick={() => setCategoryOpen((prev) => !prev)}
+                  className="w-full min-h-[48px] rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] hover:border-slate-300 focus:border-[#1B4332] px-4 py-2.5 text-left flex items-center justify-between gap-3 cursor-pointer transition-colors"
+                >
+                  <span className="text-sm font-semibold text-[#0D1B2A] truncate">
+                    {selectedCategory.label}
+                  </span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-[#475569] shrink-0 transition-transform ${
+                      categoryOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+
+                {categoryOpen && (
+                  <div className="absolute z-30 mt-2 w-full rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] shadow-xl overflow-hidden">
+                    <div className="p-2 border-b border-[#E2E8F0]">
+                      <div className="relative flex items-center">
+                        <Search className="w-4 h-4 text-slate-400 absolute left-3 pointer-events-none" />
+                        <input
+                          type="text"
+                          value={categorySearch}
+                          onChange={(e) => setCategorySearch(e.target.value)}
+                          placeholder="Search category..."
+                          className="w-full rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] focus:border-[#1B4332] pl-9 pr-3 py-2 text-xs text-[#0D1B2A] placeholder:text-slate-400 outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="max-h-60 overflow-y-auto divide-y divide-[#F1F5F9]">
+                      {filteredCategories.length === 0 ? (
+                        <div className="p-4 text-xs text-[#64748B] text-center">
+                          No matching category found.
+                        </div>
+                      ) : (
+                        filteredCategories.map((cat) => {
+                          const isSelected = cat.id === selectedCategory.id;
+                          return (
+                            <button
+                              key={cat.id}
+                              type="button"
+                              onClick={() => {
+                                setSelectedCategoryId(cat.id);
+                                setCategoryOpen(false);
+                                setCategorySearch("");
+                              }}
+                              className={`w-full px-4 py-3 text-left transition-colors cursor-pointer flex items-center justify-between gap-3 ${
+                                isSelected ? "bg-[#1B4332]/[0.05]" : "hover:bg-[#F8FAFC]"
+                              }`}
+                            >
+                              <div className="min-w-0">
+                                <span className="block text-xs sm:text-sm font-semibold text-[#0D1B2A]">
+                                  {cat.label}
+                                </span>
+                                <span
+                                  className={`block text-[11px] mt-0.5 ${
+                                    cat.recovery === "reclaimable"
+                                      ? "text-[#1B4332]"
+                                      : cat.recovery === "blocked"
+                                        ? "text-rose-600"
+                                        : "text-[#64748B]"
+                                  }`}
+                                >
+                                  {cat.treatmentLabel}
+                                </span>
+                              </div>
+                              {isSelected && <Check className="w-4 h-4 text-[#1B4332] shrink-0" />}
+                            </button>
+                          );
+                        })
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* VAT Result Summary */}
+          <div className="rounded-xl border border-[#E2E8F0] bg-[#F8FAFC] p-5 sm:p-6 space-y-5">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <span className="text-xs font-semibold text-[#475569] block">
+                  {vatMode === "add" ? "5% UAE VAT Added" : "5% UAE VAT Extracted"}
+                </span>
+                <div className="font-display text-3xl sm:text-4xl font-bold text-[#0D1B2A] tracking-tight tabular-nums mt-1">
+                  {formatDecimalAed(vatResult.vatAmount)}
+                </div>
+              </div>
+
+              {vatResult.recovery === "reclaimable" && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-[#1B4332] text-xs font-semibold">
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>Reclaimable on Form 201</span>
+                </span>
+              )}
+              {vatResult.recovery === "blocked" && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-50 border border-rose-200 text-rose-700 text-xs font-semibold">
+                  <XCircle className="w-3.5 h-3.5" />
+                  <span>Blocked Input VAT (0% Reclaimable)</span>
+                </span>
+              )}
+              {vatResult.recovery === "zero-rated" && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-[#E2E8F0] text-[#0D1B2A] text-xs font-semibold">
+                  <Info className="w-3.5 h-3.5" />
+                  <span>Zero-Rated (0% VAT)</span>
+                </span>
+              )}
+            </div>
+
+            <div className="divide-y divide-[#E2E8F0] border-t border-[#E2E8F0] text-sm">
+              <div className="py-2.5 flex items-center justify-between">
+                <span className="text-[#475569]">Net Amount (excl. VAT)</span>
+                <span className="font-semibold text-[#0D1B2A] tabular-nums">
                   {formatDecimalAed(vatResult.netAmount)}
                 </span>
               </div>
-              <div className="pt-3 flex items-center justify-between gap-4">
-                <span className="text-xs sm:text-sm text-[#cbd5e1]">Gross (incl. VAT)</span>
-                <span className="font-mono text-base sm:text-lg font-bold text-[#dec18c] tabular-nums">
+              <div className="py-2.5 flex items-center justify-between">
+                <span className="text-[#475569]">UAE VAT ({selectedCategory.vatRate * 100}%)</span>
+                <span className="font-semibold text-[#0D1B2A] tabular-nums">
+                  {formatDecimalAed(vatResult.vatAmount)}
+                </span>
+              </div>
+              <div className="pt-2.5 flex items-center justify-between">
+                <span className="font-semibold text-[#0D1B2A]">Gross Total (incl. VAT)</span>
+                <span className="font-bold text-[#0D1B2A] tabular-nums">
                   {formatDecimalAed(vatResult.grossAmount)}
                 </span>
               </div>
             </div>
           </div>
 
-          {/* RIGHT CARD: VAT Amount & FTA Recovery Check */}
-          <div className="lg:col-span-6 bg-[#0d1b2a] border border-[#c5a059]/60 rounded-3xl p-6 sm:p-8 shadow-2xl flex flex-col justify-between space-y-6">
-            <div className="space-y-6">
-              {/* Top Mode Toggle */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-5 border-b border-white/10">
-                <div>
-                  <span className="text-[11px] font-mono uppercase tracking-widest text-[#dec18c] font-bold block">
-                    FTA Input Recovery
-                  </span>
-                  <h3 className="font-display text-lg sm:text-xl font-bold text-white mt-0.5">
-                    VAT Amount &amp; FTA Recovery Check
-                  </h3>
-                </div>
-
-                <div
-                  role="group"
-                  aria-label="VAT Calculation Mode"
-                  className="inline-flex p-1 rounded-xl bg-[#070d19] border border-white/15 self-start sm:self-auto"
-                >
-                  <button
-                    type="button"
-                    onClick={() => setVatMode("add")}
-                    className={`px-3 py-2 rounded-lg text-xs font-display font-bold transition-all cursor-pointer ${
-                      vatMode === "add"
-                        ? "bg-[#c5a059] text-[#070d19] shadow-sm"
-                        : "text-[#cbd5e1] hover:text-white"
-                    }`}
-                  >
-                    Add VAT (Excl. → Incl.)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setVatMode("extract")}
-                    className={`px-3 py-2 rounded-lg text-xs font-display font-bold transition-all cursor-pointer ${
-                      vatMode === "extract"
-                        ? "bg-[#c5a059] text-[#070d19] shadow-sm"
-                        : "text-[#cbd5e1] hover:text-white"
-                    }`}
-                  >
-                    Extract VAT (Incl. → Excl.)
-                  </button>
-                </div>
-              </div>
-
-              {/* Large Hero VAT Number */}
-              <div className="space-y-3">
-                <span className="text-xs font-mono uppercase tracking-wider text-[#cbd5e1] block">
-                  {vatMode === "add" ? "5% UAE VAT Added" : "5% UAE VAT Extracted"}
-                </span>
-                <div className="font-display text-4xl sm:text-5xl font-extrabold text-[#c5a059] tabular-nums tracking-tight">
+          {/* Compliance Note */}
+          <div className="rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] border-l-[3px] border-l-[#C5A059] p-4 text-xs sm:text-sm text-[#475569] leading-relaxed">
+            {vatResult.recovery === "reclaimable" && (
+              <>
+                You may reclaim{" "}
+                <strong className="font-semibold text-[#0D1B2A] tabular-nums">
                   {formatDecimalAed(vatResult.vatAmount)}
-                </div>
+                </strong>{" "}
+                on FTA Form 201 provided the supplier&apos;s TRN and full UAE Tax Invoice requirements are documented.
+              </>
+            )}
+            {vatResult.recovery === "blocked" && (
+              <>
+                Under UAE VAT Executive Regulations, input VAT on client entertainment and personal/mixed-use motor
+                vehicles is blocked and cannot be reclaimed on Form 201.
+              </>
+            )}
+            {vatResult.recovery === "zero-rated" && (
+              <>
+                International commercial flights are zero-rated (0% VAT) under Article 45 of the UAE VAT Law, resulting
+                in AED 0.00 VAT charged or reclaimed.
+              </>
+            )}
+          </div>
 
-                {/* Recovery Status Badge & FTA Rule Note */}
-                {vatResult.recovery === "reclaimable" && (
-                  <div className="rounded-2xl bg-emerald-500/10 border border-emerald-400/35 p-4 space-y-2">
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold">
-                      <ShieldCheck className="w-3.5 h-3.5" />
-                      <span>Reclaimable</span>
-                    </div>
-                    <p className="text-xs sm:text-sm text-[#cbd5e1] leading-relaxed">
-                      You could reclaim <strong className="text-white">{formatDecimalAed(vatResult.vatAmount)}</strong>{" "}
-                      on this expense (ensure supplier TRN &amp; FTA Decision 13/2026 due diligence are documented).
-                    </p>
-                  </div>
-                )}
-
-                {vatResult.recovery === "blocked" && (
-                  <div className="rounded-2xl bg-rose-500/10 border border-rose-400/35 p-4 space-y-2">
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-300 text-xs font-bold">
-                      <XCircle className="w-3.5 h-3.5" />
-                      <span>Non-Reclaimable (Blocked Input VAT)</span>
-                    </div>
-                    <p className="text-xs sm:text-sm text-[#cbd5e1] leading-relaxed">
-                      Client entertainment and personal-use vehicles cannot be reclaimed on Form 201.
-                    </p>
-                  </div>
-                )}
-
-                {vatResult.recovery === "zero-rated" && (
-                  <div className="rounded-2xl bg-white/5 border border-white/15 p-4 space-y-2">
-                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/10 text-[#dec18c] text-xs font-bold">
-                      <Info className="w-3.5 h-3.5" />
-                      <span>Zero-Rated (0% VAT)</span>
-                    </div>
-                    <p className="text-xs sm:text-sm text-[#cbd5e1] leading-relaxed">
-                      International commercial flights are zero-rated (0% VAT) under Article 45 of the UAE VAT Law, so{" "}
-                      <strong className="text-white">AED 0.00</strong> VAT is charged or reclaimed on Form 201.
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Conversion CTA */}
-            <div className="rounded-2xl bg-[#070d19] border border-[#c5a059]/50 p-5 sm:p-6 space-y-3">
-              <p className="text-xs text-[#cbd5e1] leading-relaxed">
-                Unsure whether supplier invoices meet FTA Tax Invoice &amp; Input Recovery standards under Cabinet
-                Decision rules? Have our FTA-registered team verify your VAT 201 return.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <button
-                  type="button"
-                  onClick={() => handleBookReviewClick("vat-form-201-audit")}
-                  className="flex-1 bg-[#c5a059] hover:bg-[#dec18c] text-[#070d19] font-display font-bold px-5 py-3.5 rounded-xl text-xs sm:text-sm transition-all cursor-pointer inline-flex items-center justify-center gap-2 shadow-lg shadow-[#c5a059]/15"
-                >
-                  <span>Get a Free Form 201 VAT Audit Check</span>
-                  <ArrowRight className="w-4 h-4 shrink-0" />
-                </button>
-                <button
-                  type="button"
-                  onClick={handleVatWhatsApp}
-                  className="border border-[#c5a059]/70 hover:border-[#c5a059] hover:bg-[#c5a059]/10 text-[#dec18c] hover:text-white font-display font-semibold px-4 py-3.5 rounded-xl text-xs sm:text-sm transition-all cursor-pointer inline-flex items-center justify-center gap-2"
-                >
-                  <WhatsAppSvgIcon className="w-4 h-4 text-emerald-400 shrink-0" />
-                  <span>WhatsApp Check</span>
-                </button>
-              </div>
-            </div>
+          {/* Single Contextual CTA */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-1">
+            <button
+              type="button"
+              onClick={handleBookVatReview}
+              className="w-full sm:w-auto min-h-[48px] px-6 py-3 rounded-xl bg-[#1B4332] hover:bg-[#143326] text-white text-sm font-semibold transition-colors cursor-pointer inline-flex items-center justify-center gap-2 shadow-xs"
+            >
+              <span>Book Free 15-Min VAT Review</span>
+              <ArrowRight className="w-4 h-4 shrink-0" />
+            </button>
+            <button
+              type="button"
+              onClick={() => onNavigate("/pricing")}
+              className="min-h-[44px] px-2 text-xs sm:text-sm font-semibold text-[#475569] hover:text-[#0D1B2A] transition-colors cursor-pointer"
+            >
+              View Fixed-Fee VAT Retainers →
+            </button>
           </div>
         </div>
       )}

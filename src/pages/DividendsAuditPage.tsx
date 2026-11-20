@@ -1,450 +1,281 @@
 import React, { useEffect } from "react";
 import {
-  ArrowLeft,
-  Mail,
-  Phone,
-  CheckCircle2,
-  AlertTriangle,
   Building2,
-  Calendar,
   FileCheck2,
-  HelpCircle,
-  ExternalLink,
-  ChevronRight,
-  ShieldCheck,
+  Landmark,
   Scale,
-  Award,
-  DollarSign,
-  PieChart,
-  MessageCircle,
+  ShieldCheck,
+  TrendingUp,
 } from "lucide-react";
-import DiasLogo from "../components/DiasLogo";
-import PageNavigation from "../components/PageNavigation";
+import {
+  applyPageSEO,
+  buildBreadcrumbSchema,
+  buildFAQPageSchema,
+  buildServiceSchema,
+  removeJsonLd,
+  upsertJsonLd,
+} from "../lib/seo";
+import ServicePageTemplate from "../components/hub/ServicePageTemplate";
+import { ComplianceTable, ExecutiveCallout } from "../components/hub/ExecutivePrimitives";
 
 interface PageProps {
   onNavigate?: (path: string) => void;
+  onOpenAudit?: () => void;
+  onOpenPrivacy?: () => void;
+  onOpenGooglePreferred?: () => void;
 }
 
-export const DividendsAuditPage: React.FC<PageProps> = ({ onNavigate }) => {
-  useEffect(() => {
-    const pageTitle = "Dividends Audit Dubai & UAE | Audit Services for Dividends | Dias UAE";
-    const pageDesc =
-      "Statutory dividends audit Dubai and UAE. Licensed audit services for dividends under UAE Commercial Companies Law, distributable profit certification, 0% tax dividend distribution, and corporate tax compliance.";
-    const pageUrl = "https://diasuae.ae/dividends-audit";
+const DIVIDEND_FAQS = [
+  {
+    question: "Can a UAE company distribute interim dividends mid-year?",
+    answer:
+      "Yes, provided the company's Memorandum of Association (MOA) authorizes interim distributions, management prepares interim financial statements showing sufficient realized profit, and an auditor verifies that the company maintains adequate working capital and solvency.",
+  },
+  {
+    question: "Are dividends paid by a UAE company subject to personal income tax?",
+    answer:
+      "No. The United Arab Emirates levies 0% personal income tax on individuals and 0% withholding tax on outbound dividend distributions under Article 45 of Decree-Law No. 47. Non-resident shareholders should verify domestic tax treaty treatment in their home jurisdiction.",
+  },
+  {
+    question: "What documents do UAE banks require to release dividend wire transfers?",
+    answer:
+      "Most UAE Tier-1 corporate banks (including Emirates NBD, FAB, ADCB, and Mashreq) require audited financial statements, a formal AGM or Board Dividend Resolution, a solvency confirmation, and a signed auditor certificate validating distributable reserves.",
+  },
+];
 
-    document.title = pageTitle;
-
-    const upsertMeta = (attr: "name" | "property", key: string, content: string) => {
-      let el = document.querySelector(`meta[${attr}="${key}"]`);
-      if (!el) {
-        el = document.createElement("meta");
-        el.setAttribute(attr, key);
-        document.head.appendChild(el);
-      }
-      el.setAttribute("content", content);
-    };
-
-    upsertMeta("name", "title", pageTitle);
-    upsertMeta("name", "description", pageDesc);
-    upsertMeta(
-      "name",
-      "keywords",
-      "dividends audit dubai, dividends audit uae, audit services for dividends uae, dividend audit Dubai, dividend distribution certification, commercial companies law dividend audit, corporate tax advisory Dubai, tax consulting services in UAE, tax advisory services in Dubai"
-    );
-    upsertMeta("property", "og:title", pageTitle);
-    upsertMeta("property", "og:description", pageDesc);
-    upsertMeta("property", "og:url", pageUrl);
-    upsertMeta("property", "og:type", "article");
-    upsertMeta("name", "twitter:title", pageTitle);
-    upsertMeta("name", "twitter:description", pageDesc);
-
-    let canonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement | null;
-    if (!canonical) {
-      canonical = document.createElement("link");
-      canonical.setAttribute("rel", "canonical");
-      document.head.appendChild(canonical);
-    }
-    canonical.setAttribute("href", pageUrl);
-
-    // Inject dedicated JSON-LD Schema for Dividends Audit
-    const scriptId = "schema-dividends-audit";
-    let scriptEl = document.getElementById(scriptId) as HTMLScriptElement | null;
-    if (!scriptEl) {
-      scriptEl = document.createElement("script");
-      scriptEl.id = scriptId;
-      scriptEl.type = "application/ld+json";
-      scriptEl.text = JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": ["AccountingService", "ProfessionalService"],
-        "name": "Dias Accounting - Dividends Audit & Assurance Dubai",
-        "url": pageUrl,
-        "description": pageDesc,
-        "telephone": "+971-52-922-6958",
-        "email": "info@diasuae.ae",
-        "priceRange": "AED 1,500 - AED 6,000",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "Sharjah Media City (SHAMS), Al Messaned",
-          "addressLocality": "Sharjah",
-          "addressRegion": "Sharjah",
-          "addressCountry": "AE"
-        },
-        "areaServed": ["Dubai", "Sharjah", "United Arab Emirates"],
-        "knowsAbout": [
-          "Dividends audit Dubai",
-          "Dividends audit UAE",
-          "Audit services for dividends UAE",
-          "Distributable profits audit certification",
-          "Federal Decree-Law No. 32 of 2021 Commercial Companies Law",
-          "Corporate Tax 0% dividend exemption"
-        ]
-      });
-      document.head.appendChild(scriptEl);
-    }
-
-    window.scrollTo({ top: 0, behavior: "instant" });
-
-    return () => {
-      const el = document.getElementById(scriptId);
-      if (el && el.parentNode) {
-        el.parentNode.removeChild(el);
-      }
-    };
-  }, []);
-
-  const handleBackHome = (e: React.MouseEvent) => {
-    e.preventDefault();
+export const DividendsAuditPage: React.FC<PageProps> = ({
+  onNavigate,
+  onOpenAudit,
+  onOpenPrivacy,
+  onOpenGooglePreferred,
+}) => {
+  const navigate = (path: string) => {
     if (onNavigate) {
-      onNavigate("/");
-    } else {
-      window.location.href = "/";
+      onNavigate(path);
+    } else if (typeof window !== "undefined") {
+      window.location.href = path;
     }
   };
 
-  return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-gold-500 selection:text-navy-950">
-      <PageNavigation
-        currentPath="/dividends-audit"
-        onNavigate={(path) => (onNavigate ? onNavigate(path) : (window.location.href = path))}
-      />
+  useEffect(() => {
+    const pageTitle = "Statutory Dividend Audit Dubai & UAE | Dias Accounting";
+    const pageDesc =
+      "Statutory dividend audit and distributable profit certification in Dubai & UAE under Commercial Companies Law, with 0% Corporate Tax exemption review.";
+    const canonicalPath = "/dividends-audit";
+    const pageUrl = `https://diasuae.ae${canonicalPath}`;
 
-      {/* Breadcrumb Bar */}
-      <div className="bg-slate-100/80 border-b border-slate-200/60 py-2.5 text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2">
-          <a href="/" onClick={handleBackHome} className="hover:text-navy-950 transition-colors">
-            Home
-          </a>
-          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-          <a href="/#services" onClick={handleBackHome} className="hover:text-navy-950 transition-colors">
-            Audit & Assurance
-          </a>
-          <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-          <span className="text-navy-950 font-semibold">Dividend Audit & Distribution Advisory</span>
-        </div>
-      </div>
+    applyPageSEO({
+      title: pageTitle,
+      description: pageDesc,
+      canonicalPath,
+      keywords:
+        "dividends audit dubai, dividends audit uae, audit services for dividends uae, dividend distribution certification, commercial companies law dividend audit",
+      ogType: "website",
+    });
 
-      {/* 2. Hero Section */}
-      <section className="relative bg-gradient-to-br from-navy-950 via-navy-900 to-slate-900 text-white py-20 overflow-hidden">
-        <div className="absolute inset-0 opacity-5 bg-[radial-gradient(#d4af37_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
+    upsertJsonLd(
+      "page-service-jsonld",
+      buildServiceSchema({
+        name: "Statutory Dividend Audit & Distributable Profit Certification",
+        description: pageDesc,
+        canonicalPath,
+      })
+    );
+    upsertJsonLd("page-faq-jsonld", buildFAQPageSchema(DIVIDEND_FAQS, `${pageUrl}#faqs`));
+    upsertJsonLd(
+      "page-breadcrumb-jsonld",
+      buildBreadcrumbSchema(
+        [
+          { name: "Home", path: "/" },
+          { name: "Services", path: "/services" },
+          { name: "Statutory Dividend Audit", path: canonicalPath },
+        ],
+        `${pageUrl}#breadcrumb`
+      )
+    );
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-400/30 text-emerald-300 text-xs font-bold tracking-wide">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>UAE Commercial Companies Law & Corporate Tax Compliance</span>
-          </div>
+    window.scrollTo({ top: 0, behavior: "instant" });
+    return () => {
+      removeJsonLd("page-service-jsonld");
+      removeJsonLd("page-faq-jsonld");
+      removeJsonLd("page-breadcrumb-jsonld");
+    };
+  }, []);
 
-          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight max-w-4xl leading-tight">
-            Dividends Audit Dubai &amp; UAE: <span className="text-gold-400">Audit Services for Dividends</span> &amp; Lawful Profit Certification
-          </h1>
+  const statutoryFrameworkSection = (
+    <section className="bg-[#FFFFFF] py-16 lg:py-24 border-b border-[#E2E8F0]">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+        <ExecutiveCallout
+          title="Why Uncertified Dividend Withdrawals Trigger FTA & Legal Risk"
+          accent="gold"
+        >
+          Distributing capital without audited distributable profits violates UAE Commercial Companies Law (Federal Decree-Law No. 32 of 2021) and can expose directors to personal liability. Under Article 36 of the UAE Corporate Tax Law, undocumented shareholder withdrawals risk reclassification as non-arm&apos;s-length remuneration or disallowed deductions.
+        </ExecutiveCallout>
 
-          <p className="text-slate-300 text-base sm:text-lg max-w-3xl leading-relaxed">
-            Ensure your shareholder profit distributions comply strictly with <strong>Federal Decree-Law No. 32 of 2021 (Commercial Companies Law)</strong> and the <strong>UAE Corporate Tax Law (Article 23 Participation Exemption)</strong>. We certify distributable reserves, draft board resolutions, and prevent costly tax reclassifications.
+        <div className="max-w-2xl space-y-2.5">
+          <span className="inline-block text-xs font-semibold uppercase tracking-wider text-[#856422]">
+            Statutory &amp; Tax Framework
+          </span>
+          <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#0D1B2A] tracking-tight">
+            UAE Corporate Tax &amp; Commercial Law Rules on Dividends
+          </h2>
+          <p className="text-[#475569] text-base leading-[1.65] max-w-[65ch]">
+            Lawful profit distributions combine Commercial Companies Law solvency rules with Decree-Law No. 47 exemptions.
           </p>
-
-          <div className="flex flex-wrap gap-4 pt-4">
-            <a
-              href="mailto:info@diasuae.ae?subject=Dividend%20Audit%20and%20Certification%20Request"
-              className="inline-flex items-center gap-2 bg-gold-500 hover:bg-gold-400 text-navy-950 font-bold px-6 py-3.5 rounded-xl text-sm shadow-xl hover:shadow-gold-500/20 transition-all active:scale-95 cursor-pointer"
-            >
-              <Mail className="w-4 h-4" />
-              <span>Request Dividend Audit (info@diasuae.ae)</span>
-            </a>
-            <a
-              href="tel:+971529226958"
-              className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white font-semibold px-6 py-3.5 rounded-xl text-sm border border-white/15 transition-all"
-            >
-              <Phone className="w-4 h-4 text-gold-400" />
-              <span>Senior Partner Direct (+971 52 922 6958)</span>
-            </a>
-          </div>
-
-          {/* Core Metric Highlights */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 border-t border-white/10">
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-              <span className="text-2xl sm:text-3xl font-extrabold text-emerald-400 font-display block">0% WHT</span>
-              <span className="text-xs text-slate-300">UAE Withholding Tax on Dividends</span>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-              <span className="text-2xl sm:text-3xl font-extrabold text-gold-400 font-display block">10% Reserve</span>
-              <span className="text-xs text-slate-300">Mandatory Statutory Legal Reserve</span>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-              <span className="text-2xl sm:text-3xl font-extrabold text-white font-display block">Article 23</span>
-              <span className="text-xs text-slate-300">Participation Exemption Rules</span>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-              <span className="text-2xl sm:text-3xl font-extrabold text-gold-400 font-display block">100% Legal</span>
-              <span className="text-xs text-slate-300">Bank Remittance Certified</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 3. Main Content: Distributable Profits & Legal Framework */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-16 flex-1">
-        
-        {/* Core Warning Box */}
-        <div className="bg-amber-50 border-l-4 border-gold-500 rounded-r-2xl p-6 shadow-sm flex items-start gap-4">
-          <AlertTriangle className="w-6 h-6 text-gold-600 shrink-0 mt-0.5" />
-          <div className="space-y-1">
-            <h2 className="text-sm sm:text-base font-bold text-navy-950 font-display">
-              Why Uncertified Dividend Withdrawals Trigger Severe FTA & Legal Sanctions
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-700 leading-relaxed">
-              Distributing capital without audited distributable profits violates UAE Commercial Companies Law, rendering directors personally liable for company debts. Under the Corporate Tax Law (Article 36), the FTA actively audits shareholder withdrawals: if structured improperly, distributions may be treated as disguised salaries, disallowing corporate deductions or triggering penalties.
-            </p>
-          </div>
         </div>
 
-        {/* Section 1: Statutory Framework */}
-        <section className="space-y-6">
-          <div className="max-w-3xl space-y-2">
-            <span className="text-xs font-bold text-gold-600 uppercase tracking-wider">Legal Compliance Foundation</span>
-            <h2 className="text-2xl sm:text-3xl font-bold font-display text-navy-950">
-              The Legal Mechanics of Distributing Dividends in the UAE
-            </h2>
-            <p className="text-slate-600 text-sm sm:text-base">
-              Distributing company profits to owners, founders, or foreign holding companies requires strict adherence to corporate governance protocols:
-            </p>
-          </div>
+        <ComplianceTable
+          caption="UAE statutory and Corporate Tax treatment of dividends"
+          columns={[
+            { key: "provision", label: "Statutory Provision" },
+            { key: "rule", label: "Legal Requirement & Tax Treatment" },
+            { key: "benchmark", label: "Key Threshold", highlight: true },
+          ]}
+          rows={[
+            {
+              provision: "Distributable Profits Test",
+              rule: "Dividends may only be paid from realized net profits and accumulated retained earnings verified by audited IFRS accounts.",
+              benchmark: "Audited Financial Statements",
+            },
+            {
+              provision: "Statutory Legal Reserve (Article 103)",
+              rule: "UAE LLCs must allocate annual net profits into a non-distributable legal reserve until statutory cap is reached.",
+              benchmark: "10% Annual Profit (Up to 50% Capital)",
+            },
+            {
+              provision: "Participation Exemption (Article 23)",
+              rule: "Dividends received from qualifying UAE or foreign shareholdings are 100% exempt from UAE Corporate Tax.",
+              benchmark: "≥ 5% Ownership · 12 Months · ≥ 9% Foreign Tax",
+            },
+            {
+              provision: "Withholding Tax (Article 45)",
+              rule: "Outbound dividend remittances to resident founders or foreign parent companies attract zero UAE withholding tax.",
+              benchmark: "0% Withholding Tax",
+            },
+            {
+              provision: "Connected Persons (Article 36)",
+              rule: "Owner salaries must reflect Fair Market Value (arm's length) to remain deductible and distinct from profit distributions.",
+              benchmark: "Arm's-Length Benchmark",
+            },
+          ]}
+        />
+      </div>
+    </section>
+  );
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-gold-50 border border-gold-200 flex items-center justify-center text-gold-600">
-                <Scale className="w-5 h-5" />
-              </div>
-              <h3 className="font-bold text-base text-navy-950 font-display">1. Distributable Profits Test</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Dividends must only be paid from realized net profits and accumulated retained earnings confirmed by audited financial statements. Capital reduction cannot masquerade as dividend yields without formal regulatory gazetting.
-              </p>
-            </div>
-
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
-              <h3 className="font-bold text-base text-navy-950 font-display">2. Statutory Legal Reserve</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Under Article 103 of Federal Decree-Law No. 32 of 2021, UAE commercial entities must deduct <strong>10% of annual net profits</strong> into a non-distributable statutory reserve until it reaches at least <strong>50% of paid-up share capital</strong>.
-              </p>
-            </div>
-
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-navy-50 border border-navy-200 flex items-center justify-center text-navy-700">
-                <FileCheck2 className="w-5 h-5" />
-              </div>
-              <h3 className="font-bold text-base text-navy-950 font-display">3. Corporate Governance Dossier</h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Every distribution requires a formal Board of Directors recommendation, shareholder Annual General Meeting (AGM) resolution, and solvency confirmation prior to wire transfer execution.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Section 2: Corporate Tax Implications */}
-        <section className="bg-slate-100/70 border border-slate-200 rounded-3xl p-8 sm:p-12 space-y-8">
-          <div className="max-w-3xl space-y-3">
-            <span className="text-xs font-bold text-gold-600 uppercase tracking-wider">Corporate Tax Law Integration</span>
-            <h2 className="text-2xl sm:text-3xl font-bold font-display text-navy-950">
-              UAE Corporate Tax Treatment of Dividends (Decree-Law No. 47)
-            </h2>
-            <p className="text-slate-600 text-sm sm:text-base leading-relaxed">
-              Dividends represent one of the most tax-advantaged income streams in the UAE, provided statutory participation criteria are respected:
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-white rounded-2xl p-6 border border-slate-200/80 space-y-3">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">Article 23</span>
-                <h3 className="font-bold text-navy-950 text-sm sm:text-base">The Participation Exemption Regime</h3>
-              </div>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Dividends and capital gains derived from participating interests are <strong>100% exempt from UAE Corporate Tax</strong>. To qualify for foreign holdings:
-              </p>
-              <ul className="space-y-1.5 text-xs text-slate-700">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>The UAE holding company must own at least <strong>5% ownership interest</strong></span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>The participation must be held continuously for at least <strong>12 consecutive months</strong></span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>The foreign subsidiary must be subject to corporate tax of at least <strong>9%</strong> in its home country (Subject-to-Tax Test)</span>
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-white rounded-2xl p-6 border border-slate-200/80 space-y-3">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold bg-gold-100 text-gold-800 px-2.5 py-0.5 rounded-full">Article 36 & 45</span>
-                <h3 className="font-bold text-navy-950 text-sm sm:text-base">Withholding Tax & Connected Persons Rules</h3>
-              </div>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Outbound dividend distributions to overseas shareholders or resident founders are subject to <strong>0% UAE Withholding Tax</strong> under Article 45. However, FTA audit guidelines strictly regulate:
-              </p>
-              <ul className="space-y-1.5 text-xs text-slate-700">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-gold-500 shrink-0 mt-0.5" />
-                  <span><strong>Owner Remuneration vs. Dividends:</strong> Owner salaries must reflect Fair Market Value (arm's length) to be deductible against corporate tax.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-gold-500 shrink-0 mt-0.5" />
-                  <span><strong>Excess Compensation Disallowance:</strong> Inflated salaries paid to connected persons are disallowed and reclassified as profit distributions upon audit.</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </section>
-
-        {/* Section 3: Engagement Roadmap */}
-        <section className="bg-navy-950 text-white rounded-3xl p-8 sm:p-12 space-y-8">
-          <div className="max-w-2xl space-y-3">
-            <span className="text-xs font-bold text-gold-400 uppercase tracking-widest">Chartered Audit Engagement</span>
-            <h2 className="text-2xl sm:text-3xl font-bold font-display text-white">
-              Dias Accounting Dividend Certification Workflow
-            </h2>
-            <p className="text-slate-300 text-sm leading-relaxed">
-              We provide independent auditor reports and legal distribution documentation required by UAE corporate banks and tax authorities:
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-2">
-              <span className="text-gold-400 font-bold text-lg font-display">01. Balance Audit</span>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Verifying balance sheet net profits, validating retained earnings, and confirming liquidity to ensure ongoing solvency.
-              </p>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-2">
-              <span className="text-gold-400 font-bold text-lg font-display">02. Statutory Reserve</span>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Calculating and locking the mandatory 10% legal reserve allocation in compliance with Federal Decree-Law No. 32.
-              </p>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-2">
-              <span className="text-gold-400 font-bold text-lg font-display">03. Board Resolutions</span>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Drafting bilingual shareholder resolutions, board minutes, and dividend distribution vouchers for company records.
-              </p>
-            </div>
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-5 space-y-2">
-              <span className="text-gold-400 font-bold text-lg font-display">04. Bank Clearance</span>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Providing signed auditor certificates accepted by major UAE banks (Emirates NBD, FAB, ADCB, Mashreq) for smooth wire execution.
-              </p>
-            </div>
-          </div>
-
-          <div className="pt-4 flex flex-wrap items-center gap-4">
-            <a
-              href={`https://wa.me/971529226958?text=${encodeURIComponent(
-                "Hi Dias Accounting, I would like to consult regarding Dividend Audit and Distribution Certification."
-              )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-gold-500 hover:bg-gold-400 text-navy-950 font-bold px-6 py-3.5 rounded-xl text-sm transition-all active:scale-95 cursor-pointer"
-            >
-              <MessageCircle className="w-4 h-4 text-emerald-800" />
-              <span>WhatsApp Us: +971 52 922 6958</span>
-            </a>
-            <a
-              href="tel:+971529226958"
-              className="inline-flex items-center gap-2 text-gold-400 hover:text-gold-300 text-sm font-semibold transition-colors"
-            >
-              <Phone className="w-4 h-4" />
-              <span>Speak to Chartered Accountant: +971 52 922 6958</span>
-            </a>
-          </div>
-        </section>
-
-        {/* Section 4: FAQ */}
-        <section className="space-y-6">
-          <div className="max-w-3xl space-y-2">
-            <span className="text-xs font-bold text-gold-600 uppercase tracking-wider">Common Questions</span>
-            <h2 className="text-2xl sm:text-3xl font-bold font-display text-navy-950">
-              Frequently Asked Questions: UAE Dividend Distributions
-            </h2>
-          </div>
-
-          <div className="space-y-4">
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-2">
-              <h3 className="font-bold text-base text-navy-950 flex items-center gap-2">
-                <HelpCircle className="w-4 h-4 text-gold-500 shrink-0" />
-                <span>Can a UAE company distribute interim dividends mid-year?</span>
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed pl-6">
-                Yes, provided the company's Memorandum of Association (MOA) authorizes interim distributions, management prepares interim quarterly financial statements showing sufficient realized profit, and an auditor verifies that the company maintains adequate working capital.
-              </p>
-            </div>
-
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-2">
-              <h3 className="font-bold text-base text-navy-950 flex items-center gap-2">
-                <HelpCircle className="w-4 h-4 text-gold-500 shrink-0" />
-                <span>Are dividends paid by a UAE company subject to personal income tax?</span>
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed pl-6">
-                No. The United Arab Emirates levies zero personal income tax on individuals. Dividends received by UAE resident natural persons are completely tax-free. Non-resident recipients should verify their domestic country's foreign tax credit rules and double tax treaties.
-              </p>
-            </div>
-
-            <div className="bg-white border border-slate-200 rounded-2xl p-6 space-y-2">
-              <h3 className="font-bold text-base text-navy-950 flex items-center gap-2">
-                <HelpCircle className="w-4 h-4 text-gold-500 shrink-0" />
-                <span>What documents do UAE banks require to release dividend wire transfers?</span>
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed pl-6">
-                Most UAE Tier-1 corporate banks require an audited financial statement, official AGM / Board Dividend Resolution, bank solvency certificate, and a signed letter from a certified audit firm validating the distributable reserve. Dias Accounting prepares this complete compliance pack.
-              </p>
-            </div>
-          </div>
-        </section>
-
-      </main>
-
-      {/* 4. Footer */}
-      <footer className="bg-navy-950 text-white border-t border-white/5 py-12 text-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 border-b border-white/10 pb-6">
-            <DiasLogo className="w-10 h-10" showText={true} textSize="text-xl" textColor="text-white" />
-            <div className="flex flex-wrap gap-6 text-slate-400">
-              <a href="/small-business-tax-relief" className="hover:text-gold-400 transition-colors">Small Business Tax Relief</a>
-              <a href="/difc-dtec-accounting" className="hover:text-gold-400 transition-colors">DIFC & DTEC Accounting</a>
-              <a href="/dividends-audit" className="text-gold-400 font-semibold">Dividends Audit</a>
-              <a href="/#contact" onClick={handleBackHome} className="hover:text-gold-400 transition-colors">Contact</a>
-            </div>
-          </div>
-          <div className="flex flex-col md:flex-row justify-between items-center gap-2 text-slate-500 text-[11px]">
-            <p>© {new Date().getFullYear()} Dias Accounting and Tax Consulting LLC. Trade Licence: 2646813.01. Shams, Sharjah, UAE.</p>
-            <p>Direct Inquiries: <a href="mailto:info@diasuae.ae" className="text-gold-400 underline">info@diasuae.ae</a> | Tel: +971 52 922 6958</p>
-          </div>
-        </div>
-      </footer>
-    </div>
+  return (
+    <ServicePageTemplate
+      currentPath="/dividends-audit"
+      breadcrumbName="Dividends Audit & Certification"
+      eyebrow="Audit & Assurance · UAE Commercial Law"
+      title="Dividends Audit & Lawful Profit Certification"
+      subtitle="Verify distributable profits under Federal Decree-Law No. 32 of 2021, satisfy UAE Tier-1 corporate bank remittance requirements, and safeguard 0% tax dividend treatment under Decree-Law No. 47."
+      metadataStrip={[
+        { label: "UAE Withholding Tax", value: "0% WHT on Dividends (Article 45)" },
+        { label: "Statutory Reserve Check", value: "10% Legal Reserve Allocation" },
+        { label: "Bank Clearance", value: "Accepted by ENBD, FAB, ADCB & Mashreq" },
+      ]}
+      customTopSection={statutoryFrameworkSection}
+      deliverablesHeading="What's Included in a Dividends Audit"
+      deliverablesSubheading="Complete financial verification and corporate governance documentation required by shareholders, auditors, and UAE corporate banks."
+      deliverables={[
+        {
+          title: "Distributable Profits Verification",
+          description:
+            "Audited validation of realized net profits, retained earnings, and post-distribution liquidity.",
+          icon: <Scale className="w-5 h-5" />,
+        },
+        {
+          title: "10% Legal Reserve Computation",
+          description:
+            "Accurate calculation and verification of statutory reserve allocations under Article 103.",
+          icon: <ShieldCheck className="w-5 h-5" />,
+        },
+        {
+          title: "Interim & Final Audit Reports",
+          description:
+            "Signed interim or annual IFRS financial statements supporting mid-year or year-end payouts.",
+          icon: <FileCheck2 className="w-5 h-5" />,
+        },
+        {
+          title: "Board & AGM Resolution Pack",
+          description:
+            "Structured shareholder resolutions, board minutes, and dividend distribution vouchers.",
+          icon: <Building2 className="w-5 h-5" />,
+        },
+        {
+          title: "Bank Remittance Certificate",
+          description:
+            "Signed auditor certification letters accepted by major UAE banks for domestic and overseas wires.",
+          icon: <Landmark className="w-5 h-5" />,
+        },
+        {
+          title: "Article 23 & 36 Tax Review",
+          description:
+            "Participation Exemption verification and arm's-length review of owner salary vs. dividend splits.",
+          icon: <TrendingUp className="w-5 h-5" />,
+        },
+      ]}
+      processHeading="Dividend Certification Workflow"
+      processSteps={[
+        {
+          number: "01",
+          title: "Balance Sheet Audit",
+          description:
+            "Verify net profits, retained earnings, and working capital solvency across your IFRS trial balance.",
+        },
+        {
+          number: "02",
+          title: "Statutory Reserve Check",
+          description:
+            "Confirm mandatory 10% legal reserve allocation and MOA authorization for interim or final payouts.",
+        },
+        {
+          number: "03",
+          title: "Governance Resolutions",
+          description:
+            "Draft shareholder AGM resolutions, board minutes, and dividend vouchers for corporate records.",
+        },
+        {
+          number: "04",
+          title: "Bank Clearance",
+          description:
+            "Issue signed auditor certificates enabling smooth corporate bank wire execution to shareholders.",
+        },
+      ]}
+      whoIsItForHeading="Who Requires a Statutory Dividends Audit"
+      whoIsItForItems={[
+        "UAE Mainland LLCs and DIFC / Free Zone entities distributing annual or interim profits",
+        "Holding companies repatriating dividends to overseas parent entities or non-resident founders",
+        "Businesses requested by Emirates NBD, FAB, ADCB, or Mashreq to provide auditor dividend clearance",
+        "Founders optimizing arm's-length owner salary vs. 0% dividend payouts under UAE Corporate Tax",
+      ]}
+      regulatorySnapshot={{
+        law: "Federal Decree-Law No. 32/2021 (CCL) & Decree-Law No. 47/2022 (CT)",
+        authority: "UAE Commercial Banks, DIFC / Free Zone Registrars & FTA",
+        deadline: "Prior to passing shareholder distribution resolutions and bank wire transfers",
+        plan: "Standalone engagement (AED 1,500 – AED 6,000 scoped)",
+      }}
+      faqsHeading="UAE Dividend Distribution FAQs"
+      faqs={DIVIDEND_FAQS}
+      relatedServices={[
+        { label: "DIFC & DTEC Accounting", path: "/tax-planning-difc" },
+        { label: "Audit Readiness & Advisory", path: "/services/auditing-assurance" },
+        { label: "Corporate Tax Advisory", path: "/services/corporate-tax-advisory" },
+        { label: "Fixed-Fee Packages", path: "/pricing" },
+      ]}
+      closingCta={{
+        eyebrow: "Chartered Audit Engagement",
+        title: "Certify Your Shareholder Dividends Without Delays",
+        description:
+          "Request a fixed-fee dividend audit and bank clearance dossier prepared by senior UAE chartered accountants.",
+        ctaLabel: "Book Free Consultation",
+      }}
+      onNavigate={navigate}
+      onOpenAudit={onOpenAudit}
+      onOpenPrivacy={onOpenPrivacy}
+      onOpenGooglePreferred={onOpenGooglePreferred}
+    />
   );
 };
 

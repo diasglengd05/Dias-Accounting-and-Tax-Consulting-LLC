@@ -334,7 +334,6 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
         });
         const saveData = await saveRes.json();
         if (saveRes.ok) {
-          console.log("Cached access token server-side successfully!");
           if (saveData.spreadsheetId) {
             setSpreadsheetId(saveData.spreadsheetId);
             localStorage.setItem("dias_tax_sheet_id", saveData.spreadsheetId);
@@ -475,7 +474,6 @@ export default function Scheduler({ preselectedService = "" }: SchedulerProps) {
     setFieldErrors({});
     setIsSubmitting(true);
     setSubmissionSynced(false);
-    console.log("Submitting consultation inquiry form...", { name, email, phone, company, serviceType });
 
     try {
       let activeToken = accessToken;

@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from "react";
-import {
-  Calculator,
-  ChevronDown,
-  ChevronRight,
-  Info,
-  ShieldCheck,
-  Sparkles,
-  CheckCircle2,
-} from "lucide-react";
+import { ChevronRight, Info, Minus, Plus } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
 import UaeTaxCalculatorSuite from "../components/UaeTaxCalculatorSuite";
-import { applyPageSEO, upsertJsonLd, removeJsonLd } from "../lib/seo";
+import { RelatedResources } from "../components/editorial/RelatedResources";
+import { getRelatedResourcesForPath } from "../lib/internalLinks";
+import {
+  applyPageSEO,
+  buildBreadcrumbSchema,
+  buildFAQPageSchema,
+  buildWebApplicationSchema,
+  removeJsonLd,
+  upsertJsonLd,
+} from "../lib/seo";
 
 interface TaxPlannerPageProps {
   onNavigate: (path: string) => void;
   onOpenAudit?: () => void;
   onOpenPrivacy?: () => void;
   onOpenGooglePreferred?: () => void;
-  // Tracking event callbacks for analytics
   onToolStarted?: () => void;
   onResultViewed?: (result: { liability: number; sbr: boolean; netProfit: number }) => void;
   onResultSaved?: (lead: { name: string; email: string; phone: string }) => void;
@@ -79,46 +79,53 @@ export const TaxPlannerPage: React.FC<TaxPlannerPageProps> = ({
   }, []);
 
   useEffect(() => {
+    const pageTitle = "2026 UAE Corporate Tax & VAT Calculator | Dias Accounting";
+    const pageDesc =
+      "Free 2026 UAE Corporate Tax (9%, 0% Small Business Relief & Free Zone QFZP) and 5% VAT Input Recovery Calculator by FTA-Registered Tax Agents in UAE.";
+
     applyPageSEO({
-      title: "UAE Corporate Tax & 5% VAT Calculator (2026) | Free Zone QFZP & SBR Tool | Dias Accounting",
-      description:
-        "Free 2026 UAE Corporate Tax (9%, 0% Small Business Relief & Free Zone QFZP) and 5% VAT Input Recovery Calculator by FTA-Registered Tax Agents in Dubai & Sharjah.",
+      title: pageTitle,
+      description: pageDesc,
       canonicalPath: "/uae-tax-planner",
       keywords:
         "UAE Corporate Tax Calculator 2026, 5% UAE VAT Calculator, Free Zone QFZP Calculator, Small Business Relief AED 3M, UAE VAT Input Recovery Tool, Dias Accounting",
-      ogImage:
-        "/api/og?title=UAE+Corporate+Tax+%26+5%25+VAT+Calculator+(2026)&author=Glen+Dias&tag=Free+Zone+QFZP+%26+SBR+Tool",
     });
-    upsertJsonLd("calculator-software-jsonld", {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "@id": "https://diasuae.ae/uae-tax-planner#software",
-      name: "2026 UAE Corporate Tax & 5% VAT Calculator",
-      applicationCategory: "FinanceApplication",
-      operatingSystem: "Web",
-      url: "https://diasuae.ae/uae-tax-planner",
-      description:
-        "Free 2026 UAE Corporate Tax Calculator (Mainland 9%, 0% Small Business Relief up to AED 3M, Free Zone 0% QFZP De Minimis) and 5% UAE VAT Input Recovery Calculator by Dias Accounting and Tax Consulting LLC.",
-      offers: {
-        "@type": "Offer",
-        price: "0",
-        priceCurrency: "AED",
-      },
-      provider: {
-        "@type": "AccountingService",
-        "@id": "https://diasuae.ae/#organization",
-        name: "Dias Accounting and Tax Consulting LLC",
-      },
-    });
+    upsertJsonLd(
+      "page-webapp-jsonld",
+      buildWebApplicationSchema({
+        name: "2026 UAE Corporate Tax & VAT Calculator",
+        description: pageDesc,
+        canonicalPath: "/uae-tax-planner",
+      })
+    );
+    upsertJsonLd(
+      "page-faq-jsonld",
+      buildFAQPageSchema(
+        FAQ_ITEMS.map((item) => ({ question: item.q, answer: item.a })),
+        "https://diasuae.ae/uae-tax-planner#faqs"
+      )
+    );
+    upsertJsonLd(
+      "page-breadcrumb-jsonld",
+      buildBreadcrumbSchema(
+        [
+          { name: "Home", path: "/" },
+          { name: "2026 UAE Tax Calculator", path: "/uae-tax-planner" },
+        ],
+        "https://diasuae.ae/uae-tax-planner#breadcrumb"
+      )
+    );
     window.scrollTo({ top: 0, behavior: "instant" });
     if (onToolStarted) onToolStarted();
     return () => {
-      removeJsonLd("calculator-software-jsonld");
+      removeJsonLd("page-webapp-jsonld");
+      removeJsonLd("page-faq-jsonld");
+      removeJsonLd("page-breadcrumb-jsonld");
     };
   }, [onToolStarted]);
 
   return (
-    <div className="min-h-screen bg-[#070d19] font-sans text-white antialiased selection:bg-[#c5a059]/30 selection:text-white">
+    <div className="min-h-screen bg-[#FFFFFF] font-sans text-[#0D1B2A] antialiased">
       <PageNavigation
         currentPath="/uae-tax-planner"
         onNavigate={onNavigate}
@@ -126,124 +133,109 @@ export const TaxPlannerPage: React.FC<TaxPlannerPageProps> = ({
       />
 
       <main id="main-content">
-        {/* Executive Hero Section */}
-        <section className="relative bg-[#070d19] text-white pt-12 pb-10 lg:pt-16 lg:pb-12 border-b border-white/10 overflow-hidden">
-          <div className="absolute -top-36 right-0 w-[520px] h-[520px] bg-[#c5a059]/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-36 left-0 w-[440px] h-[440px] bg-[#0d1b2a] rounded-full blur-3xl pointer-events-none" />
-
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            {/* Breadcrumb */}
-            <div className="flex items-center gap-2 text-xs font-mono text-[#c5a059] mb-5">
+        {/* Clean Centered Header */}
+        <section className="bg-[#FFFFFF] pt-12 pb-8 lg:pt-16 lg:pb-10 border-b border-[#E2E8F0]">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <nav
+              aria-label="Breadcrumb"
+              className="flex items-center justify-center gap-1.5 text-xs font-medium text-[#475569] mb-5"
+            >
               <button
                 type="button"
                 onClick={() => onNavigate("/")}
-                className="hover:underline cursor-pointer"
+                className="hover:text-[#0D1B2A] transition-colors cursor-pointer"
               >
                 Home
               </button>
               <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-              <span className="text-white">UAE Tax Calculator &amp; Planner</span>
-            </div>
+              <span className="text-[#0D1B2A] font-semibold">2026 UAE Tax Calculator</span>
+            </nav>
 
-            <div className="max-w-3xl space-y-4">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0d1b2a] border border-[#c5a059]/40 text-[#dec18c] text-xs font-semibold uppercase tracking-wider">
-                <Calculator className="w-3.5 h-3.5 text-[#c5a059]" />
-                <span>2026 UAE Tax Suite · Real-Time Instant Calculation</span>
-              </div>
-
-              <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight tracking-tight">
-                2026 UAE Corporate Tax &amp; <span className="text-[#c5a059]">5% VAT Calculator</span> (Free Zone QFZP &amp; SBR)
-              </h1>
-
-              <p className="text-[#cbd5e1] text-sm sm:text-base leading-relaxed">
-                Model your 2026 UAE Corporate Tax liability across Mainland (9% &amp; 0% Small Business Relief) or Free
-                Zone (0% QFZP &amp; De Minimis test), or verify 5% VAT and FTA Form 201 input recovery in real time.
-              </p>
-
-              <div className="flex flex-wrap items-center gap-4 pt-1 text-xs text-[#cbd5e1]">
-                <span className="inline-flex items-center gap-1.5">
-                  <ShieldCheck className="w-4 h-4 text-[#c5a059]" />
-                  <span>FTA-Registered Tax Agents</span>
-                </span>
-                <span className="inline-flex items-center gap-1.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                  <span>2026 SBR &amp; QFZP Rules Built-In</span>
-                </span>
-                <span className="inline-flex items-center gap-1.5">
-                  <Sparkles className="w-4 h-4 text-[#c5a059]" />
-                  <span>Instant Results · No Sign-Up Required</span>
-                </span>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Main Split-Card Calculator Section */}
-        <section className="py-10 lg:py-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <UaeTaxCalculatorSuite
-            defaultTab={urlDefaultTab}
-            onNavigate={onNavigate}
-            onResultViewed={onResultViewed}
-            onCtaClicked={onCtaClicked}
-            onWhatsAppClicked={onWhatsAppClicked}
-          />
-
-          {/* Statutory Disclaimer */}
-          <div className="mt-8 rounded-2xl bg-[#0d1b2a] border border-white/10 p-4 flex items-start gap-3 text-xs text-[#cbd5e1]">
-            <Info className="w-4 h-4 text-[#c5a059] shrink-0 mt-0.5" />
-            <p className="leading-relaxed">
-              <strong className="text-white">Disclaimer:</strong> This calculator provides an indicative estimate based
-              on UAE Federal Decree-Law No. 47 of 2022 and UAE VAT Decree-Law No. 8 of 2017. Final tax positions depend
-              on audited IFRS financial statements, connected-person adjustments, and FTA tax invoice documentation.
+            <h1 className="font-display text-3xl sm:text-4xl lg:text-[42px] font-bold text-[#0D1B2A] tracking-tight leading-[1.15]">
+              2026 UAE Corporate Tax &amp; VAT Calculator
+            </h1>
+            <p className="mt-3 text-[#475569] text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">
+              Estimate your 2026 Corporate Tax liability, Small Business Relief, Free Zone QFZP status, or 5% VAT recovery in under a minute.
             </p>
           </div>
+        </section>
 
-          {/* Executive FAQ Accordion */}
-          <div className="mt-14 bg-[#0d1b2a] rounded-3xl border border-white/15 p-6 sm:p-10 shadow-2xl">
-            <div className="max-w-3xl mx-auto">
-              <div className="text-center mb-8 space-y-2">
-                <span className="text-xs font-mono font-bold text-[#c5a059] uppercase tracking-widest block">
-                  2026 UAE TAX RULES
-                </span>
-                <h2 className="font-display text-2xl sm:text-3xl font-bold text-white">
-                  Frequently Asked Questions
-                </h2>
-              </div>
+        {/* Guided Calculator Surface */}
+        <section className="bg-[#F8FAFC] py-12 lg:py-16">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <UaeTaxCalculatorSuite
+              defaultTab={urlDefaultTab}
+              onNavigate={onNavigate}
+              onResultViewed={onResultViewed}
+              onCtaClicked={onCtaClicked}
+              onWhatsAppClicked={onWhatsAppClicked}
+            />
 
-              <div className="space-y-3">
-                {FAQ_ITEMS.map((faq, idx) => {
-                  const isOpen = openFaq === idx;
-                  return (
-                    <div
-                      key={faq.q}
-                      className={`rounded-2xl border overflow-hidden transition-colors ${
-                        isOpen ? "border-[#c5a059]/60 bg-[#070d19]" : "border-white/10 bg-[#070d19]/70"
-                      }`}
-                    >
-                      <button
-                        type="button"
-                        onClick={() => setOpenFaq(isOpen ? null : idx)}
-                        className="w-full p-4 sm:p-5 text-left flex items-center justify-between gap-4 cursor-pointer"
-                      >
-                        <span className="text-sm font-bold text-white">{faq.q}</span>
-                        <ChevronDown
-                          className={`w-4 h-4 text-[#c5a059] shrink-0 transition-transform ${
-                            isOpen ? "rotate-180" : ""
-                          }`}
-                        />
-                      </button>
-                      {isOpen && (
-                        <div className="px-4 sm:px-5 pb-5 pt-1 text-xs sm:text-sm text-[#cbd5e1] leading-relaxed border-t border-white/10">
-                          {faq.a}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+            {/* Quiet Statutory Disclaimer */}
+            <div className="mt-8 max-w-[760px] mx-auto flex items-start gap-2.5 text-xs text-[#64748B] leading-relaxed px-1">
+              <Info className="w-4 h-4 text-[#94A3B8] shrink-0 mt-0.5" />
+              <p>
+                <strong className="font-semibold text-[#475569]">Disclaimer:</strong> Indicative estimate based on UAE
+                Federal Decree-Law No. 47 of 2022 and UAE VAT Decree-Law No. 8 of 2017. Final tax positions depend on
+                audited IFRS financial statements, connected-person adjustments, and valid FTA tax invoices.
+              </p>
             </div>
           </div>
         </section>
+
+        {/* Minimal FAQ Accordion */}
+        <section className="bg-[#FFFFFF] py-16 lg:py-20 border-t border-[#E2E8F0]">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-10">
+              <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#0D1B2A] tracking-tight">
+                2026 UAE Tax Rules &amp; FAQs
+              </h2>
+              <p className="mt-2 text-sm sm:text-base text-[#475569]">
+                Key statutory thresholds, Free Zone QFZP requirements, and VAT recovery rules.
+              </p>
+            </div>
+
+            <div className="divide-y divide-[#E2E8F0] border-y border-[#E2E8F0]">
+              {FAQ_ITEMS.map((faq, idx) => {
+                const isOpen = openFaq === idx;
+                return (
+                  <div key={faq.q}>
+                    <button
+                      type="button"
+                      aria-expanded={isOpen}
+                      onClick={() => setOpenFaq(isOpen ? null : idx)}
+                      className="w-full min-h-[56px] py-5 text-left flex items-center justify-between gap-4 cursor-pointer group"
+                    >
+                      <span className="font-semibold text-base text-[#0D1B2A] group-hover:text-[#1B4332] transition-colors">
+                        {faq.q}
+                      </span>
+                      <span
+                        className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-[#475569] group-hover:text-[#0D1B2A] transition-colors"
+                        aria-hidden="true"
+                      >
+                        {isOpen ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                      </span>
+                    </button>
+                    {isOpen && (
+                      <div className="pb-5 pr-8 text-sm sm:text-[15px] text-[#475569] leading-relaxed">
+                        {faq.a}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+
+        {/* Strategic UAE Tax & Compliance Internal Links (Max 3 Cards) */}
+        <RelatedResources
+          eyebrow="Next Steps After Your Estimate"
+          heading="Turn Your Estimate Into Compliant Filings"
+          items={getRelatedResourcesForPath("/uae-tax-planner")}
+          onNavigate={onNavigate}
+          background="neutral"
+        />
       </main>
 
       <PageFooter

@@ -16,7 +16,13 @@ import {
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
 import CompanySetupHub from "../components/CompanySetupHub";
-import { applyPageSEO } from "../lib/seo";
+import {
+  applyPageSEO,
+  buildBreadcrumbSchema,
+  buildFAQPageSchema,
+  removeJsonLd,
+  upsertJsonLd,
+} from "../lib/seo";
 
 interface CompanySetupPageProps {
   onNavigate: (path: string) => void;
@@ -32,17 +38,30 @@ export const CompanySetupPage: React.FC<CompanySetupPageProps> = ({
   onOpenGooglePreferred,
 }) => {
   useEffect(() => {
+    const canonicalPath = "/company-setup";
     applyPageSEO({
-      title: "SHAMS Free Zone & Dubai Mainland Company Setup + Tax Registration (2026)",
+      title: "UAE Mainland & Free Zone Company Setup | Dias Accounting",
       description:
-        "Launch your SHAMS Free Zone or Dubai Mainland LLC with full EmaraTax Corporate Tax & 5% VAT registration. Fixed-fee monthly accounting from AED 400/mo.",
-      canonicalPath: "/company-setup",
+        "Launch your SHAMS Free Zone, IFZA, DMCC, or Dubai Mainland LLC with Day-1 EmaraTax Corporate Tax & 5% VAT registration. Fixed accounting from AED 400/mo.",
+      canonicalPath,
       keywords:
-        "UAE Company Setup, Corporate Tax, company setup dubai, free zone license uae, shams incorporation, dmcc company formation, ifza visa setup, 0% QFZP corporate tax uae, difc tax compliance",
-      ogImage: "/api/og?title=SHAMS+Free+Zone+%26+Dubai+Mainland+Company+Setup&author=Dias+Corporate+Desk&tag=Tax+Registration+2026",
+        "UAE Company Setup, SHAMS free zone formation, Dubai Mainland DET license, 0% QFZP structuring, EmaraTax registration",
     });
-
+    upsertJsonLd(
+      "page-breadcrumb-jsonld",
+      buildBreadcrumbSchema(
+        [
+          { name: "Home", path: "/" },
+          { name: "Company Setup", path: canonicalPath },
+        ],
+        `https://diasuae.ae${canonicalPath}#breadcrumb`
+      )
+    );
     window.scrollTo({ top: 0, behavior: "instant" });
+    return () => {
+      removeJsonLd("page-breadcrumb-jsonld");
+      removeJsonLd("page-faq-jsonld");
+    };
   }, []);
 
   const steps = [
@@ -102,6 +121,19 @@ export const CompanySetupPage: React.FC<CompanySetupPageProps> = ({
       a: "With complete statutory documentation, verifiable business models, and proper shareholder profiles, digital corporate accounts (e.g., Wio Bank) can be opened in 48 to 72 hours. Traditional tier-1 banks (Emirates NBD, Mashreq, FAB) typically take 2 to 3 weeks. Dias UAE pre-screens your compliance files to fast-track account approval.",
     },
   ];
+
+  useEffect(() => {
+    upsertJsonLd(
+      "page-faq-jsonld",
+      buildFAQPageSchema(
+        setupFaqs.map((item) => ({ question: item.q, answer: item.a })),
+        "https://diasuae.ae/company-setup#faqs"
+      )
+    );
+    return () => {
+      removeJsonLd("page-faq-jsonld");
+    };
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-800 antialiased">

@@ -17,7 +17,12 @@ import PageFooter from "../components/PageFooter";
 import WhyChooseUsGrid from "../components/WhyChooseUsGrid";
 import OurAffiliations from "../components/OurAffiliations";
 import ClientCaseStudies from "../components/ClientCaseStudies";
-import { applyPageSEO } from "../lib/seo";
+import {
+  applyPageSEO,
+  buildBreadcrumbSchema,
+  removeJsonLd,
+  upsertJsonLd,
+} from "../lib/seo";
 
 interface WhyChooseUsPageProps {
   onNavigate: (path: string) => void;
@@ -34,15 +39,25 @@ export const WhyChooseUsPage: React.FC<WhyChooseUsPageProps> = ({
 }) => {
   useEffect(() => {
     applyPageSEO({
-      title: "Why Dias Accounting | FTA Certified Tax Agency Dubai | Dias UAE",
+      title: "Why Choose Dias Accounting | FTA Tax Agency Dubai & UAE",
       description:
-        "Discover the 6 foundational pillars that make Dias Accounting the trusted choice for 500+ UAE enterprises: FTA certified agents, unlimited transactions, and direct client WhatsApp channels.",
+        "Discover why UAE founders choose Dias Accounting: FTA-registered agents, fixed-fee IFRS accounting, EmaraTax compliance, and direct senior advisory.",
       canonicalPath: "/why-choose-us",
       keywords:
         "why dias accounting, fta registered tax agency, certified tax agent glen dias, corporate tax advisory firm dubai",
-      ogImage: "/api/og?title=Why+Dias+Accounting+%26+Tax+Consulting&author=Glen+Dias&tag=6+Core+Pillars",
     });
+    upsertJsonLd(
+      "page-breadcrumb-jsonld",
+      buildBreadcrumbSchema([
+        { name: "Home", path: "/" },
+        { name: "About Us", path: "/about" },
+        { name: "Why Choose Dias", path: "/why-choose-us" },
+      ])
+    );
     window.scrollTo({ top: 0, behavior: "instant" });
+    return () => {
+      removeJsonLd("page-breadcrumb-jsonld");
+    };
   }, []);
 
   return (
@@ -57,7 +72,7 @@ export const WhyChooseUsPage: React.FC<WhyChooseUsPageProps> = ({
         {/* Hero Section */}
         <section className="relative bg-gradient-to-b from-navy-950 via-navy-900 to-navy-950 text-white py-16 lg:py-24 border-b border-white/10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-2 text-xs font-mono text-gold-400 mb-4">
+            <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-mono text-gold-400 mb-4">
               <button
                 type="button"
                 onClick={() => onNavigate("/")}
@@ -66,8 +81,16 @@ export const WhyChooseUsPage: React.FC<WhyChooseUsPageProps> = ({
                 Home
               </button>
               <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+              <button
+                type="button"
+                onClick={() => onNavigate("/about")}
+                className="hover:underline cursor-pointer"
+              >
+                About Us
+              </button>
+              <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
               <span className="text-white">Why Choose Dias</span>
-            </div>
+            </nav>
 
             <div className="max-w-3xl">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-500/10 border border-gold-400/30 text-gold-300 text-xs font-semibold uppercase tracking-wider mb-4">

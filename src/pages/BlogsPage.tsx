@@ -1,31 +1,23 @@
 import React, { useEffect, useState } from "react";
 import {
-  BookOpen,
-  ChevronRight,
-  Search,
-  Calendar,
-  Clock,
-  User,
   ArrowRight,
-  Tag,
-  Share2,
+  ChevronRight,
   ExternalLink,
-  Download,
-  CheckCircle2,
-  AlertCircle,
   FileText,
-  Mail,
-  ShieldCheck,
-  MessageCircle,
+  Search,
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
+import SectionCTA from "../components/editorial/SectionCTA";
 import { blogsData } from "../data/blogsData";
 import { draftPlaceholderPosts } from "../data/blogDrafts";
 import { BlogPost } from "../types";
-import { applyPageSEO, removeJsonLd, upsertJsonLd } from "../lib/seo";
-import TaxToolsPromoBanner from "../components/TaxToolsPromoBanner";
-import BlogInstantAdvisorStrip from "../components/BlogInstantAdvisorStrip";
+import {
+  applyPageSEO,
+  buildBreadcrumbSchema,
+  removeJsonLd,
+  upsertJsonLd,
+} from "../lib/seo";
 import { fetchLiveBloggerPosts, LiveBloggerPost } from "../lib/bloggerFeed";
 
 interface BlogsPageProps {
@@ -35,7 +27,6 @@ interface BlogsPageProps {
   onOpenGooglePreferred?: () => void;
 }
 
-// Title normalization and fuzzy duplicate detection (synchronized with blog.html)
 function normalizeTitle(t: string): string {
   return (t || "")
     .toLowerCase()
@@ -76,6 +67,14 @@ function isDuplicateOfExisting(newTitle: string, existingTitles: string[]): bool
   return false;
 }
 
+const CATEGORIES = [
+  { id: "all", label: "All" },
+  { id: "corporate-tax", label: "Corporate Tax" },
+  { id: "vat", label: "VAT & E-Invoicing" },
+  { id: "free-zone", label: "Free Zone & Compliance" },
+  { id: "bookkeeping", label: "Bookkeeping & IFRS" },
+];
+
 export const BlogsPage: React.FC<BlogsPageProps> = ({
   onNavigate,
   onOpenAudit,
@@ -87,7 +86,7 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
   const [liveBriefings, setLiveBriefings] = useState<LiveBloggerPost[]>([]);
   const [liveBriefingsLoading, setLiveBriefingsLoading] = useState(true);
   const [liveBriefingsUnavailable, setLiveBriefingsUnavailable] = useState(false);
-  const [brokenThumbIds, setBrokenThumbIds] = useState<Record<string, boolean>>({});
+
   const [allPosts] = useState<BlogPost[]>(() => {
     const seen: string[] = [];
     const uniqueStatic: BlogPost[] = [];
@@ -103,71 +102,43 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
     });
   });
 
-  // Lead Magnet Download Form State
-  const [checklistEmail, setChecklistEmail] = useState("");
-  const [checklistName, setChecklistName] = useState("");
-  const [checklistSuccess, setChecklistSuccess] = useState(false);
-
   useEffect(() => {
-    const pageTitle = "UAE Corporate Tax, VAT & Accounting Insights 2026 | Dias UAE";
+    const pageTitle = "UAE Corporate Tax, VAT & IFRS Insights | Dias Accounting";
     const pageDesc =
-      "Latest 2026 UAE Federal Tax Authority (FTA) updates, 9% Corporate Tax guides, 5% VAT audit checklists, and IFRS accounting insights by Dias Accounting.";
+      "Latest 2026 UAE Federal Tax Authority (FTA) briefings, 9% Corporate Tax guides, 5% VAT checklists, and IFRS accounting insights by Dias Accounting.";
 
     applyPageSEO({
       title: pageTitle,
       description: pageDesc,
-      canonicalPath: "/blogs",
+      canonicalPath: "/blog",
       keywords:
-        "UAE Corporate Tax Insights 2026, FTA Updates 2026, 9% Corporate Tax Guides, 5% VAT Audit Checklists, IFRS Accounting Insights Dubai, Dias Accounting",
-      ogImage:
-        "/api/og?title=UAE+Corporate+Tax%2C+VAT+%26+Accounting+Insights+2026&author=Glen+Dias&tag=Official+Briefings",
+        "UAE Corporate Tax Insights 2026, FTA Updates 2026, 9% Corporate Tax Guides, 5% VAT Audit Checklists, IFRS Accounting Insights Dubai",
     });
 
-    upsertJsonLd("schema-blogs-hub", {
+    upsertJsonLd("page-collection-jsonld", {
       "@context": "https://schema.org",
-      "@graph": [
-        {
-          "@type": "CollectionPage",
-          "@id": "https://diasuae.ae/blogs#collection",
-          url: "https://diasuae.ae/blogs",
-          name: pageTitle,
-          description: pageDesc,
-          isPartOf: {
-            "@type": "WebSite",
-            "@id": "https://diasuae.ae/#website",
-            name: "Dias Accounting & Tax Consulting LLC",
-            url: "https://diasuae.ae/",
-          },
-          publisher: {
-            "@type": "Organization",
-            name: "Dias Accounting & Tax Consulting LLC",
-            url: "https://diasuae.ae",
-          },
-        },
-        {
-          "@type": "BreadcrumbList",
-          "@id": "https://diasuae.ae/blogs#breadcrumb",
-          itemListElement: [
-            {
-              "@type": "ListItem",
-              position: 1,
-              name: "Home",
-              item: "https://diasuae.ae/",
-            },
-            {
-              "@type": "ListItem",
-              position: 2,
-              name: "Insights & Blogs",
-              item: "https://diasuae.ae/blogs",
-            },
-          ],
-        },
-      ],
+      "@type": "CollectionPage",
+      "@id": "https://diasuae.ae/blog#collection",
+      url: "https://diasuae.ae/blog",
+      name: pageTitle,
+      description: pageDesc,
+      isPartOf: { "@id": "https://diasuae.ae/#website" },
+      publisher: { "@id": "https://diasuae.ae/#organization" },
     });
+
+    upsertJsonLd(
+      "page-breadcrumb-jsonld",
+      buildBreadcrumbSchema(
+        [
+          { name: "Home", path: "/" },
+          { name: "Insights", path: "/blog" },
+        ],
+        "https://diasuae.ae/blog#breadcrumb"
+      )
+    );
 
     window.scrollTo({ top: 0, behavior: "instant" });
 
-    // Fetch latest live Blogger posts via cross-origin safe JSONP + fetch fallback
     let isMounted = true;
     async function loadLiveBloggerPosts() {
       setLiveBriefingsLoading(true);
@@ -196,17 +167,6 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
     };
   }, []);
 
-  // Category filter tabs mapped to UAE regulatory topics & Blogger labels
-  const categories = [
-    { id: "all", label: "All Insights" },
-    { id: "corporate-tax", label: "Corporate Tax (9%)" },
-    { id: "vat", label: "VAT & E-Invoicing" },
-    { id: "free-zone", label: "Free Zone Setup" },
-    { id: "bookkeeping", label: "Bookkeeping & IFRS" },
-    { id: "compliance-penalties", label: "Compliance & Penalties" },
-  ];
-
-  // Combine live articles and draft outlines (imported from shared blogDrafts)
   const combinedPosts = [...allPosts, ...draftPlaceholderPosts];
 
   const matchesFilter = (item: {
@@ -242,6 +202,7 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
         summaryLower.includes("corporate tax")
       );
     }
+
     if (selectedCategory === "vat") {
       return (
         tagLower.includes("vat") ||
@@ -252,32 +213,36 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
         summaryLower.includes("vat")
       );
     }
+
     if (selectedCategory === "free-zone") {
       return (
         tagLower.includes("free zone") ||
         tagLower.includes("company setup") ||
         tagLower.includes("formation") ||
-        tagLower.includes("incorporation") ||
-        tagLower.includes("setup") ||
+        tagLower.includes("compliance") ||
+        tagLower.includes("penalties") ||
+        tagLower.includes("audit") ||
         catList.some(
           (c) =>
             c.includes("company setup") ||
             c.includes("free zone") ||
-            c.includes("formation") ||
             c.includes("difc") ||
             c.includes("dtec") ||
             c.includes("shams") ||
-            c.includes("qfzp")
+            c.includes("qfzp") ||
+            c.includes("compliance") ||
+            c.includes("penalt") ||
+            c.includes("audit")
         ) ||
-        titleLower.includes("company formation") ||
         titleLower.includes("free zone") ||
-        titleLower.includes("company setup") ||
-        titleLower.includes("shams") ||
         titleLower.includes("difc") ||
         titleLower.includes("dtec") ||
-        titleLower.includes("qfzp")
+        titleLower.includes("qfzp") ||
+        titleLower.includes("penalty") ||
+        titleLower.includes("compliance")
       );
     }
+
     if (selectedCategory === "bookkeeping") {
       return (
         tagLower.includes("bookkeeping") ||
@@ -288,20 +253,6 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
         titleLower.includes("accounting") ||
         titleLower.includes("ifrs") ||
         titleLower.includes("spreadsheets")
-      );
-    }
-    if (selectedCategory === "compliance-penalties") {
-      return (
-        tagLower.includes("compliance") ||
-        tagLower.includes("penalties") ||
-        tagLower.includes("penalty") ||
-        tagLower.includes("audit") ||
-        catList.some((c) => c.includes("compliance") || c.includes("penalt") || c.includes("audit") || c.includes("fta")) ||
-        titleLower.includes("compliance") ||
-        titleLower.includes("penalty") ||
-        titleLower.includes("penalties") ||
-        titleLower.includes("audit") ||
-        titleLower.includes("deadline")
       );
     }
 
@@ -326,13 +277,19 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
     })
   );
 
-  const handleChecklistSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setChecklistSuccess(true);
+  const featuredPost = filteredPosts[0] || null;
+  const gridPosts = featuredPost ? filteredPosts.slice(1) : [];
+
+  const openPost = (post: BlogPost) => {
+    if (post.externalUrl) {
+      window.open(post.externalUrl, "_blank", "noopener,noreferrer");
+    } else {
+      onNavigate(`/blog/${post.id}`);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-800 antialiased selection:bg-gold-500/30 selection:text-navy-950">
+    <div className="min-h-screen bg-[#FFFFFF] font-sans text-[#0D1B2A] antialiased">
       <PageNavigation
         currentPath="/blogs"
         onNavigate={onNavigate}
@@ -340,139 +297,267 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
       />
 
       <main id="main-content">
-        {/* Hero Section */}
-        <section className="relative bg-gradient-to-b from-navy-950 via-navy-900 to-navy-950 text-white py-16 lg:py-24 border-b border-gold-500/20 overflow-hidden">
-          <div className="absolute -top-32 right-0 w-[500px] h-[500px] bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="flex items-center gap-2 text-xs font-mono text-gold-400 mb-4">
+        {/* 1. Clean Centered Header + Filter Pills */}
+        <section className="bg-[#FFFFFF] border-b border-[#E2E8F0] pt-12 pb-14 lg:pt-20 lg:pb-16">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav
+              aria-label="Breadcrumb"
+              className="flex items-center justify-center gap-1.5 text-xs sm:text-sm text-[#475569] mb-6"
+            >
               <button
                 type="button"
                 onClick={() => onNavigate("/")}
-                className="hover:underline cursor-pointer"
+                className="hover:text-[#0D1B2A] transition-colors cursor-pointer"
               >
                 Home
               </button>
               <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-              <span className="text-white">Tax &amp; Accounting Blog</span>
+              <span className="text-[#0D1B2A] font-medium">Insights</span>
+            </nav>
+
+            <div className="text-center max-w-3xl mx-auto space-y-4">
+              <span className="inline-block text-xs font-semibold uppercase tracking-wider text-[#856422]">
+                UAE Regulatory Insights &amp; Briefings
+              </span>
+              <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0D1B2A] tracking-tight leading-[1.12]">
+                UAE Corporate Tax, VAT &amp; Accounting Insights
+              </h1>
+              <p className="text-base sm:text-lg text-[#475569] leading-[1.65] max-w-[60ch] mx-auto">
+                Practical FTA regulatory briefings, Ministerial Decision analysis, and IFRS compliance guidance authored by our Dubai and Sharjah tax agents.
+              </p>
             </div>
 
-            <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-500/10 border border-gold-400/30 text-gold-300 text-xs font-semibold uppercase tracking-wider mb-4">
-                <BookOpen className="w-3.5 h-3.5 text-gold-400" />
-                <span>FTA Regulatory Briefings · Practical Accounting Insights</span>
-              </div>
-              <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4">
-                Corporate Tax Insights, DIFC Tax Compliance &amp; UAE Regulations Hub
-              </h1>
-              <p className="text-slate-300 text-base leading-relaxed mb-6">
-                Authoritative legislative interpretations, ministerial decrees, practical compliance guides, and draft outlines prepared by FTA Registered Tax Agents in Dubai and Sharjah.
-              </p>
-
-              {/* Above-the-Fold Instant Advisor & Tax Calculator Strip */}
-              <BlogInstantAdvisorStrip onNavigate={onNavigate} />
-
-              {/* General Information Disclaimer */}
-              <div className="p-3.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 text-xs leading-relaxed flex items-start gap-2.5 mb-6">
-                <AlertCircle className="w-4 h-4 text-gold-400 shrink-0 mt-0.5" />
-                <p>
-                  <strong>Disclaimer:</strong> This content is general information, not tax or legal advice. Consult a qualified professional before acting on it.
-                </p>
-              </div>
-
-              {/* Search Bar */}
-              <div className="relative max-w-xl">
-                <Search className="w-5 h-5 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
+            {/* Quiet Search Bar */}
+            <div className="mt-8 max-w-md mx-auto">
+              <label htmlFor="insights-search" className="sr-only">
+                Search UAE tax and accounting insights
+              </label>
+              <div className="relative">
+                <Search className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
-                  type="text"
-                  placeholder="Search articles by keyword (e.g. SBR, VAT registration, QFZP, penalties)..."
+                  id="insights-search"
+                  type="search"
+                  placeholder="Search articles (e.g., SBR, QFZP, VAT, E-Invoicing)..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-xl pl-12 pr-4 py-3.5 text-xs sm:text-sm text-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-gold-500"
+                  className="w-full min-h-[46px] bg-[#F8FAFC] border border-[#E2E8F0] rounded-xl pl-11 pr-4 py-2.5 text-sm text-[#0D1B2A] placeholder:text-slate-400 focus:bg-[#FFFFFF] focus:outline-none focus:ring-2 focus:ring-[#1B4332]/20 focus:border-[#1B4332] transition-colors"
                 />
               </div>
+            </div>
+
+            {/* Horizontal Category Filter Pills */}
+            <div
+              role="tablist"
+              aria-label="Filter insights by category"
+              className="mt-7 flex flex-wrap items-center justify-center gap-2"
+            >
+              {CATEGORIES.map((cat) => {
+                const isActive = selectedCategory === cat.id;
+                return (
+                  <button
+                    key={cat.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={isActive}
+                    onClick={() => setSelectedCategory(cat.id)}
+                    className={`min-h-[44px] px-4 py-2 rounded-xl text-sm font-semibold transition-colors cursor-pointer whitespace-nowrap ${
+                      isActive
+                        ? "bg-[#1B4332] text-white"
+                        : "bg-[#FFFFFF] text-[#475569] border border-[#E2E8F0] hover:border-slate-300 hover:text-[#0D1B2A]"
+                    }`}
+                  >
+                    {cat.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </section>
 
-        {/* Content Section */}
-        <section className="py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          
-          {/* Section Heading & Category Filter Tabs */}
-          <div className="mb-8">
-            <h2 className="font-display text-xl sm:text-2xl font-bold text-navy-950 mb-2">
-              What Are the Latest Corporate Tax, VAT &amp; Free Zone Regulatory Updates in Dubai?
-            </h2>
-            <p className="text-slate-600 text-xs sm:text-sm">
-              Filter by regulatory category or search by topic to explore authoritative FTA compliance briefings.
-            </p>
-          </div>
+        {/* 2. Featured Post + 3-Column Editorial Article Grid */}
+        <section className="bg-[#F8FAFC] border-b border-[#E2E8F0] py-16 lg:py-20">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+            {featuredPost ? (
+              <>
+                {/* Featured Post Card (2-Column Horizontal Split on Desktop) */}
+                <article
+                  onClick={() => openPost(featuredPost)}
+                  className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] hover:border-slate-300 shadow-[0_8px_28px_-16px_rgba(13,27,42,0.08)] hover:shadow-[0_14px_36px_-16px_rgba(13,27,42,0.12)] transition-all overflow-hidden grid grid-cols-1 lg:grid-cols-12 cursor-pointer group"
+                >
+                  {/* Left Editorial Graphic or Image */}
+                  <div className="lg:col-span-5 bg-[#0D1B2A] min-h-[240px] lg:min-h-[320px] relative overflow-hidden flex flex-col justify-between p-8 text-white">
+                    {featuredPost.imageUrl && featuredPost.imageUrl.startsWith("/") ? (
+                      <img
+                        src={featuredPost.imageUrl}
+                        alt={featuredPost.title}
+                        loading="eager"
+                        referrerPolicy="no-referrer"
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                      />
+                    ) : (
+                      <>
+                        <div className="h-[2px] w-12 bg-[#C5A059]" />
+                        <div className="space-y-2 py-6">
+                          <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#C5A059] block">
+                            Featured Briefing
+                          </span>
+                          <p className="font-display text-xl sm:text-2xl font-bold text-white leading-snug">
+                            {featuredPost.tag}
+                          </p>
+                        </div>
+                        <div className="flex items-center justify-between text-xs text-slate-400 border-t border-white/10 pt-4">
+                          <span>Dias Advisory Desk</span>
+                          <span className="tabular-nums">{featuredPost.readTime}</span>
+                        </div>
+                      </>
+                    )}
+                  </div>
 
-          <div className="flex flex-wrap items-center gap-2 mb-8 pb-4 border-b border-slate-200">
-            {categories.map((cat) => (
-              <button
-                key={cat.id}
-                type="button"
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`py-2 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
-                  selectedCategory === cat.id
-                    ? "bg-navy-950 text-white font-bold shadow-xs"
-                    : "bg-white text-slate-600 hover:text-navy-950 border border-slate-200 hover:border-slate-300"
-                }`}
-              >
-                {cat.label}
-              </button>
-            ))}
-          </div>
+                  {/* Right Content Panel */}
+                  <div className="lg:col-span-7 p-7 sm:p-10 flex flex-col justify-between space-y-6">
+                    <div className="space-y-3.5">
+                      <span className="inline-block text-xs font-semibold uppercase tracking-wider text-[#856422]">
+                        {featuredPost.tag}
+                      </span>
+                      <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#0D1B2A] group-hover:text-[#1B4332] transition-colors leading-snug tracking-tight">
+                        {featuredPost.title}
+                      </h2>
+                      <p className="text-sm sm:text-base text-[#475569] leading-[1.65] line-clamp-2 max-w-[60ch]">
+                        {featuredPost.summary}
+                      </p>
+                    </div>
 
-          {/* Featured UAE Tax Insights (insights.diasuae.ae) Banner Card */}
-          <div className="mb-10 rounded-2xl bg-[#0d1b2a] border border-[#c5a059] p-6 sm:p-8 text-white shadow-lg flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div className="space-y-2 max-w-3xl">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-[0.16em] text-[#c5a059] block">
-                LIVE FTA REGULATORY BRIEFINGS &amp; NEWS
-              </span>
-              <h2 className="font-display text-xl sm:text-2xl lg:text-[1.65rem] font-extrabold text-white tracking-tight">
-                UAE Tax Insights (insights.diasuae.ae)
-              </h2>
-              <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
-                Daily Corporate Tax alerts, EmaraTax filing deadlines, VAT recovery updates, and DIFC/DTEC regulatory briefings.
-              </p>
-            </div>
-            <div className="shrink-0">
-              <a
-                href="https://insights.diasuae.ae/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#c5a059] hover:bg-[#dec18c] text-[#070d19] font-display font-extrabold text-xs sm:text-sm tracking-wide shadow-md shadow-[#c5a059]/20 transition-all whitespace-nowrap active:scale-95"
-              >
-                <span>Read Live UAE Tax Insights ↗</span>
-              </a>
-            </div>
-          </div>
+                    <div className="pt-5 border-t border-[#E2E8F0] flex flex-wrap items-center justify-between gap-4">
+                      <div className="flex items-center gap-3 text-xs sm:text-sm text-[#64748B] tabular-nums">
+                        <time>{featuredPost.date}</time>
+                        <span aria-hidden="true">·</span>
+                        <span>{featuredPost.readTime}</span>
+                      </div>
+                      <a
+                        href={featuredPost.externalUrl || `/blog/${featuredPost.id}`}
+                        target={featuredPost.externalUrl ? "_blank" : undefined}
+                        rel={featuredPost.externalUrl ? "noopener noreferrer" : undefined}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (!featuredPost.externalUrl) {
+                            e.preventDefault();
+                            onNavigate(`/blog/${featuredPost.id}`);
+                          }
+                        }}
+                        className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1B4332] group-hover:text-[#0D1B2A] transition-colors"
+                      >
+                        <span>Read article</span>
+                        <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                      </a>
+                    </div>
+                  </div>
+                </article>
 
-          {/* Live FTA Regulatory Briefings (insights.diasuae.ae) Section */}
-          <section
-            aria-labelledby="live-fta-briefings-heading"
-            className="mb-12"
-          >
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6">
-              <div>
-                <span className="text-[11px] font-mono font-bold uppercase tracking-[0.16em] text-[#c5a059] block mb-1">
-                  AUTOMATICALLY SYNCED · INSIGHTS.DIASUAE.AE
+                {/* 3-Column Equal-Height Article Grid */}
+                {gridPosts.length > 0 && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7">
+                    {gridPosts.map((post) => {
+                      const isDraft = post.id.startsWith("draft-");
+                      return (
+                        <article
+                          key={post.id}
+                          onClick={() => openPost(post)}
+                          className="h-full rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] hover:border-slate-300 p-7 shadow-[0_6px_24px_-16px_rgba(13,27,42,0.06)] hover:shadow-[0_12px_32px_-16px_rgba(13,27,42,0.12)] transition-all cursor-pointer flex flex-col justify-between group"
+                        >
+                          <div className="space-y-3">
+                            <span className="inline-block text-xs font-semibold uppercase tracking-wider text-[#856422]">
+                              {post.tag}
+                            </span>
+                            <h3 className="font-display text-lg font-bold text-[#0D1B2A] group-hover:text-[#1B4332] transition-colors line-clamp-2 leading-snug">
+                              {post.title}
+                            </h3>
+                            <p className="text-sm text-[#475569] leading-[1.6] line-clamp-2">
+                              {post.summary}
+                            </p>
+                          </div>
+
+                          <div className="mt-7 pt-4 border-t border-[#E2E8F0] flex items-center justify-between gap-3 text-xs text-[#64748B] tabular-nums">
+                            <div className="flex items-center gap-2 truncate">
+                              <time className="truncate">{post.date}</time>
+                              <span aria-hidden="true">·</span>
+                              <span className="shrink-0">{post.readTime}</span>
+                            </div>
+                            <a
+                              href={post.externalUrl || `/blog/${post.id}`}
+                              target={post.externalUrl ? "_blank" : undefined}
+                              rel={post.externalUrl ? "noopener noreferrer" : undefined}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (!post.externalUrl) {
+                                  e.preventDefault();
+                                  onNavigate(`/blog/${post.id}`);
+                                }
+                              }}
+                              className="inline-flex items-center gap-1 font-semibold text-[#1B4332] group-hover:text-[#0D1B2A] shrink-0"
+                            >
+                              <span>{isDraft ? "Outline" : "Read"}</span>
+                              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                            </a>
+                          </div>
+                        </article>
+                      );
+                    })}
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-12 text-center space-y-3">
+                <FileText className="w-8 h-8 text-slate-300 mx-auto" />
+                <h2 className="font-display text-lg font-bold text-[#0D1B2A]">
+                  No insights match your search
+                </h2>
+                <p className="text-sm text-[#475569]">
+                  Try another keyword or reset your category filter to view all UAE tax guides.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSelectedCategory("all");
+                  }}
+                  className="mt-2 min-h-[44px] px-5 py-2 rounded-xl bg-[#1B4332] text-white text-sm font-semibold cursor-pointer"
+                >
+                  Reset Filters
+                </button>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* 3. Live Synced FTA Regulatory Briefings (insights.diasuae.ae) */}
+        <section
+          aria-labelledby="live-fta-briefings-heading"
+          className="bg-[#FFFFFF] py-16 lg:py-20"
+        >
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+              <div className="space-y-1.5">
+                <span className="inline-block text-xs font-semibold uppercase tracking-wider text-[#856422]">
+                  Live Regulatory Feed · insights.diasuae.ae
                 </span>
                 <h2
                   id="live-fta-briefings-heading"
-                  className="font-display text-xl sm:text-2xl font-bold text-[#070d19] tracking-tight"
+                  className="font-display text-2xl sm:text-3xl font-bold text-[#0D1B2A] tracking-tight"
                 >
-                  Live FTA Regulatory Briefings (insights.diasuae.ae)
+                  Latest FTA Regulatory Briefings
                 </h2>
+                <p className="text-sm sm:text-base text-[#475569] max-w-[62ch]">
+                  Daily Corporate Tax alerts, EmaraTax filing reminders, and DIFC/DTEC updates published on our live insights portal.
+                </p>
               </div>
               <a
                 href="https://insights.diasuae.ae/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-display font-bold text-[#070d19] hover:text-[#c5a059] transition-colors shrink-0"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1B4332] hover:text-[#0D1B2A] transition-colors shrink-0 min-h-[44px]"
               >
-                <span>Browse All Briefings ↗</span>
+                <span>Open insights.diasuae.ae</span>
+                <ExternalLink className="w-4 h-4" />
               </a>
             </div>
 
@@ -481,513 +566,121 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
                 aria-label="Loading live regulatory briefings"
                 className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
               >
-                {[0, 1, 2].map((skeletonIdx) => (
+                {[0, 1, 2].map((idx) => (
                   <div
-                    key={skeletonIdx}
-                    className="rounded-2xl bg-[#0d1b2a] border border-[#c5a059]/20 overflow-hidden shadow-md"
+                    key={idx}
+                    className="rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] p-7 space-y-4"
                   >
-                    <div className="h-32 w-full bg-[#070d19] border-b border-[#c5a059]/15 p-5 flex flex-col justify-between">
-                      <div className="h-3 w-32 rounded bg-white/10 animate-pulse" />
-                      <div className="h-4 w-44 rounded bg-[#c5a059]/20 animate-pulse" />
-                    </div>
-                    <div className="p-6 space-y-3.5">
-                      <div className="h-3 w-40 rounded bg-white/10 animate-pulse" />
-                      <div className="h-5 w-full rounded bg-white/15 animate-pulse" />
-                      <div className="h-5 w-4/5 rounded bg-white/15 animate-pulse" />
-                      <div className="space-y-2 pt-1">
-                        <div className="h-3 w-full rounded bg-white/10 animate-pulse" />
-                        <div className="h-3 w-11/12 rounded bg-white/10 animate-pulse" />
-                        <div className="h-3 w-2/3 rounded bg-white/10 animate-pulse" />
-                      </div>
-                      <div className="pt-4 border-t border-white/10">
-                        <div className="h-3.5 w-36 rounded bg-[#c5a059]/25 animate-pulse" />
-                      </div>
+                    <div className="h-3 w-28 rounded bg-slate-200 animate-pulse" />
+                    <div className="h-5 w-full rounded bg-slate-200 animate-pulse" />
+                    <div className="h-5 w-3/4 rounded bg-slate-200 animate-pulse" />
+                    <div className="space-y-2 pt-1">
+                      <div className="h-3.5 w-full rounded bg-slate-200/80 animate-pulse" />
+                      <div className="h-3.5 w-5/6 rounded bg-slate-200/80 animate-pulse" />
                     </div>
                   </div>
                 ))}
               </div>
             ) : liveBriefingsUnavailable ? (
-              <div className="rounded-2xl bg-[#0d1b2a] border border-[#c5a059]/35 p-6 sm:p-7 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-5 shadow-md">
-                <div className="space-y-1.5 max-w-2xl">
-                  <span className="text-[11px] font-mono font-bold uppercase tracking-[0.14em] text-[#c5a059] block">
-                    DIRECT REGULATORY PORTAL
-                  </span>
-                  <p className="text-sm sm:text-base font-display font-bold text-white">
-                    Read the latest UAE Corporate Tax, VAT &amp; FTA bulletins directly on insights.diasuae.ae
+              <div className="rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] p-7 flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+                <div className="space-y-1 max-w-2xl">
+                  <p className="font-display font-bold text-base text-[#0D1B2A]">
+                    Read live UAE Corporate Tax &amp; VAT bulletins on insights.diasuae.ae
                   </p>
-                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                    New legislative updates, EmaraTax filing reminders, and DIFC/DTEC tax briefs are published continuously on our Insights portal.
+                  <p className="text-sm text-[#475569]">
+                    New legislative updates, EmaraTax reminders, and DIFC/DTEC notes are published continuously on our external insights portal.
                   </p>
                 </div>
                 <a
                   href="https://insights.diasuae.ae/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#c5a059] hover:bg-[#dec18c] text-[#070d19] font-display font-extrabold text-xs sm:text-sm whitespace-nowrap transition-colors shrink-0"
+                  className="min-h-[46px] px-5 py-2.5 rounded-xl bg-[#1B4332] hover:bg-[#143326] text-white text-sm font-semibold transition-colors inline-flex items-center justify-center gap-2 whitespace-nowrap shrink-0"
                 >
-                  <span>Visit insights.diasuae.ae ↗</span>
+                  <span>Visit insights.diasuae.ae</span>
+                  <ExternalLink className="w-4 h-4" />
                 </a>
               </div>
             ) : filteredLiveBriefings.length === 0 ? (
-              <div className="rounded-2xl bg-[#0d1b2a] border border-[#c5a059]/25 px-6 py-5 text-slate-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <p className="text-xs sm:text-sm">
-                  No live <span className="text-white font-semibold">insights.diasuae.ae</span> briefings match your current search or category filter.
+              <div className="rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <p className="text-sm text-[#475569]">
+                  No live briefings from <strong className="text-[#0D1B2A]">insights.diasuae.ae</strong> match your current filter.
                 </p>
-                <div className="flex items-center gap-4 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setSearchQuery("");
-                      setSelectedCategory("all");
-                    }}
-                    className="text-xs font-semibold text-[#dec18c] hover:text-white underline underline-offset-4 cursor-pointer"
-                  >
-                    Show All Briefings
-                  </button>
-                  <a
-                    href="https://insights.diasuae.ae/"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs font-display font-bold text-[#c5a059] hover:text-[#dec18c] whitespace-nowrap"
-                  >
-                    Open insights.diasuae.ae ↗
-                  </a>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearchQuery("");
+                    setSelectedCategory("all");
+                  }}
+                  className="text-sm font-semibold text-[#1B4332] hover:text-[#0D1B2A] cursor-pointer shrink-0"
+                >
+                  Show all briefings
+                </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredLiveBriefings.map((briefing) => {
-                  const hasWorkingThumb = Boolean(briefing.thumbnail && !brokenThumbIds[briefing.id]);
-                  const labelText =
-                    briefing.categories.length > 0
-                      ? briefing.categories.slice(0, 2).join(" · ")
-                      : briefing.primaryCategory;
-
-                  return (
-                    <article
-                      key={briefing.id}
-                      className="rounded-2xl bg-[#0d1b2a] border border-[#c5a059]/25 hover:border-[#c5a059] transition-all duration-200 overflow-hidden flex flex-col justify-between group shadow-md hover:shadow-xl hover:shadow-[#070d19]/25"
-                    >
-                      <div>
-                        {hasWorkingThumb ? (
-                          <a
-                            href={briefing.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="block h-44 w-full overflow-hidden bg-[#070d19] border-b border-[#c5a059]/20"
-                          >
-                            <img
-                              src={briefing.thumbnail}
-                              alt={briefing.title}
-                              loading="lazy"
-                              referrerPolicy="no-referrer"
-                              onError={() =>
-                                setBrokenThumbIds((prev) => ({
-                                  ...prev,
-                                  [briefing.id]: true,
-                                }))
-                              }
-                              className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
-                            />
-                          </a>
-                        ) : (
-                          <a
-                            href={briefing.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="h-32 w-full bg-[#070d19] border-b border-[#c5a059]/25 px-6 py-4 flex flex-col justify-between relative overflow-hidden"
-                          >
-                            <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-[#c5a059] via-[#dec18c] to-transparent" />
-                            <div className="flex items-center justify-between gap-2">
-                              <span className="text-[10px] font-mono font-bold uppercase tracking-[0.16em] text-[#c5a059]">
-                                FTA REGULATORY BRIEFING
-                              </span>
-                              <BookOpen className="w-4 h-4 text-[#c5a059]/80 shrink-0" />
-                            </div>
-                            <div className="flex items-end justify-between gap-2">
-                              <span className="font-display text-sm font-bold text-white truncate">
-                                {briefing.primaryCategory}
-                              </span>
-                              <span className="text-[10px] font-mono text-[#dec18c]/80 shrink-0">
-                                insights.diasuae.ae
-                              </span>
-                            </div>
-                          </a>
-                        )}
-
-                        <div className="p-6 pb-4 space-y-3">
-                          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11px] font-mono">
-                            <span className="font-bold uppercase tracking-wider text-[#c5a059]">
-                              {labelText}
-                            </span>
-                            <span className="text-slate-500" aria-hidden="true">
-                              ·
-                            </span>
-                            <time
-                              dateTime={briefing.publishedIso || undefined}
-                              className="text-slate-400"
-                            >
-                              {briefing.publishedDate}
-                            </time>
-                          </div>
-
-                          <h3 className="font-display text-base sm:text-[1.06rem] font-bold text-white leading-snug group-hover:text-[#dec18c] transition-colors line-clamp-2">
-                            <a
-                              href={briefing.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="focus:outline-none focus-visible:underline"
-                            >
-                              {briefing.title}
-                            </a>
-                          </h3>
-
-                          <p className="text-slate-300 text-xs sm:text-[13px] leading-relaxed line-clamp-3">
-                            {briefing.excerpt}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="px-6 py-4 border-t border-white/10 flex items-center justify-between gap-3">
-                        <span className="text-[11px] font-mono text-slate-400">
-                          insights.diasuae.ae
-                        </span>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7">
+                {filteredLiveBriefings.map((briefing) => (
+                  <article
+                    key={briefing.id}
+                    className="h-full rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] hover:border-slate-300 p-7 shadow-[0_6px_24px_-16px_rgba(13,27,42,0.06)] hover:shadow-[0_12px_32px_-16px_rgba(13,27,42,0.12)] transition-all flex flex-col justify-between group"
+                  >
+                    <div className="space-y-3">
+                      <span className="inline-block text-xs font-semibold uppercase tracking-wider text-[#856422]">
+                        {briefing.primaryCategory}
+                      </span>
+                      <h3 className="font-display text-lg font-bold text-[#0D1B2A] group-hover:text-[#1B4332] transition-colors line-clamp-2 leading-snug">
                         <a
                           href={briefing.url}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-xs font-display font-extrabold text-[#c5a059] hover:text-[#dec18c] transition-colors whitespace-nowrap"
+                          className="focus:outline-none focus-visible:underline"
                         >
-                          <span>Read Full Briefing ↗</span>
+                          {briefing.title}
                         </a>
-                      </div>
-                    </article>
-                  );
-                })}
+                      </h3>
+                      <p className="text-sm text-[#475569] leading-[1.6] line-clamp-2">
+                        {briefing.excerpt}
+                      </p>
+                    </div>
+
+                    <div className="mt-7 pt-4 border-t border-[#E2E8F0] flex items-center justify-between gap-3 text-xs text-[#64748B] tabular-nums">
+                      <time dateTime={briefing.publishedIso || undefined}>
+                        {briefing.publishedDate}
+                      </time>
+                      <a
+                        href={briefing.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 font-semibold text-[#1B4332] group-hover:text-[#0D1B2A] whitespace-nowrap"
+                      >
+                        <span>Read briefing</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+                  </article>
+                ))}
               </div>
             )}
-          </section>
 
-          {/* Grid Layout: In-Depth Guides + Lead Magnet Sidebar */}
-          <div className="mb-5">
-            <span className="text-[11px] font-mono font-bold uppercase tracking-[0.16em] text-[#c5a059] block mb-1">
-              DIAS ACCOUNTING LIBRARY
-            </span>
-            <h2 className="font-display text-xl sm:text-2xl font-bold text-[#070d19] tracking-tight">
-              In-Depth UAE Tax &amp; Accounting Guides
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-            
-            {/* Left 8 Cols: Articles Grid */}
-            <div className="lg:col-span-8 space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {filteredPosts.map((post) => {
-                  const isDraft = post.id.startsWith("draft-");
-                  return (
-                    <article
-                      key={post.id}
-                      onClick={() => {
-                        if (post.externalUrl) {
-                          window.open(post.externalUrl, "_blank", "noopener,noreferrer");
-                        } else {
-                          onNavigate(`/blog/${post.id}`);
-                        }
-                      }}
-                      className="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-xs hover:border-gold-400 transition-all cursor-pointer flex flex-col justify-between group"
-                    >
-                      <div className="p-6 space-y-4">
-                        <div className="flex items-center justify-between">
-                          <span className={`px-2.5 py-0.5 rounded-full font-mono text-[10px] font-bold uppercase tracking-wider ${
-                            isDraft
-                              ? "bg-amber-100 text-amber-800"
-                              : post.isLiveBlogger
-                              ? "bg-emerald-50 text-emerald-800 border border-emerald-200/80 inline-flex items-center gap-1.5"
-                              : "bg-gold-50 text-gold-800"
-                          }`}>
-                            {post.isLiveBlogger && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />}
-                            {post.tag}
-                          </span>
-                          <span className="text-[11px] text-slate-400 flex items-center gap-1 font-mono">
-                            <Clock className="w-3.5 h-3.5" />
-                            {post.readTime}
-                          </span>
-                        </div>
-
-                        <h2 className="font-display font-bold text-base sm:text-lg text-navy-950 group-hover:text-gold-600 transition-colors line-clamp-2">
-                          {post.title}
-                        </h2>
-
-                        <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">
-                          {post.summary}
-                        </p>
-                      </div>
-
-                      <div className="px-6 pb-6 pt-2 border-t border-slate-100 flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <span className="text-[11px] text-slate-400 font-medium">
-                            {post.author.name}
-                          </span>
-                          {post.isLiveBlogger && (
-                            <span className="text-[9px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200/80">
-                              Live Blogger
-                            </span>
-                          )}
-                        </div>
-                        <a
-                          href={post.externalUrl || `/blog/${post.id}`}
-                          target={post.externalUrl ? "_blank" : undefined}
-                          rel={post.externalUrl ? "noopener noreferrer" : undefined}
-                          title={`${isDraft ? "View Outline" : "Read Article"}: ${post.title}`}
-                          aria-label={`${isDraft ? "View Outline" : "Read Article"}: ${post.title}`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (!post.externalUrl) {
-                              e.preventDefault();
-                              onNavigate(`/blog/${post.id}`);
-                            }
-                          }}
-                          className="text-xs font-display font-bold text-navy-950 group-hover:text-gold-600 flex items-center gap-1"
-                        >
-                          <span>{isDraft ? "View Outline" : "Read Article"}</span>
-                          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                        </a>
-                      </div>
-                    </article>
-                  );
-                })}
-              </div>
-
-              {/* View All Live Regulatory Briefings Button */}
-              <div className="pt-2 flex justify-center">
-                <a
-                  href="https://insights.diasuae.ae/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-navy-950 via-navy-900 to-navy-950 hover:from-gold-600 hover:to-gold-500 text-white font-display font-bold text-xs sm:text-sm tracking-wide border border-gold-500/40 shadow-md hover:shadow-lg transition-all group"
-                  title="View all live articles, regulatory briefings and tax updates on insights.diasuae.ae"
-                >
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-                  <span>View All Live Regulatory Briefings on insights.diasuae.ae</span>
-                  <ArrowRight className="w-4 h-4 text-gold-400 group-hover:text-navy-950 group-hover:translate-x-1 transition-all" />
-                </a>
-              </div>
-
-              {filteredPosts.length === 0 && (
-                <div className="text-center py-16 bg-white rounded-3xl border border-slate-200 p-8">
-                  <FileText className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                  <h3 className="font-display text-lg font-bold text-navy-950">
-                    No articles found matching your search
-                  </h3>
-                  <p className="text-slate-500 text-xs mt-1">
-                    Try another search term or click "All Insights" to view all tax guides.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Right 4 Cols: Lead Magnet Box & CTAs */}
-            <div className="lg:col-span-4 space-y-8">
-              
-              {/* DOWNLOADABLE LEAD MAGNET SIGNUP */}
-              <div className="bg-gradient-to-br from-navy-950 to-navy-900 border border-gold-500/30 rounded-3xl p-6 sm:p-7 text-white shadow-xl space-y-5">
-                <div className="w-12 h-12 rounded-2xl bg-gold-500/20 text-gold-400 border border-gold-400/40 flex items-center justify-center">
-                  <Download className="w-6 h-6" />
-                </div>
-                <div>
-                  <span className="text-[10px] font-mono text-gold-400 uppercase font-bold tracking-wider block mb-1">
-                    FREE COMPLIANCE RESOURCE
-                  </span>
-                  <h3 className="font-display text-lg sm:text-xl font-bold">
-                    Download the 2026 UAE Tax Compliance Checklist
-                  </h3>
-                  <p className="text-xs text-slate-300 mt-2 leading-relaxed">
-                    A comprehensive, 10-point checklist covering Corporate Tax registration deadlines, 0% SBR requirements, VAT filing cycles, and penalty risk shields.
-                  </p>
-                </div>
-
-                {checklistSuccess ? (
-                  <div className="p-4 bg-emerald-500/20 border border-emerald-400/50 rounded-2xl text-center space-y-2">
-                    <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto" />
-                    <p className="text-xs font-bold text-white">
-                      Checklist Dispatched!
-                    </p>
-                    <p className="text-[11px] text-slate-300">
-                      Check your inbox at <strong>{checklistEmail}</strong> to download your checklist.
-                    </p>
-                  </div>
-                ) : (
-                  <form onSubmit={handleChecklistSubmit} className="space-y-3">
-                    <input
-                      type="text"
-                      required
-                      placeholder="Your Name"
-                      value={checklistName}
-                      onChange={(e) => setChecklistName(e.target.value)}
-                      className="w-full bg-white/10 border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-gold-400"
-                    />
-                    <input
-                      type="email"
-                      required
-                      placeholder="Your Work Email"
-                      value={checklistEmail}
-                      onChange={(e) => setChecklistEmail(e.target.value)}
-                      className="w-full bg-white/10 border border-white/20 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-gold-400"
-                    />
-                    <button
-                      type="submit"
-                      className="w-full py-3 rounded-xl bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold text-xs uppercase tracking-wider transition-all shadow-md cursor-pointer"
-                    >
-                      Download Free Checklist
-                    </button>
-                    <span className="text-[10px] text-slate-400 text-center block">
-                      Instant PDF access · Zero spam policy
-                    </span>
-                  </form>
-                )}
-              </div>
-
-              {/* Sidebar Quick Consultation CTA */}
-              <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-xs space-y-4">
-                <span className="text-[11px] font-mono text-gold-600 font-bold uppercase tracking-wider block">
-                  TALK TO AN EXPERT
-                </span>
-                <h4 className="font-display font-bold text-base text-navy-950">
-                  Need Immediate Advice on Corporate Tax or VAT?
-                </h4>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  Connect with Glen Dias, FTA Registered Tax Agent, for a confidential 30-minute review.
-                </p>
-                <div className="space-y-2 pt-2">
-                  <a
-                    href={`https://wa.me/971529226958?text=${encodeURIComponent(
-                      "Hello Glen Dias, I was reading your UAE tax insights and would like to book a confidential consultation."
-                    )}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-3 rounded-xl bg-navy-950 hover:bg-gold-500 hover:text-navy-950 text-white font-display font-bold text-xs uppercase transition-colors cursor-pointer text-center flex items-center justify-center gap-2"
-                  >
-                    <MessageCircle className="w-4 h-4 text-emerald-400" />
-                    <span>Book Free Consultation</span>
-                  </a>
-                  <a
-                    href="https://wa.me/971529226958?text=Hi,%20I'd%20like%20to%20know%20more%20about%20your%20tax%20services."
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-2.5 rounded-xl border border-slate-200 text-slate-700 hover:border-emerald-500 hover:text-emerald-700 font-display font-bold text-xs text-center block transition-colors"
-                  >
-                    Direct WhatsApp Desk
-                  </a>
-                </div>
-              </div>
-
-            </div>
+            {/* Discreet General Information Notice */}
+            <p className="pt-6 border-t border-[#E2E8F0] text-xs text-[#64748B] leading-relaxed">
+              <strong className="text-[#0D1B2A]">General Information Notice:</strong> Articles published on diasuae.ae and insights.diasuae.ae provide general UAE regulatory information and do not constitute entity-specific legal or tax advice. Consult an FTA-Registered Tax Agent before making statutory filings.
+            </p>
           </div>
         </section>
 
-        {/* Core Services Internal Linking Hub */}
-        <section className="py-14 bg-white border-t border-slate-200">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center max-w-3xl mx-auto mb-10">
-              <span className="text-[10px] font-mono text-gold-600 uppercase font-bold tracking-wider block mb-1">
-                EXPLORE TAX &amp; FORMATION ADVISORY
-              </span>
-              <h2 className="font-display text-2xl sm:text-3xl font-bold text-navy-950">
-                Turn UAE Regulatory Knowledge Into Compliant Business Growth
-              </h2>
-              <p className="text-slate-600 text-xs sm:text-sm mt-2">
-                Connect directly with certified tax agents and corporate structuring specialists in Dubai.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div
-                onClick={() => onNavigate("/tax-planning-difc")}
-                className="p-6 rounded-2xl border border-slate-200 hover:border-gold-400 bg-slate-50/50 hover:bg-white transition-all cursor-pointer group flex flex-col justify-between"
-              >
-                <div>
-                  <div className="w-10 h-10 rounded-xl bg-gold-500/10 text-gold-600 flex items-center justify-center mb-4">
-                    <ShieldCheck className="w-5 h-5" />
-                  </div>
-                  <h3 className="font-display font-bold text-navy-950 text-base group-hover:text-gold-600 mb-2">
-                    DIFC Tax Compliance
-                  </h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Corporate tax planning, DFSA statutory audit coordination, and 0% QFZP structuring in DIFC and DTEC.
-                  </p>
-                </div>
-                <span className="text-xs font-semibold text-gold-600 flex items-center gap-1 mt-4">
-                  Learn More <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                </span>
-              </div>
-
-              <div
-                onClick={() => onNavigate("/pricing")}
-                className="p-6 rounded-2xl border border-slate-200 hover:border-gold-400 bg-slate-50/50 hover:bg-white transition-all cursor-pointer group flex flex-col justify-between"
-              >
-                <div>
-                  <div className="w-10 h-10 rounded-xl bg-navy-950/10 text-navy-950 flex items-center justify-center mb-4">
-                    <Tag className="w-5 h-5 text-navy-900" />
-                  </div>
-                  <h3 className="font-display font-bold text-navy-950 text-base group-hover:text-gold-600 mb-2">
-                    Fixed-Fee Packages
-                  </h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Transparent monthly accounting, VAT filings, and annual Corporate Tax returns with zero surprise fees.
-                  </p>
-                </div>
-                <span className="text-xs font-semibold text-gold-600 flex items-center gap-1 mt-4">
-                  View Packages <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                </span>
-              </div>
-
-              <div
-                onClick={() => onNavigate("/company-setup")}
-                className="p-6 rounded-2xl border border-slate-200 hover:border-gold-400 bg-slate-50/50 hover:bg-white transition-all cursor-pointer group flex flex-col justify-between"
-              >
-                <div>
-                  <div className="w-10 h-10 rounded-xl bg-gold-500/10 text-gold-600 flex items-center justify-center mb-4">
-                    <BookOpen className="w-5 h-5 text-gold-600" />
-                  </div>
-                  <h3 className="font-display font-bold text-navy-950 text-base group-hover:text-gold-600 mb-2">
-                    UAE Company Setup
-                  </h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Fast-track Free Zone &amp; Mainland licensing with 100% foreign ownership and corporate bank accounts.
-                  </p>
-                </div>
-                <span className="text-xs font-semibold text-gold-600 flex items-center gap-1 mt-4">
-                  Start Formation <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                </span>
-              </div>
-
-              <div
-                onClick={() => onNavigate("/uae-tax-planner")}
-                className="p-6 rounded-2xl border border-slate-200 hover:border-gold-400 bg-slate-50/50 hover:bg-white transition-all cursor-pointer group flex flex-col justify-between"
-              >
-                <div>
-                  <div className="w-10 h-10 rounded-xl bg-navy-950/10 text-navy-950 flex items-center justify-center mb-4">
-                    <FileText className="w-5 h-5 text-navy-900" />
-                  </div>
-                  <h3 className="font-display font-bold text-navy-950 text-base group-hover:text-gold-600 mb-2">
-                    Tax Planner Tool
-                  </h3>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Simulate your Corporate Tax liability, test 0% Small Business Relief eligibility, and avoid penalties.
-                  </p>
-                </div>
-                <span className="text-xs font-semibold text-gold-600 flex items-center gap-1 mt-4">
-                  Calculate Tax <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                </span>
-              </div>
-            </div>
-          </div>
-        </section>
-
+        {/* 4. Single Closing Executive CTA */}
+        <SectionCTA
+          variant="navy"
+          eyebrow="2026 UAE Tax Readiness"
+          title="Need clarity on how these rules apply to your company?"
+          description="Model your 2026 Corporate Tax and Small Business Relief position in 60 seconds, or book a confidential review with our FTA-Registered Tax Agents."
+          ctaLabel="Open 2026 Tax Calculator"
+          onCtaClick={() => onNavigate("/uae-tax-planner")}
+          secondaryLabel="Book Free Consultation →"
+          onSecondaryClick={() => onNavigate("/contact")}
+        />
       </main>
-
-      <TaxToolsPromoBanner onNavigate={onNavigate} />
 
       <PageFooter
         onNavigate={onNavigate}

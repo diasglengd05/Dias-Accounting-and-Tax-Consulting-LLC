@@ -1,22 +1,25 @@
 import React, { useEffect, useState } from "react";
 import {
-  Phone,
+  Check,
+  CheckCircle2,
+  ChevronRight,
+  Clock,
+  ExternalLink,
+  Loader2,
   Mail,
   MapPin,
-  Clock,
-  ShieldCheck,
-  ChevronRight,
-  MessageCircle,
-  Shield,
-  Calendar,
-  CheckCircle2,
-  Send,
-  Building,
-  ExternalLink,
+  Phone,
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
-import { applyPageSEO } from "../lib/seo";
+import {
+  applyPageSEO,
+  buildBreadcrumbSchema,
+  removeJsonLd,
+  upsertJsonLd,
+} from "../lib/seo";
+import { validateEmailField, validatePhoneField } from "../lib/validation";
+import { submitToGoogleSheetsDirectly } from "../lib/sheetsService";
 
 interface ContactPageProps {
   onNavigate: (path: string) => void;
@@ -25,64 +28,188 @@ interface ContactPageProps {
   onOpenGooglePreferred?: () => void;
 }
 
+const SERVICE_OPTIONS = [
+  {
+    value: "Corporate Tax Registration and Filing",
+    label: "Corporate Tax Registration & Filing (9% / 0% SBR)",
+  },
+  {
+    value: "VAT Registration and Returns",
+    label: "VAT Registration & Quarterly Form 201 Returns",
+  },
+  {
+    value: "Monthly Bookkeeping",
+    label: "Monthly IFRS Bookkeeping & Accounting Packages",
+  },
+  {
+    value: "Audit Readiness and Advisory",
+    label: "Audit Readiness & Dividend Solvency Audits",
+  },
+  {
+    value: "Backlog Accounting Cleanup",
+    label: "Backlog Accounting & Historical Ledger Cleanup",
+  },
+  {
+    value: "Free Zone 0% QFZP Structuring",
+    label: "Free Zone 0% QFZP Structuring (DIFC / DTEC / SHAMS)",
+  },
+  {
+    value: "Company Setup & Licensing",
+    label: "UAE Company Setup & Corporate Bank Assistance",
+  },
+];
+
+const CALL_EXPECTATIONS = [
+  "Review your current Mainland or Free Zone setup and ledger readiness.",
+  "Flag immediate FTA compliance gaps, filing windows, and 0% relief opportunities.",
+  "Outline transparent fixed-fee retainer options—zero pressure and zero hard sell.",
+];
+
+interface FieldErrors {
+  name?: string;
+  email?: string;
+  phone?: string;
+  message?: string;
+}
+
 export const ContactPage: React.FC<ContactPageProps> = ({
   onNavigate,
   onOpenAudit,
   onOpenPrivacy,
   onOpenGooglePreferred,
 }) => {
-  // Form fields
   const [name, setName] = useState("");
   const [companyName, setCompanyName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [serviceInterestedIn, setServiceInterestedIn] = useState("Corporate Tax Registration and Filing");
+  const [serviceInterestedIn, setServiceInterestedIn] = useState(
+    "Corporate Tax Registration and Filing"
+  );
   const [message, setMessage] = useState("");
+
+  const [errors, setErrors] = useState<FieldErrors>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [whatsappUrl, setWhatsappUrl] = useState("");
 
   useEffect(() => {
     applyPageSEO({
-      title: "Book Tax Consultation & Office Desk | Dias UAE",
+      title: "Contact Dias Accounting | Book Free UAE Tax Consultation",
       description:
-        "Schedule a confidential consultation with Glen Dias, FTA Registered Tax Agent. Office location in SHAMS Business Center & Dubai with direct WhatsApp advisory.",
+        "Schedule a free consultation with FTA-Registered Tax Agent Glen Dias. SHAMS & Dubai advisory desk for UAE Corporate Tax, 5% VAT, and IFRS bookkeeping.",
       canonicalPath: "/contact",
       keywords:
         "contact tax consultant dubai, book tax consultation uae, fta tax agent phone number, dias accounting office",
-      ogImage: "/api/og?title=Schedule+Confidential+Tax+Consultation&author=Glen+Dias&tag=FTA+Registered+Agent",
     });
+    upsertJsonLd(
+      "page-breadcrumb-jsonld",
+      buildBreadcrumbSchema([
+        { name: "Home", path: "/" },
+        { name: "Contact", path: "/contact" },
+      ])
+    );
     window.scrollTo({ top: 0, behavior: "instant" });
 
-    // Preselect service if passed via URL or session
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
-      const s = params.get("service") || sessionStorage.getItem("dias_selected_service");
-      if (s) {
-        setServiceInterestedIn(s);
+      const preselected =
+        params.get("service") || sessionStorage.getItem("dias_selected_service");
+      if (preselected) {
+        setServiceInterestedIn(preselected);
       }
     }
+
+    return () => {
+      removeJsonLd("page-breadcrumb-jsonld");
+    };
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const clearFieldError = (field: keyof FieldErrors) => {
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    const nextErrors: FieldErrors = {};
+    if (name.trim().length < 2) {
+      nextErrors.name = "Please enter your full name.";
+    }
+
+    const emailCheck = validateEmailField(email, "en");
+    if (!emailCheck.isValid) {
+      nextErrors.email = emailCheck.error;
+    }
+
+    const phoneCheck = validatePhoneField(phone, "en");
+    if (!phoneCheck.isValid) {
+      nextErrors.phone = phoneCheck.error;
+    }
+
+    if (message.trim().length < 6) {
+      nextErrors.message =
+        "Please share a brief note about your UAE company or tax question.";
+    }
+
+    if (Object.keys(nextErrors).length > 0) {
+      setErrors(nextErrors);
+      return;
+    }
+
+    setErrors({});
+    setIsSubmitting(true);
+
     const lines = [
       "Hello Dias UAE Advisory Team,",
       "",
       "I would like to book a consultation:",
-      `• Name: ${name || "N/A"}`,
-      `• Company: ${companyName || "N/A"}`,
-      `• Business Email: ${email || "N/A"}`,
-      `• Phone: ${phone || "N/A"}`,
-      `• Service Interested In: ${serviceInterestedIn || "General Advisory"}`,
-      `• Message / Details: ${message || "N/A"}`,
+      `• Name: ${name.trim()}`,
+      `• Company: ${companyName.trim() || "N/A"}`,
+      `• Business Email: ${email.trim()}`,
+      `• Phone: ${phone.trim()}`,
+      `• Service Interested In: ${serviceInterestedIn}`,
+      `• Message / Details: ${message.trim()}`,
     ];
-    const text = lines.join("\n");
-    const waUrl = `https://wa.me/971529226958?text=${encodeURIComponent(text)}`;
-    window.open(waUrl, "_blank", "noopener,noreferrer");
+    const waHref = `https://wa.me/971529226958?text=${encodeURIComponent(
+      lines.join("\n")
+    )}`;
+    setWhatsappUrl(waHref);
+
+    // Sync to Google Sheets non-blockingly while preserving direct WhatsApp handoff
+    try {
+      await submitToGoogleSheetsDirectly({
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        company: companyName.trim() || "Not specified",
+        serviceType: serviceInterestedIn,
+        message: message.trim(),
+      });
+    } catch {
+      // Non-blocking fallback
+    }
+
+    try {
+      window.open(waHref, "_blank", "noopener,noreferrer");
+    } catch {
+      // Handled via clickable confirmation button in success view
+    }
+
+    setIsSubmitting(false);
     setSubmitted(true);
   };
 
+  const mapsApiKey = (import.meta as unknown as { env?: Record<string, string> })
+    .env?.VITE_GOOGLE_MAPS_API_KEY;
+  const mapQuery = "Sharjah+Media+City+(Shams)+Sharjah+UAE";
+  const mapEmbedUrl = mapsApiKey
+    ? `https://www.google.com/maps/embed/v1/place?key=${mapsApiKey}&q=${mapQuery}&center=25.3214,55.5126&zoom=14&solution_id=gmp_mcp_codeassist_v1_aistudio`
+    : `https://maps.google.com/maps?q=${mapQuery}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
+
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-800 antialiased selection:bg-gold-500/30 selection:text-navy-950">
+    <div className="min-h-screen bg-[#FFFFFF] font-sans text-[#0D1B2A] antialiased">
       <PageNavigation
         currentPath="/contact"
         onNavigate={onNavigate}
@@ -90,357 +217,421 @@ export const ContactPage: React.FC<ContactPageProps> = ({
       />
 
       <main id="main-content">
-        {/* Hero Section */}
-        <section className="relative bg-gradient-to-b from-navy-950 via-navy-900 to-navy-950 text-white py-16 lg:py-20 border-b border-gold-500/20 overflow-hidden">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="flex items-center gap-2 text-xs font-mono text-gold-400 mb-4">
+        {/* 1. Clean Two-Column Executive Split */}
+        <section className="bg-[#FFFFFF] pt-12 pb-20 lg:pt-20 lg:pb-24">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <nav
+              aria-label="Breadcrumb"
+              className="flex items-center gap-1.5 text-xs sm:text-sm text-[#475569] mb-10"
+            >
               <button
                 type="button"
                 onClick={() => onNavigate("/")}
-                className="hover:underline cursor-pointer"
+                className="hover:text-[#0D1B2A] transition-colors cursor-pointer"
               >
                 Home
               </button>
               <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-              <span className="text-white">Contact &amp; Consultation Desk</span>
-            </div>
+              <span className="text-[#0D1B2A] font-medium">Contact</span>
+            </nav>
 
-            <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-500/10 border border-gold-400/30 text-gold-300 text-xs font-semibold uppercase tracking-wider mb-4">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                <span>FTA Registered Tax Agency · Confidential Review</span>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14 items-start">
+              {/* Left Column (~45%): Headline, Expectations & Direct Contact Block */}
+              <div className="lg:col-span-5 space-y-10">
+                <div className="space-y-4">
+                  <span className="inline-block text-xs font-semibold uppercase tracking-wider text-[#856422]">
+                    FTA-Registered Tax Agency · UAE
+                  </span>
+                  <h1 className="font-display text-3xl sm:text-4xl lg:text-[2.6rem] font-extrabold text-[#0D1B2A] tracking-tight leading-[1.12]">
+                    Book Your Free Consultation
+                  </h1>
+                  <p className="text-base text-[#475569] leading-[1.65] max-w-[46ch]">
+                    Speak directly with Glen Dias and our senior UAE tax team for clear guidance on Corporate Tax, VAT, and IFRS accounting.
+                  </p>
+                </div>
+
+                {/* What to expect on our 15-minute call */}
+                <div className="space-y-3.5 pt-2">
+                  <h2 className="font-display text-sm font-bold uppercase tracking-wider text-[#0D1B2A]">
+                    What to expect on our 15-minute call
+                  </h2>
+                  <ul className="space-y-3">
+                    {CALL_EXPECTATIONS.map((point) => (
+                      <li
+                        key={point}
+                        className="flex items-start gap-3 text-sm sm:text-[15px] text-[#475569] leading-[1.6]"
+                      >
+                        <span className="mt-0.5 w-5 h-5 rounded-full bg-[#1B4332]/10 text-[#1B4332] flex items-center justify-center shrink-0">
+                          <Check className="w-3.5 h-3.5" aria-hidden="true" />
+                        </span>
+                        <span>{point}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Clean Direct Contact Block (Monochrome Icons) */}
+                <div className="pt-8 border-t border-[#E2E8F0] space-y-5">
+                  <h2 className="font-display text-sm font-bold uppercase tracking-wider text-[#0D1B2A]">
+                    Direct Contact
+                  </h2>
+
+                  <dl className="space-y-4 text-sm">
+                    <div className="flex items-start gap-3.5">
+                      <Mail
+                        className="w-4 h-4 text-[#475569] mt-1 shrink-0"
+                        aria-hidden="true"
+                      />
+                      <div>
+                        <dt className="text-xs text-[#64748B] font-medium">
+                          Email
+                        </dt>
+                        <dd className="mt-0.5">
+                          <a
+                            href="mailto:info@diasuae.ae"
+                            className="font-semibold text-[#0D1B2A] hover:text-[#1B4332] transition-colors"
+                          >
+                            info@diasuae.ae
+                          </a>
+                        </dd>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3.5">
+                      <Phone
+                        className="w-4 h-4 text-[#475569] mt-1 shrink-0"
+                        aria-hidden="true"
+                      />
+                      <div>
+                        <dt className="text-xs text-[#64748B] font-medium">
+                          Phone / WhatsApp
+                        </dt>
+                        <dd className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1">
+                          <a
+                            href="tel:+971529226958"
+                            className="font-semibold text-[#0D1B2A] hover:text-[#1B4332] transition-colors tabular-nums"
+                          >
+                            +971 52 922 6958
+                          </a>
+                          <span className="text-slate-300" aria-hidden="true">
+                            ·
+                          </span>
+                          <a
+                            href="https://wa.me/971529226958?text=Hi%2C%20I%27d%20like%20to%20book%20a%20free%20UAE%20tax%20consultation."
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-xs font-semibold text-[#1B4332] hover:underline"
+                          >
+                            Message on WhatsApp
+                          </a>
+                        </dd>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3.5">
+                      <MapPin
+                        className="w-4 h-4 text-[#475569] mt-1 shrink-0"
+                        aria-hidden="true"
+                      />
+                      <div>
+                        <dt className="text-xs text-[#64748B] font-medium">
+                          UAE Office Location
+                        </dt>
+                        <dd className="mt-0.5 text-[#0D1B2A] font-medium leading-relaxed">
+                          Sharjah Media City (SHAMS), Al Messaned, Sharjah, UAE
+                          <span className="block text-xs font-normal text-[#475569] mt-0.5">
+                            P.O. Box 515000 · Serving Dubai, Sharjah &amp; all Emirates
+                          </span>
+                        </dd>
+                      </div>
+                    </div>
+
+                    <div className="flex items-start gap-3.5">
+                      <Clock
+                        className="w-4 h-4 text-[#475569] mt-1 shrink-0"
+                        aria-hidden="true"
+                      />
+                      <div>
+                        <dt className="text-xs text-[#64748B] font-medium">
+                          Working Hours (GST)
+                        </dt>
+                        <dd className="mt-0.5 text-[#0D1B2A] font-medium tabular-nums">
+                          Mon – Fri: 9:00 AM – 6:00 PM
+                          <span className="block text-xs font-normal text-[#475569] mt-0.5">
+                            Saturday: 10:00 AM – 2:00 PM (By Appointment)
+                          </span>
+                        </dd>
+                      </div>
+                    </div>
+                  </dl>
+                </div>
               </div>
-              <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-4">
-                Book Your Free UAE Tax &amp; Accounting Consultation
-              </h1>
-              <p className="text-slate-300 text-base leading-relaxed">
-                Connect directly with Glen Dias, FTA Registered Tax Agent. Whether you need corporate tax assessment, VAT compliance, backlog accounting cleanup, or company incorporation, our senior advisory team is ready to help your business stay compliant.
-              </p>
+
+              {/* Right Column (~55%): Elevated Consultation Form Card */}
+              <div className="lg:col-span-7">
+                <div className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-7 sm:p-10 shadow-[0_12px_36px_-18px_rgba(13,27,42,0.12)]">
+                  {submitted ? (
+                    <div className="py-8 text-center space-y-5">
+                      <div className="w-12 h-12 rounded-full bg-[#1B4332]/10 text-[#1B4332] flex items-center justify-center mx-auto">
+                        <CheckCircle2 className="w-6 h-6" />
+                      </div>
+                      <div className="space-y-2 max-w-md mx-auto">
+                        <h2 className="font-display text-2xl font-bold text-[#0D1B2A]">
+                          Consultation Request Received
+                        </h2>
+                        <p className="text-sm sm:text-base text-[#475569] leading-[1.6]">
+                          Thank you, <strong className="text-[#0D1B2A]">{name}</strong>. Your inquiry regarding{" "}
+                          <strong className="text-[#0D1B2A]">{serviceInterestedIn}</strong> has been logged for our senior advisory desk.
+                        </p>
+                      </div>
+                      <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
+                        {whatsappUrl && (
+                          <a
+                            href={whatsappUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="min-h-[46px] px-6 py-2.5 rounded-xl bg-[#1B4332] hover:bg-[#143326] text-white text-sm font-semibold transition-colors inline-flex items-center justify-center gap-2"
+                          >
+                            <span>Continue on WhatsApp</span>
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSubmitted(false);
+                            setMessage("");
+                          }}
+                          className="min-h-[46px] px-6 py-2.5 rounded-xl bg-[#FFFFFF] hover:bg-[#F8FAFC] border border-[#E2E8F0] text-[#0D1B2A] text-sm font-semibold transition-colors cursor-pointer"
+                        >
+                          Send Another Inquiry
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleSubmit} noValidate className="space-y-5">
+                      <div className="pb-2 border-b border-[#E2E8F0]">
+                        <h2 className="font-display text-xl font-bold text-[#0D1B2A]">
+                          Request Your Consultation
+                        </h2>
+                        <p className="text-sm text-[#475569] mt-1">
+                          Share a few details so our tax advisor can prepare before we speak.
+                        </p>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label
+                            htmlFor="contact-name"
+                            className="block text-sm font-medium text-[#0D1B2A] mb-1.5"
+                          >
+                            Full Name <span className="text-[#1B4332]">*</span>
+                          </label>
+                          <input
+                            id="contact-name"
+                            type="text"
+                            autoComplete="name"
+                            placeholder="e.g. Tariq Mansoor"
+                            value={name}
+                            onChange={(e) => {
+                              setName(e.target.value);
+                              clearFieldError("name");
+                            }}
+                            aria-invalid={Boolean(errors.name)}
+                            className={`w-full min-h-[46px] px-3.5 py-2.5 rounded-xl border text-sm text-[#0D1B2A] placeholder:text-slate-400 bg-[#FFFFFF] focus:outline-none focus:ring-2 focus:ring-[#1B4332]/20 focus:border-[#1B4332] transition-colors ${
+                              errors.name ? "border-red-500" : "border-[#E2E8F0]"
+                            }`}
+                          />
+                          {errors.name && (
+                            <p className="mt-1.5 text-xs text-red-600">{errors.name}</p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label
+                            htmlFor="contact-company"
+                            className="block text-sm font-medium text-[#0D1B2A] mb-1.5"
+                          >
+                            Company Name <span className="text-[#64748B] font-normal">(Optional)</span>
+                          </label>
+                          <input
+                            id="contact-company"
+                            type="text"
+                            autoComplete="organization"
+                            placeholder="e.g. Apex Trading LLC"
+                            value={companyName}
+                            onChange={(e) => setCompanyName(e.target.value)}
+                            className="w-full min-h-[46px] px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] text-sm text-[#0D1B2A] placeholder:text-slate-400 bg-[#FFFFFF] focus:outline-none focus:ring-2 focus:ring-[#1B4332]/20 focus:border-[#1B4332] transition-colors"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label
+                            htmlFor="contact-email"
+                            className="block text-sm font-medium text-[#0D1B2A] mb-1.5"
+                          >
+                            Work Email <span className="text-[#1B4332]">*</span>
+                          </label>
+                          <input
+                            id="contact-email"
+                            type="email"
+                            autoComplete="email"
+                            placeholder="e.g. tariq@company.ae"
+                            value={email}
+                            onChange={(e) => {
+                              setEmail(e.target.value);
+                              clearFieldError("email");
+                            }}
+                            aria-invalid={Boolean(errors.email)}
+                            className={`w-full min-h-[46px] px-3.5 py-2.5 rounded-xl border text-sm text-[#0D1B2A] placeholder:text-slate-400 bg-[#FFFFFF] focus:outline-none focus:ring-2 focus:ring-[#1B4332]/20 focus:border-[#1B4332] transition-colors ${
+                              errors.email ? "border-red-500" : "border-[#E2E8F0]"
+                            }`}
+                          />
+                          {errors.email && (
+                            <p className="mt-1.5 text-xs text-red-600">{errors.email}</p>
+                          )}
+                        </div>
+
+                        <div>
+                          <label
+                            htmlFor="contact-phone"
+                            className="block text-sm font-medium text-[#0D1B2A] mb-1.5"
+                          >
+                            Phone / WhatsApp Number <span className="text-[#1B4332]">*</span>
+                          </label>
+                          <input
+                            id="contact-phone"
+                            type="tel"
+                            autoComplete="tel"
+                            placeholder="+971 50 123 4567"
+                            value={phone}
+                            onChange={(e) => {
+                              setPhone(e.target.value);
+                              clearFieldError("phone");
+                            }}
+                            aria-invalid={Boolean(errors.phone)}
+                            className={`w-full min-h-[46px] px-3.5 py-2.5 rounded-xl border text-sm text-[#0D1B2A] placeholder:text-slate-400 bg-[#FFFFFF] tabular-nums focus:outline-none focus:ring-2 focus:ring-[#1B4332]/20 focus:border-[#1B4332] transition-colors ${
+                              errors.phone ? "border-red-500" : "border-[#E2E8F0]"
+                            }`}
+                          />
+                          {errors.phone && (
+                            <p className="mt-1.5 text-xs text-red-600">{errors.phone}</p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="contact-service"
+                          className="block text-sm font-medium text-[#0D1B2A] mb-1.5"
+                        >
+                          Service Needed
+                        </label>
+                        <select
+                          id="contact-service"
+                          value={serviceInterestedIn}
+                          onChange={(e) => setServiceInterestedIn(e.target.value)}
+                          className="w-full min-h-[46px] px-3.5 py-2.5 rounded-xl border border-[#E2E8F0] text-sm text-[#0D1B2A] bg-[#FFFFFF] focus:outline-none focus:ring-2 focus:ring-[#1B4332]/20 focus:border-[#1B4332] transition-colors"
+                        >
+                          {SERVICE_OPTIONS.map((opt) => (
+                            <option key={opt.value} value={opt.value}>
+                              {opt.label}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label
+                          htmlFor="contact-details"
+                          className="block text-sm font-medium text-[#0D1B2A] mb-1.5"
+                        >
+                          Brief Details <span className="text-[#1B4332]">*</span>
+                        </label>
+                        <textarea
+                          id="contact-details"
+                          rows={4}
+                          placeholder="Tell us about your UAE entity type (Mainland or Free Zone), revenue range, or upcoming FTA filing deadline..."
+                          value={message}
+                          onChange={(e) => {
+                            setMessage(e.target.value);
+                            clearFieldError("message");
+                          }}
+                          aria-invalid={Boolean(errors.message)}
+                          className={`w-full px-3.5 py-3 rounded-xl border text-sm text-[#0D1B2A] placeholder:text-slate-400 bg-[#FFFFFF] leading-relaxed focus:outline-none focus:ring-2 focus:ring-[#1B4332]/20 focus:border-[#1B4332] transition-colors ${
+                            errors.message ? "border-red-500" : "border-[#E2E8F0]"
+                          }`}
+                        />
+                        {errors.message && (
+                          <p className="mt-1.5 text-xs text-red-600">{errors.message}</p>
+                        )}
+                      </div>
+
+                      <div className="pt-1 space-y-3">
+                        <button
+                          type="submit"
+                          disabled={isSubmitting}
+                          className="w-full min-h-[50px] px-6 py-3.5 rounded-xl bg-[#1B4332] hover:bg-[#143326] disabled:opacity-70 text-white text-sm font-semibold transition-colors cursor-pointer inline-flex items-center justify-center gap-2"
+                        >
+                          {isSubmitting ? (
+                            <>
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                              <span>Submitting Request...</span>
+                            </>
+                          ) : (
+                            <span>Request Free Consultation</span>
+                          )}
+                        </button>
+                        <p className="text-xs text-[#64748B] text-center">
+                          We respond within 1 business day. Your details stay strictly confidential.
+                        </p>
+                      </div>
+                    </form>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Contact Desk & Form Grid */}
-        <section className="py-14 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-            
-            {/* Left 5 Cols: Direct Contact Details & Location */}
-            <div className="lg:col-span-5 space-y-8">
-              <div>
-                <span className="text-xs font-mono font-bold text-gold-600 uppercase tracking-wider">
-                  DIRECT ADVISORY CHANNELS
+        {/* 2. Minimal, Cleanly Framed Office Location Map */}
+        <section className="bg-[#F8FAFC] border-t border-[#E2E8F0] py-16 lg:py-20">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+              <div className="space-y-1">
+                <span className="inline-block text-xs font-semibold uppercase tracking-wider text-[#856422]">
+                  Registered UAE Office
                 </span>
-                <h2 className="font-display text-2xl font-bold text-navy-950 mt-1 mb-2">
-                  Get in Touch Directly
+                <h2 className="font-display text-xl sm:text-2xl font-bold text-[#0D1B2A] tracking-tight">
+                  Sharjah Media City (SHAMS) · Serving Dubai &amp; UAE
                 </h2>
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                  Fast response times across phone, WhatsApp, email, or in-person meetings at our Dubai and Sharjah offices.
-                </p>
               </div>
-
-              {/* Direct Channels Cards */}
-              <div className="space-y-3.5">
-                {/* Tap to Call */}
-                <a
-                  href="tel:+971529226958"
-                  className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center gap-4 hover:border-gold-400 transition-colors group"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-gold-500/10 flex items-center justify-center text-gold-600 shrink-0 group-hover:scale-105 transition-transform">
-                    <Phone className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-mono text-slate-400 uppercase font-bold tracking-wider block">
-                      Direct Advisory Phone (Tap to Call)
-                    </span>
-                    <span className="font-display text-sm sm:text-base font-bold text-navy-950">
-                      +971 52 922 6958
-                    </span>
-                  </div>
-                </a>
-
-                {/* WhatsApp */}
-                <a
-                  href="https://wa.me/971529226958?text=Hi,%20I'd%20like%20to%20know%20more%20about%20your%20tax%20services."
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="p-4 rounded-2xl bg-emerald-50/50 border border-emerald-200/80 shadow-xs flex items-center gap-4 hover:border-emerald-400 transition-colors group"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 shrink-0 group-hover:scale-105 transition-transform">
-                    <MessageCircle className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-mono text-emerald-700 uppercase font-bold tracking-wider block">
-                      Direct WhatsApp Live Channel
-                    </span>
-                    <span className="font-display text-sm sm:text-base font-bold text-emerald-950">
-                      +971 52 922 6958
-                    </span>
-                  </div>
-                </a>
-
-                {/* Mailto */}
-                <a
-                  href="mailto:info@diasuae.ae"
-                  className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-center gap-4 hover:border-gold-400 transition-colors group"
-                >
-                  <div className="w-12 h-12 rounded-xl bg-gold-500/10 flex items-center justify-center text-gold-600 shrink-0 group-hover:scale-105 transition-transform">
-                    <Mail className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-mono text-slate-400 uppercase font-bold tracking-wider block">
-                      Official Client Desk Email
-                    </span>
-                    <span className="font-display text-sm sm:text-base font-bold text-navy-950">
-                      info@diasuae.ae
-                    </span>
-                  </div>
-                </a>
-
-                {/* Office Address */}
-                <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gold-500/10 flex items-center justify-center text-gold-600 shrink-0 mt-0.5">
-                    <MapPin className="w-5 h-5" />
-                  </div>
-                  <div className="text-xs text-slate-600 space-y-1">
-                    <span className="text-[10px] font-mono text-slate-400 uppercase font-bold tracking-wider block">
-                      Registered Office
-                    </span>
-                    <p className="font-bold text-navy-950">
-                      Dias Accounting &amp; Tax Consulting LLC
-                    </p>
-                    <p>
-                      Sharjah Media City (SHAMS), Al Messaned, Sharjah, United Arab Emirates
-                    </p>
-                    <p className="text-[11px] text-slate-500">
-                      P.O. Box 515000 · Serving Dubai, Sharjah &amp; UAE clients remotely &amp; on-site
-                    </p>
-                  </div>
-                </div>
-
-                {/* Business Hours */}
-                <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-gold-500/10 flex items-center justify-center text-gold-600 shrink-0 mt-0.5">
-                    <Clock className="w-5 h-5" />
-                  </div>
-                  <div className="text-xs text-slate-600">
-                    <span className="text-[10px] font-mono text-slate-400 uppercase font-bold tracking-wider block">
-                      Business Hours (GST)
-                    </span>
-                    <p className="font-bold text-navy-950 mt-0.5">
-                      Monday to Friday: 9:00 AM – 6:00 PM
-                    </p>
-                    <p className="text-slate-500">
-                      Saturday: 10:00 AM – 2:00 PM (By Appointment)
-                    </p>
-                    <p className="text-slate-400 text-[11px]">
-                      Sunday: Closed (Emergency WhatsApp Desk Active)
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Google Maps Location Info */}
-              <div className="rounded-2xl border border-slate-200 bg-white p-4 space-y-2">
-                <span className="text-[10px] font-mono text-slate-400 uppercase font-bold tracking-wider block">
-                  Office Location (Sharjah Media City)
-                </span>
-                <div className="aspect-video rounded-xl bg-navy-950 text-white border border-slate-800 flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
-                  <div className="w-12 h-12 rounded-2xl bg-gold-500/20 text-gold-400 flex items-center justify-center mb-2">
-                    <MapPin className="w-6 h-6" />
-                  </div>
-                  <span className="font-display font-bold text-sm text-white">
-                    Sharjah Media City (SHAMS)
-                  </span>
-                  <span className="text-xs text-slate-400 mt-1 max-w-xs">
-                    Sharjah Media City (SHAMS), Al Messaned, Sharjah, United Arab Emirates — serving Dubai, Sharjah &amp; UAE clients remotely and on-site.
-                  </span>
-                  <a
-                    href="https://maps.google.com/?q=Sharjah+Media+City+SHAMS"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-3 px-3.5 py-1.5 rounded-lg bg-white/10 hover:bg-gold-500 hover:text-navy-950 text-gold-300 text-xs font-mono font-bold transition-colors inline-flex items-center gap-1.5"
-                  >
-                    <span>Open in Google Maps</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                </div>
-              </div>
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1B4332] hover:text-[#0D1B2A] transition-colors min-h-[44px]"
+              >
+                <span>Open in Google Maps</span>
+                <ExternalLink className="w-4 h-4" />
+              </a>
             </div>
 
-            {/* Right 7 Cols: Complete Contact & Consultation Booking Form */}
-            <div className="lg:col-span-7 bg-white rounded-3xl border border-slate-200 p-8 sm:p-10 shadow-sm flex flex-col justify-between">
-              <div>
-                <div className="flex items-center gap-2 text-xs font-mono text-gold-600 uppercase font-bold mb-2">
-                  <Calendar className="w-4 h-4" />
-                  <span>CONSULTATION INQUIRY</span>
-                </div>
-                <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-navy-950 mb-2">
-                  Send Your Inquiry
-                </h2>
-                <p className="text-xs sm:text-sm text-slate-600 mb-8 leading-relaxed">
-                  Fill in the details below. Our senior tax consultant will review your business standing and respond within 24 hours.
-                </p>
-
-                {submitted ? (
-                  <div className="p-8 bg-emerald-50 border-2 border-emerald-400 rounded-2xl text-center space-y-4">
-                    <CheckCircle2 className="w-14 h-14 text-emerald-600 mx-auto" />
-                    <h3 className="font-display font-extrabold text-xl text-emerald-950">
-                      Thank You! Your Inquiry Has Been Received.
-                    </h3>
-                    <p className="text-xs sm:text-sm text-slate-700 leading-relaxed max-w-md mx-auto">
-                      Thank you, <strong>{name}</strong>. Your consultation request for <strong>{serviceInterestedIn}</strong> has been prepared and opened in WhatsApp (+971 52 922 6958).
-                    </p>
-                    <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
-                      <a
-                        href={`https://wa.me/971529226958?text=${encodeURIComponent(
-                          `Hello Dias UAE Advisory Team,\n\nFollowing up on my consultation inquiry:\n• Name: ${name || "Client"}\n• Company: ${companyName || "N/A"}\n• Service: ${serviceInterestedIn}\n• Phone: ${phone || "N/A"}`
-                        )}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="bg-emerald-600 hover:bg-emerald-500 text-white font-display font-bold px-6 py-2.5 rounded-xl text-xs flex items-center gap-2 cursor-pointer transition-colors shadow-sm"
-                      >
-                        <MessageCircle className="w-4 h-4" />
-                        <span>Re-open WhatsApp Message</span>
-                      </a>
-                      <button
-                        type="button"
-                        onClick={() => setSubmitted(false)}
-                        className="bg-navy-950 text-white font-display font-bold px-6 py-2.5 rounded-xl text-xs hover:bg-gold-500 hover:text-navy-950 cursor-pointer transition-colors"
-                      >
-                        Submit Another Inquiry
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <form onSubmit={handleSubmit} className="space-y-5">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {/* Name */}
-                      <div>
-                        <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                          Full Name *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          placeholder="e.g. Tariq Mansoor"
-                          value={name}
-                          onChange={(e) => setName(e.target.value)}
-                          className="w-full p-3 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-gold-500"
-                        />
-                      </div>
-
-                      {/* Company Name */}
-                      <div>
-                        <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                          Company Name *
-                        </label>
-                        <input
-                          type="text"
-                          required
-                          placeholder="e.g. Apex Trading LLC"
-                          value={companyName}
-                          onChange={(e) => setCompanyName(e.target.value)}
-                          className="w-full p-3 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-gold-500"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {/* Email */}
-                      <div>
-                        <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                          Business Email *
-                        </label>
-                        <input
-                          type="email"
-                          required
-                          placeholder="e.g. tariq@apex.ae"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          className="w-full p-3 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-gold-500"
-                        />
-                      </div>
-
-                      {/* Phone Number */}
-                      <div>
-                        <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                          Phone Number / WhatsApp *
-                        </label>
-                        <input
-                          type="tel"
-                          required
-                          placeholder="e.g. +971 52 922 6958"
-                          value={phone}
-                          onChange={(e) => setPhone(e.target.value)}
-                          className="w-full p-3 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-gold-500"
-                        />
-                      </div>
-                    </div>
-
-                    {/* Service Interested In Dropdown */}
-                    <div>
-                      <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                        Service Interested In *
-                      </label>
-                      <select
-                        value={serviceInterestedIn}
-                        onChange={(e) => setServiceInterestedIn(e.target.value)}
-                        className="w-full p-3 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-gold-500"
-                      >
-                        <option value="Corporate Tax Registration and Filing">
-                          Corporate Tax Registration and Filing (9% / SBR)
-                        </option>
-                        <option value="VAT Registration and Returns">
-                          VAT Registration and Returns (5% Quarterly Filing)
-                        </option>
-                        <option value="Monthly Bookkeeping">
-                          Monthly Bookkeeping &amp; Accounting Packages
-                        </option>
-                        <option value="Audit Readiness and Advisory">
-                          Audit Readiness and Statutory Advisory
-                        </option>
-                        <option value="Backlog Accounting Cleanup">
-                          Backlog Accounting &amp; Historical Ledger Cleanup
-                        </option>
-                        <option value="Free Zone 0% QFZP Structuring">
-                          Free Zone 0% Qualifying Free Zone Person (QFZP)
-                        </option>
-                        <option value="Company Setup &amp; Licensing">
-                          UAE Company Setup &amp; Bank Account Assistance
-                        </option>
-                      </select>
-                    </div>
-
-                    {/* Message */}
-                    <div>
-                      <label className="text-xs font-bold text-slate-700 block mb-1.5">
-                        Your Message / Specific Requirements *
-                      </label>
-                      <textarea
-                        required
-                        rows={4}
-                        placeholder="Tell us about your company structure, annual revenue range, or specific tax deadlines you are facing..."
-                        value={message}
-                        onChange={(e) => setMessage(e.target.value)}
-                        className="w-full p-3 rounded-xl border border-slate-200 text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-gold-500"
-                      />
-                    </div>
-
-                    <button
-                      type="submit"
-                      className="w-full py-4 rounded-xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-500 hover:to-emerald-600 text-white font-display font-extrabold text-xs uppercase tracking-wider transition-all shadow-md shadow-emerald-600/25 cursor-pointer flex items-center justify-center gap-2 active:scale-[0.99]"
-                    >
-                      <MessageCircle className="w-4 h-4" />
-                      <span>Send Consultation Inquiry via WhatsApp</span>
-                    </button>
-                    <p className="text-[11px] text-slate-500 text-center">
-                      Opens WhatsApp message directly to our senior advisor at <strong>+971 52 922 6958</strong>.
-                    </p>
-                  </form>
-                )}
-              </div>
+            <div className="rounded-2xl overflow-hidden border border-[#E2E8F0] bg-[#FFFFFF] h-72 sm:h-80">
+              <iframe
+                title="Dias Accounting Sharjah Media City Office Map"
+                src={mapEmbedUrl}
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                loading="lazy"
+                allowFullScreen
+                referrerPolicy="no-referrer-when-downgrade"
+                className="w-full h-full"
+              />
             </div>
-
           </div>
         </section>
       </main>

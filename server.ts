@@ -1998,6 +1998,23 @@ async function bootstrap() {
     return next();
   });
 
+  // Permanent consolidation: 301 Redirect duplicate calculator routes -> /uae-tax-planner
+  app.get(
+    [
+      "/corporate-tax-calculator",
+      "/corporate-tax-calculator/",
+      "/tax-savings",
+      "/tax-savings/",
+      "/tax-savings-assessment",
+      "/tax-savings-assessment/",
+    ],
+    (req, res) => {
+      const qsIndex = req.originalUrl.indexOf("?");
+      const qs = qsIndex !== -1 ? req.originalUrl.slice(qsIndex) : "";
+      return res.redirect(301, `/uae-tax-planner${qs}`);
+    }
+  );
+
   app.get("/sitemap.xml", (_req, res) => {
     const file = path.join(process.cwd(), "public", "sitemap.xml");
     res.setHeader("Content-Type", "application/xml; charset=utf-8");
