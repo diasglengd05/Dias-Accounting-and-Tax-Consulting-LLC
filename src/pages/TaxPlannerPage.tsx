@@ -93,7 +93,7 @@ export const TaxPlannerPage: React.FC<TaxPlannerPageProps> = ({
     upsertJsonLd(
       "page-webapp-jsonld",
       buildWebApplicationSchema({
-        name: "2026 UAE Corporate Tax & VAT Calculator",
+        name: "2026 UAE Corporate Tax & 5% VAT Calculator",
         description: pageDesc,
         canonicalPath: "/uae-tax-planner",
       })

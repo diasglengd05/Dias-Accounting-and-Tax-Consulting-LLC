@@ -90,128 +90,59 @@
       "@type": "AccountingService",
       "@id": "https://diasuae.ae/#organization",
       "name": "Dias Accounting and Tax Consulting LLC",
-      "legalName": "Dias Accounting and Tax Consulting LLC",
-      "url": "https://diasuae.ae",
-      "logo": "https://diasuae.ae/assets/aistudio/Dias_46b6b553.png",
-      "image": "https://diasuae.ae/og-image.png",
-      "description": "FTA-Registered Tax Agency headquartered in Sharjah Media City (SHAMS) serving Dubai and all seven UAE Emirates with fixed-fee IFRS bookkeeping, 5% UAE VAT compliance, and 9% Corporate Tax advisory.",
+      "url": "https://diasuae.ae/",
+      "logo": "https://diasuae.ae/favicon.ico",
+      "description": "FTA-Registered Tax Agency and Chartered Accounting firm in Dubai and Sharjah (SHAMS) led by FTA-Registered Tax Agent Glen Dias. Fixed-fee monthly IFRS bookkeeping, 5% UAE VAT Form 201 returns, 9% Corporate Tax filings, 0% Small Business Relief (SBR) & 0% QFZP compliance, and statutory dividend audits starting from AED 400/month.",
+      "telephone": "+971-52-922-6958",
+      "priceRange": "AED 400 - AED 2,500 / month",
       "founder": {
-        "@id": "https://diasuae.ae/#glendias"
+        "@type": "Person",
+        "name": "Glen Dias",
+        "jobTitle": "FTA-Registered Tax Agent"
       },
-      "telephone": "+971 52 922 6958",
-      "email": "info@diasuae.ae",
-      "priceRange": "$$",
-      "currenciesAccepted": "AED",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "Sharjah Media City (SHAMS), Al Messaned",
         "addressLocality": "Sharjah",
         "addressRegion": "Sharjah",
-        "postOfficeBoxNumber": "P.O. Box 515000",
+        "postalCode": "515000",
         "addressCountry": "AE"
       },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": 25.2788,
-        "longitude": 55.6626
-      },
-      "openingHoursSpecification": [
-        {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-          "opens": "09:00",
-          "closes": "18:00"
-        },
-        {
-          "@type": "OpeningHoursSpecification",
-          "dayOfWeek": ["Saturday"],
-          "opens": "10:00",
-          "closes": "14:00"
-        }
+      "areaServed": [
+        { "@type": "City", "name": "Dubai" },
+        { "@type": "City", "name": "Sharjah" },
+        { "@type": "Place", "name": "DIFC (Dubai International Financial Centre)" },
+        { "@type": "Place", "name": "DTEC (Dubai Technology Entrepreneur Campus)" },
+        { "@type": "Place", "name": "Sharjah Media City (SHAMS)" },
+        { "@type": "Country", "name": "United Arab Emirates" }
       ],
-      "areaServed": ["Dubai", "Sharjah", "Abu Dhabi", "United Arab Emirates"],
       "aggregateRating": {
         "@type": "AggregateRating",
         "ratingValue": "5.0",
         "reviewCount": "48",
-        "bestRating": "5",
-        "worstRating": "1"
+        "bestRating": "5"
       },
       "hasOfferCatalog": {
         "@type": "OfferCatalog",
-        "name": "UAE Tax, Accounting & Audit Services",
+        "name": "Fixed-Fee UAE Accounting & Tax Retainers",
         "itemListElement": [
           {
             "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "UAE Corporate Tax Advisory & EmaraTax Filing",
-              "description": "Corporate Tax registration, 9% return preparation, 0% Small Business Relief elections up to AED 3M, and Free Zone QFZP compliance.",
-              "url": "https://diasuae.ae/services/corporate-tax-advisory"
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "UAE 5% VAT Compliance & Form 201 Filing",
-              "description": "VAT TRN registration, quarterly Form 201 submissions, input VAT recovery audits, Voluntary Disclosures (Form 211), and FTA audit support.",
-              "url": "https://diasuae.ae/services/vat-compliance"
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Fixed-Fee IFRS Accounting & Bookkeeping",
-              "description": "Monthly double-entry IFRS bookkeeping on Zoho Books, Xero, QuickBooks, and Wafeq starting from AED 400/month.",
-              "url": "https://diasuae.ae/services/accounting-bookkeeping"
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "DIFC & DTEC Accounting and 0% QFZP Tax",
-              "description": "Common-law IFRS financial reporting, QFZP economic substance verification, and de minimis compliance for DIFC and DTEC entities.",
-              "url": "https://diasuae.ae/tax-planning-difc"
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Statutory Dividend Audit & Assurance",
-              "description": "Interim and final distributable profit verification and statutory financial audits for UAE Mainland and Free Zone companies.",
-              "url": "https://diasuae.ae/dividends-audit"
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "Backlog Accounting & Ledger Reconstruction",
-              "description": "Multi-year historical bookkeeping cleanup, bank reconciliations, and IFRS opening balances for overdue UAE tax filings.",
-              "url": "https://diasuae.ae/services/backlog-accounting"
-            }
-          },
-          {
-            "@type": "Offer",
-            "itemOffered": {
-              "@type": "Service",
-              "name": "UAE Company Setup & Day-1 Tax Registration",
-              "description": "Mainland DET and Free Zone (SHAMS, IFZA, DMCC, DTEC) company incorporation with EmaraTax Corporate Tax registration.",
-              "url": "https://diasuae.ae/company-setup"
+            "name": "Monthly IFRS Bookkeeping, VAT 201 & Corporate Tax Package",
+            "price": "400",
+            "priceCurrency": "AED",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "price": "400",
+              "priceCurrency": "AED",
+              "unitText": "MONTH"
             }
           }
         ]
       },
       "sameAs": [
-        "https://www.linkedin.com/company/diasaccounting/",
-        "https://www.instagram.com/diasuae.ae/",
-        "https://www.facebook.com/diasuae",
-        "https://share.google/GROLj6mu5V2kOAerF",
-        "https://insights.diasuae.ae/"
+        "https://insights.diasuae.ae/",
+        "https://wa.me/971529226958"
       ]
     }
     </script>

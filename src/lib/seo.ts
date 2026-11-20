@@ -168,57 +168,48 @@ export function buildAccountingServiceSchema() {
     "@type": "AccountingService",
     "@id": BUSINESS_ENTITY.id,
     name: BUSINESS_ENTITY.name,
-    legalName: BUSINESS_ENTITY.legalName,
     url: BUSINESS_ENTITY.url,
     logo: BUSINESS_ENTITY.logo,
-    image: BUSINESS_ENTITY.image,
     description: BUSINESS_ENTITY.description,
     telephone: BUSINESS_ENTITY.telephone,
-    email: BUSINESS_ENTITY.email,
     priceRange: BUSINESS_ENTITY.priceRange,
-    currenciesAccepted: BUSINESS_ENTITY.currenciesAccepted,
     founder: {
-      "@id": BUSINESS_ENTITY.founderId,
+      "@type": "Person",
+      name: BUSINESS_ENTITY.founder.name,
+      jobTitle: BUSINESS_ENTITY.founder.jobTitle,
     },
     address: {
       "@type": "PostalAddress",
       streetAddress: BUSINESS_ENTITY.address.streetAddress,
       addressLocality: BUSINESS_ENTITY.address.addressLocality,
       addressRegion: BUSINESS_ENTITY.address.addressRegion,
-      postOfficeBoxNumber: BUSINESS_ENTITY.address.postOfficeBoxNumber,
+      postalCode: BUSINESS_ENTITY.address.postalCode,
       addressCountry: BUSINESS_ENTITY.address.addressCountry,
     },
-    geo: {
-      "@type": "GeoCoordinates",
-      latitude: BUSINESS_ENTITY.geo.latitude,
-      longitude: BUSINESS_ENTITY.geo.longitude,
-    },
-    openingHoursSpecification: BUSINESS_ENTITY.openingHours.map((slot) => ({
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: slot.dayOfWeek,
-      opens: slot.opens,
-      closes: slot.closes,
-    })),
     areaServed: BUSINESS_ENTITY.areaServed,
     aggregateRating: {
       "@type": "AggregateRating",
       ratingValue: BUSINESS_ENTITY.aggregateRating.ratingValue,
       reviewCount: BUSINESS_ENTITY.aggregateRating.reviewCount,
       bestRating: BUSINESS_ENTITY.aggregateRating.bestRating,
-      worstRating: BUSINESS_ENTITY.aggregateRating.worstRating,
     },
     hasOfferCatalog: {
       "@type": "OfferCatalog",
-      name: "UAE Tax, Accounting & Audit Services",
-      itemListElement: BUSINESS_ENTITY.offerCatalog.map((service) => ({
-        "@type": "Offer",
-        itemOffered: {
-          "@type": "Service",
-          name: service.name,
-          description: service.description,
-          url: service.url,
+      name: "Fixed-Fee UAE Accounting & Tax Retainers",
+      itemListElement: [
+        {
+          "@type": "Offer",
+          name: "Monthly IFRS Bookkeeping, VAT 201 & Corporate Tax Package",
+          price: "400",
+          priceCurrency: "AED",
+          priceSpecification: {
+            "@type": "UnitPriceSpecification",
+            price: "400",
+            priceCurrency: "AED",
+            unitText: "MONTH",
+          },
         },
-      })),
+      ],
     },
     sameAs: BUSINESS_ENTITY.sameAs,
   });
@@ -331,22 +322,29 @@ export function buildWebApplicationSchema(options?: {
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "@id": `${canonicalUrl}#webapp`,
-    name: options?.name || "2026 UAE Corporate Tax & VAT Calculator",
+    name: options?.name || "2026 UAE Corporate Tax & 5% VAT Calculator",
     applicationCategory: "FinanceApplication",
     operatingSystem: "All",
     browserRequirements: "Requires JavaScript",
     url: canonicalUrl,
     description:
       options?.description ||
-      "Free interactive 2026 UAE Corporate Tax (9%, 0% Small Business Relief up to AED 3M, Free Zone QFZP De Minimis) and 5% VAT Input Recovery Calculator.",
+      "Free interactive 2026 UAE Corporate Tax Calculator (Mainland 9%, AED 375,000 0% band, AED 3,000,000 Small Business Relief, Free Zone 0% QFZP De Minimis) and 5% UAE VAT Input Recovery Calculator.",
     offers: {
       "@type": "Offer",
       price: "0",
       priceCurrency: "AED",
     },
+    featureList: [
+      "9% UAE Corporate Tax calculation with AED 375,000 0% profit band",
+      "AED 3,000,000 Small Business Relief (0% SBR) eligibility assessment",
+      "0% Qualifying Free Zone Person (QFZP) De Minimis compliance check",
+      "5% UAE VAT extraction, blocked input screening, and Form 201 recovery estimate",
+    ],
     provider: {
       "@id": BUSINESS_ENTITY.id,
     },
+    inLanguage: "en-AE",
   });
 }
 

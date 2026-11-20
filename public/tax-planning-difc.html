@@ -44,106 +44,63 @@
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": ["AccountingService", "LocalBusiness", "ProfessionalService"],
+        "@type": "AccountingService",
         "@id": "https://diasuae.ae/#organization",
         "name": "Dias Accounting and Tax Consulting LLC",
-        "url": "https://diasuae.ae/tax-planning-difc",
-        "description": "FTA-Registered Tax Agents headquartered in Sharjah Media City (SHAMS), serving DIFC, DTEC, and Dubai Free Zones with DIFC Corporate Tax Planning, DTEC Accounting & Bookkeeping, 0% QFZP Compliance, DIFC Interim & Final Dividend Distribution Audits, and 5% UAE VAT Filing starting from AED 400/month.",
-        "telephone": "+971529226958",
-        "email": "info@diasuae.ae",
-        "priceRange": "From AED 400/month",
+        "url": "https://diasuae.ae/",
+        "logo": "https://diasuae.ae/favicon.ico",
+        "description": "FTA-Registered Tax Agency and Chartered Accounting firm in Dubai and Sharjah (SHAMS) led by FTA-Registered Tax Agent Glen Dias. Fixed-fee monthly IFRS bookkeeping, 5% UAE VAT Form 201 returns, 9% Corporate Tax filings, 0% Small Business Relief (SBR) & 0% QFZP compliance, and statutory dividend audits starting from AED 400/month.",
+        "telephone": "+971-52-922-6958",
+        "priceRange": "AED 400 - AED 2,500 / month",
+        "founder": {
+          "@type": "Person",
+          "name": "Glen Dias",
+          "jobTitle": "FTA-Registered Tax Agent"
+        },
         "address": {
           "@type": "PostalAddress",
           "streetAddress": "Sharjah Media City (SHAMS), Al Messaned",
           "addressLocality": "Sharjah",
           "addressRegion": "Sharjah",
-          "postOfficeBoxNumber": "P.O. Box 515000",
+          "postalCode": "515000",
           "addressCountry": "AE"
         },
         "areaServed": [
-          "DIFC",
-          "DTEC",
-          "Dubai Free Zones",
-          "Dubai",
-          "Sharjah",
-          "United Arab Emirates"
+          { "@type": "City", "name": "Dubai" },
+          { "@type": "City", "name": "Sharjah" },
+          { "@type": "Place", "name": "DIFC (Dubai International Financial Centre)" },
+          { "@type": "Place", "name": "DTEC (Dubai Technology Entrepreneur Campus)" },
+          { "@type": "Place", "name": "Sharjah Media City (SHAMS)" },
+          { "@type": "Country", "name": "United Arab Emirates" }
         ],
-        "knowsAbout": [
-          "DIFC Corporate Tax Planning",
-          "DTEC Accounting & Bookkeeping",
-          "0% Qualifying Free Zone Person (QFZP) Compliance",
-          "DIFC Interim & Final Dividend Distribution Audits",
-          "5% UAE VAT Filing"
-        ],
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "5.0",
+          "reviewCount": "48",
+          "bestRating": "5"
+        },
         "hasOfferCatalog": {
           "@type": "OfferCatalog",
-          "name": "DIFC & DTEC Tax Planning, Accounting & Audit Services (From AED 400/month)",
+          "name": "Fixed-Fee UAE Accounting & Tax Retainers",
           "itemListElement": [
             {
               "@type": "Offer",
-              "priceCurrency": "AED",
+              "name": "Monthly IFRS Bookkeeping, VAT 201 & Corporate Tax Package",
               "price": "400",
+              "priceCurrency": "AED",
               "priceSpecification": {
                 "@type": "UnitPriceSpecification",
                 "price": "400",
                 "priceCurrency": "AED",
                 "unitText": "MONTH"
-              },
-              "itemOffered": {
-                "@type": "Service",
-                "name": "DIFC Corporate Tax Planning",
-                "description": "Strategic 0% and 9% Corporate Tax planning, Transfer Pricing documentation, and EmaraTax compliance for DIFC entities."
-              }
-            },
-            {
-              "@type": "Offer",
-              "priceCurrency": "AED",
-              "price": "400",
-              "priceSpecification": {
-                "@type": "UnitPriceSpecification",
-                "price": "400",
-                "priceCurrency": "AED",
-                "unitText": "MONTH"
-              },
-              "itemOffered": {
-                "@type": "Service",
-                "name": "DTEC Accounting & Bookkeeping",
-                "description": "Fixed-fee IFRS monthly accounting and double-entry bookkeeping from AED 400/month for DTEC and Dubai Free Zone startups."
-              }
-            },
-            {
-              "@type": "Offer",
-              "itemOffered": {
-                "@type": "Service",
-                "name": "0% Qualifying Free Zone Person (QFZP) Compliance",
-                "description": "Economic substance reviews, Qualifying Income structuring, De Minimis threshold testing, and audited IFRS statements for 0% QFZP status."
-              }
-            },
-            {
-              "@type": "Offer",
-              "itemOffered": {
-                "@type": "Service",
-                "name": "DIFC Interim & Final Dividend Distribution Audits",
-                "description": "Statutory interim and final dividend distribution audits and distributable profit certifications under DIFC Companies Law and UAE Commercial Companies Law."
-              }
-            },
-            {
-              "@type": "Offer",
-              "priceCurrency": "AED",
-              "price": "400",
-              "itemOffered": {
-                "@type": "Service",
-                "name": "5% UAE VAT Filing",
-                "description": "TRN registration, quarterly Form VAT 201 return submissions, input VAT recovery, and FTA Voluntary Disclosures (Form 211)."
               }
             }
           ]
         },
-        "founder": {
-          "@type": "Person",
-          "name": "Glen Dias",
-          "jobTitle": "Managing Director & Registered Tax Agent"
-        }
+        "sameAs": [
+          "https://insights.diasuae.ae/",
+          "https://wa.me/971529226958"
+        ]
       },
       {
         "@type": "Service",

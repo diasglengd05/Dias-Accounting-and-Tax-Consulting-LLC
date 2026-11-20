@@ -412,6 +412,12 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
             price: "0",
             priceCurrency: "AED",
           },
+          featureList: [
+            "9% UAE Corporate Tax calculation with AED 375,000 0% profit band",
+            "AED 3,000,000 Small Business Relief (0% SBR) eligibility assessment",
+            "0% Qualifying Free Zone Person (QFZP) De Minimis compliance check",
+            "5% UAE VAT extraction, blocked input screening, and Form 201 recovery estimate",
+          ],
           provider: { "@id": `${baseUrl}/#organization` },
           inLanguage: "en-AE",
         },

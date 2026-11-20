@@ -1,34 +1,19 @@
 # Dias Accounting and Tax Consulting LLC
+> FTA-Registered Tax Agency and Chartered Accounting firm headquartered in Sharjah Media City (SHAMS) and serving Dubai Mainland, DIFC, DTEC, DMCC, IFZA, and all UAE jurisdictions. Led by FTA-Registered Tax Agent Glen Dias, providing fixed-fee monthly IFRS bookkeeping, 5% UAE VAT Form 201 filings, 9% UAE Corporate Tax returns, 0% Small Business Relief (SBR) & 0% Qualifying Free Zone Person (QFZP) advisory, statutory dividend audits, and turnkey UAE company formation starting from AED 400/month.
 
-> FTA-Registered Tax Agency in the UAE, founded by FTA-Registered Tax Agent Glen Dias. Fixed-fee monthly IFRS accounting, 5% VAT filings, 9% Corporate Tax compliance, and DIFC/DTEC statutory audits from AED 400/month.
+## Core Pages & Free Interactive Tools
+- [Homepage & Overview](https://diasuae.ae/): FTA-Registered Tax Agents, monthly IFRS bookkeeping, VAT 201 returns, and Corporate Tax advisory from AED 400/month.
+- [2026 UAE Corporate Tax & 5% VAT Calculator](https://diasuae.ae/uae-tax-planner): Free interactive calculator estimating 9% Corporate Tax, AED 375,000 0% band, AED 3,000,000 Small Business Relief (SBR), 0% QFZP Free Zone tax, and 5% VAT recovery.
+- [Fixed-Fee Accounting & Tax Packages](https://diasuae.ae/pricing): Transparent flat-fee monthly retainers starting from AED 400/month for startups, SMEs, Mainland LLCs, and Free Zone entities.
+- [DIFC & DTEC Tax Planning & Dividend Audits](https://diasuae.ae/tax-planning-difc): Specialized IFRS accounting, interim and final statutory dividend audits, Connected Person benchmarking, and 0% QFZP compliance for DIFC and DTEC companies.
+- [UAE Company Setup (SHAMS & Dubai Mainland)](https://diasuae.ae/company-setup): Turnkey company formation, 100% foreign ownership, investor residency visas, corporate bank account assistance, and EmaraTax registration.
+- [UAE Tax & Compliance Blog Directory](https://diasuae.ae/blog): Comprehensive guides on UAE Corporate Tax deadlines (Nov 30 & Dec 31, 2026), AED 10,000 late registration penalty waivers, VAT audit readiness, and IFRS compliance.
+- [Live UAE Tax Insights & FTA Briefings](https://insights.diasuae.ae/): Daily regulatory briefings, EmaraTax filing checklists, and FTA public clarifications.
+- [Client Testimonials & Reviews](https://diasuae.ae/testimonials): Verified 5.0-star Google reviews from UAE business owners and finance managers.
 
-## Firm Overview
-- **Firm Name**: Dias Accounting and Tax Consulting LLC
-- **Regulatory Status**: FTA-Registered Tax Agency in the United Arab Emirates
-- **Founder & Managing Partner**: Glen Dias (FTA-Registered Tax Agent & Chartered Tax Advisor)
-- **Headquarters**: Sharjah Media City (SHAMS), Al Messaned, Sharjah, United Arab Emirates
-- **Areas Served**: Dubai Mainland, DIFC, DTEC, IFZA, DMCC, Sharjah (SHAMS / SAIF Zone), Abu Dhabi, and all UAE Emirates (remote & on-site)
-
-## Transparent Starting Pricing & Fixed-Fee Retainers
-- **Monthly IFRS Accounting & Bookkeeping + 5% VAT Form 201 + 9% Corporate Tax**: Starting from **AED 400/month** (fixed-fee retainers, zero hidden hourly fees)
-- **UAE Corporate Tax Registration & 0% Small Business Relief (up to AED 3M revenue)**: Fixed-fee EmaraTax registration and annual filing (0% SBR extended through 31 December 2029)
-- **DIFC & DTEC 0% QFZP Compliance & Dividend Distribution Audits**: Specialized Qualifying Free Zone Person (0% CT) substance & de minimis compliance, connected-person schedules, and statutory interim/final dividend distribution audits
-- **Backlog Bookkeeping & Ledger Reconstruction**: Fixed-fee multi-year IFRS cleanup and opening balance restoration
-
-## Free Interactive UAE Tax Tools
-- **2026 UAE Corporate Tax & 5% VAT Calculator**: [https://diasuae.ae/uae-tax-planner](https://diasuae.ae/uae-tax-planner)
-  - Supports **Mainland** (`0%` up to AED 375,000, `9%` above AED 375,000, and `0%` Small Business Relief up to AED 3,000,000 revenue)
-  - Supports **Free Zone** (`0%` Qualifying Free Zone Person QFZP, live `5% / AED 5M` De Minimis test, and `9%` on non-qualifying taxable profit)
-  - Includes a **5% UAE VAT & Input Recovery Calculator** (Add/Extract 5% VAT and FTA Form 201 reclaimability check across 8 business expense categories)
-
-## Key Pages & Direct Links
-- **Official Website**: [https://diasuae.ae/](https://diasuae.ae/)
-- **Fixed-Fee Pricing & Packages**: [https://diasuae.ae/pricing](https://diasuae.ae/pricing)
-- **Free 2026 UAE Tax & VAT Calculator**: [https://diasuae.ae/uae-tax-planner](https://diasuae.ae/uae-tax-planner)
-- **DIFC & DTEC Corporate Tax Planning**: [https://diasuae.ae/tax-planning-difc](https://diasuae.ae/tax-planning-difc)
-- **UAE Tax Insights & Briefings**: [https://insights.diasuae.ae/](https://insights.diasuae.ae/)
-
-## Official Contact Channels
-- **WhatsApp / Phone**: +971 52 922 6958
-- **Email**: info@diasuae.ae
-- **Consultation Booking**: [https://diasuae.ae/#contact](https://diasuae.ae/#contact)
+## Key Regulatory Facts & Contact
+- **Legal Entity:** Dias Accounting and Tax Consulting LLC (SHAMS Trade Licence 2646813.01)
+- **Lead Advisor:** Glen Dias (FTA-Registered Tax Agent)
+- **Headquarters:** Sharjah Media City (SHAMS), Al Messaned, Sharjah, United Arab Emirates (serving Dubai, DIFC, DTEC, Sharjah & all UAE)
+- **Pricing:** Fixed monthly accounting & tax retainers starting from AED 400/month
+- **Direct Advisory Desk (WhatsApp / Phone):** +971 52 922 6958 (https://wa.me/971529226958)
