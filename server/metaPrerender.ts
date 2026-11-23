@@ -873,6 +873,36 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     };
   }
 
+  if (pathname === "/partners") {
+    const partnersBreadcrumbSchema = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "@id": `${baseUrl}/partners#breadcrumb`,
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: `${baseUrl}/` },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "UAE Business Ecosystem & Partners",
+          item: `${baseUrl}/partners`,
+        },
+      ],
+    });
+    return {
+      title: "UAE Business Setup Partners & Free Tax Calculator Widget | Dias Accounting",
+      description:
+        "Resources for UAE company formation consultants, PRO agencies, legal advisors, and co-working hubs across Dubai, DIFC, DTEC, and SHAMS. Embed our free 2026 UAE Corporate Tax & 5% VAT Calculator.",
+      keywords:
+        "UAE company formation partners, Dubai business setup partners, embed UAE corporate tax calculator, PRO agency accounting partner UAE, DIFC DTEC SHAMS tax partner",
+      url: `${baseUrl}/partners`,
+      ogImage: DEFAULT_OG_IMAGE,
+      ogType: "website",
+      isArabic,
+      schemaMarkup: partnersBreadcrumbSchema,
+      h1: "UAE Business Setup Partners & Free Tax Calculator Widget",
+    };
+  }
+
   if (pathname === "/contact" || pathname === "/book-consultation") {
     return {
       title: "Contact Dias Accounting | Book Free UAE Tax Consultation",

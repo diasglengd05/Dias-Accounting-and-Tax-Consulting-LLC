@@ -51,6 +51,7 @@ const CANONICAL_STATIC_PATHS: string[] = [
   "/why-choose-us",
   "/testimonials",
   "/faqs",
+  "/partners",
   "/contact",
   "/privacy-policy",
   "/terms",

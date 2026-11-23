@@ -22,9 +22,6 @@
     <loc>https://diasuae.ae/uae-tax-planner</loc>
   </url>
   <url>
-    <loc>https://diasuae.ae/corporate-tax-calculator</loc>
-  </url>
-  <url>
     <loc>https://diasuae.ae/uae-vat-calculator</loc>
   </url>
   <url>
@@ -47,6 +44,9 @@
   </url>
   <url>
     <loc>https://diasuae.ae/faqs</loc>
+  </url>
+  <url>
+    <loc>https://diasuae.ae/partners</loc>
   </url>
   <url>
     <loc>https://diasuae.ae/contact</loc>

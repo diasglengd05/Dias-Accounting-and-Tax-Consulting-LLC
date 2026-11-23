@@ -59,6 +59,7 @@ import TaxPlannerPage from "./pages/TaxPlannerPage";
 const ServiceDetailPage = React.lazy(() => import("./pages/ServiceDetailPage"));
 const VatPlannerPage = React.lazy(() => import("./pages/VatPlannerPage"));
 const FtaDeadlinesPage = React.lazy(() => import("./pages/FtaDeadlinesPage"));
+const PartnersPage = React.lazy(() => import("./pages/PartnersPage"));
 import CookieConsentBanner from "./components/CookieConsentBanner";
 import HomepagePricingSection from "./components/HomepagePricingSection";
 import ScopeInstantQuoteBuilder from "./components/ScopeInstantQuoteBuilder";
@@ -500,6 +501,19 @@ function MainApp() {
         onOpenPrivacy={() => setPrivacyOpen(true)}
         onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
       />
+    );
+  }
+
+  if (currentPath === "/partners") {
+    return (
+      <Suspense fallback={renderPageFallback("Loading UAE Business Ecosystem & Partners...")}>
+        <PartnersPage
+          onNavigate={navigateTo}
+          onOpenAudit={() => setTaxHealthModalOpen(true)}
+          onOpenPrivacy={() => setPrivacyOpen(true)}
+          onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+        />
+      </Suspense>
     );
   }
 

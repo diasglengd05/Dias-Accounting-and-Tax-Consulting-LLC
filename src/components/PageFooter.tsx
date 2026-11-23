@@ -230,6 +230,15 @@ export const PageFooter: React.FC<PageFooterProps> = ({
               </li>
               <li>
                 <a
+                  href="/partners"
+                  onClick={(e) => handleLink(e, "/partners")}
+                  className="hover:text-white transition-colors"
+                >
+                  UAE Business Ecosystem &amp; Partners
+                </a>
+              </li>
+              <li>
+                <a
                   href="/faqs"
                   onClick={(e) => handleLink(e, "/faqs")}
                   className="hover:text-white transition-colors"
