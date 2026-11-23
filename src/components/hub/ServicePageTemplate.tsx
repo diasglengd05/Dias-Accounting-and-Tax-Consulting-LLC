@@ -56,6 +56,7 @@ export interface ServicePageTemplateProps {
     plan: string;
   };
   faqsHeading?: string;
+  customFaqSection?: React.ReactNode;
   faqs: AccordionItem[];
   relatedServices?: ServiceRelatedLink[];
   closingCta: {
@@ -89,6 +90,7 @@ export const ServicePageTemplate: React.FC<ServicePageTemplateProps> = ({
   whoIsItForItems,
   regulatorySnapshot,
   faqsHeading = "Frequently Asked Questions",
+  customFaqSection,
   faqs,
   relatedServices,
   closingCta,
@@ -340,9 +342,9 @@ export const ServicePageTemplate: React.FC<ServicePageTemplateProps> = ({
         </section>
 
         {/* 5. Service FAQ Accordion */}
-        {faqs.length > 0 && (
+        {(faqs.length > 0 || customFaqSection) && (
           <section id="faqs" className="bg-[#FFFFFF] py-16 lg:py-24">
-            <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-10 space-y-2">
                 <span className="inline-block text-xs font-semibold uppercase tracking-wider text-[#856422]">
                   Common Questions
@@ -352,7 +354,13 @@ export const ServicePageTemplate: React.FC<ServicePageTemplateProps> = ({
                 </h2>
               </div>
 
-              <ExecutiveAccordion items={faqs} defaultOpenIndex={0} />
+              {customFaqSection && <div className="mb-10">{customFaqSection}</div>}
+
+              {faqs.length > 0 && (
+                <div className="max-w-3xl mx-auto">
+                  <ExecutiveAccordion items={faqs} defaultOpenIndex={0} />
+                </div>
+              )}
             </div>
           </section>
         )}

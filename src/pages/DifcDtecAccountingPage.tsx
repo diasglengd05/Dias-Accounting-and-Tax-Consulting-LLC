@@ -29,6 +29,16 @@ interface PageProps {
 
 export const DIFC_DTEC_FAQS: FAQSchemaItem[] = [
   {
+    question: "What are the DIFC tax compliance and 0% QFZP rules in 2026?",
+    answer:
+      "Under UAE Federal Decree-Law No. 47 of 2022 and Cabinet Decision No. 55 of 2023, DIFC and DTEC entities qualify for 0% Corporate Tax in 2026 as a Qualifying Free Zone Person (QFZP) on Qualifying Income only if they maintain adequate Free Zone economic substance, keep non-qualifying revenue within the de minimis cap (the lower of 5% of total revenue or AED 5,000,000), follow arm's-length Transfer Pricing rules, and prepare annual audited IFRS financial statements regardless of revenue size.",
+  },
+  {
+    question: "When does a Dubai or DIFC company need a statutory dividends audit?",
+    answer:
+      "Under UAE Commercial Companies Law (Federal Decree-Law No. 32 of 2021) and DIFC Companies Law, a Dubai Mainland, DIFC, or Free Zone company needs a statutory dividends audit before distributing interim or final shareholder dividends to certify realized distributable profits, mandatory legal reserves, and post-distribution solvency for board resolutions and corporate bank wire clearance.",
+  },
+  {
     question: "How do DIFC & DTEC entities qualify for 0% Corporate Tax under the QFZP regime?",
     answer:
       "Under Federal Decree-Law No. 47 of 2022 and Cabinet Decision No. 55 of 2023, DIFC and DTEC entities qualify for a 0% Corporate Tax rate as a Qualifying Free Zone Person (QFZP) on Qualifying Income only if they: (1) maintain adequate economic substance and qualified personnel inside the Free Zone, (2) derive Qualifying Income from qualifying activities or other Free Zone persons, (3) keep non-qualifying revenue within the de minimis limit (lower of 5% of total revenue or AED 5,000,000), (4) comply with arm's length Transfer Pricing rules, and (5) prepare annual audited IFRS financial statements.",
@@ -71,9 +81,9 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({
 
   useEffect(() => {
     const canonicalPath = "/tax-planning-difc";
-    const pageTitle = "DIFC & DTEC Accounting & 0% QFZP Tax | Dias Accounting";
+    const pageTitle = "DIFC & DTEC Tax Compliance, IFRS Accounting & Dividend Audits | Dias UAE";
     const pageDesc =
-      "FTA-Registered Tax Agents serving DIFC & DTEC companies. Statutory dividend audits, 0% QFZP Corporate Tax compliance & IFRS bookkeeping from AED 400/mo.";
+      "Specialized 0% QFZP Corporate Tax compliance, audited IFRS financial statements, and statutory dividend audits for DIFC & DTEC companies in Dubai. Fixed packages from AED 400/mo.";
     const pageUrl = `https://diasuae.ae${canonicalPath}`;
 
     applyPageSEO({
@@ -335,7 +345,41 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({
         plan: "Retainers from AED 400/mo | QFZP Shield Pro AED 1,499",
       }}
       faqsHeading="DIFC & DTEC Tax Compliance FAQs"
-      faqs={DIFC_DTEC_FAQS.map((f) => ({ question: f.question, answer: f.answer }))}
+      customFaqSection={
+        <div className="space-y-6">
+          <article className="rounded-2xl bg-[#070d19] text-white border border-[#c5a059]/30 p-6 sm:p-8 shadow-sm">
+            <div className="w-10 h-[2px] bg-[#c5a059] mb-4" aria-hidden="true" />
+            <h2 className="font-display text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug mb-3">
+              What are the DIFC tax compliance and 0% QFZP rules in 2026?
+            </h2>
+            <p className="text-sm sm:text-[15px] text-slate-200 leading-relaxed">
+              Under UAE Federal Decree-Law No. 47 of 2022 and Cabinet Decision No. 55 of 2023, DIFC and DTEC entities retain <strong className="text-[#c5a059] font-semibold">0% Corporate Tax on Qualifying Income</strong> in 2026 only when they maintain adequate Free Zone economic substance, keep non-qualifying revenue within the <strong className="text-white font-semibold">5% or AED 5,000,000 de minimis cap</strong> (whichever is lower), comply with arm&apos;s-length Transfer Pricing rules, and prepare <strong className="text-white font-semibold">mandatory annual audited IFRS financial statements</strong> regardless of revenue.
+            </p>
+          </article>
+
+          <article className="rounded-2xl bg-[#070d19] text-white border border-[#c5a059]/30 p-6 sm:p-8 shadow-sm">
+            <div className="w-10 h-[2px] bg-[#c5a059] mb-4" aria-hidden="true" />
+            <h2 className="font-display text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug mb-3">
+              When does a Dubai or DIFC company need a statutory dividends audit?
+            </h2>
+            <p className="text-sm sm:text-[15px] text-slate-200 leading-relaxed">
+              Under UAE Commercial Companies Law (Federal Decree-Law No. 32 of 2021) and DIFC Companies Law, Dubai Mainland, DIFC, and Free Zone entities require a statutory dividends audit prior to distributing <strong className="text-white font-semibold">interim or final shareholder dividends</strong> to certify realized distributable profits, mandatory legal reserves, and post-distribution solvency for board resolutions and bank wire clearance. Learn more about our{" "}
+              <a
+                href="/dividends-audit"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate("/dividends-audit");
+                }}
+                className="text-[#c5a059] hover:text-[#f5e39c] underline underline-offset-2 font-semibold transition-colors"
+              >
+                statutory dividends audit in Dubai
+              </a>{" "}
+              for 48–72 hour distributable profit sign-off.
+            </p>
+          </article>
+        </div>
+      }
+      faqs={DIFC_DTEC_FAQS.slice(2).map((f) => ({ question: f.question, answer: f.answer }))}
       relatedServices={[
         { label: "Dividends Audit & Certification", path: "/dividends-audit" },
         { label: "Corporate Tax Advisory", path: "/services/corporate-tax-advisory" },

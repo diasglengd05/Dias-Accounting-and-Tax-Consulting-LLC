@@ -225,6 +225,14 @@ const CRAWLER_USER_AGENTS = [
   /vkshare/i,
   /redditbot/i,
   /embedly/i,
+  /gptbot/i,
+  /oai-searchbot/i,
+  /chatgpt-user/i,
+  /claudebot/i,
+  /claude-web/i,
+  /perplexitybot/i,
+  /google-extended/i,
+  /meta-externalagent/i,
 ];
 
 /**
@@ -477,26 +485,42 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
       "mainEntity": [
         {
           "@type": "Question",
+          "name": "What tax advisory and accounting packages are available in Dubai?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Dias Accounting offers fixed monthly tax advisory and accounting packages in Dubai starting from AED 400/month covering IFRS double-entry bookkeeping, quarterly 5% VAT Form 201 returns, EmaraTax Corporate Tax registration and filing, and 0% Small Business Relief elections up to AED 3,000,000 in annual revenue. Every retainer is led by FTA-Registered Tax Agents with predictable fixed fees and zero hourly billing surprises."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How much do accounting services cost for a small business in Dubai and Sharjah?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Small business accounting services in Dubai and Sharjah start from AED 400/month across three transparent fixed-fee tiers: Starter Compliance at AED 400/mo, Growth VAT + CT at AED 750/mo, and Free Zone QFZP Audit-Ready at AED 1,250/mo (all rates exclude 5% UAE VAT)."
+          }
+        },
+        {
+          "@type": "Question",
           "name": "What is included in Dias Accounting's fixed-fee accounting packages in Dubai?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Our monthly retainers (starting from AED 400 to AED 2,500/month) cover a dedicated chartered accountant, cloud software setup (Zoho Books, QuickBooks, Xero), monthly bank and card reconciliations, IFRS Profit & Loss and Balance Sheet statements, quarterly VAT 201 return filings, and annual Corporate Tax return preparation on EmaraTax. There are zero hourly fees or surprise billing charges."
+            "text": "Our monthly retainers (starting from AED 400 to AED 1,250/month) cover a dedicated chartered accountant, cloud software setup (Zoho Books, QuickBooks, Xero), monthly bank and card reconciliations, IFRS Profit & Loss and Balance Sheet statements, quarterly VAT 201 return filings on applicable tiers, and annual Corporate Tax return preparation on EmaraTax. There are zero hourly fees or surprise billing charges."
           }
         },
         {
           "@type": "Question",
-          "name": "How much does corporate tax filing cost for UAE mainland and Free Zone companies?",
+          "name": "How much does corporate tax filing cost for UAE Mainland and Free Zone companies?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "For businesses maintaining clean monthly books with Dias Accounting, annual Corporate Tax return filing is bundled into our comprehensive tiers. For standalone Corporate Tax filing without monthly bookkeeping, our fixed preparation fee starts at AED 1,500 for entities claiming 0% Small Business Relief (SBR) up to AED 3M, and AED 2,500 to AED 4,500 for standard 9% or 0% QFZP Free Zone returns."
+            "text": "For businesses maintaining clean monthly books with Dias Accounting, annual Corporate Tax return filing is bundled into our monthly retainers. For standalone filings without monthly bookkeeping, our MicroBiz SBR filing is a flat AED 500, and our QFZP Shield Pro Free Zone structuring review is AED 1,499."
           }
         },
         {
           "@type": "Question",
-          "name": "Are Corporate Tax returns (9%) and VAT 201 filings included in the monthly accounting fee?",
+          "name": "Are Corporate Tax returns (9%) and VAT 201 filings included in the monthly fee?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. Our Growth and Enterprise plans include full quarterly VAT 201 return submissions and annual Corporate Tax return filing on the FTA EmaraTax portal. Our Essential tier (from AED 400/month on annual billing) covers ongoing bookkeeping and quarterly VAT, with an optional discounted annual corporate tax filing add-on."
+            "text": "Yes. Our Corporate Growth and Enterprise plans include full quarterly VAT 201 return submissions and annual Corporate Tax return filing on the FTA EmaraTax portal. Business Starter (from AED 400/month billed annually) covers ongoing IFRS bookkeeping and annual Corporate Tax filing, with quarterly VAT available as an add-on."
           }
         },
         {
@@ -504,22 +528,22 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
           "name": "What are the penalties if my UAE company delays historical backlog bookkeeping?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Under Cabinet Decision No. 75 of 2023, failing to register for Corporate Tax on time incurs an automatic AED 10,000 fine. Failing to maintain required accounting records for at least 5 years triggers penalties starting at AED 10,000 for a first violation and AED 20,000 for repeats. Our Backlog Catch-Up packages (from AED 2,500/year) reconstruct missing ledgers within 5 to 7 business days to eliminate fine exposure."
+            "text": "Under Cabinet Decision No. 75 of 2023, failing to register for Corporate Tax on time incurs an automatic AED 10,000 fine, and failing to maintain proper accounting records triggers penalties starting at AED 10,000. Our Backlog Catch-Up packages (from AED 2,500/year) reconstruct missing ledgers within 5 to 7 business days."
           }
         },
         {
           "@type": "Question",
-          "name": "Can DIFC, DTEC, and Free Zone companies choose standard SME accounting packages?",
+          "name": "Can DIFC, DTEC, and Free Zone companies use these fixed-fee packages?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. We offer specialized Free Zone and DIFC accounting tiers that factor in annual IFRS audited accounts, 0% Qualifying Free Zone Person (QFZP) de minimis tests, and OECD Article 34 transfer pricing compliance."
+            "text": "Yes. Our Enterprise & CFO Advisory tier and QFZP Shield Pro package are built for Free Zone, DIFC, and DTEC entities requiring annual IFRS audited financial statements, 0% QFZP De Minimis monitoring, and Transfer Pricing compliance."
           }
         }
       ]
     });
     return {
-      title: "UAE Accounting & Tax Pricing From AED 400/Mo | Dias UAE",
-      description: "Transparent fixed-fee monthly IFRS accounting, 5% VAT Form 201 & 9% Corporate Tax packages in Dubai & Sharjah. Zero hidden fees—request a quote.",
+      title: "Accounting & Tax Packages in Dubai & UAE | Fixed Fees From AED 400/Month",
+      description: "Compare transparent monthly IFRS bookkeeping, 5% VAT filing & 2026 UAE Corporate Tax packages for startups and SMEs in Dubai & Sharjah. Zero hidden fees.",
       keywords: "Corporate Tax, accounting packages dubai, monthly accounting package dubai, fixed fee bookkeeping uae, corporate tax return fee, corporate tax consultants in difc, accounting solutions in uae",
       url: `${baseUrl}/pricing`,
       ogImage: DEFAULT_OG_IMAGE,
@@ -562,9 +586,9 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     pathname === "/dtec-accounting" ||
     pathname === "/accounting-services-in-dtec"
   ) {
-    const difcTitle = "DIFC & DTEC Accounting, 0% QFZP & Dividend Audits | Dias";
+    const difcTitle = "DIFC & DTEC Tax Compliance, IFRS Accounting & Dividend Audits | Dias UAE";
     const difcDesc =
-      "FTA-registered tax agents serving DIFC & DTEC firms. Statutory dividend audits, 0% QFZP compliance & monthly IFRS bookkeeping from AED 400/mo.";
+      "Specialized 0% QFZP Corporate Tax compliance, audited IFRS financial statements, and statutory dividend audits for DIFC & DTEC companies in Dubai. Fixed packages from AED 400/mo.";
     const difcSchema = JSON.stringify({
       "@context": "https://schema.org",
       "@graph": [
@@ -595,6 +619,22 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
           "@type": "FAQPage",
           "@id": `${baseUrl}/tax-planning-difc#faqs`,
           mainEntity: [
+            {
+              "@type": "Question",
+              name: "What are the DIFC tax compliance and 0% QFZP rules in 2026?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Under UAE Federal Decree-Law No. 47 of 2022 and Cabinet Decision No. 55 of 2023, DIFC and DTEC entities qualify for 0% Corporate Tax in 2026 as a Qualifying Free Zone Person (QFZP) on Qualifying Income only if they maintain adequate Free Zone economic substance, keep non-qualifying revenue within the de minimis cap (the lower of 5% of total revenue or AED 5,000,000), follow arm's-length Transfer Pricing rules, and prepare annual audited IFRS financial statements regardless of revenue size.",
+              },
+            },
+            {
+              "@type": "Question",
+              name: "When does a Dubai or DIFC company need a statutory dividends audit?",
+              acceptedAnswer: {
+                "@type": "Answer",
+                text: "Under UAE Commercial Companies Law (Federal Decree-Law No. 32 of 2021) and DIFC Companies Law, a Dubai Mainland, DIFC, or Free Zone company needs a statutory dividends audit before distributing interim or final shareholder dividends to certify realized distributable profits, mandatory legal reserves, and post-distribution solvency for board resolutions and corporate bank wire clearance.",
+              },
+            },
             {
               "@type": "Question",
               name: "How do DIFC & DTEC entities qualify for 0% Corporate Tax under the QFZP regime?",
@@ -682,8 +722,8 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     pathname === "/dividends-audit-uae"
   ) {
     return {
-      title: "Dividends Audit Dubai & UAE | Statutory Audit | Dias UAE",
-      description: "Statutory dividends audit in Dubai & UAE under Commercial Companies Law. Distributable profit certification, solvency checks, and 0% tax structuring.",
+      title: "Dividends Audit Dubai & UAE | Statutory Interim & Final Dividend Audits",
+      description: "Fast, compliant statutory dividend audits for Dubai Mainland, DIFC, DTEC & Free Zone companies under UAE Commercial Companies Law. Clear audit sign-off by FTA-Registered Tax Agents.",
       keywords: "dividends audit dubai, dividends audit uae, audit services for dividends uae, dividend distribution certification",
       url: `${baseUrl}/dividends-audit`,
       ogImage: DEFAULT_OG_IMAGE,
@@ -873,10 +913,10 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
   return {
     title: isArabic
       ? "استشارات ضريبة الشركات والمحاسبة في دبي | دياس للمحاسبة الإمارات"
-      : "Dias Accounting | UAE Corporate Tax, VAT & IFRS Bookkeeping",
+      : "Dias Accounting UAE | FTA-Registered Tax Agents Dubai & SHAMS (From AED 400/Mo)",
     description: isArabic
       ? "استشارات ضريبة الشركات، والامتثال لضريبة القيمة المضافة، والخدمات المحاسبية في دبي والإمارات. باقات محاسبية واضحة تبدأ من 400 درهم/شهرياً."
-      : "FTA-registered tax agents in Dubai & Sharjah. Fixed-fee IFRS bookkeeping, 5% VAT Form 201, and 9% Corporate Tax filings from AED 400/mo. Free review.",
+      : "Fixed-fee monthly IFRS bookkeeping, 5% VAT Form 201 returns & 9% UAE Corporate Tax filing in Dubai, DIFC, DTEC & SHAMS. Led by FTA-Registered Tax Agent Glen Dias. Book a free 15-min check.",
     keywords: isArabic
       ? "ضريبة الشركات, خدمات المحاسبة والضرائب في دبي, شركات الضرائب في الإمارات, تسجيل ضريبة القيمة المضافة"
       : "UAE Corporate Tax, Tax Services in Dubai, DIFC Tax Compliance, Accounting Services UAE, VAT Filing Dubai, FTA Registered Tax Agent",

@@ -260,7 +260,16 @@ app.use((req, res, next) => {
   const hostname = rawHost.split(":")[0];
 
   if (hostname === "www.diasuae.ae") {
-    const targetUrl = `https://diasuae.ae${req.originalUrl || "/"}`;
+    const rawUrl = req.originalUrl || "/";
+    const [rawPath, qs] = rawUrl.split("?");
+    let cleanPath = rawPath || "/";
+    const lowerPath = cleanPath.toLowerCase();
+    if (lowerPath === "/home" || lowerPath === "/home/" || lowerPath === "/home.html" || lowerPath === "/index.html") {
+      cleanPath = "/";
+    } else if (cleanPath.length > 1 && cleanPath.endsWith("/")) {
+      cleanPath = cleanPath.replace(/\/+$/, "");
+    }
+    const targetUrl = `https://diasuae.ae${cleanPath}${qs ? `?${qs}` : ""}`;
     return res.redirect(301, targetUrl);
   }
   return next();
@@ -1973,7 +1982,13 @@ async function bootstrap() {
     return res.sendFile(file);
   });
 
-  app.get(["/tax-planning-difc", "/tax-planning-difc.html"], (_req, res) => {
+  app.get("/tax-planning-difc.html", (req, res) => {
+    const qsIndex = req.originalUrl.indexOf("?");
+    const qs = qsIndex !== -1 ? req.originalUrl.slice(qsIndex) : "";
+    return res.redirect(301, `/tax-planning-difc${qs}`);
+  });
+
+  app.get("/tax-planning-difc", (_req, res) => {
     const file = path.join(process.cwd(), "public", "tax-planning-difc.html");
     res.setHeader("Content-Type", "text/html; charset=utf-8");
     res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");

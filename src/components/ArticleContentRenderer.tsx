@@ -4,7 +4,10 @@ import React from "react";
  * Strips raw markdown syntax characters (*, #) and converts inline formatting
  * (bold, italic, links, inline code) into clean, accessible React elements.
  */
-export function renderFormattedInline(text: string): React.ReactNode {
+export function renderFormattedInline(
+  text: string,
+  onNavigate?: (path: string) => void
+): React.ReactNode {
   if (!text) return null;
 
   const cleanedText = text.replace(/^[*#]+\s*/, "");
@@ -17,11 +20,33 @@ export function renderFormattedInline(text: string): React.ReactNode {
     const linkMatch = part.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
     if (linkMatch) {
       const linkText = linkMatch[1].replace(/[*#]/g, "");
-      const linkUrl = linkMatch[2];
+      const rawUrl = linkMatch[2].trim();
+      const internalMatch = rawUrl.match(/^https?:\/\/(?:www\.)?diasuae\.ae(\/.*)?$/i);
+      const isInternal = rawUrl.startsWith("/") || Boolean(internalMatch);
+      const resolvedHref = internalMatch ? internalMatch[1] || "/" : rawUrl;
+
+      if (isInternal) {
+        return (
+          <a
+            key={index}
+            href={resolvedHref}
+            onClick={(e) => {
+              if (onNavigate) {
+                e.preventDefault();
+                onNavigate(resolvedHref);
+              }
+            }}
+            className="text-[#1B4332] hover:text-[#0D1B2A] underline underline-offset-2 font-semibold transition-colors"
+          >
+            {linkText}
+          </a>
+        );
+      }
+
       return (
         <a
           key={index}
-          href={linkUrl}
+          href={rawUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="text-[#1B4332] hover:text-[#0D1B2A] underline underline-offset-2 font-medium transition-colors"
@@ -77,13 +102,17 @@ export function renderFormattedInline(text: string): React.ReactNode {
 
 interface ArticleContentRendererProps {
   content: string;
+  onNavigate?: (path: string) => void;
 }
 
 /**
  * Transforms raw markdown articles into executive editorial typography
  * with zebra-striped compliance tables and subtle gold-accent callout boxes.
  */
-export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ content }) => {
+export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({
+  content,
+  onNavigate,
+}) => {
   if (!content) return null;
 
   const lines = content.split("\n");
@@ -130,7 +159,7 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
                 <tr className="bg-[#0D1B2A] text-white">
                   {headerCells.map((cell, cIdx) => (
                     <th key={cIdx} className="px-4 py-3.5 font-semibold text-xs sm:text-sm tracking-tight">
-                      {renderFormattedInline(cell)}
+                      {renderFormattedInline(cell, onNavigate)}
                     </th>
                   ))}
                 </tr>
@@ -150,7 +179,7 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
                             cIdx === 0 ? "font-semibold text-[#0D1B2A]" : "text-[#475569]"
                           }`}
                         >
-                          {renderFormattedInline(cell)}
+                          {renderFormattedInline(cell, onNavigate)}
                         </td>
                       ))}
                     </tr>
@@ -168,7 +197,7 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
       const headingText = trimmed.replace(/^#\s+/, "");
       elements.push(
         <h2 key={`h1-${i}`} className="font-display text-2xl sm:text-[1.65rem] font-bold text-[#0D1B2A] mt-10 mb-4 tracking-tight leading-snug">
-          {renderFormattedInline(headingText)}
+          {renderFormattedInline(headingText, onNavigate)}
         </h2>
       );
       i++;
@@ -179,7 +208,7 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
       const headingText = trimmed.replace(/^##\s+/, "");
       elements.push(
         <h2 key={`h2-${i}`} className="font-display text-xl sm:text-2xl font-bold text-[#0D1B2A] mt-10 mb-3.5 tracking-tight leading-snug">
-          {renderFormattedInline(headingText)}
+          {renderFormattedInline(headingText, onNavigate)}
         </h2>
       );
       i++;
@@ -190,7 +219,7 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
       const headingText = trimmed.replace(/^###\s+/, "");
       elements.push(
         <h3 key={`h3-${i}`} className="font-display text-lg sm:text-xl font-bold text-[#0D1B2A] mt-7 mb-2.5 leading-snug">
-          {renderFormattedInline(headingText)}
+          {renderFormattedInline(headingText, onNavigate)}
         </h3>
       );
       i++;
@@ -201,7 +230,7 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
       const headingText = trimmed.replace(/^#{4,}\s+/, "");
       elements.push(
         <h4 key={`h4-${i}`} className="font-display text-base font-bold text-[#0D1B2A] mt-6 mb-2">
-          {renderFormattedInline(headingText)}
+          {renderFormattedInline(headingText, onNavigate)}
         </h4>
       );
       i++;
@@ -221,7 +250,7 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
         >
           {quoteLines.map((ql, qIdx) => (
             <p key={qIdx} className={qIdx > 0 ? "mt-2.5" : ""}>
-              {renderFormattedInline(ql)}
+              {renderFormattedInline(ql, onNavigate)}
             </p>
           ))}
         </blockquote>
@@ -240,7 +269,7 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
           {listItems.map((item, itemIdx) => (
             <li key={itemIdx} className="flex items-start gap-3 text-[15px] sm:text-base leading-[1.65] text-[#475569]">
               <span className="mt-2.5 w-1.5 h-1.5 rounded-full bg-[#C5A059] shrink-0" aria-hidden="true" />
-              <div className="flex-1">{renderFormattedInline(item)}</div>
+              <div className="flex-1">{renderFormattedInline(item, onNavigate)}</div>
             </li>
           ))}
         </ul>
@@ -264,7 +293,7 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
               <span className="font-semibold text-xs text-[#0D1B2A] mt-1 shrink-0 bg-[#F8FAFC] border border-[#E2E8F0] rounded-md px-2 py-0.5 min-w-[26px] text-center tabular-nums">
                 {item.num}
               </span>
-              <div className="flex-1">{renderFormattedInline(item.text)}</div>
+              <div className="flex-1">{renderFormattedInline(item.text, onNavigate)}</div>
             </li>
           ))}
         </ol>
@@ -285,7 +314,7 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({ 
     if (paragraphLines.length > 0) {
       elements.push(
         <p key={`p-${i}`} className="text-[15px] sm:text-base leading-[1.7] text-[#475569] mb-4">
-          {renderFormattedInline(paragraphLines.join(" "))}
+          {renderFormattedInline(paragraphLines.join(" "), onNavigate)}
         </p>
       );
     } else {

@@ -73,7 +73,7 @@ const RESOURCE_CATALOG = {
     title: "UAE Accounting & Tax Retainer Pricing",
     description:
       "Transparent monthly bookkeeping, VAT Form 201, and annual Corporate Tax retainers starting from AED 400/month.",
-    anchorLabel: "Compare Fixed-Fee Tax Packages",
+    anchorLabel: "Compare fixed-fee accounting packages in Dubai",
     path: "/pricing",
   },
   deadlinesHub: {
@@ -89,7 +89,7 @@ const RESOURCE_CATALOG = {
     title: "DIFC & DTEC Accounting & 0% QFZP Tax",
     description:
       "DFSA/DIFC common-law IFRS reporting, DTEC startup books, and annual 0% Qualifying Free Zone Person audits.",
-    anchorLabel: "Explore DIFC & DTEC Tax Services",
+    anchorLabel: "Explore DIFC tax compliance services",
     path: "/tax-planning-difc",
   },
   dividendsAudit: {
@@ -97,7 +97,7 @@ const RESOURCE_CATALOG = {
     title: "UAE Statutory Dividend Audits",
     description:
       "Distributable profit verification under Commercial Companies Law and 0% Participation Exemption compliance.",
-    anchorLabel: "Explore Dividend Audit Services",
+    anchorLabel: "Explore statutory dividends audit in Dubai",
     path: "/dividends-audit",
   },
   companySetup: {

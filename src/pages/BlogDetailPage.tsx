@@ -365,7 +365,7 @@ export const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
                   dangerouslySetInnerHTML={{ __html: post.content }}
                 />
               ) : (
-                <ArticleContentRenderer content={post.content} />
+                <ArticleContentRenderer content={post.content} onNavigate={onNavigate} />
               )}
             </div>
           </ArticleLayout>

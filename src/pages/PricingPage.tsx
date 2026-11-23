@@ -275,6 +275,19 @@ const COMPARISON_ROWS: ComparisonRow[] = [
   },
 ];
 
+const FEATURED_PRICING_FAQS: FAQSchemaItem[] = [
+  {
+    question: "What tax advisory and accounting packages are available in Dubai?",
+    answer:
+      "Dias Accounting offers fixed monthly tax advisory and accounting packages in Dubai starting from AED 400/month covering IFRS double-entry bookkeeping, quarterly 5% VAT Form 201 returns, EmaraTax Corporate Tax registration and filing, and 0% Small Business Relief elections up to AED 3,000,000 in annual revenue. Every retainer is led by FTA-Registered Tax Agents with predictable fixed fees and zero hourly billing surprises.",
+  },
+  {
+    question: "How much do accounting services cost for a small business in Dubai and Sharjah?",
+    answer:
+      "Small business accounting services in Dubai and Sharjah start from AED 400/month across three transparent fixed-fee tiers: Starter Compliance at AED 400/mo, Growth VAT + CT at AED 750/mo, and Free Zone QFZP Audit-Ready at AED 1,250/mo (all rates exclude 5% UAE VAT).",
+  },
+];
+
 const PRICING_FAQS: FAQSchemaItem[] = [
   {
     question: "What is included in Dias Accounting's fixed-fee accounting packages in Dubai?",
@@ -303,6 +316,8 @@ const PRICING_FAQS: FAQSchemaItem[] = [
   },
 ];
 
+const ALL_PRICING_SCHEMA_FAQS: FAQSchemaItem[] = [...FEATURED_PRICING_FAQS, ...PRICING_FAQS];
+
 export const PricingPage: React.FC<PricingPageProps> = ({
   onNavigate,
   onOpenAudit,
@@ -318,16 +333,16 @@ export const PricingPage: React.FC<PricingPageProps> = ({
 
   useEffect(() => {
     applyPageSEO({
-      title: "UAE Accounting & Tax Pricing From AED 400 | Dias Accounting",
+      title: "Accounting & Tax Packages in Dubai & UAE | Fixed Fees From AED 400/Month",
       description:
-        "Transparent fixed-fee monthly IFRS bookkeeping, 5% UAE VAT Form 201 & 9% Corporate Tax packages in Dubai & Sharjah from AED 400/mo with zero hidden fees.",
+        "Compare transparent monthly IFRS bookkeeping, 5% VAT filing & 2026 UAE Corporate Tax packages for startups and SMEs in Dubai & Sharjah. Zero hidden fees.",
       canonicalPath: "/pricing",
       keywords:
         "UAE accounting packages, monthly bookkeeping pricing Dubai, fixed fee corporate tax filing UAE, VAT return filing cost Dubai",
     });
     upsertJsonLd(
       "page-faq-jsonld",
-      buildFAQPageSchema(PRICING_FAQS, "https://diasuae.ae/pricing#faqs")
+      buildFAQPageSchema(ALL_PRICING_SCHEMA_FAQS, "https://diasuae.ae/pricing#faqs")
     );
     upsertJsonLd(
       "page-breadcrumb-jsonld",
@@ -681,17 +696,77 @@ export const PricingPage: React.FC<PricingPageProps> = ({
           </div>
         </section>
 
-        {/* Minimal 5-Item Pricing FAQ Accordion */}
+        {/* Exact-Match H2 FAQ & Pricing Breakdown Section */}
         <section id="faqs" className="bg-[#F8FAFC] py-16 lg:py-20 border-t border-[#E2E8F0]">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center mb-10">
-              <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#0D1B2A] tracking-tight">
-                Pricing Questions, Answered
-              </h2>
-              <p className="text-[#475569] text-sm sm:text-base mt-2">
-                Clear details on retainers, VAT &amp; Corporate Tax filings, and backlog catch-up.
+              <span className="inline-block text-xs font-semibold uppercase tracking-wider text-[#856422] mb-2">
+                UAE Accounting &amp; Tax Pricing Guide
+              </span>
+              <p className="text-[#475569] text-sm sm:text-base">
+                Clear details on monthly retainers, 5% VAT Form 201 &amp; 9% Corporate Tax filings, and backlog catch-up.
               </p>
             </div>
+
+            {/* Direct Answer H2 Cards (#070d19 Navy & #c5a059 Gold Accents) */}
+            <div className="space-y-6 mb-12">
+              <article className="rounded-2xl bg-[#070d19] text-white border border-[#c5a059]/30 p-6 sm:p-8 shadow-sm">
+                <div className="w-10 h-[2px] bg-[#c5a059] mb-4" aria-hidden="true" />
+                <h2 className="font-display text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug mb-3">
+                  What tax advisory and accounting packages are available in Dubai?
+                </h2>
+                <p className="text-sm sm:text-[15px] text-slate-200 leading-relaxed">
+                  Dias Accounting offers fixed monthly tax advisory and accounting packages in Dubai starting from <strong className="text-[#c5a059] font-semibold">AED 400/month</strong> covering IFRS double-entry bookkeeping, quarterly 5% VAT Form 201 returns, EmaraTax Corporate Tax registration and filing, and 0% Small Business Relief elections up to AED 3,000,000 in annual revenue. Every retainer is managed by FTA-Registered Tax Agents with predictable fixed fees and zero hourly billing surprises.
+                </p>
+              </article>
+
+              <article className="rounded-2xl bg-[#070d19] text-white border border-[#c5a059]/30 p-6 sm:p-8 shadow-sm">
+                <div className="w-10 h-[2px] bg-[#c5a059] mb-4" aria-hidden="true" />
+                <h2 className="font-display text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug mb-3">
+                  How much do accounting services cost for a small business in Dubai and Sharjah?
+                </h2>
+                <p className="text-sm sm:text-[15px] text-slate-200 leading-relaxed mb-5">
+                  Small business accounting services in Dubai and Sharjah start from <strong className="text-[#c5a059] font-semibold">AED 400/month</strong> across three transparent fixed-fee tiers designed for UAE startups, VAT-registered SMEs, and audit-ready Free Zone companies:
+                </p>
+                <div className="rounded-xl overflow-hidden border border-white/15 bg-[#0D1B2A]/60">
+                  <div className="overflow-x-auto">
+                    <table className="w-full min-w-[480px] text-left border-collapse text-sm">
+                      <thead>
+                        <tr className="border-b border-[#c5a059]/40 bg-[#0D1B2A] text-[#c5a059]">
+                          <th className="py-3 px-4 font-semibold">Package Tier</th>
+                          <th className="py-3 px-4 font-semibold">Monthly Fee</th>
+                          <th className="py-3 px-4 font-semibold">Core Compliance Scope</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-white/10 text-slate-200">
+                        <tr>
+                          <td className="py-3 px-4 font-semibold text-white">Starter Compliance</td>
+                          <td className="py-3 px-4 font-semibold text-[#c5a059] tabular-nums">AED 400/mo</td>
+                          <td className="py-3 px-4">Monthly IFRS bookkeeping, P&amp;L/Balance Sheet &amp; annual 0% SBR Corporate Tax filing</td>
+                        </tr>
+                        <tr className="bg-white/[0.03]">
+                          <td className="py-3 px-4 font-semibold text-white">Growth VAT + CT</td>
+                          <td className="py-3 px-4 font-semibold text-[#c5a059] tabular-nums">AED 750/mo</td>
+                          <td className="py-3 px-4">Monthly IFRS books, quarterly 5% VAT Form 201 filing, input VAT recovery &amp; 9% Corporate Tax</td>
+                        </tr>
+                        <tr>
+                          <td className="py-3 px-4 font-semibold text-white">Free Zone QFZP Audit-Ready</td>
+                          <td className="py-3 px-4 font-semibold text-[#c5a059] tabular-nums">AED 1,250/mo</td>
+                          <td className="py-3 px-4">Full IFRS audit file, 0% QFZP De Minimis &amp; substance checks, VAT 201 &amp; fractional CFO review</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </article>
+            </div>
+
+            <div className="max-w-3xl mx-auto">
+              <div className="text-center mb-6">
+                <h3 className="font-display text-xl sm:text-2xl font-bold text-[#0D1B2A] tracking-tight">
+                  Additional Pricing Questions
+                </h3>
+              </div>
 
             <div className="divide-y divide-[#E2E8F0] border-y border-[#E2E8F0]">
               {PRICING_FAQS.map((faq, idx) => {
@@ -722,6 +797,7 @@ export const PricingPage: React.FC<PricingPageProps> = ({
                   </div>
                 );
               })}
+            </div>
             </div>
           </div>
         </section>

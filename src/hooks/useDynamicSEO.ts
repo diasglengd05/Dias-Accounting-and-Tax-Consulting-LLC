@@ -28,9 +28,9 @@ export interface SEOConfig {
 
 export const SECTION_SEO_MAP_EN: Record<string, SEOConfig> = {
   home: {
-    title: "UAE Corporate Tax & Fixed-Fee Accounting | Dias Accounting",
+    title: "Dias Accounting UAE | FTA-Registered Tax Agents Dubai & SHAMS (From AED 400/Mo)",
     description:
-      "FTA-Registered Tax Agents in Dubai & Sharjah (SHAMS). Fixed-fee IFRS bookkeeping from AED 400/mo, 5% UAE VAT & 9% Corporate Tax filings. Free 15-min check.",
+      "Fixed-fee monthly IFRS bookkeeping, 5% VAT Form 201 returns & 9% UAE Corporate Tax filing in Dubai, DIFC, DTEC & SHAMS. Led by FTA-Registered Tax Agent Glen Dias. Book a free 15-min check.",
     keywords:
       "UAE Corporate Tax, UAE VAT Compliance, IFRS Bookkeeping Dubai, FTA Registered Tax Agent, Fixed-Fee Accounting Packages UAE, SHAMS Accounting Firm, DIFC Tax Compliance, Dias Accounting",
     hash: "#home",
@@ -133,7 +133,11 @@ export function useDynamicSEO({
         };
       }
 
-      const canonicalUrl = `${SITE_URL}/`;
+      const canonicalUrl = selectedBlog
+        ? `${SITE_URL}/blog/${selectedBlog.id}`
+        : selectedService
+          ? `${SITE_URL}/services/${selectedService.id}`
+          : `${SITE_URL}/`;
 
       document.title = seoConfig.title;
       setMetaTag("name", "title", seoConfig.title);

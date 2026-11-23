@@ -58,9 +58,9 @@ export const DividendsAuditPage: React.FC<PageProps> = ({
   };
 
   useEffect(() => {
-    const pageTitle = "Statutory Dividend Audit Dubai & UAE | Dias Accounting";
+    const pageTitle = "Dividends Audit Dubai & UAE | Statutory Interim & Final Dividend Audits";
     const pageDesc =
-      "Statutory dividend audit and distributable profit certification in Dubai & UAE under Commercial Companies Law, with 0% Corporate Tax exemption review.";
+      "Fast, compliant statutory dividend audits for Dubai Mainland, DIFC, DTEC & Free Zone companies under UAE Commercial Companies Law. Clear audit sign-off by FTA-Registered Tax Agents.";
     const canonicalPath = "/dividends-audit";
     const pageUrl = `https://diasuae.ae${canonicalPath}`;
 

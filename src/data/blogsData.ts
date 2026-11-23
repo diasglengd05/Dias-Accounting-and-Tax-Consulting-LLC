@@ -1072,7 +1072,7 @@ Our fixed-fee model eliminates billing uncertainty once and for all. Whether you
 * **Direct Communication Without the Clock:** Pick up the phone or message your dedicated accountant via WhatsApp without worrying about extra billing increments.
 * **Audit-Ready Cloud Infrastructure:** Seamless setup and maintenance using industry-standard platforms including Zoho Books, Xero, or QuickBooks.
 
-Explore our full breakdown of tiers and transparent pricing at [diasuae.ae/pricing](https://diasuae.ae/pricing).
+Explore our full breakdown of [fixed-fee accounting packages in Dubai](/pricing) starting from AED 400/month, or estimate your 9% Corporate Tax and 5% VAT liability with our free [2026 UAE Corporate Tax & 5% VAT Calculator](/uae-tax-planner).
 
 ---
 
@@ -1126,7 +1126,7 @@ When you partner with **Dias Accounting & Tax Consulting LLC**, you benefit from
 | **Financial Statements** | Annual P&L & Balance Sheet | Monthly Management Reports | Dedicated CFO Insights |
 | **FTA Representation** | Included | Included | Priority Representation |
 
-View complete tier details and schedule a free onboarding consultation at [diasuae.ae/pricing](https://diasuae.ae/pricing).
+View complete tier details on our [fixed-fee accounting packages in Dubai](/pricing) page. Operating in DIFC or DTEC? Explore our dedicated [DIFC tax compliance services](/tax-planning-difc) and [statutory dividends audit in Dubai](/dividends-audit) desks, or run a quick estimate on our [2026 UAE Corporate Tax & 5% VAT Calculator](/uae-tax-planner).
 
 ---
 
@@ -1151,7 +1151,7 @@ Yes, Corporate Tax registration is strictly mandatory for every UAE mainland and
 Stop paying unpredictable hourly bills and worrying about impending FTA tax deadlines. Partner with **Dias Accounting & Tax Consulting LLC** and secure full regulatory compliance for your business with fixed monthly pricing you can trust.
 
 **Ready to streamline your finances?**  
-Visit [diasuae.ae/pricing](https://diasuae.ae/pricing) to choose your fixed-fee package or contact our advisory team in Dubai and Sharjah today for a free, no-obligation consultation.`
+Compare our [fixed-fee accounting packages in Dubai](/pricing), model your 0% Small Business Relief eligibility in the [2026 UAE Corporate Tax & 5% VAT Calculator](/uae-tax-planner), or contact our advisory team in Dubai and Sharjah today for a free, no-obligation consultation.`
   },
   {
     id: "uae-tax-deadlines-corporate-tax-vat-bookkeeping-guide-2026",
@@ -1538,7 +1538,7 @@ For modern founders and enterprises operating in Dubai's premier innovation and 
 
 With the enforcement of **Federal Decree-Law No. 47 of 2022 on the Taxation of Corporations and Businesses**, the **UAE Commercial Companies Law (Federal Decree-Law No. 32 of 2021)**, and **DFSA prudential rules**, businesses operating in DTEC and DIFC must maintain strict **double-entry bookkeeping** and statutory audit readiness.
 
-Under the direction of **Glen Dias**, *Managing Director and FTA-Registered Tax Agent*, **Dias Accounting and Tax Consulting LLC** operates as a premier **double-entry tax consultant office in Dubai and Sharjah**, delivering specialized accounting services in DTEC, virtual accounting in DIFC, and certified statutory **Dividends Audits**.
+Under the direction of **Glen Dias**, *Managing Director and FTA-Registered Tax Agent*, **Dias Accounting and Tax Consulting LLC** operates as a premier **double-entry tax consultant office in Dubai and Sharjah**, delivering specialized [DIFC tax compliance services](/tax-planning-difc), [fixed-fee accounting packages in Dubai](/pricing) starting from AED 400/month, and certified [statutory dividends audit in Dubai](/dividends-audit) sign-off. You can also estimate your 0% QFZP and 9% Corporate Tax exposure instantly with our [2026 UAE Corporate Tax & 5% VAT Calculator](/uae-tax-planner).
 
 ---
 
@@ -1565,6 +1565,8 @@ As a recognized Common Law financial free zone regulated by the **Dubai Financia
 3. **DFSA Regulatory Workpaper Preparation:** Preparing IFRS financial workpapers, capital adequacy computations, and external audit files.
 4. **Anti-Money Laundering (AML & goAML):** Establishing institutional KYC/CDD protocols and SACM filings for Designated Non-Financial Businesses and Professions (DNFBPs).
 
+Explore our dedicated [DIFC tax compliance services](/tax-planning-difc) desk for 0% QFZP structuring, audited IFRS preparation, and DTEC monthly accounting.
+
 ---
 
 ## 4. The Critical Role of an Accredited Double-Entry Tax Consultant Office in Dubai
@@ -1590,7 +1592,7 @@ Under **Federal Decree-Law No. 32 of 2021 (Commercial Companies Law)** and **Art
 2. **Director Liability Protection:** Distributing dividends from unverified or fictional profits creates personal, civil, and criminal liability for company directors and managers.
 3. **0% Dividend Tax Substantiation:** Domestic dividends distributed by UAE resident juridical persons are **100% exempt from UAE Corporate Tax**. A formal **Dividends Audit report** validates that the distribution does not disguise deductible executive remuneration or non-arm's length connected person transfers.
 
-Dias Accounting provides swift, independent **Dividends Audit & Distributable Reserves Certification** across Dubai and the UAE within 48 to 72 hours.
+Dias Accounting provides swift, independent [statutory dividends audit in Dubai](/dividends-audit) & Distributable Reserves Certification across Dubai Mainland, DIFC, DTEC, and UAE Free Zones within 48 to 72 hours.
 
 ---
 
@@ -1620,6 +1622,7 @@ Dias Accounting is licensed and headquartered in **Sharjah Media City (SHAMS Lic
 Whether you operate a technology venture in **DTEC Silicon Oasis**, a financial consultancy in **DIFC**, or an established Mainland enterprise in Dubai or Sharjah:
 
 - **Managing Director & Lead Tax Agent:** Glen Dias
+- **Core Service Pages:** [DIFC tax compliance services](/tax-planning-difc) · [statutory dividends audit in Dubai](/dividends-audit) · [fixed-fee accounting packages in Dubai](/pricing) · [2026 UAE Corporate Tax & 5% VAT Calculator](/uae-tax-planner)
 - **Direct Phone & WhatsApp:** [+971 52 922 6958](https://wa.me/971529226958?text=Hello%20Dias%20Accounting,%20we%20require%20accounting%20and%20tax%20advisory%20in%20Dubai)
 - **Corporate Desk Email:** info@diasuae.ae
 - **Headquarters:** Sharjah Media City (SHAMS), Al Messaned, Sharjah, United Arab Emirates (Serving Dubai & All UAE)
