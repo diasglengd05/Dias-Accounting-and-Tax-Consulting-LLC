@@ -8,6 +8,11 @@ import {
   ShieldCheck,
   ArrowUpRight,
 } from "lucide-react";
+import {
+  ClutchRatingWidget,
+  ClutchAwardBadge,
+  CLUTCH_AWARD_CAPTION,
+} from "./ClutchBadges";
 
 interface PageFooterProps {
   onNavigate: (path: string) => void;
@@ -65,6 +70,16 @@ export const PageFooter: React.FC<PageFooterProps> = ({
                 <span className="text-slate-400">·</span>
                 <span>48 Verified Reviews</span>
               </a>
+
+              {/* Live Clutch Rating Widget (40px pill) */}
+              <div className="pt-3 space-y-1.5">
+                <div className="inline-flex items-center rounded-lg bg-white/95 px-2.5 py-1 shadow-xs">
+                  <ClutchRatingWidget />
+                </div>
+                <p className="text-xs text-slate-300 leading-snug">
+                  Verified UAE Accounting &amp; Corporate Tax Partner on Clutch
+                </p>
+              </div>
             </div>
 
             <div className="flex items-center gap-3 pt-1">
@@ -278,6 +293,19 @@ export const PageFooter: React.FC<PageFooterProps> = ({
               <div className="text-xs text-slate-400 leading-relaxed pt-1 tabular-nums">
                 <p>Mon – Fri: 9:00 AM – 6:00 PM GST</p>
                 <p>Sat: 10:00 AM – 2:00 PM GST</p>
+              </div>
+
+              {/* Visually Separated 2026 Clutch Award Accreditations */}
+              <div className="pt-4 mt-4 border-t border-white/10">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#C5A059] mb-3">
+                  2026 Industry Recognition
+                </p>
+                <div className="space-y-3">
+                  <ClutchAwardBadge />
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    {CLUTCH_AWARD_CAPTION}
+                  </p>
+                </div>
               </div>
             </div>
           </div>

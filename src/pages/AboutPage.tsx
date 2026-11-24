@@ -19,6 +19,10 @@ import {
   removeJsonLd,
   upsertJsonLd,
 } from "../lib/seo";
+import {
+  ClutchAwardBadge,
+  CLUTCH_AWARD_CAPTION,
+} from "../components/ClutchBadges";
 
 interface AboutPageProps {
   onNavigate: (path: string) => void;
@@ -254,6 +258,22 @@ export const AboutPage: React.FC<AboutPageProps> = ({
                     );
                   })}
                 </div>
+              </div>
+            </div>
+
+            {/* 2026 Clutch Awards & Independent Industry Recognition */}
+            <div className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center gap-6 shadow-[0_8px_28px_-16px_rgba(13,27,42,0.06)]">
+              <ClutchAwardBadge />
+              <div className="space-y-2">
+                <span className="inline-block text-xs font-semibold uppercase tracking-wider text-[#856422]">
+                  2026 Clutch Industry Awards
+                </span>
+                <h3 className="font-display text-lg sm:text-xl font-bold text-[#0D1B2A] tracking-tight">
+                  Top Financial Forecast &amp; Financial Risk Advisory Consultants — United Arab Emirates (2026)
+                </h3>
+                <p className="text-sm sm:text-base text-[#475569] leading-[1.65] max-w-[65ch]">
+                  {CLUTCH_AWARD_CAPTION} Alongside our Federal Tax Authority (FTA) Registered Tax Agency status, these distinctions reflect our partner-led rigor across UAE cash-flow modeling, financial risk governance, IFRS management reporting, and Fractional CFO advisory.
+                </p>
               </div>
             </div>
 

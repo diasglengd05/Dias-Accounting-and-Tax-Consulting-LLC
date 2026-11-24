@@ -15,6 +15,8 @@ import {
   removeJsonLd,
   upsertJsonLd,
 } from "../lib/seo";
+import { ClutchRatingWidget } from "../components/ClutchBadges";
+import OfficialRecognitionSection from "../components/OfficialRecognitionSection";
 
 interface TestimonialsPageProps {
   onNavigate: (path: string) => void;
@@ -113,28 +115,42 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({
             </nav>
 
             <div className="text-center max-w-2xl mx-auto space-y-5">
-              {/* Large Tabular-Nums 5.0 Rating + Metallic Gold Stars */}
-              <div className="inline-flex flex-col items-center gap-2">
-                <div className="flex items-baseline gap-3">
-                  <span className="font-display text-5xl sm:text-6xl font-extrabold text-[#0D1B2A] tracking-tight tabular-nums leading-none">
-                    {GOOGLE_RATING_STATS.rating.toFixed(1)}
-                  </span>
-                  <div
-                    className="flex items-center gap-1 pb-1"
-                    aria-label="5 out of 5 stars on Google"
-                  >
-                    {Array.from({ length: 5 }).map((_, idx) => (
-                      <Star
-                        key={idx}
-                        className="w-5 h-5 fill-[#C5A059] text-[#C5A059]"
-                        aria-hidden="true"
-                      />
-                    ))}
+              {/* Large Tabular-Nums 5.0 Rating + Live Clutch Rating Widget */}
+              <div className="inline-flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-7">
+                <div className="inline-flex flex-col items-center gap-2">
+                  <div className="flex items-baseline gap-3">
+                    <span className="font-display text-5xl sm:text-6xl font-extrabold text-[#0D1B2A] tracking-tight tabular-nums leading-none">
+                      {GOOGLE_RATING_STATS.rating.toFixed(1)}
+                    </span>
+                    <div
+                      className="flex items-center gap-1 pb-1"
+                      aria-label="5 out of 5 stars on Google"
+                    >
+                      {Array.from({ length: 5 }).map((_, idx) => (
+                        <Star
+                          key={idx}
+                          className="w-5 h-5 fill-[#C5A059] text-[#C5A059]"
+                          aria-hidden="true"
+                        />
+                      ))}
+                    </div>
                   </div>
+                  <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-[#475569] tabular-nums">
+                    Verified Google Reviews · {GOOGLE_RATING_STATS.reviewCount} Reviews
+                  </p>
                 </div>
-                <p className="text-xs sm:text-sm font-semibold uppercase tracking-wider text-[#475569] tabular-nums">
-                  Verified Google Reviews · {GOOGLE_RATING_STATS.reviewCount} Reviews
-                </p>
+
+                <div
+                  aria-hidden="true"
+                  className="hidden sm:block h-14 w-px bg-[#E2E8F0]"
+                />
+
+                <div className="inline-flex flex-col items-center gap-1.5">
+                  <ClutchRatingWidget />
+                  <p className="text-xs font-medium text-[#475569]">
+                    Verified UAE Accounting &amp; Corporate Tax Partner on Clutch
+                  </p>
+                </div>
               </div>
 
               <h1 className="font-display text-3xl sm:text-4xl lg:text-[2.6rem] font-extrabold text-[#0D1B2A] tracking-tight leading-[1.15]">
@@ -208,7 +224,10 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({
           </div>
         </section>
 
-        {/* 3. Understated Closing CTA Strip */}
+        {/* 3. Official 2026 Recognition (Clutch UAE Awards) */}
+        <OfficialRecognitionSection id="testimonials-official-2026-recognition" />
+
+        {/* 4. Understated Closing CTA Strip */}
         <SectionCTA
           variant="strip"
           title="Ready for stress-free UAE compliance?"

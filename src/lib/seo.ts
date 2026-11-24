@@ -193,6 +193,7 @@ export function buildAccountingServiceSchema() {
       reviewCount: BUSINESS_ENTITY.aggregateRating.reviewCount,
       bestRating: BUSINESS_ENTITY.aggregateRating.bestRating,
     },
+    award: BUSINESS_ENTITY.award,
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: "Fixed-Fee UAE Accounting & Tax Retainers",

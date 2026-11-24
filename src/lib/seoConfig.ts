@@ -70,7 +70,14 @@ export const BUSINESS_ENTITY = {
     jobTitle: "FTA-Registered Tax Agent",
     sameAs: ["https://www.linkedin.com/company/diasaccounting/"],
   },
+  award: [
+    "Top Financial Risk Advisory Consultants Company - United Arab Emirates 2026 (Clutch)",
+    "Top Financial Forecast Consultants Company - United Arab Emirates 2026 (Clutch)",
+  ],
   sameAs: [
+    // TODO: Replace "your-exact-clutch-slug" with your verified Clutch profile URL slug
+    "https://clutch.co/profile/your-exact-clutch-slug",
+    "https://www.linkedin.com/company/diasaccounting/",
     "https://insights.diasuae.ae/",
     "https://wa.me/971529226958",
   ],

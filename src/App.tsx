@@ -27,6 +27,8 @@ import PageFooter from "./components/PageFooter";
 import useDynamicSEO from "./hooks/useDynamicSEO";
 import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 import LazyMount from "./components/LazyMount";
+import { ClutchRatingWidget } from "./components/ClutchBadges";
+import OfficialRecognitionSection from "./components/OfficialRecognitionSection";
 
 // Lazy-loaded components for fast mobile JS execution & small initial bundle size
 const GoogleOfficeMap = React.lazy(() => import("./components/GoogleOfficeMap"));
@@ -793,7 +795,7 @@ function MainApp() {
                 </div>
 
                 {/* Subtle Single-Line Trust Bar */}
-                <div className="pt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm text-[#475569]">
+                <div className="pt-2 flex flex-wrap items-center gap-x-3 gap-y-2.5 text-sm text-[#475569]">
                   <span className="font-medium text-[#0D1B2A]">
                     {isAr ? "وكالة ضريبية مسجلة لدى الهيئة" : "FTA Registered Tax Agency"}
                   </span>
@@ -808,6 +810,10 @@ function MainApp() {
                   </a>
                   <span aria-hidden="true" className="text-slate-300">•</span>
                   <span className="tabular-nums">{isAr ? "+500 شركة وإقرار في الإمارات" : "500+ UAE Businesses & Filings"}</span>
+                  <span aria-hidden="true" className="text-slate-300 hidden sm:inline">•</span>
+                  <span className="inline-flex items-center">
+                    <ClutchRatingWidget />
+                  </span>
                 </div>
               </div>
 
@@ -911,8 +917,31 @@ function MainApp() {
                 </p>
               </div>
             </div>
+
+            {/* Statutory Accreditation Strip */}
+            <div className="mt-10 pt-8 border-t border-slate-200">
+              <div className="flex items-start gap-4 rounded-2xl bg-white border border-[#E2E8F0] p-5 sm:p-6">
+                <div className="w-11 h-11 rounded-xl bg-[#1B4332]/10 border border-[#1B4332]/20 flex items-center justify-center text-[#1B4332] shrink-0">
+                  <ShieldCheck className="w-5 h-5" aria-hidden="true" />
+                </div>
+                <div className="space-y-1">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-[#1B4332]">
+                    Statutory Accreditation
+                  </p>
+                  <p className="text-sm sm:text-base font-bold text-[#0D1B2A]">
+                    FTA Registered Tax Agency · United Arab Emirates
+                  </p>
+                  <p className="text-xs sm:text-sm text-[#475569] leading-relaxed">
+                    Licensed in Sharjah Media City (Trade Licence SHAMS 2646813.01) and led by FTA-Registered Tax Agent Glen Dias.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
+
+        {/* Official 2026 Recognition (Clutch UAE Awards) */}
+        <OfficialRecognitionSection id="homepage-official-2026-recognition" />
 
         {/* 3. Core Services Grid (Clean 3-Column Layout) */}
         <section

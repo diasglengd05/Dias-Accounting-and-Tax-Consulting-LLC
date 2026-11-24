@@ -21,6 +21,10 @@ import ServicePageTemplate, {
   ServiceDeliverableCard,
   ServiceProcessStep,
 } from "../components/hub/ServicePageTemplate";
+import {
+  ClutchAwardBadge,
+  CLUTCH_AWARD_CAPTION,
+} from "../components/ClutchBadges";
 
 interface ServiceDetailPageProps {
   serviceId?: string;
@@ -447,6 +451,31 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
       deliverablesHeading={`What's Included in ${currentService.title}`}
       deliverablesSubheading="Every deliverable is prepared by senior UAE chartered accountants and verified against current Federal Tax Authority regulations."
       deliverables={deliverableCards}
+      customTopSection={
+        currentService.id === "cfo-advisory" ? (
+          <section
+            aria-label="2026 Clutch Financial Forecasting and Risk Advisory Award Recognition"
+            className="bg-[#F8FAFC] border-b border-[#E2E8F0] py-10 lg:py-12"
+          >
+            <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center gap-6 shadow-xs">
+                <ClutchAwardBadge />
+                <div className="space-y-1.5">
+                  <span className="inline-block text-xs font-semibold uppercase tracking-wider text-[#856422]">
+                    2026 Clutch Awards · Financial Forecasting &amp; Risk Advisory
+                  </span>
+                  <h2 className="font-display text-lg sm:text-xl font-bold text-[#0D1B2A] tracking-tight">
+                    Top Financial Forecast &amp; Financial Risk Advisory Consultants — UAE 2026
+                  </h2>
+                  <p className="text-sm sm:text-base text-[#475569] leading-[1.65] max-w-[65ch]">
+                    {CLUTCH_AWARD_CAPTION} Our Fractional CFO &amp; Financial Advisory desk delivers rolling 13-week cash-flow forecasts, financial risk controls, investor-grade three-statement IFRS models, and UAE Corporate Tax scenario planning for Mainland and Free Zone leadership teams.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </section>
+        ) : undefined
+      }
       processHeading="How We Work"
       processSubheading="A structured 4-step engagement built for clean handoffs, predictable timelines, and zero FTA penalties."
       processSteps={DEFAULT_PROCESS_STEPS}
