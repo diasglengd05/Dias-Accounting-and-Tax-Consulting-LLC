@@ -119,27 +119,4 @@ export const draftPlaceholderPosts: BlogPost[] = [
 ### 4. Fixed-Fee Solutions
 - Dias Accounting provides fixed-fee historical Backlog Catch-Up packages starting at AED 2,500 per fiscal year.`,
   },
-  {
-    id: "draft-top-tax-mistakes-uae-companies-make",
-    title: "Top 7 Common Tax Mistakes UAE Companies Make (and How to Avoid Them)",
-    summary:
-      "From commingling personal and business funds to ignoring connected person rules, discover the top fiscal compliance errors UAE businesses commit and how to fix them.",
-    date: "Upcoming Article",
-    readTime: "Outline Draft",
-    tag: "Compliance and Penalties",
-    author: draftAuthor,
-    content: `## Executive Overview
-
-### The 7 Critical Mistakes UAE Businesses Make:
-1. Assuming Free Zone entities are exempt from Corporate Tax registration (mandatory for all commercial licenses).
-2. Commingling shareholder personal finances with corporate bank accounts, disallowing major tax deductions.
-3. Missing designated FTA Corporate Tax registration windows (attracting an immediate AED 10,000 fine).
-4. Over-claiming client entertainment expenses (statutorily restricted to 50% deductibility under Article 32).
-5. Non-arm's length compensation, management charges, and bonuses paid to Connected Persons or family relatives.
-6. Overlooking reverse charge VAT on overseas software licenses, cloud hosting, and marketing platforms.
-7. Relying on disconnected spreadsheets instead of double-entry cloud accounting platforms (Zoho Books, QuickBooks, Xero).
-
-### Proactive Next Steps
-- Take the free Dias 60-Second Penalty Risk Audit or book a consultation with Senior Tax Advisor Glen Dias.`,
-  },
 ];

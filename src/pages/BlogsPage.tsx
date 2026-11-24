@@ -291,7 +291,7 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
   return (
     <div className="min-h-screen bg-[#FFFFFF] font-sans text-[#0D1B2A] antialiased">
       <PageNavigation
-        currentPath="/blogs"
+        currentPath="/blog"
         onNavigate={onNavigate}
         onOpenAudit={onOpenAudit}
       />

@@ -423,7 +423,7 @@ export const TaxPlanningSavingsChart: React.FC = () => {
             <div className="space-y-1">
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-xs sm:text-sm font-bold text-white">
-                  {isAr ? "باقة بداية الأعمال (Business Starter) — رسم ثابت 500 درهم فقط" : "Business Starter Package — From Just AED 500 Flat Fee"}
+                  {isAr ? "باقة بداية الأعمال (Business Starter) — تبدأ من 400 درهم/شهرياً" : "Business Starter Package — From AED 400/Month"}
                 </span>
                 <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-400/30 uppercase tracking-wider">
                   {isAr ? "لا رسوم خفية" : "Zero Sticker Shock Guarantee"}
@@ -431,8 +431,8 @@ export const TaxPlanningSavingsChart: React.FC = () => {
               </div>
               <p className="text-xs text-slate-300 leading-relaxed max-w-2xl">
                 {isAr
-                  ? "الأرقام المعروضة أدناه توضح العائد المالي التراكمي للوفورات واسترداد ضريبة المدخلات على مدار 12 شهراً لعملك وليست تكلفة أتعاب! تبدأ خدماتنا من باقة بسيطة وميسرة برسوم ثابتة تبدأ من 500 درهم لإقرار ضريبة الشركات أو 750 درهم/شهرياً لمسك الدفاتر."
-                  : "The figures modeled below illustrate 12-month cumulative tax retention & VAT refunds for your business—not our fee! Affordable compliance starts with our fixed-fee Business Starter (MicroBiz CT Assist) at just AED 500 or AED 750/mo retainer."}
+                  ? "الأرقام المعروضة أدناه توضح العائد المالي التراكمي للوفورات واسترداد ضريبة المدخلات على مدار 12 شهراً لعملك وليست تكلفة أتعاب! تبدأ خدماتنا من باقة ثابتة تبدأ من 400 درهم/شهرياً لمسك الدفاتر والامتثال الضريبي."
+                  : "The figures modeled below illustrate 12-month cumulative tax retention & VAT refunds for your business—not our fee! Transparent monthly IFRS accounting & tax retainers start from AED 400/month (billed annually)."}
               </p>
             </div>
           </div>
@@ -440,7 +440,7 @@ export const TaxPlanningSavingsChart: React.FC = () => {
             href="#standalone-packages"
             className="shrink-0 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-display font-black text-xs py-2.5 px-4 rounded-xl shadow-md transition-all flex items-center gap-1.5 cursor-pointer self-stretch sm:self-auto justify-center hover:scale-105"
           >
-            <span>{isAr ? "عرض باقة 500 درهم" : "View Business Starter (AED 500)"}</span>
+            <span>{isAr ? "عرض باقة 400 درهم/شهرياً" : "View Starter Plan (AED 400/mo)"}</span>
             <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
           </a>
         </div>
@@ -457,8 +457,8 @@ export const TaxPlanningSavingsChart: React.FC = () => {
             </div>
             <div className="text-[10px] text-slate-400 leading-tight">
               {isAr
-                ? "استرداد VAT روتيني وتوثيق القيود الدفترية • باقة البداية من 500 درهم"
-                : "Basic VAT deduction & statutory filing • Starter from AED 500 flat"}
+                ? "استرداد VAT روتيني وتوثيق القيود الدفترية • تبدأ الباقات من 400 درهم/شهرياً"
+                : "Basic VAT deduction & statutory filing • Starter from AED 400/mo"}
             </div>
           </div>
 

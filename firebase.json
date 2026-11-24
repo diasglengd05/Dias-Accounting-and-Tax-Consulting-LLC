@@ -33,6 +33,31 @@
         "source": "/tax-planning-difc.html",
         "destination": "/tax-planning-difc",
         "type": 301
+      },
+      {
+        "source": "/blogs",
+        "destination": "/blog",
+        "type": 301
+      },
+      {
+        "source": "/blogs/",
+        "destination": "/blog",
+        "type": 301
+      },
+      {
+        "source": "/blog/draft-top-tax-mistakes-uae-companies-make",
+        "destination": "/blog/top-tax-mistakes-uae-companies-make",
+        "type": 301
+      },
+      {
+        "source": "/blogs/draft-top-tax-mistakes-uae-companies-make",
+        "destination": "/blog/top-tax-mistakes-uae-companies-make",
+        "type": 301
+      },
+      {
+        "source": "/blogs/:slug",
+        "destination": "/blog/:slug",
+        "type": 301
       }
     ],
     "rewrites": [

@@ -23,7 +23,8 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
   relativeTime,
 }) => {
   const starCount = Math.max(1, Math.min(5, Math.round(rating)));
-  const roleCompany = [authorRole, authorCompany].filter(Boolean).join(", ");
+  const industryJurisdiction = [authorCompany, location].filter(Boolean).join(", ");
+  const attributionLine = [authorRole, industryJurisdiction].filter(Boolean).join(" · ");
 
   return (
     <article className="h-full rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-7 sm:p-8 shadow-[0_6px_24px_-16px_rgba(13,27,42,0.08)] flex flex-col justify-between transition-shadow hover:shadow-[0_12px_32px_-16px_rgba(13,27,42,0.12)]">
@@ -58,14 +59,9 @@ export const ReviewCard: React.FC<ReviewCardProps> = ({
           <p className="font-display font-bold text-sm sm:text-[15px] text-[#0D1B2A] truncate">
             {authorName}
           </p>
-          {roleCompany && (
-            <p className="text-xs sm:text-[13px] text-[#475569] mt-0.5 leading-snug">
-              {roleCompany}
-            </p>
-          )}
-          {location && (
-            <p className="text-xs text-[#64748B] mt-0.5">
-              {location}
+          {attributionLine && (
+            <p className="text-xs sm:text-[13px] text-[#475569] mt-1 leading-snug">
+              {attributionLine}
             </p>
           )}
         </div>

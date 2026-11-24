@@ -253,25 +253,55 @@ app.set("trust proxy", true);
 // Security: Disable X-Powered-By header to prevent fingerprinting
 app.disable("x-powered-by");
 
-// Canonical Domain Enforcement: 301 Permanent Redirect from www.diasuae.ae/* -> https://diasuae.ae/*
+// Canonical Domain & Route Consolidation: 301 Permanent Redirects
 app.use((req, res, next) => {
   const forwardedHost = (req.headers["x-forwarded-host"] as string) || "";
   const rawHost = (forwardedHost.split(",")[0] || req.headers.host || "").trim().toLowerCase();
   const hostname = rawHost.split(":")[0];
 
-  if (hostname === "www.diasuae.ae") {
-    const rawUrl = req.originalUrl || "/";
-    const [rawPath, qs] = rawUrl.split("?");
-    let cleanPath = rawPath || "/";
-    const lowerPath = cleanPath.toLowerCase();
-    if (lowerPath === "/home" || lowerPath === "/home/" || lowerPath === "/home.html" || lowerPath === "/index.html") {
-      cleanPath = "/";
-    } else if (cleanPath.length > 1 && cleanPath.endsWith("/")) {
-      cleanPath = cleanPath.replace(/\/+$/, "");
+  const rawUrl = req.originalUrl || "/";
+  const [rawPath, qs] = rawUrl.split("?");
+  const querySuffix = qs ? `?${qs}` : "";
+  const cleanRawPath = rawPath || "/";
+  const lowerPath = cleanRawPath.toLowerCase();
+
+  // Compute canonical destination path for duplicate / draft routes
+  const resolveCanonicalRedirectPath = (p: string, lower: string): string | null => {
+    const trimmedLower = lower.length > 1 ? lower.replace(/\/+$/, "") : lower;
+    if (trimmedLower === "/home" || trimmedLower === "/home.html" || trimmedLower === "/index.html") {
+      return "/";
     }
-    const targetUrl = `https://diasuae.ae${cleanPath}${qs ? `?${qs}` : ""}`;
-    return res.redirect(301, targetUrl);
+    if (trimmedLower === "/blogs") {
+      return "/blog";
+    }
+    if (
+      trimmedLower === "/blog/draft-top-tax-mistakes-uae-companies-make" ||
+      trimmedLower === "/blogs/draft-top-tax-mistakes-uae-companies-make"
+    ) {
+      return "/blog/top-tax-mistakes-uae-companies-make";
+    }
+    if (trimmedLower.startsWith("/blogs/")) {
+      const slug = p.replace(/^\/blogs\//i, "").replace(/\/+$/, "");
+      return slug ? `/blog/${slug}` : "/blog";
+    }
+    return null;
+  };
+
+  if (hostname === "www.diasuae.ae") {
+    let destPath = resolveCanonicalRedirectPath(cleanRawPath, lowerPath) || cleanRawPath;
+    if (destPath.length > 1 && destPath.endsWith("/")) {
+      destPath = destPath.replace(/\/+$/, "");
+    }
+    return res.redirect(301, `https://diasuae.ae${destPath}${querySuffix}`);
   }
+
+  if (req.method === "GET" || req.method === "HEAD") {
+    const redirectDest = resolveCanonicalRedirectPath(cleanRawPath, lowerPath);
+    if (redirectDest) {
+      return res.redirect(301, `${redirectDest}${querySuffix}`);
+    }
+  }
+
   return next();
 });
 

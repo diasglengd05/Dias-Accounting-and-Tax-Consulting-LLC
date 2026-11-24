@@ -27,6 +27,14 @@ export interface MetaOverride {
 }
 
 const KNOWN_BLOGS: Record<string, { title: string; summary: string; author: string; role: string; tag: string; date: string }> = {
+  "top-tax-mistakes-uae-companies-make": {
+    title: "Top 7 Common Tax Mistakes UAE Companies Make in 2026 | Dias Accounting",
+    summary: "Avoid costly UAE Federal Tax Authority (FTA) fines in 2026. Learn the 7 most common Corporate Tax, 5% VAT, Free Zone QFZP, Connected Person, and IFRS bookkeeping mistakes UAE companies make—and how to fix them before filing.",
+    author: "Glen Dias",
+    role: "Managing Director & FTA Registered Tax Agent",
+    tag: "Compliance & Penalties",
+    date: "2026-11-12",
+  },
   "precision-accounting-bookkeeping-transforming-financial-operations-uae": {
     title: "Precision Accounting & Bookkeeping Services Dubai | Dias",
     summary: "Eliminate operational drag and ensure FTA compliance. Dias Consulting delivers end-to-end bookkeeping and tax-ready financials across the UAE.",
@@ -485,18 +493,18 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
       "mainEntity": [
         {
           "@type": "Question",
-          "name": "What tax advisory and accounting packages are available in Dubai?",
+          "name": "How much do accounting and tax services cost for a small business in Dubai & UAE in 2026?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Dias Accounting offers fixed monthly tax advisory and accounting packages in Dubai starting from AED 400/month covering IFRS double-entry bookkeeping, quarterly 5% VAT Form 201 returns, EmaraTax Corporate Tax registration and filing, and 0% Small Business Relief elections up to AED 3,000,000 in annual revenue. Every retainer is led by FTA-Registered Tax Agents with predictable fixed fees and zero hourly billing surprises."
+            "text": "In 2026, fixed-fee monthly IFRS bookkeeping, 5% UAE VAT Form 201 returns, and EmaraTax Corporate Tax filings start from AED 400/month (Starter), AED 600–750/month (Growth VAT + CT), and AED 1,250/month (QFZP Audit-Ready), all managed by FTA-Registered Tax Agents with zero hourly surprises."
           }
         },
         {
           "@type": "Question",
-          "name": "How much do accounting services cost for a small business in Dubai and Sharjah?",
+          "name": "What is included in Dias Accounting's AED 400/month package?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Small business accounting services in Dubai and Sharjah start from AED 400/month across three transparent fixed-fee tiers: Starter Compliance at AED 400/mo, Growth VAT + CT at AED 750/mo, and Free Zone QFZP Audit-Ready at AED 1,250/mo (all rates exclude 5% UAE VAT)."
+            "text": "Dias Accounting's AED 400/month Starter package includes monthly IFRS double-entry bookkeeping, bank and card reconciliation, monthly Profit & Loss and Balance Sheet statements, 0% Small Business Relief (SBR) election for revenue up to AED 3,000,000, and annual Corporate Tax return filing on EmaraTax."
           }
         },
         {
@@ -721,6 +729,45 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     pathname === "/dividends-audit-dubai" ||
     pathname === "/dividends-audit-uae"
   ) {
+    const dividendsFaqSchema = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "@id": `${baseUrl}/dividends-audit#faqs`,
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "When is a statutory dividends audit required in Dubai, DIFC, or UAE Free Zones?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A statutory dividends audit is required whenever a Dubai Mainland, DIFC, or UAE Free Zone company distributes interim or final dividends, verifying realized distributable profits and 10% legal reserves under UAE Commercial Companies Law, confirming post-payout solvency for UAE banks, and protecting 0% Corporate Tax compliance."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a UAE company distribute interim dividends mid-year?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, provided the company's Memorandum of Association (MOA) authorizes interim distributions, management prepares interim financial statements showing sufficient realized profit, and an auditor verifies that the company maintains adequate working capital and solvency."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are dividends paid by a UAE company subject to personal income tax?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. The United Arab Emirates levies 0% personal income tax on individuals and 0% withholding tax on outbound dividend distributions under Article 45 of Decree-Law No. 47. Non-resident shareholders should verify domestic tax treaty treatment in their home jurisdiction."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What documents do UAE banks require to release dividend wire transfers?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Most UAE Tier-1 corporate banks (including Emirates NBD, FAB, ADCB, and Mashreq) require audited financial statements, a formal AGM or Board Dividend Resolution, a solvency confirmation, and a signed auditor certificate validating distributable reserves."
+          }
+        }
+      ]
+    });
     return {
       title: "Dividends Audit Dubai & UAE | Statutory Interim & Final Dividend Audits",
       description: "Fast, compliant statutory dividend audits for Dubai Mainland, DIFC, DTEC & Free Zone companies under UAE Commercial Companies Law. Clear audit sign-off by FTA-Registered Tax Agents.",
@@ -729,6 +776,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
       ogImage: DEFAULT_OG_IMAGE,
       ogType: "website",
       isArabic,
+      schemaMarkup: dividendsFaqSchema,
     };
   }
 

@@ -25,6 +25,13 @@ interface PageProps {
   onOpenGooglePreferred?: () => void;
 }
 
+const FEATURED_DIVIDEND_FAQ = {
+  question:
+    "When is a statutory dividends audit required in Dubai, DIFC, or UAE Free Zones?",
+  answer:
+    "A statutory dividends audit is required whenever a Dubai Mainland, DIFC, or UAE Free Zone company distributes interim or final dividends, verifying realized distributable profits and 10% legal reserves under UAE Commercial Companies Law, confirming post-payout solvency for UAE banks, and protecting 0% Corporate Tax compliance.",
+};
+
 const DIVIDEND_FAQS = [
   {
     question: "Can a UAE company distribute interim dividends mid-year?",
@@ -42,6 +49,8 @@ const DIVIDEND_FAQS = [
       "Most UAE Tier-1 corporate banks (including Emirates NBD, FAB, ADCB, and Mashreq) require audited financial statements, a formal AGM or Board Dividend Resolution, a solvency confirmation, and a signed auditor certificate validating distributable reserves.",
   },
 ];
+
+const ALL_DIVIDEND_SCHEMA_FAQS = [FEATURED_DIVIDEND_FAQ, ...DIVIDEND_FAQS];
 
 export const DividendsAuditPage: React.FC<PageProps> = ({
   onNavigate,
@@ -81,7 +90,7 @@ export const DividendsAuditPage: React.FC<PageProps> = ({
         canonicalPath,
       })
     );
-    upsertJsonLd("page-faq-jsonld", buildFAQPageSchema(DIVIDEND_FAQS, `${pageUrl}#faqs`));
+    upsertJsonLd("page-faq-jsonld", buildFAQPageSchema(ALL_DIVIDEND_SCHEMA_FAQS, `${pageUrl}#faqs`));
     upsertJsonLd(
       "page-breadcrumb-jsonld",
       buildBreadcrumbSchema(
@@ -257,6 +266,20 @@ export const DividendsAuditPage: React.FC<PageProps> = ({
         plan: "Standalone engagement (AED 1,500 – AED 6,000 scoped)",
       }}
       faqsHeading="UAE Dividend Distribution FAQs"
+      customFaqSection={
+        <article className="rounded-2xl bg-[#070d19] text-white border border-[#c5a059]/35 p-6 sm:p-8 shadow-sm">
+          <div className="w-10 h-[2px] bg-[#c5a059] mb-4" aria-hidden="true" />
+          <h2 className="font-display text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug mb-3">
+            When is a statutory dividends audit required in Dubai, DIFC, or UAE Free Zones?
+          </h2>
+          <p className="text-sm sm:text-[15px] text-slate-200 leading-relaxed">
+            A statutory dividends audit is required whenever a Dubai Mainland, DIFC, or UAE Free Zone company distributes{" "}
+            <strong className="text-[#c5a059] font-semibold">interim or final dividends</strong>, verifying realized distributable profits and{" "}
+            <strong className="text-[#c5a059] font-semibold">10% legal reserves</strong> under UAE Commercial Companies Law, confirming post-payout solvency for UAE banks, and protecting{" "}
+            <strong className="text-[#c5a059] font-semibold">0% Corporate Tax compliance</strong>.
+          </p>
+        </article>
+      }
       faqs={DIVIDEND_FAQS}
       relatedServices={[
         { label: "DIFC & DTEC Accounting", path: "/tax-planning-difc" },

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { ChevronRight, ExternalLink, Star } from "lucide-react";
+import { Award, ChevronRight, ExternalLink, Star } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
 import ReviewCard from "../components/editorial/ReviewCard";
@@ -15,7 +15,10 @@ import {
   removeJsonLd,
   upsertJsonLd,
 } from "../lib/seo";
-import { ClutchRatingWidget } from "../components/ClutchBadges";
+import {
+  CLUTCH_PROFILE_URL,
+  ClutchRatingWidget,
+} from "../components/ClutchBadges";
 import OfficialRecognitionSection from "../components/OfficialRecognitionSection";
 
 interface TestimonialsPageProps {
@@ -161,16 +164,35 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({
                 Verified feedback from Mainland LLCs and Free Zone enterprises across Dubai and Sharjah partnering with Dias Accounting for Corporate Tax, VAT, and IFRS bookkeeping.
               </p>
 
-              <div className="pt-1 flex items-center justify-center">
-                <a
-                  href={GOOGLE_BUSINESS_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="min-h-[44px] inline-flex items-center gap-1.5 text-sm font-semibold text-[#1B4332] hover:text-[#0D1B2A] transition-colors"
-                >
-                  <span>Verify or leave a review on Google</span>
-                  <ExternalLink className="w-4 h-4" />
-                </a>
+              {/* Prominent Verify Our 5.0★ Rating on Google & Clutch Button Bar */}
+              <div className="pt-4">
+                <div className="mx-auto max-w-2xl rounded-2xl bg-[#070d19] border border-[#c5a059]/35 px-5 py-5 sm:px-7 sm:py-6 shadow-[0_12px_32px_-18px_rgba(7,13,25,0.55)] space-y-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#c5a059]">
+                    Verify Our 5.0★ Rating on Google &amp; Clutch
+                  </p>
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
+                    <a
+                      href={GOOGLE_BUSINESS_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="min-h-[46px] inline-flex items-center justify-center gap-2 rounded-xl bg-[#c5a059] hover:bg-[#d4b06a] text-[#070d19] font-semibold text-sm px-5 py-2.5 transition-colors"
+                    >
+                      <Star className="w-4 h-4 fill-[#070d19] text-[#070d19] shrink-0" aria-hidden="true" />
+                      <span>Verify 5.0★ Reviews on Google</span>
+                      <ExternalLink className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
+                    </a>
+                    <a
+                      href={CLUTCH_PROFILE_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="min-h-[46px] inline-flex items-center justify-center gap-2 rounded-xl bg-[#0d1b2a] hover:bg-[#13263a] border border-[#c5a059]/50 hover:border-[#c5a059] text-white font-semibold text-sm px-5 py-2.5 transition-colors"
+                    >
+                      <Award className="w-4 h-4 text-[#c5a059] shrink-0" aria-hidden="true" />
+                      <span>Verify Profile &amp; Awards on Clutch</span>
+                      <ExternalLink className="w-3.5 h-3.5 text-[#c5a059] shrink-0" aria-hidden="true" />
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
 

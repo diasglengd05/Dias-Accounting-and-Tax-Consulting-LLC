@@ -277,14 +277,15 @@ const COMPARISON_ROWS: ComparisonRow[] = [
 
 const FEATURED_PRICING_FAQS: FAQSchemaItem[] = [
   {
-    question: "What tax advisory and accounting packages are available in Dubai?",
+    question:
+      "How much do accounting and tax services cost for a small business in Dubai & UAE in 2026?",
     answer:
-      "Dias Accounting offers fixed monthly tax advisory and accounting packages in Dubai starting from AED 400/month covering IFRS double-entry bookkeeping, quarterly 5% VAT Form 201 returns, EmaraTax Corporate Tax registration and filing, and 0% Small Business Relief elections up to AED 3,000,000 in annual revenue. Every retainer is led by FTA-Registered Tax Agents with predictable fixed fees and zero hourly billing surprises.",
+      "In 2026, fixed-fee monthly IFRS bookkeeping, 5% UAE VAT Form 201 returns, and EmaraTax Corporate Tax filings start from AED 400/month (Starter), AED 600–750/month (Growth VAT + CT), and AED 1,250/month (QFZP Audit-Ready), all managed by FTA-Registered Tax Agents with zero hourly surprises.",
   },
   {
-    question: "How much do accounting services cost for a small business in Dubai and Sharjah?",
+    question: "What is included in Dias Accounting's AED 400/month package?",
     answer:
-      "Small business accounting services in Dubai and Sharjah start from AED 400/month across three transparent fixed-fee tiers: Starter Compliance at AED 400/mo, Growth VAT + CT at AED 750/mo, and Free Zone QFZP Audit-Ready at AED 1,250/mo (all rates exclude 5% UAE VAT).",
+      "Dias Accounting's AED 400/month Starter package includes monthly IFRS double-entry bookkeeping, bank and card reconciliation, monthly Profit & Loss and Balance Sheet statements, 0% Small Business Relief (SBR) election for revenue up to AED 3,000,000, and annual Corporate Tax return filing on EmaraTax.",
   },
 ];
 
@@ -710,23 +711,16 @@ export const PricingPage: React.FC<PricingPageProps> = ({
 
             {/* Direct Answer H2 Cards (#070d19 Navy & #c5a059 Gold Accents) */}
             <div className="space-y-6 mb-12">
-              <article className="rounded-2xl bg-[#070d19] text-white border border-[#c5a059]/30 p-6 sm:p-8 shadow-sm">
+              <article className="rounded-2xl bg-[#070d19] text-white border border-[#c5a059]/35 p-6 sm:p-8 shadow-sm">
                 <div className="w-10 h-[2px] bg-[#c5a059] mb-4" aria-hidden="true" />
                 <h2 className="font-display text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug mb-3">
-                  What tax advisory and accounting packages are available in Dubai?
-                </h2>
-                <p className="text-sm sm:text-[15px] text-slate-200 leading-relaxed">
-                  Dias Accounting offers fixed monthly tax advisory and accounting packages in Dubai starting from <strong className="text-[#c5a059] font-semibold">AED 400/month</strong> covering IFRS double-entry bookkeeping, quarterly 5% VAT Form 201 returns, EmaraTax Corporate Tax registration and filing, and 0% Small Business Relief elections up to AED 3,000,000 in annual revenue. Every retainer is managed by FTA-Registered Tax Agents with predictable fixed fees and zero hourly billing surprises.
-                </p>
-              </article>
-
-              <article className="rounded-2xl bg-[#070d19] text-white border border-[#c5a059]/30 p-6 sm:p-8 shadow-sm">
-                <div className="w-10 h-[2px] bg-[#c5a059] mb-4" aria-hidden="true" />
-                <h2 className="font-display text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug mb-3">
-                  How much do accounting services cost for a small business in Dubai and Sharjah?
+                  How much do accounting and tax services cost for a small business in Dubai &amp; UAE in 2026?
                 </h2>
                 <p className="text-sm sm:text-[15px] text-slate-200 leading-relaxed mb-5">
-                  Small business accounting services in Dubai and Sharjah start from <strong className="text-[#c5a059] font-semibold">AED 400/month</strong> across three transparent fixed-fee tiers designed for UAE startups, VAT-registered SMEs, and audit-ready Free Zone companies:
+                  In 2026, fixed-fee monthly IFRS bookkeeping, 5% UAE VAT Form 201 returns, and EmaraTax Corporate Tax filings start from{" "}
+                  <strong className="text-[#c5a059] font-semibold">AED 400/month (Starter)</strong>,{" "}
+                  <strong className="text-[#c5a059] font-semibold">AED 600–750/month (Growth VAT + CT)</strong>, and{" "}
+                  <strong className="text-[#c5a059] font-semibold">AED 1,250/month (QFZP Audit-Ready)</strong>, all managed by FTA-Registered Tax Agents with zero hourly surprises.
                 </p>
                 <div className="rounded-xl overflow-hidden border border-white/15 bg-[#0D1B2A]/60">
                   <div className="overflow-x-auto">
@@ -746,7 +740,7 @@ export const PricingPage: React.FC<PricingPageProps> = ({
                         </tr>
                         <tr className="bg-white/[0.03]">
                           <td className="py-3 px-4 font-semibold text-white">Growth VAT + CT</td>
-                          <td className="py-3 px-4 font-semibold text-[#c5a059] tabular-nums">AED 750/mo</td>
+                          <td className="py-3 px-4 font-semibold text-[#c5a059] tabular-nums">AED 600–750/mo</td>
                           <td className="py-3 px-4">Monthly IFRS books, quarterly 5% VAT Form 201 filing, input VAT recovery &amp; 9% Corporate Tax</td>
                         </tr>
                         <tr>
@@ -758,6 +752,16 @@ export const PricingPage: React.FC<PricingPageProps> = ({
                     </table>
                   </div>
                 </div>
+              </article>
+
+              <article className="rounded-2xl bg-[#070d19] text-white border border-[#c5a059]/35 p-6 sm:p-8 shadow-sm">
+                <div className="w-10 h-[2px] bg-[#c5a059] mb-4" aria-hidden="true" />
+                <h2 className="font-display text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug mb-3">
+                  What is included in Dias Accounting&apos;s AED 400/month package?
+                </h2>
+                <p className="text-sm sm:text-[15px] text-slate-200 leading-relaxed">
+                  Dias Accounting&apos;s <strong className="text-[#c5a059] font-semibold">AED 400/month Starter package</strong> includes monthly IFRS double-entry bookkeeping, bank and card reconciliation, monthly Profit &amp; Loss and Balance Sheet statements, 0% Small Business Relief (SBR) election for revenue up to AED 3,000,000, and annual Corporate Tax return filing on EmaraTax.
+                </p>
               </article>
             </div>
 

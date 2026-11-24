@@ -72,6 +72,19 @@ const normalizeAppPath = (rawPath: string): string => {
   if (lower === "/home" || lower === "/home.html" || lower === "/index.html") {
     return "/";
   }
+  if (lower === "/blogs") {
+    return "/blog";
+  }
+  if (
+    lower === "/blog/draft-top-tax-mistakes-uae-companies-make" ||
+    lower === "/blogs/draft-top-tax-mistakes-uae-companies-make"
+  ) {
+    return "/blog/top-tax-mistakes-uae-companies-make";
+  }
+  if (lower.startsWith("/blogs/")) {
+    const slug = pathOnly.replace(/^\/blogs\//i, "").replace(/\/+$/, "");
+    return slug ? `/blog/${slug}` : "/blog";
+  }
   if (
     lower === "/corporate-tax-calculator" ||
     lower === "/tax-savings" ||
@@ -809,11 +822,11 @@ function MainApp() {
                     <span className="font-medium text-[#0D1B2A]">5.0★ Google Rating</span> (48 Reviews)
                   </a>
                   <span aria-hidden="true" className="text-slate-300">•</span>
-                  <span className="tabular-nums">{isAr ? "+500 شركة وإقرار في الإمارات" : "500+ UAE Businesses & Filings"}</span>
-                  <span aria-hidden="true" className="text-slate-300 hidden sm:inline">•</span>
                   <span className="inline-flex items-center">
                     <ClutchRatingWidget />
                   </span>
+                  <span aria-hidden="true" className="text-slate-300 hidden sm:inline">•</span>
+                  <span className="tabular-nums">{isAr ? "+500 شركة وإقرار في الإمارات" : "500+ UAE Businesses & Filings"}</span>
                 </div>
               </div>
 

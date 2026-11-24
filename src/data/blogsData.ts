@@ -2968,6 +2968,63 @@ With the UAE's new Corporate Tax regulations now in effect, this decision has di
       role: "Managing Director & Certified Tax Advisor",
       avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=120"
     }
+  },
+  {
+    id: "top-tax-mistakes-uae-companies-make",
+    title: "Top 7 Common Tax Mistakes UAE Companies Make in 2026 (And How to Avoid FTA Penalties)",
+    summary:
+      "Avoid costly UAE Federal Tax Authority (FTA) fines in 2026. Learn the 7 most common Corporate Tax, 5% VAT, Free Zone QFZP, Connected Person, and IFRS bookkeeping mistakes UAE companies make—and how to fix them before filing.",
+    date: "November 12, 2026",
+    readTime: "7 min read",
+    tag: "Compliance & Penalties",
+    author: {
+      name: "Glen Dias",
+      role: "Managing Director & FTA Registered Tax Agent",
+      avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=120"
+    },
+    keywords: [
+      "UAE corporate tax mistakes",
+      "FTA penalties UAE 2026",
+      "UAE VAT compliance errors",
+      "Free Zone QFZP mistakes",
+      "AED 10,000 late registration penalty UAE",
+      "Connected Persons UAE corporate tax",
+      "FTA Registered Tax Agent Dubai"
+    ],
+    content: `## Executive Overview: Why 2026 FTA Enforcement Demands Precision
+
+Under **UAE Federal Decree-Law No. 47 of 2022 (Corporate Tax)** and **Federal Decree-Law No. 8 of 2017 (5% VAT)**, administrative compliance in Dubai, Sharjah, and across all seven Emirates has shifted from voluntary recordkeeping to strict EmaraTax enforcement. Even profitable, well-intentioned Mainland LLCs and Free Zone entities routinely trigger avoidable Federal Tax Authority (FTA) penalties due to structural misunderstandings.
+
+Below are the **7 most common tax mistakes UAE companies make in 2026**—along with practical steps to safeguard your company before your next filing deadline.
+
+---
+
+### 1. Assuming Free Zone Entities Are Exempt from Corporate Tax Registration
+One of the costliest misconceptions in the UAE is believing that a Free Zone company (SHAMS, DIFC, DTEC, DMCC, IFZA, or RAKEZ) does not need to register for Corporate Tax. **Every UAE juridical person—Mainland and Free Zone alike—must register on EmaraTax and submit an annual Corporate Tax return**, even when claiming the **0% Qualifying Free Zone Person (QFZP)** rate or **0% Small Business Relief (SBR)**.
+
+### 2. Missing Designated FTA Registration Windows (AED 10,000 Penalty)
+Under Cabinet Decision No. 75 of 2023, late Corporate Tax registration carries an automatic **AED 10,000 administrative penalty**. Newly incorporated entities must register within 3 months of incorporation. If your company has already incurred a late-registration fine, consult an FTA-Registered Tax Agent immediately to assess eligibility under the FTA's 7-month first-return penalty waiver initiative.
+
+### 3. Commingling Personal Shareholder Finances with Corporate Bank Accounts
+Paying personal rent, family travel, or private credit card bills directly from the corporate bank account creates audit exposure and causes legitimate commercial expenses to be disallowed. Maintain strict separation between shareholder drawings, director salaries, and corporate operating expenses backed by valid UAE tax invoices.
+
+### 4. Over-Claiming Client Entertainment Expenses (50% Statutory Cap)
+Under Article 32 of the UAE Corporate Tax Law, client hospitality, meals, and entertainment expenses are strictly capped at **50% tax deductibility** (and input VAT on client entertainment is generally blocked from recovery). Failing to apply the mandatory 50% add-back in your Corporate Tax computation leads to understated taxable income and audit reassessment penalties.
+
+### 5. Non-Arm's Length Payments to Connected Persons & Related Parties
+Under Article 36 of the Corporate Tax Law, salaries, bonuses, management fees, and director benefits paid to shareholders, directors, or relatives (**Connected Persons**) are deductible only to the extent they reflect **Fair Market Value** on an arm's length basis. Maintain board resolutions, employment contracts, and benchmark documentation to defend owner compensation during an FTA review.
+
+### 6. Overlooking Reverse Charge VAT on Overseas Software & Digital Services
+Many UAE businesses fail to self-account for **5% Reverse Charge Mechanism (RCM) VAT** on Box 3 and Box 10 of Form VAT 201 when purchasing overseas SaaS subscriptions, cloud hosting, Google/Meta advertising, or foreign consulting services. Leaving RCM imports unreported triggers Voluntary Disclosure (Form 211) obligations and fixed administrative fines.
+
+### 7. Relying on Disconnected Spreadsheets Instead of IFRS Cloud Bookkeeping
+Both the UAE Commercial Companies Law and Tax Procedures Law mandate retaining proper, auditable IFRS accounting records for 5 to 7 years. Disconnected Excel spreadsheets create unreconciled suspense balances and delay annual filings. Migrating to FTA-ready cloud platforms (Zoho Books, Xero, QuickBooks, or Wafeq) ensures clean monthly Profit & Loss and Balance Sheet statements all year round.
+
+---
+
+### Protect Your Business Before Your Next EmaraTax Deadline
+
+Want to verify your exact 2026 UAE Corporate Tax, Small Business Relief (0% up to AED 3M), and 5% VAT position? Try our free [2026 UAE Corporate Tax & 5% VAT Calculator](/uae-tax-planner) or explore our transparent [fixed-fee monthly IFRS accounting and tax packages from AED 400/month](/pricing).`
   }
 ];
 
