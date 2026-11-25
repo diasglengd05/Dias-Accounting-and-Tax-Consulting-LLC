@@ -22,6 +22,7 @@ export interface PageSEOOptions {
   modifiedTime?: string;
   authorName?: string;
   articleSection?: string;
+  robots?: string;
 }
 
 export interface FAQSchemaItem {
@@ -168,6 +169,8 @@ export function buildAccountingServiceSchema() {
     "@type": "AccountingService",
     "@id": BUSINESS_ENTITY.id,
     name: BUSINESS_ENTITY.name,
+    legalName: BUSINESS_ENTITY.legalName,
+    alternateName: BUSINESS_ENTITY.alternateName,
     url: BUSINESS_ENTITY.url,
     logo: BUSINESS_ENTITY.logo,
     description: BUSINESS_ENTITY.description,
@@ -416,6 +419,7 @@ export function applyPageSEO({
   modifiedTime,
   authorName,
   articleSection,
+  robots = "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1",
 }: PageSEOOptions) {
   if (typeof document === "undefined") return;
 
@@ -431,6 +435,7 @@ export function applyPageSEO({
 
   upsertMeta("name", "title", cleanTitle);
   upsertMeta("name", "description", cleanDescription);
+  upsertMeta("name", "robots", robots);
   if (keywords) {
     upsertMeta("name", "keywords", keywords);
   }
@@ -485,7 +490,7 @@ export function applyPageSEO({
     }
     if (authorName) upsertMeta("property", "article:author", authorName);
     if (articleSection) upsertMeta("property", "article:section", articleSection);
-    upsertMeta("property", "article:publisher", "https://www.linkedin.com/company/diasaccounting/");
+    upsertMeta("property", "article:publisher", "https://ae.linkedin.com/company/diasaccounting");
   } else {
     removeMeta("property", "article:published_time");
     removeMeta("property", "article:modified_time");

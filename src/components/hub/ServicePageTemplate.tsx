@@ -42,6 +42,7 @@ export interface ServicePageTemplateProps {
   deliverablesHeading?: string;
   deliverablesSubheading?: string;
   deliverables: ServiceDeliverableCard[];
+  heroBottomSlot?: React.ReactNode;
   customTopSection?: React.ReactNode;
   processHeading?: string;
   processSubheading?: string;
@@ -81,6 +82,7 @@ export const ServicePageTemplate: React.FC<ServicePageTemplateProps> = ({
   deliverablesHeading = "What's Included",
   deliverablesSubheading = "Structured deliverables managed directly by senior UAE chartered accountants and tax specialists.",
   deliverables,
+  heroBottomSlot,
   customTopSection,
   processHeading = "How We Work",
   processSubheading = "A predictable, low-friction onboarding and execution workflow with zero surprise handoffs.",
@@ -193,6 +195,8 @@ export const ServicePageTemplate: React.FC<ServicePageTemplateProps> = ({
                 ))}
               </div>
             )}
+
+            {heroBottomSlot && <div className="mt-8">{heroBottomSlot}</div>}
           </div>
         </section>
 

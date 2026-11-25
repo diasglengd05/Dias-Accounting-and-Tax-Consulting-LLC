@@ -16,6 +16,7 @@ import {
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
 import CompanySetupHub from "../components/CompanySetupHub";
+import SameDayQuoteBox from "../components/SameDayQuoteBox";
 import {
   applyPageSEO,
   buildBreadcrumbSchema,
@@ -186,6 +187,14 @@ export const CompanySetupPage: React.FC<CompanySetupPageProps> = ({
                   Call +971 52 922 6958
                 </a>
               </div>
+            </div>
+
+            <div className="mt-10">
+              <SameDayQuoteBox
+                idPrefix="setup-quote"
+                defaultJurisdiction="SHAMS"
+                defaultService="Company Setup"
+              />
             </div>
           </div>
         </section>

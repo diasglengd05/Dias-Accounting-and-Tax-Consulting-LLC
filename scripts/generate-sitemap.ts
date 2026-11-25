@@ -53,7 +53,6 @@ const CANONICAL_STATIC_PATHS: string[] = [
   "/faqs",
   "/partners",
   "/contact",
-  "/privacy-policy",
   "/terms",
 ];
 

@@ -25,6 +25,7 @@ import {
   ClutchAwardBadge,
   CLUTCH_AWARD_CAPTION,
 } from "../components/ClutchBadges";
+import SameDayQuoteBox from "../components/SameDayQuoteBox";
 
 interface ServiceDetailPageProps {
   serviceId?: string;
@@ -122,11 +123,11 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
       keywords =
         "accounting services uae, accounting consulting dubai, accounting service in uae, accounting solutions in uae, bookkeeping dubai, chartered accountants dubai, outsourced accounting uae";
     } else if (currentService.id === "vat-compliance" || serviceId?.includes("vat")) {
-      title = "VAT Compliance & Filing Dubai | FTA Tax Agent | Dias UAE";
+      title = "UAE VAT Compliance, Form 201 Filing & FTA Audit Support | From AED 400/Mo";
       desc =
-        "Quarterly UAE 5% VAT Form 201 filing, input VAT recovery audits, Voluntary Disclosures (Form 211), and FTA audit representation in Dubai & Sharjah.";
+        "5% UAE VAT registration, quarterly Form 201 returns, 2026 FTA Decision 13 input tax recovery reviews & VAT-to-Corporate-Tax reconciliation in Dubai & Sharjah.";
       keywords =
-        "vat compliance dubai, taxation services dubai, vat 201 return filing, vat consulting services uae, fta voluntary disclosure 211, input vat recovery";
+        "uae vat compliance, vat form 201 filing dubai, fta decision 13 input tax recovery, vat audit support uae, vat registration threshold aed 375000, fta voluntary disclosure 211";
     } else if (
       currentService.id === "business-incorporation" ||
       serviceId?.includes("incorporation")
@@ -401,17 +402,36 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
     }
   }, [currentService]);
 
+  const featuredAeoFaq = useMemo(() => {
+    if (currentService.id === "vat-compliance") {
+      return {
+        question: "What is included in 5% UAE VAT compliance services at Dias Accounting?",
+        answer:
+          "Dias Accounting's 5% UAE VAT compliance services include FTA TRN registration, quarterly Form 201 return filing, 2026 FTA input tax recovery reviews, tax invoice compliance audits, and VAT-to-Corporate-Tax ledger reconciliation, bundled inside transparent fixed monthly retainers starting from AED 400/month with zero hourly surprises.",
+      };
+    }
+    if (currentService.id === "corporate-tax-advisory") {
+      return {
+        question: "How does Dias Accounting help UAE companies reduce 9% Corporate Tax legally in 2026?",
+        answer:
+          "Dias Accounting legally reduces 9% UAE Corporate Tax in 2026 through 0% Small Business Relief elections (revenue up to AED 3,000,000), 0% Qualifying Free Zone Person (QFZP) structuring, arm's-length Connected Person salary optimization, full IFRS expense substantiation, and AED 10,000 late-registration penalty waiver filings.",
+      };
+    }
+    return null;
+  }, [currentService.id]);
+
   useEffect(() => {
-    if (serviceFaqs.length > 0) {
+    const schemaFaqs = featuredAeoFaq ? [featuredAeoFaq, ...serviceFaqs] : serviceFaqs;
+    if (schemaFaqs.length > 0) {
       upsertJsonLd(
         "page-faq-jsonld",
-        buildFAQPageSchema(serviceFaqs, `https://diasuae.ae/services/${currentService.id}#faqs`)
+        buildFAQPageSchema(schemaFaqs, `https://diasuae.ae/services/${currentService.id}#faqs`)
       );
     }
     return () => {
       removeJsonLd("page-faq-jsonld");
     };
-  }, [currentService.id, serviceFaqs]);
+  }, [currentService.id, featuredAeoFaq, serviceFaqs]);
 
   const deliverableIcons = [
     <ShieldCheck className="w-5 h-5" key="shield" />,
@@ -451,8 +471,107 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
       deliverablesHeading={`What's Included in ${currentService.title}`}
       deliverablesSubheading="Every deliverable is prepared by senior UAE chartered accountants and verified against current Federal Tax Authority regulations."
       deliverables={deliverableCards}
+      heroBottomSlot={
+        currentService.id === "vat-compliance" ? (
+          <SameDayQuoteBox
+            idPrefix="vat-quote"
+            defaultJurisdiction="Dubai Mainland"
+            defaultService="5% VAT Compliance"
+          />
+        ) : undefined
+      }
       customTopSection={
-        currentService.id === "cfo-advisory" ? (
+        currentService.id === "vat-compliance" ? (
+          <section
+            aria-label="2026 UAE VAT Compliance Checklist"
+            className="bg-[#070d19] border-b border-[#c5a059]/25 py-14 lg:py-20 text-white"
+          >
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+              <div className="max-w-3xl space-y-2.5">
+                <span className="inline-block text-xs font-semibold uppercase tracking-[0.14em] text-[#c5a059]">
+                  Federal Decree-Law No. 8 of 2017 · 2026 FTA Standards
+                </span>
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">
+                  2026 UAE VAT Compliance Checklist
+                </h2>
+                <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-[65ch]">
+                  Key statutory thresholds, Form 201 submission deadlines, 2026 FTA Decision 13 input tax rules, and audit-defense controls managed end-to-end by our FTA-Registered Tax Agents from AED 400/month.
+                </p>
+              </div>
+
+              <div className="overflow-x-auto rounded-2xl border border-[#c5a059]/30 bg-[#0d1b2a] shadow-sm">
+                <table className="w-full text-left border-collapse text-sm">
+                  <thead>
+                    <tr className="border-b border-[#c5a059]/25 bg-[#070d19]/80 text-xs uppercase tracking-wider text-[#c5a059]">
+                      <th scope="col" className="px-5 py-4 font-semibold">Compliance Area</th>
+                      <th scope="col" className="px-5 py-4 font-semibold">2026 Statutory Rule</th>
+                      <th scope="col" className="px-5 py-4 font-semibold">Key Threshold / Penalty</th>
+                      <th scope="col" className="px-5 py-4 font-semibold">Dias Accounting Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/10">
+                    <tr className="hover:bg-white/[0.02] transition-colors">
+                      <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                        Registration Threshold
+                      </td>
+                      <td className="px-5 py-4 text-slate-300 leading-relaxed">
+                        Mandatory when taxable supplies and imports exceed AED 375,000 over the prior 12 months or projected next 30 days; voluntary at AED 187,500.
+                      </td>
+                      <td className="px-5 py-4 font-semibold text-[#c5a059] whitespace-nowrap">
+                        AED 375,000 · AED 10,000 Late Fine
+                      </td>
+                      <td className="px-5 py-4 text-slate-200 leading-relaxed">
+                        Monthly turnover monitoring and same-week EmaraTax TRN registration.
+                      </td>
+                    </tr>
+                    <tr className="hover:bg-white/[0.02] transition-colors">
+                      <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                        Quarterly Form 201 Deadlines
+                      </td>
+                      <td className="px-5 py-4 text-slate-300 leading-relaxed">
+                        VAT Form 201 return filing and tax settlement due by the 28th day following the end of each assigned quarterly or monthly tax period.
+                      </td>
+                      <td className="px-5 py-4 font-semibold text-[#c5a059] whitespace-nowrap">
+                        28th of Following Month · AED 1k–2k Fine
+                      </td>
+                      <td className="px-5 py-4 text-slate-200 leading-relaxed">
+                        Emirates-wise sales mapping, RCM Box 3/10 reconciliation, and pre-deadline filing.
+                      </td>
+                    </tr>
+                    <tr className="hover:bg-white/[0.02] transition-colors">
+                      <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                        2026 Input VAT Recovery
+                      </td>
+                      <td className="px-5 py-4 text-slate-300 leading-relaxed">
+                        Strict FTA Decision 13 tax invoice verification, supplier TRN validation, and screening of blocked inputs (entertainment &amp; personal vehicles).
+                      </td>
+                      <td className="px-5 py-4 font-semibold text-[#c5a059] whitespace-nowrap">
+                        100% Compliant Tax Invoice Required
+                      </td>
+                      <td className="px-5 py-4 text-slate-200 leading-relaxed">
+                        Line-by-line input VAT audit before every return to maximize lawful refunds.
+                      </td>
+                    </tr>
+                    <tr className="hover:bg-white/[0.02] transition-colors">
+                      <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                        FTA Audit Defense
+                      </td>
+                      <td className="px-5 py-4 text-slate-300 leading-relaxed">
+                        Mandatory 5–7 year archival of IFRS ledgers, Voluntary Disclosures (Form 211) for historical corrections, and VAT-to-Corporate-Tax revenue tie-out.
+                      </td>
+                      <td className="px-5 py-4 font-semibold text-[#c5a059] whitespace-nowrap">
+                        FAF Audit File &amp; Form 211 Ready
+                      </td>
+                      <td className="px-5 py-4 text-slate-200 leading-relaxed">
+                        Direct FTA-Registered Tax Agent representation led by Glen Dias and penalty reconsideration support.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+        ) : currentService.id === "cfo-advisory" ? (
           <section
             aria-label="2026 Clutch Financial Forecasting and Risk Advisory Award Recognition"
             className="bg-[#F8FAFC] border-b border-[#E2E8F0] py-10 lg:py-12"
@@ -489,6 +608,19 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
         plan: serviceMeta.pricingTier,
       }}
       faqsHeading={`Questions About ${currentService.title}`}
+      customFaqSection={
+        featuredAeoFaq ? (
+          <article className="rounded-2xl bg-[#070d19] text-white border border-[#c5a059]/35 p-6 sm:p-8 shadow-sm">
+            <div className="w-10 h-[2px] bg-[#c5a059] mb-4" aria-hidden="true" />
+            <h2 className="font-display text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug mb-3">
+              {featuredAeoFaq.question}
+            </h2>
+            <p className="text-sm sm:text-[15px] text-slate-200 leading-relaxed">
+              {featuredAeoFaq.answer}
+            </p>
+          </article>
+        ) : undefined
+      }
       faqs={serviceFaqs}
       relatedServices={relatedServices}
       closingCta={{

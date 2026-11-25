@@ -8,36 +8,6 @@ const draftAuthor = {
 
 export const draftPlaceholderPosts: BlogPost[] = [
   {
-    id: "draft-claim-small-business-relief",
-    title: "How to Claim UAE Small Business Relief (0% Corporate Tax up to AED 3M) [DRAFT OUTLINE]",
-    summary:
-      "A practical guide for UAE resident businesses on electing for SBR under Ministerial Decision No. 73 of 2023. Covers revenue thresholds, eligible entities, and EmaraTax election steps.",
-    date: "Upcoming Article",
-    readTime: "Outline Draft",
-    tag: "Corporate Tax",
-    author: draftAuthor,
-    content: `## Executive Overview
-
-### 1. Introduction: What is Small Business Relief (SBR)?
-- Statutory basis under Article 21 of Federal Decree-Law No. 47 of 2022 and Ministerial Decision No. 73 of 2023.
-- SBR relief has been officially extended by the Ministry of Finance through December 31, 2029.
-
-### 2. Eligibility Criteria
-- Gross business turnover cap of AED 3,000,000 across current and prior fiscal periods.
-- Applicable exclusively to UAE Resident taxable persons; explicit exclusions apply to Qualifying Free Zone Persons (QFZPs) and members of Multinational Enterprise (MNE) groups.
-
-### 3. Step-by-Step Election on EmaraTax
-- Electing for SBR directly in the annual Corporate Tax return on the EmaraTax portal.
-- Simplified transfer pricing compliance and relief from full Local File/Master File preparation.
-
-### 4. Mandatory Record-Keeping Requirements
-- Statutory requirement to maintain complete IFRS-compliant accounting ledgers and financial statements for 7 years despite 0% tax liability.
-
-### 5. Frequently Asked Questions & Action Plan
-- **Can I elect for SBR if I am registered for VAT?** Yes, VAT and Corporate Tax are separate regimes; an entity can have a VAT TRN and simultaneously elect for 0% SBR.
-- Use the free Dias UAE Tax Planner to verify your Small Business Relief eligibility in 60 seconds.`,
-  },
-  {
     id: "draft-vat-registration-checklist",
     title: "The Complete UAE VAT Registration Checklist for Growing Businesses",
     summary:
@@ -64,33 +34,6 @@ export const draftPlaceholderPosts: BlogPost[] = [
 
 ### 4. Action Plan & Support
 - Contact Dias Accounting for complete, penalty-free VAT registration and quarterly Form 201 return filings.`,
-  },
-  {
-    id: "draft-free-zone-qualifying-income",
-    title: "Free Zone Qualifying Income: How to Keep Your 0% Corporate Tax Status",
-    summary:
-      "A roadmap to Qualifying Free Zone Person (QFZP) status under Cabinet Decision No. 55/2023 and Ministerial Decision No. 139/2023. Economic substance, de minimis rule, and audited accounts.",
-    date: "Upcoming Article",
-    readTime: "Outline Draft",
-    tag: "Free Zone",
-    author: draftAuthor,
-    content: `## Executive Overview
-
-### 1. Free Zone Myths vs Statutory Realities
-- Free Zone companies are not automatically exempt from Corporate Tax: 100% of Free Zone legal entities must register on EmaraTax and submit annual returns.
-
-### 2. The 5 Core Requirements for 0% QFZP Treatment
-- 1. Maintain adequate economic substance (full-time qualified employees, local operational expenditure, adequate office premises) in a designated Free Zone.
-- 2. Derive Qualifying Income exclusively from Qualifying Activities or transactions with other Free Zone entities.
-- 3. Comply with the De Minimis threshold (non-qualifying revenue must not exceed the lower of 5% of total revenue or AED 5,000,000).
-- 4. Adhere strictly to arm's length Transfer Pricing rules and related-party documentation.
-- 5. Prepare audited annual financial statements compliant with IFRS.
-
-### 3. Consequences of Breaching QFZP Conditions
-- Loss of 0% tax treatment for the breach year and the subsequent 4 tax periods (resulting in standard 9% tax on all corporate profits for 5 continuous years).
-
-### 4. Professional Assistance
-- Book a comprehensive Free Zone substance and contract review with Dias Accounting.`,
   },
   {
     id: "draft-backlog-bookkeeping-penalty-shield",

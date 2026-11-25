@@ -11,52 +11,152 @@
     "redirects": [
       {
         "source": "/home",
-        "destination": "/",
+        "destination": "https://diasuae.ae/",
         "type": 301
       },
       {
         "source": "/home/",
-        "destination": "/",
+        "destination": "https://diasuae.ae/",
         "type": 301
       },
       {
         "source": "/home.html",
-        "destination": "/",
+        "destination": "https://diasuae.ae/",
         "type": 301
       },
       {
         "source": "/index.html",
-        "destination": "/",
+        "destination": "https://diasuae.ae/",
         "type": 301
       },
       {
         "source": "/tax-planning-difc.html",
-        "destination": "/tax-planning-difc",
+        "destination": "https://diasuae.ae/tax-planning-difc",
+        "type": 301
+      },
+      {
+        "source": "/blog.html",
+        "destination": "https://diasuae.ae/blog",
         "type": 301
       },
       {
         "source": "/blogs",
-        "destination": "/blog",
+        "destination": "https://diasuae.ae/blog",
         "type": 301
       },
       {
         "source": "/blogs/",
-        "destination": "/blog",
+        "destination": "https://diasuae.ae/blog",
+        "type": 301
+      },
+      {
+        "source": "/insights",
+        "destination": "https://diasuae.ae/blog",
+        "type": 301
+      },
+      {
+        "source": "/insights/",
+        "destination": "https://diasuae.ae/blog",
         "type": 301
       },
       {
         "source": "/blog/draft-top-tax-mistakes-uae-companies-make",
-        "destination": "/blog/top-tax-mistakes-uae-companies-make",
+        "destination": "https://diasuae.ae/blog/top-tax-mistakes-uae-companies-make",
         "type": 301
       },
       {
         "source": "/blogs/draft-top-tax-mistakes-uae-companies-make",
-        "destination": "/blog/top-tax-mistakes-uae-companies-make",
+        "destination": "https://diasuae.ae/blog/top-tax-mistakes-uae-companies-make",
+        "type": 301
+      },
+      {
+        "source": "/blog/draft-free-zone-qualifying-income",
+        "destination": "https://diasuae.ae/blog/free-zone-qualifying-income",
+        "type": 301
+      },
+      {
+        "source": "/blogs/draft-free-zone-qualifying-income",
+        "destination": "https://diasuae.ae/blog/free-zone-qualifying-income",
+        "type": 301
+      },
+      {
+        "source": "/blog/draft-claim-small-business-relief",
+        "destination": "https://diasuae.ae/blog/claim-small-business-relief",
+        "type": 301
+      },
+      {
+        "source": "/blogs/draft-claim-small-business-relief",
+        "destination": "https://diasuae.ae/blog/claim-small-business-relief",
+        "type": 301
+      },
+      {
+        "source": "/blog/draft-vat-registration-checklist",
+        "destination": "https://diasuae.ae/blog/vat-compliance-checklist",
+        "type": 301
+      },
+      {
+        "source": "/blogs/draft-vat-registration-checklist",
+        "destination": "https://diasuae.ae/blog/vat-compliance-checklist",
+        "type": 301
+      },
+      {
+        "source": "/blog/draft-backlog-bookkeeping-penalty-shield",
+        "destination": "https://diasuae.ae/services/backlog-accounting",
+        "type": 301
+      },
+      {
+        "source": "/blogs/draft-backlog-bookkeeping-penalty-shield",
+        "destination": "https://diasuae.ae/services/backlog-accounting",
+        "type": 301
+      },
+      {
+        "regex": "^/blogs?/draft-.+$",
+        "destination": "https://diasuae.ae/blog",
         "type": 301
       },
       {
         "source": "/blogs/:slug",
-        "destination": "/blog/:slug",
+        "destination": "https://diasuae.ae/blog/:slug",
+        "type": 301
+      },
+      {
+        "source": "/corporate-tax-calculator",
+        "destination": "https://diasuae.ae/uae-tax-planner",
+        "type": 301
+      },
+      {
+        "source": "/tax-savings",
+        "destination": "https://diasuae.ae/uae-tax-planner",
+        "type": 301
+      },
+      {
+        "source": "/tax-savings-assessment",
+        "destination": "https://diasuae.ae/uae-tax-planner",
+        "type": 301
+      },
+      {
+        "source": "/dividends-audit-dubai",
+        "destination": "https://diasuae.ae/dividends-audit",
+        "type": 301
+      },
+      {
+        "source": "/dividends-audit-uae",
+        "destination": "https://diasuae.ae/dividends-audit",
+        "type": 301
+      },
+      {
+        "source": "/business-incorporation",
+        "destination": "https://diasuae.ae/services/business-incorporation",
+        "type": 301
+      },
+      {
+        "source": "/business-incorporation-services",
+        "destination": "https://diasuae.ae/services/business-incorporation",
+        "type": 301
+      },
+      {
+        "source": "/services/business-incorporation-services",
+        "destination": "https://diasuae.ae/services/business-incorporation",
         "type": 301
       }
     ],
@@ -82,7 +182,7 @@
         "destination": "/blog.html"
       },
       {
-        "regex": "^(?!/llms\\.txt$|/robots\\.txt$|/sitemap\\.xml$).*",
+        "regex": "^(?!/llms\\.txt$|/llms-full\\.txt$|/robots\\.txt$|/sitemap\\.xml$).*",
         "destination": "/index.html"
       }
     ],
@@ -124,6 +224,19 @@
       },
       {
         "source": "/llms.txt",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=3600"
+          },
+          {
+            "key": "Content-Type",
+            "value": "text/plain; charset=utf-8"
+          }
+        ]
+      },
+      {
+        "source": "/llms-full.txt",
         "headers": [
           {
             "key": "Cache-Control",

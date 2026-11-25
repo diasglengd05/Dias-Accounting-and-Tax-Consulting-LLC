@@ -4,7 +4,9 @@ import { GOOGLE_BUSINESS_URL } from "../data/staticData";
 import {
   Linkedin,
   Instagram,
+  Youtube,
   Facebook,
+  Award,
   ShieldCheck,
   ArrowUpRight,
 } from "lucide-react";
@@ -13,6 +15,7 @@ import {
   ClutchAwardBadge,
   CLUTCH_AWARD_CAPTION,
 } from "./ClutchBadges";
+import MobileConversionBar from "./MobileConversionBar";
 
 interface PageFooterProps {
   onNavigate: (path: string) => void;
@@ -29,7 +32,8 @@ export const PageFooter: React.FC<PageFooterProps> = ({
   };
 
   return (
-    <footer className="bg-[#0D1B2A] text-slate-300 border-t border-white/10 mt-auto">
+    <>
+      <footer className="bg-[#0D1B2A] text-slate-300 border-t border-white/10 mt-auto pb-20 md:pb-0">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-12 pb-12 border-b border-white/10">
           {/* Column 1: Brand + FTA Badge */}
@@ -38,18 +42,20 @@ export const PageFooter: React.FC<PageFooterProps> = ({
               href="/"
               onClick={(e) => handleLink(e, "/")}
               className="inline-flex items-center"
-              aria-label="Dias Accounting Home"
+              aria-label="DiasUAE — Dias Accounting and Tax Consulting LLC Home"
             >
               <DiasLogo
                 className="w-8 h-8"
                 showText={true}
+                showSubLabel={true}
                 textSize="text-lg"
                 textColor="text-white"
+                subLabelColor="text-slate-400"
               />
             </a>
 
             <p className="text-sm text-slate-300 leading-relaxed max-w-xs">
-              Dias Accounting &amp; Tax Consulting LLC delivers fixed-fee IFRS bookkeeping, 5% VAT filings, and 9% Corporate Tax advisory across Dubai, Sharjah, and the UAE.
+              Dias Accounting and Tax Consulting LLC delivers fixed-fee IFRS bookkeeping, 5% VAT filings, and 9% Corporate Tax advisory across Dubai, Sharjah, and the UAE.
             </p>
 
             <div className="space-y-1.5 text-xs text-slate-300">
@@ -57,7 +63,7 @@ export const PageFooter: React.FC<PageFooterProps> = ({
                 <ShieldCheck className="w-4 h-4 shrink-0" />
                 <span>FTA Registered Tax Agency (UAE)</span>
               </div>
-              <p className="tabular-nums">Trade Licence: SHAMS 2646813.01</p>
+              <p className="tabular-nums">SHAMS Trade Licence: 2646813.01</p>
               <a
                 href={GOOGLE_BUSINESS_URL}
                 target="_blank"
@@ -82,33 +88,56 @@ export const PageFooter: React.FC<PageFooterProps> = ({
               </div>
             </div>
 
-            <div className="flex items-center gap-3 pt-1">
-              <a
-                href="https://www.linkedin.com/company/diasaccounting/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-11 h-11 rounded-xl border border-white/15 hover:border-white/35 text-slate-300 hover:text-white flex items-center justify-center transition-colors"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="w-4 h-4" />
-              </a>
+            <div className="flex flex-wrap items-center gap-2 pt-2">
               <a
                 href="https://www.instagram.com/diasuae.ae/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-11 h-11 rounded-xl border border-white/15 hover:border-white/35 text-slate-300 hover:text-white flex items-center justify-center transition-colors"
-                aria-label="Instagram"
+                className="inline-flex items-center gap-1.5 min-h-[38px] px-3 py-1.5 rounded-lg border border-white/15 bg-[#070d19]/70 hover:border-[#C5A059] text-slate-200 hover:text-white text-xs font-medium transition-colors"
+                aria-label="DiasUAE on Instagram (@diasuae.ae)"
               >
-                <Instagram className="w-4 h-4" />
+                <Instagram className="w-3.5 h-3.5 text-[#C5A059] shrink-0" />
+                <span>@diasuae.ae</span>
+              </a>
+              <a
+                href="https://www.youtube.com/@diasuae"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 min-h-[38px] px-3 py-1.5 rounded-lg border border-white/15 bg-[#070d19]/70 hover:border-[#C5A059] text-slate-200 hover:text-white text-xs font-medium transition-colors"
+                aria-label="DiasUAE on YouTube (@diasuae)"
+              >
+                <Youtube className="w-3.5 h-3.5 text-[#C5A059] shrink-0" />
+                <span>@diasuae</span>
+              </a>
+              <a
+                href="https://ae.linkedin.com/company/diasaccounting"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 min-h-[38px] px-3 py-1.5 rounded-lg border border-white/15 bg-[#070d19]/70 hover:border-[#C5A059] text-slate-200 hover:text-white text-xs font-medium transition-colors"
+                aria-label="DiasUAE on LinkedIn"
+              >
+                <Linkedin className="w-3.5 h-3.5 text-[#C5A059] shrink-0" />
+                <span>LinkedIn</span>
               </a>
               <a
                 href="https://www.facebook.com/diasuae"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-11 h-11 rounded-xl border border-white/15 hover:border-white/35 text-slate-300 hover:text-white flex items-center justify-center transition-colors"
-                aria-label="Facebook"
+                className="inline-flex items-center gap-1.5 min-h-[38px] px-3 py-1.5 rounded-lg border border-white/15 bg-[#070d19]/70 hover:border-[#C5A059] text-slate-200 hover:text-white text-xs font-medium transition-colors"
+                aria-label="DiasUAE on Facebook"
               >
-                <Facebook className="w-4 h-4" />
+                <Facebook className="w-3.5 h-3.5 text-[#C5A059] shrink-0" />
+                <span>Facebook</span>
+              </a>
+              <a
+                href="https://clutch.co/profile/dias-accounting-tax-consulting"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 min-h-[38px] px-3 py-1.5 rounded-lg border border-white/15 bg-[#070d19]/70 hover:border-[#C5A059] text-slate-200 hover:text-white text-xs font-medium transition-colors"
+                aria-label="DiasUAE Verified Clutch Profile"
+              >
+                <Award className="w-3.5 h-3.5 text-[#C5A059] shrink-0" />
+                <span>Clutch</span>
               </a>
             </div>
           </div>
@@ -313,7 +342,7 @@ export const PageFooter: React.FC<PageFooterProps> = ({
 
         {/* Quiet Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <p className="tabular-nums">© {new Date().getFullYear()} Dias Accounting &amp; Tax Consulting LLC. All rights reserved.</p>
+          <p className="tabular-nums">© {new Date().getFullYear()} Dias Accounting and Tax Consulting LLC (DiasUAE). All rights reserved.</p>
           <div className="flex flex-wrap items-center gap-6">
             <a
               href="/about"
@@ -347,6 +376,8 @@ export const PageFooter: React.FC<PageFooterProps> = ({
         </div>
       </div>
     </footer>
+    <MobileConversionBar onNavigate={onNavigate} />
+    </>
   );
 };
 

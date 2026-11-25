@@ -24,9 +24,26 @@ export interface MetaOverride {
   isArabic?: boolean;
   schemaMarkup?: string;
   h1?: string;
+  robots?: string;
 }
 
 const KNOWN_BLOGS: Record<string, { title: string; summary: string; author: string; role: string; tag: string; date: string }> = {
+  "claim-small-business-relief": {
+    title: "How to Claim UAE Small Business Relief (0% Corporate Tax up to AED 3M) in 2026 | Dias Accounting",
+    summary: "Step-by-step 2026 guide to electing UAE Small Business Relief (SBR) under Article 21 and Ministerial Decision No. 73 of 2023. Covers the AED 3,000,000 revenue cap, EmaraTax filing steps, VAT interaction, and mandatory 7-year IFRS records.",
+    author: "Glen Dias",
+    role: "Managing Director & FTA Registered Tax Agent",
+    tag: "Corporate Tax",
+    date: "2026-11-12",
+  },
+  "free-zone-qualifying-income": {
+    title: "Free Zone Qualifying Income in 2026: How to Keep Your 0% UAE Corporate Tax Status | Dias Accounting",
+    summary: "Complete 2026 roadmap to Qualifying Free Zone Person (QFZP) 0% Corporate Tax status under Cabinet Decision No. 55 and Ministerial Decision No. 139. Covers economic substance, De Minimis thresholds, Transfer Pricing, and mandatory IFRS audits.",
+    author: "Glen Dias",
+    role: "Managing Director & FTA Registered Tax Agent",
+    tag: "Free Zone",
+    date: "2026-11-12",
+  },
   "top-tax-mistakes-uae-companies-make": {
     title: "Top 7 Common Tax Mistakes UAE Companies Make in 2026 | Dias Accounting",
     summary: "Avoid costly UAE Federal Tax Authority (FTA) fines in 2026. Learn the 7 most common Corporate Tax, 5% VAT, Free Zone QFZP, Connected Person, and IFRS bookkeeping mistakes UAE companies make—and how to fix them before filing.",
@@ -177,9 +194,9 @@ const KNOWN_SERVICES: Record<string, { title: string; desc: string; keywords?: s
     keywords: "corporate tax filing uae, tax advisory services in dubai, tax filing services uae, tax planning services in dubai, corporate tax return emaratax, small business relief 0%, fta audit defense",
   },
   "vat-compliance": {
-    title: "VAT Compliance & Filing Dubai | FTA Tax Agent | Dias UAE",
-    desc: "Quarterly VAT 201 return filing, input VAT recovery, and FTA audit defense in Dubai & UAE. Eliminate fine risks with certified tax agents. Consult for free!",
-    keywords: "vat compliance dubai, taxation services dubai, vat 201 return filing, vat consulting services uae, fta voluntary disclosure 211, input vat recovery, vat refund dubai",
+    title: "UAE VAT Compliance, Form 201 Filing & FTA Audit Support | From AED 400/Mo",
+    desc: "5% UAE VAT registration, quarterly Form 201 returns, 2026 FTA Decision 13 input tax recovery reviews & VAT-to-Corporate-Tax reconciliation in Dubai & Sharjah.",
+    keywords: "uae vat compliance, vat form 201 filing dubai, fta decision 13 input tax recovery, vat audit support uae, vat registration threshold aed 375000, fta voluntary disclosure 211",
   },
   "auditing-assurance": {
     title: "Auditing Firms in Sharjah & Dubai | Statutory Audit UAE",
@@ -388,6 +405,90 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     const canonicalServiceId =
       serviceId === "business-incorporation-services" ? "business-incorporation" : serviceId;
     const s = KNOWN_SERVICES[canonicalServiceId] || KNOWN_SERVICES[serviceId];
+    let serviceFaqSchema: string | undefined;
+
+    if (canonicalServiceId === "vat-compliance") {
+      serviceFaqSchema = JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "@id": `${baseUrl}/services/vat-compliance#faqs`,
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What is included in 5% UAE VAT compliance services at Dias Accounting?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Dias Accounting's 5% UAE VAT compliance services include FTA TRN registration, quarterly Form 201 return filing, 2026 FTA input tax recovery reviews, tax invoice compliance audits, and VAT-to-Corporate-Tax ledger reconciliation, bundled inside transparent fixed monthly retainers starting from AED 400/month with zero hourly surprises."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What is the threshold for mandatory UAE VAT registration?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "VAT registration is mandatory when taxable supplies and imports exceed AED 375,000 in the previous 12 months or are expected to exceed that threshold in the next 30 days. Voluntary registration starts at AED 187,500."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I reclaim VAT paid on commercial expenses and supplier invoices?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Input VAT paid on legitimate business expenses such as commercial rent, utilities, software, and professional fees is recoverable on Form VAT 201 when backed by a compliant UAE Tax Invoice."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What are the penalties for late VAT return filing?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The FTA imposes an AED 1,000 administrative penalty for the first late return, rising to AED 2,000 for repeated delays within 24 months, alongside late payment surcharges."
+            }
+          }
+        ]
+      });
+    } else if (canonicalServiceId === "corporate-tax-advisory") {
+      serviceFaqSchema = JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "@id": `${baseUrl}/services/corporate-tax-advisory#faqs`,
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How does Dias Accounting help UAE companies reduce 9% Corporate Tax legally in 2026?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Dias Accounting legally reduces 9% UAE Corporate Tax in 2026 through 0% Small Business Relief elections (revenue up to AED 3,000,000), 0% Qualifying Free Zone Person (QFZP) structuring, arm's-length Connected Person salary optimization, full IFRS expense substantiation, and AED 10,000 late-registration penalty waiver filings."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can my company claim 0% Small Business Relief (SBR)?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, if your company's gross revenue is AED 3,000,000 or less in the relevant and prior tax periods under Ministerial Decision No. 73 of 2023 (extended through December 31, 2029). When elected on EmaraTax, taxable profit is treated as AED 0."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "When must the UAE Corporate Tax return be filed?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "The annual Corporate Tax return and payment must be submitted via the FTA EmaraTax portal within 9 months following the end of your financial tax period."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How can Free Zone entities qualify for 0% Corporate Tax?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "A Qualifying Free Zone Person (QFZP) must maintain adequate UAE economic substance, derive Qualifying Income within the De Minimis threshold (lower of 5% or AED 5M), prepare audited IFRS financial statements, and comply with arm's-length Transfer Pricing rules."
+            }
+          }
+        ]
+      });
+    }
+
     return {
       title: s.title,
       description: s.desc,
@@ -396,6 +497,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
       ogImage: DEFAULT_OG_IMAGE,
       ogType: "website",
       isArabic,
+      ...(serviceFaqSchema ? { schemaMarkup: serviceFaqSchema } : {}),
     };
   }
 
@@ -594,9 +696,9 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     pathname === "/dtec-accounting" ||
     pathname === "/accounting-services-in-dtec"
   ) {
-    const difcTitle = "DIFC & DTEC Tax Compliance, IFRS Accounting & Dividend Audits | Dias UAE";
+    const difcTitle = "DIFC & DTEC Accounting, 0% QFZP Tax & Virtual Bookkeeping | Dias UAE";
     const difcDesc =
-      "Specialized 0% QFZP Corporate Tax compliance, audited IFRS financial statements, and statutory dividend audits for DIFC & DTEC companies in Dubai. Fixed packages from AED 400/mo.";
+      "Fixed-fee virtual IFRS bookkeeping, 0% QFZP Corporate Tax compliance & audit readiness for DIFC & DTEC companies in Dubai. 2x Clutch 2026 UAE Leader.";
     const difcSchema = JSON.stringify({
       "@context": "https://schema.org",
       "@graph": [
@@ -744,6 +846,14 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
         },
         {
           "@type": "Question",
+          "name": "How fast is a statutory dividends audit in Dubai & UAE?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "A statutory interim or final dividends audit in Dubai, DIFC, or UAE Free Zones typically takes 4 to 5 business days with Dias Accounting: Day 1 covers ledger and 10% statutory reserve verification, Days 2–3 complete IFRS solvency and working-capital testing, and Days 4–5 deliver the signed statutory audit report and bank clearance certificate."
+          }
+        },
+        {
+          "@type": "Question",
           "name": "Can a UAE company distribute interim dividends mid-year?",
           "acceptedAnswer": {
             "@type": "Answer",
@@ -769,8 +879,8 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
       ]
     });
     return {
-      title: "Dividends Audit Dubai & UAE | Statutory Interim & Final Dividend Audits",
-      description: "Fast, compliant statutory dividend audits for Dubai Mainland, DIFC, DTEC & Free Zone companies under UAE Commercial Companies Law. Clear audit sign-off by FTA-Registered Tax Agents.",
+      title: "Dividends Audit Dubai & UAE | Fast Statutory Sign-Off (FTA Tax Agents)",
+      description: "Need an interim or final dividends audit in Dubai, DIFC, or UAE Free Zones? Compliant statutory audit reports under UAE Commercial Companies Law. Get a same-day fixed quote.",
       keywords: "dividends audit dubai, dividends audit uae, audit services for dividends uae, dividend distribution certification",
       url: `${baseUrl}/dividends-audit`,
       ogImage: DEFAULT_OG_IMAGE,
@@ -972,6 +1082,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
       ogImage: DEFAULT_OG_IMAGE,
       ogType: "website",
       isArabic,
+      robots: "noindex, follow",
     };
   }
 
@@ -991,10 +1102,10 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
   return {
     title: isArabic
       ? "استشارات ضريبة الشركات والمحاسبة في دبي | دياس للمحاسبة الإمارات"
-      : "Dias Accounting UAE | FTA-Registered Tax Agents Dubai & SHAMS (From AED 400/Mo)",
+      : "Dias Accounting UAE | 2x Clutch 2026 Winner · Tax & IFRS From AED 400/Mo",
     description: isArabic
       ? "استشارات ضريبة الشركات، والامتثال لضريبة القيمة المضافة، والخدمات المحاسبية في دبي والإمارات. باقات محاسبية واضحة تبدأ من 400 درهم/شهرياً."
-      : "Fixed-fee monthly IFRS bookkeeping, 5% VAT Form 201 returns & 9% UAE Corporate Tax filing in Dubai, DIFC, DTEC & SHAMS. Led by FTA-Registered Tax Agent Glen Dias. Book a free 15-min check.",
+      : "FTA-Registered Tax Agency in Dubai & SHAMS led by Glen Dias. Monthly IFRS bookkeeping, 5% VAT, 9% Corporate Tax & dividend audits from AED 400/mo. Free 15-min review.",
     keywords: isArabic
       ? "ضريبة الشركات, خدمات المحاسبة والضرائب في دبي, شركات الضرائب في الإمارات, تسجيل ضريبة القيمة المضافة"
       : "UAE Corporate Tax, Tax Services in Dubai, DIFC Tax Compliance, Accounting Services UAE, VAT Filing Dubai, FTA Registered Tax Agent",
@@ -1028,6 +1139,11 @@ export function injectMetaIntoHtml(html: string, meta: MetaOverride): string {
   if (meta.keywords) {
     const safeKeywords = escapeHtmlAttr(meta.keywords);
     modified = modified.replace(/<meta name="keywords" content="[\s\S]*?" \/>/i, `<meta name="keywords" content="${safeKeywords}" />`);
+  }
+
+  if (meta.robots) {
+    const safeRobots = escapeHtmlAttr(meta.robots);
+    modified = modified.replace(/<meta name="robots" content="[\s\S]*?" \/>/i, `<meta name="robots" content="${safeRobots}" />`);
   }
 
   if (meta.title) {

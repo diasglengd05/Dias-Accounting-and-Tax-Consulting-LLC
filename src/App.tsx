@@ -65,6 +65,7 @@ const PartnersPage = React.lazy(() => import("./pages/PartnersPage"));
 import CookieConsentBanner from "./components/CookieConsentBanner";
 import HomepagePricingSection from "./components/HomepagePricingSection";
 import ScopeInstantQuoteBuilder from "./components/ScopeInstantQuoteBuilder";
+import SameDayQuoteBox from "./components/SameDayQuoteBox";
 
 const normalizeAppPath = (rawPath: string): string => {
   const pathOnly = (rawPath || "/").split("?")[0];
@@ -80,6 +81,33 @@ const normalizeAppPath = (rawPath: string): string => {
     lower === "/blogs/draft-top-tax-mistakes-uae-companies-make"
   ) {
     return "/blog/top-tax-mistakes-uae-companies-make";
+  }
+  if (
+    lower === "/blog/draft-free-zone-qualifying-income" ||
+    lower === "/blogs/draft-free-zone-qualifying-income"
+  ) {
+    return "/blog/free-zone-qualifying-income";
+  }
+  if (
+    lower === "/blog/draft-claim-small-business-relief" ||
+    lower === "/blogs/draft-claim-small-business-relief"
+  ) {
+    return "/blog/claim-small-business-relief";
+  }
+  if (
+    lower === "/blog/draft-vat-registration-checklist" ||
+    lower === "/blogs/draft-vat-registration-checklist"
+  ) {
+    return "/blog/vat-compliance-checklist";
+  }
+  if (
+    lower === "/blog/draft-backlog-bookkeeping-penalty-shield" ||
+    lower === "/blogs/draft-backlog-bookkeeping-penalty-shield"
+  ) {
+    return "/services/backlog-accounting";
+  }
+  if (/^\/blogs?\/draft-.+$/.test(lower)) {
+    return "/blog";
   }
   if (lower.startsWith("/blogs/")) {
     const slug = pathOnly.replace(/^\/blogs\//i, "").replace(/\/+$/, "");
@@ -887,6 +915,15 @@ function MainApp() {
                 </div>
               </div>
             </div>
+
+            {/* Compact Above-the-Fold Same-Day Fixed Fee Quote Card */}
+            <div className="mt-10 lg:mt-12">
+              <SameDayQuoteBox
+                idPrefix="home-quote"
+                defaultJurisdiction="Dubai Mainland"
+                defaultService="Monthly Accounting from AED 400/mo"
+              />
+            </div>
           </div>
         </section>
 
@@ -1021,6 +1058,53 @@ function MainApp() {
                   </a>
                 );
               })}
+            </div>
+
+            {/* Priority 2026 UAE Tax & Audit Quick-Access Links */}
+            <div className="rounded-2xl bg-[#070d19] border border-[#c5a059]/30 p-5 sm:p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4 text-white">
+              <div className="space-y-1">
+                <span className="inline-block text-[11px] font-semibold uppercase tracking-[0.14em] text-[#c5a059]">
+                  2026 FTA Priority Guides &amp; Execution Desks
+                </span>
+                <p className="text-sm text-slate-300">
+                  Jump directly to our 2026 VAT compliance checklist, 4–5 day statutory dividends audit timeline, or DIFC &amp; DTEC 0% QFZP hub.
+                </p>
+              </div>
+              <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+                <a
+                  href="/services/vat-compliance"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigateTo("/services/vat-compliance");
+                  }}
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-[#0d1b2a] border border-[#c5a059]/40 hover:border-[#c5a059] px-3.5 py-2 text-xs sm:text-sm font-semibold text-white hover:text-[#c5a059] transition-colors"
+                >
+                  <span>UAE VAT Compliance &amp; Form 201</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-[#c5a059]" />
+                </a>
+                <a
+                  href="/dividends-audit"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigateTo("/dividends-audit");
+                  }}
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-[#0d1b2a] border border-[#c5a059]/40 hover:border-[#c5a059] px-3.5 py-2 text-xs sm:text-sm font-semibold text-white hover:text-[#c5a059] transition-colors"
+                >
+                  <span>Statutory Dividends Audit</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-[#c5a059]" />
+                </a>
+                <a
+                  href="/tax-planning-difc"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigateTo("/tax-planning-difc");
+                  }}
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-[#0d1b2a] border border-[#c5a059]/40 hover:border-[#c5a059] px-3.5 py-2 text-xs sm:text-sm font-semibold text-white hover:text-[#c5a059] transition-colors"
+                >
+                  <span>DIFC &amp; DTEC 0% QFZP</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-[#c5a059]" />
+                </a>
+              </div>
             </div>
           </div>
         </section>

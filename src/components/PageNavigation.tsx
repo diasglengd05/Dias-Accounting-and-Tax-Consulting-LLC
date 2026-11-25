@@ -96,8 +96,8 @@ const RESOURCES_MENU: DropdownLink[] = [
     path: "/faqs",
   },
   {
-    label: "About Dias Accounting",
-    description: "FTA-registered agency in SHAMS & Dubai",
+    label: "About DiasUAE",
+    description: "Dias Accounting & Tax Consulting LLC (SHAMS)",
     path: "/about",
   },
 ];
@@ -235,13 +235,15 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
           href="/"
           onClick={(e) => handleNav(e, "/")}
           className="inline-flex items-center shrink-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#1B4332] rounded-lg"
-          aria-label="Dias Accounting Home"
+          aria-label="DiasUAE — Dias Accounting and Tax Consulting LLC Home"
         >
           <DiasLogo
             className="w-8 h-8"
             showText={true}
+            showSubLabel={true}
             textSize="text-base sm:text-lg"
             textColor="text-[#0D1B2A]"
+            subLabelColor="text-slate-500"
           />
         </a>
 

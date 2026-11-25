@@ -3025,6 +3025,113 @@ Both the UAE Commercial Companies Law and Tax Procedures Law mandate retaining p
 ### Protect Your Business Before Your Next EmaraTax Deadline
 
 Want to verify your exact 2026 UAE Corporate Tax, Small Business Relief (0% up to AED 3M), and 5% VAT position? Try our free [2026 UAE Corporate Tax & 5% VAT Calculator](/uae-tax-planner) or explore our transparent [fixed-fee monthly IFRS accounting and tax packages from AED 400/month](/pricing).`
+  },
+  {
+    id: "free-zone-qualifying-income",
+    title: "Free Zone Qualifying Income in 2026: How to Keep Your 0% UAE Corporate Tax Status",
+    summary:
+      "Complete 2026 roadmap to Qualifying Free Zone Person (QFZP) 0% Corporate Tax status under Cabinet Decision No. 55 and Ministerial Decision No. 139. Covers economic substance, De Minimis thresholds, Transfer Pricing, and mandatory IFRS audits.",
+    date: "November 12, 2026",
+    readTime: "7 min read",
+    tag: "Free Zone",
+    author: {
+      name: "Glen Dias",
+      role: "Managing Director & FTA Registered Tax Agent",
+      avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=120"
+    },
+    keywords: [
+      "Free Zone Qualifying Income UAE 2026",
+      "Qualifying Free Zone Person QFZP 0% tax",
+      "UAE Free Zone De Minimis threshold 5% AED 5M",
+      "Cabinet Decision 55 of 2023",
+      "DIFC DTEC SHAMS DMCC 0% corporate tax",
+      "Mandatory audited financial statements Free Zone UAE"
+    ],
+    content: `## Executive Overview: Free Zone 0% Corporate Tax Is Conditional, Not Automatic
+
+Under **UAE Federal Decree-Law No. 47 of 2022**, **Cabinet Decision No. 55 of 2023**, and **Ministerial Decision No. 139 of 2023**, operating inside a UAE Free Zone—such as **DIFC, DTEC, SHAMS, DMCC, IFZA, or RAKEZ**—does **not** automatically exempt your business from UAE Corporate Tax. Every Free Zone entity must register on EmaraTax and submit an annual Corporate Tax return.
+
+To retain the **0% Corporate Tax rate** on Qualifying Income as a **Qualifying Free Zone Person (QFZP)** in 2026, your company must continuously satisfy five cumulative statutory requirements.
+
+---
+
+### 1. Maintain Adequate Economic Substance in the UAE Free Zone
+Your entity must conduct its Core Income-Generating Activities (CIGAs) within a UAE Free Zone, supported by adequate physical office space, qualified full-time staff, and proportionate operating expenditure relative to its revenue scale.
+
+### 2. Derive Qualifying Income from Eligible Counterparties & Activities
+Qualifying Income generally encompasses:
+- **Transactions with other Free Zone Persons** (where the counterparty is the beneficial recipient of the goods or services), except for Excluded Activities.
+- **Qualifying Activities with Mainland or foreign clients**, including manufacturing, distribution of goods in or from a Designated Zone, fund/wealth management, treasury and headquarters services, and logistics.
+
+### 3. Stay Strictly Within the De Minimis Threshold
+If your Free Zone entity earns any **Non-Qualifying Revenue** (such as non-qualifying B2C sales or non-qualifying Mainland consulting), it must remain strictly below the **lower of 5% of total annual revenue or AED 5,000,000**. Exceeding this limit by even one dirham triggers disqualification.
+
+### 4. Comply with Arm's Length Transfer Pricing Rules (Article 34)
+All transactions with Related Parties and Connected Persons—including shareholder salaries, management charges, and intercompany financing—must reflect Fair Market Value backed by benchmarked Transfer Pricing documentation.
+
+### 5. Prepare Mandatory Audited IFRS Financial Statements
+Unlike Mainland companies (where statutory audits apply above AED 50M revenue), **every Qualifying Free Zone Person must maintain audited financial statements prepared under IFRS—regardless of turnover—to preserve its 0% Corporate Tax status**.
+
+---
+
+### The 5-Year Disqualification Penalty Risk
+Breaching any of the five QFZP criteria revokes your 0% status not only for the current tax year, **but also for the following four (4) consecutive tax periods**—subjecting all taxable profit above AED 375,000 to the standard **9% Mainland Corporate Tax rate** for five full years.
+
+### Protect Your 0% QFZP Status in 2026
+Run an instant Free Zone De Minimis & 9% vs. 0% check with our free [2026 UAE Corporate Tax Calculator](/uae-tax-planner), review our dedicated [DIFC & DTEC 0% QFZP Tax Planning Hub](/tax-planning-difc), or compare our [fixed-fee IFRS audit-ready retainers starting from AED 400/month](/pricing).`
+  },
+  {
+    id: "claim-small-business-relief",
+    title: "How to Claim UAE Small Business Relief (0% Corporate Tax up to AED 3M) in 2026",
+    summary:
+      "Step-by-step 2026 guide to electing UAE Small Business Relief (SBR) under Article 21 and Ministerial Decision No. 73 of 2023. Covers the AED 3,000,000 revenue cap, EmaraTax filing steps, VAT interaction, and mandatory 7-year IFRS records.",
+    date: "November 12, 2026",
+    readTime: "6 min read",
+    tag: "Corporate Tax",
+    author: {
+      name: "Glen Dias",
+      role: "Managing Director & FTA Registered Tax Agent",
+      avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=120"
+    },
+    keywords: [
+      "UAE Small Business Relief 2026",
+      "claim Small Business Relief EmaraTax",
+      "0% UAE Corporate Tax AED 3 million",
+      "Ministerial Decision 73 of 2023",
+      "Article 21 UAE Corporate Tax Law",
+      "FTA Registered Tax Agent Dubai"
+    ],
+    content: `## Executive Overview: Legal 0% Corporate Tax for UAE SMEs Up to AED 3,000,000
+
+Under **Article 21 of Federal Decree-Law No. 47 of 2022** and **Ministerial Decision No. 73 of 2023**, eligible UAE resident businesses generating **AED 3,000,000 or less in gross annual revenue** can elect for **Small Business Relief (SBR)**—legally treating their taxable income as **AED 0** (0% Corporate Tax). Following the UAE Ministry of Finance extension, Small Business Relief remains available for tax periods ending on or before **December 31, 2029**.
+
+Crucially, **SBR is not automatic**: you must register for Corporate Tax on EmaraTax, maintain proper IFRS records, and actively elect Small Business Relief when submitting your annual return.
+
+---
+
+### 1. Eligibility Checklist for 2026 Small Business Relief
+To qualify for 0% SBR in a given tax period, your business must meet every condition below:
+- **UAE Tax Residency:** You must be a UAE Resident juridical person (Mainland LLC, Free Zone company, or sole establishment) or a resident natural person conducting business in the UAE.
+- **AED 3,000,000 Gross Revenue Cap:** Total revenue (not net profit) must not exceed **AED 3,000,000** in the relevant tax period **and** in all previous tax periods starting on or after June 1, 2023.
+- **Excluded Entities:** You cannot elect SBR if you are a **Qualifying Free Zone Person (QFZP)** claiming 0% Free Zone status or a constituent member of a **Multinational Enterprise (MNE) Group** with consolidated global revenues exceeding AED 3.15 billion.
+
+### 2. How to Elect Small Business Relief on EmaraTax (Step-by-Step)
+1. **Confirm Your Corporate Tax TRN:** Verify active Corporate Tax registration on the FTA EmaraTax portal (late registration carries an AED 10,000 penalty unless waived under the 7-month first-return relief window).
+2. **Close Your IFRS Financial Statements:** Reconcile all corporate bank accounts and prepare an IFRS Profit & Loss Statement and Balance Sheet confirming gross revenue is ≤ AED 3,000,000.
+3. **Select the Article 21 SBR Election in Your CT Return:** Within 9 months of your financial year-end, submit your annual Corporate Tax return on EmaraTax and toggle the **Small Business Relief election** to compute zero tax payable.
+4. **Archive Supporting Records for 7 Years:** Even at 0% Corporate Tax, the FTA requires 7-year retention of sales invoices, bank statements, and general ledgers to substantiate gross turnover below AED 3M during any future review.
+
+### 3. Does 5% UAE VAT Affect Small Business Relief?
+**No.** Corporate Tax and 5% UAE VAT are completely separate federal regimes. A UAE company whose annual taxable turnover exceeds **AED 375,000** must register for VAT and file quarterly Form 201 returns via our [UAE 5% VAT Compliance desk](/services/vat-compliance)—while still legally claiming **0% Corporate Tax under Small Business Relief** as long as gross revenue remains at or below AED 3,000,000.
+
+### 4. Strategic Trade-Offs to Check Before Electing SBR
+- **No Tax Loss Carry-Forward:** If your company incurred a net loss during the year, electing SBR forfeits the ability to carry that tax loss forward to offset future profitable years above AED 3M.
+- **Artificial Separation Anti-Abuse Rule:** Splitting one business across multiple trade licenses solely to stay below AED 3M per entity violates FTA General Anti-Abuse Rules (GAAR).
+
+---
+
+### Check Your 2026 SBR Eligibility in 60 Seconds
+Model your exact 0% SBR vs. 9% Corporate Tax outcome with our free [2026 UAE Corporate Tax & 5% VAT Calculator](/uae-tax-planner), explore our [Small Business Relief Hub](/small-business-tax-relief), or review our [fixed-fee monthly IFRS accounting and EmaraTax filing packages from AED 400/month](/pricing).`
   }
 ];
 

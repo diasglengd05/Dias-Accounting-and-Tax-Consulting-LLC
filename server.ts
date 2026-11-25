@@ -280,9 +280,56 @@ app.use((req, res, next) => {
     ) {
       return "/blog/top-tax-mistakes-uae-companies-make";
     }
+    if (
+      trimmedLower === "/blog/draft-free-zone-qualifying-income" ||
+      trimmedLower === "/blogs/draft-free-zone-qualifying-income"
+    ) {
+      return "/blog/free-zone-qualifying-income";
+    }
+    if (
+      trimmedLower === "/blog/draft-claim-small-business-relief" ||
+      trimmedLower === "/blogs/draft-claim-small-business-relief"
+    ) {
+      return "/blog/claim-small-business-relief";
+    }
+    if (
+      trimmedLower === "/blog/draft-vat-registration-checklist" ||
+      trimmedLower === "/blogs/draft-vat-registration-checklist"
+    ) {
+      return "/blog/vat-compliance-checklist";
+    }
+    if (
+      trimmedLower === "/blog/draft-backlog-bookkeeping-penalty-shield" ||
+      trimmedLower === "/blogs/draft-backlog-bookkeeping-penalty-shield"
+    ) {
+      return "/services/backlog-accounting";
+    }
+    if (/^\/blogs?\/draft-.+$/.test(trimmedLower)) {
+      return "/blog";
+    }
+    if (trimmedLower === "/insights") {
+      return "/blog";
+    }
     if (trimmedLower.startsWith("/blogs/")) {
       const slug = p.replace(/^\/blogs\//i, "").replace(/\/+$/, "");
       return slug ? `/blog/${slug}` : "/blog";
+    }
+    if (
+      trimmedLower === "/corporate-tax-calculator" ||
+      trimmedLower === "/tax-savings" ||
+      trimmedLower === "/tax-savings-assessment"
+    ) {
+      return "/uae-tax-planner";
+    }
+    if (trimmedLower === "/dividends-audit-dubai" || trimmedLower === "/dividends-audit-uae") {
+      return "/dividends-audit";
+    }
+    if (
+      trimmedLower === "/business-incorporation" ||
+      trimmedLower === "/business-incorporation-services" ||
+      trimmedLower === "/services/business-incorporation-services"
+    ) {
+      return "/services/business-incorporation";
     }
     return null;
   };

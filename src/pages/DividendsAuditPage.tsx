@@ -17,6 +17,7 @@ import {
 } from "../lib/seo";
 import ServicePageTemplate from "../components/hub/ServicePageTemplate";
 import { ComplianceTable, ExecutiveCallout } from "../components/hub/ExecutivePrimitives";
+import SameDayQuoteBox from "../components/SameDayQuoteBox";
 
 interface PageProps {
   onNavigate?: (path: string) => void;
@@ -33,6 +34,11 @@ const FEATURED_DIVIDEND_FAQ = {
 };
 
 const DIVIDEND_FAQS = [
+  {
+    question: "How fast is a statutory dividends audit in Dubai & UAE?",
+    answer:
+      "A statutory interim or final dividends audit in Dubai, DIFC, or UAE Free Zones typically takes 4 to 5 business days with Dias Accounting: Day 1 covers ledger and 10% statutory reserve verification, Days 2–3 complete IFRS solvency and working-capital testing, and Days 4–5 deliver the signed statutory audit report and bank clearance certificate.",
+  },
   {
     question: "Can a UAE company distribute interim dividends mid-year?",
     answer:
@@ -67,9 +73,9 @@ export const DividendsAuditPage: React.FC<PageProps> = ({
   };
 
   useEffect(() => {
-    const pageTitle = "Dividends Audit Dubai & UAE | Statutory Interim & Final Dividend Audits";
+    const pageTitle = "Dividends Audit Dubai & UAE | Fast Statutory Sign-Off (FTA Tax Agents)";
     const pageDesc =
-      "Fast, compliant statutory dividend audits for Dubai Mainland, DIFC, DTEC & Free Zone companies under UAE Commercial Companies Law. Clear audit sign-off by FTA-Registered Tax Agents.";
+      "Need an interim or final dividends audit in Dubai, DIFC, or UAE Free Zones? Compliant statutory audit reports under UAE Commercial Companies Law. Get a same-day fixed quote.";
     const canonicalPath = "/dividends-audit";
     const pageUrl = `https://diasuae.ae${canonicalPath}`;
 
@@ -168,6 +174,64 @@ export const DividendsAuditPage: React.FC<PageProps> = ({
             },
           ]}
         />
+
+        {/* Fast-Track 3-Step Statutory Dividends Audit Timeline */}
+        <div className="rounded-2xl bg-[#070d19] border border-[#c5a059]/35 p-6 sm:p-10 text-white shadow-sm space-y-8">
+          <div className="max-w-3xl space-y-2.5">
+            <span className="inline-block text-xs font-semibold uppercase tracking-[0.14em] text-[#c5a059]">
+              Fast Statutory Sign-Off · 4–5 Business Days
+            </span>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">
+              How Fast Is a Statutory Dividends Audit in Dubai &amp; UAE?
+            </h2>
+            <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-[65ch]">
+              Our chartered audit and FTA-registered tax team executes interim and final statutory dividend audits on a predictable 5-day turnaround—accepted by Dubai Mainland DET, DIFC, DTEC, DMCC, SHAMS, and UAE Tier-1 banks.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {[
+              {
+                step: "Day 1",
+                title: "Ledger & Reserves Check",
+                description:
+                  "Trial balance review, MOA interim/final dividend authorization check, and verification of realized retained earnings plus mandatory 10% statutory legal reserves under Article 103.",
+              },
+              {
+                step: "Day 2–3",
+                title: "IFRS Solvency Verification",
+                description:
+                  "Substantive IFRS testing of cash balances, payables, tax provisions (9% CT & 5% VAT), and post-distribution working capital solvency to protect directors from personal liability.",
+              },
+              {
+                step: "Day 4–5",
+                title: "Signed Statutory Report",
+                description:
+                  "Issuance of signed statutory audited financial statements, Board/AGM dividend resolution pack, and bank remittance clearance certificate for Emirates NBD, FAB, ADCB, or Mashreq.",
+              },
+            ].map((phase) => (
+              <div
+                key={phase.step}
+                className="rounded-xl bg-[#0d1b2a] border border-[#c5a059]/25 p-6 flex flex-col justify-between space-y-3"
+              >
+                <div className="space-y-2.5">
+                  <span className="inline-block text-xs font-bold uppercase tracking-widest text-[#c5a059] tabular-nums">
+                    {phase.step}
+                  </span>
+                  <h3 className="font-display text-lg font-bold text-white leading-snug">
+                    {phase.title}
+                  </h3>
+                  <p className="text-sm text-slate-300 leading-relaxed">
+                    {phase.description}
+                  </p>
+                </div>
+                <div className="pt-3 border-t border-white/10 text-[11px] font-medium uppercase tracking-wider text-[#c5a059]/90">
+                  UAE Commercial Law &amp; IFRS Compliant
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -184,6 +248,13 @@ export const DividendsAuditPage: React.FC<PageProps> = ({
         { label: "Statutory Reserve Check", value: "10% Legal Reserve Allocation" },
         { label: "Bank Clearance", value: "Accepted by ENBD, FAB, ADCB & Mashreq" },
       ]}
+      heroBottomSlot={
+        <SameDayQuoteBox
+          idPrefix="dividends-quote"
+          defaultJurisdiction="Dubai Mainland"
+          defaultService="Dividends Audit"
+        />
+      }
       customTopSection={statutoryFrameworkSection}
       deliverablesHeading="What's Included in a Dividends Audit"
       deliverablesSubheading="Complete financial verification and corporate governance documentation required by shareholders, auditors, and UAE corporate banks."

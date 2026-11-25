@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
+import SameDayQuoteBox from "../components/SameDayQuoteBox";
 import {
   applyPageSEO,
   buildBreadcrumbSchema,
@@ -495,6 +496,14 @@ export const PricingPage: React.FC<PricingPageProps> = ({
                   </button>
                 </div>
               )}
+            </div>
+
+            <div className="mt-9">
+              <SameDayQuoteBox
+                idPrefix="pricing-quote"
+                defaultJurisdiction="Dubai Mainland"
+                defaultService="Monthly Accounting from AED 400/mo"
+              />
             </div>
           </div>
         </section>

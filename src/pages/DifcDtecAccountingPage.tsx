@@ -19,6 +19,7 @@ import {
 } from "../lib/seo";
 import ServicePageTemplate from "../components/hub/ServicePageTemplate";
 import { ComplianceTable, ExecutiveCallout } from "../components/hub/ExecutivePrimitives";
+import SameDayQuoteBox from "../components/SameDayQuoteBox";
 
 interface PageProps {
   onNavigate?: (path: string) => void;
@@ -81,9 +82,9 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({
 
   useEffect(() => {
     const canonicalPath = "/tax-planning-difc";
-    const pageTitle = "DIFC & DTEC Tax Compliance, IFRS Accounting & Dividend Audits | Dias UAE";
+    const pageTitle = "DIFC & DTEC Accounting, 0% QFZP Tax & Virtual Bookkeeping | Dias UAE";
     const pageDesc =
-      "Specialized 0% QFZP Corporate Tax compliance, audited IFRS financial statements, and statutory dividend audits for DIFC & DTEC companies in Dubai. Fixed packages from AED 400/mo.";
+      "Fixed-fee virtual IFRS bookkeeping, 0% QFZP Corporate Tax compliance & audit readiness for DIFC & DTEC companies in Dubai. 2x Clutch 2026 UAE Leader.";
     const pageUrl = `https://diasuae.ae${canonicalPath}`;
 
     applyPageSEO({
@@ -263,6 +264,13 @@ export const DifcDtecAccountingPage: React.FC<PageProps> = ({
         { label: "De Minimis Ceiling", value: "Lower of 5% or AED 5,000,000" },
         { label: "Monthly Retainers", value: "Fixed Fees From AED 400 / Month" },
       ]}
+      heroBottomSlot={
+        <SameDayQuoteBox
+          idPrefix="difc-quote"
+          defaultJurisdiction="DIFC"
+          defaultService="Monthly Accounting from AED 400/mo"
+        />
+      }
       customTopSection={jurisdictionSection}
       deliverablesHeading="What's Included for DIFC & DTEC Entities"
       deliverablesSubheading="End-to-end financial reporting, quarterly VAT 201 returns, and annual EmaraTax Corporate Tax submissions without hourly billing surprises."

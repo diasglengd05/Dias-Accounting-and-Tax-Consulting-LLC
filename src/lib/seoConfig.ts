@@ -4,20 +4,21 @@
  */
 
 export const SITE_URL = "https://diasuae.ae";
-export const SITE_NAME = "Dias Accounting & Tax Consulting";
+export const SITE_NAME = "DiasUAE";
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
 export const DEFAULT_OG_IMAGE_WIDTH = "1200";
 export const DEFAULT_OG_IMAGE_HEIGHT = "630";
 export const DEFAULT_OG_IMAGE_ALT =
-  "Dias Accounting & Tax Consulting — UAE Corporate Tax, VAT & Fixed-Fee IFRS Accounting";
+  "DiasUAE (Dias Accounting and Tax Consulting LLC) — UAE Corporate Tax, VAT & Fixed-Fee IFRS Accounting";
 
 export const BUSINESS_ENTITY = {
   id: `${SITE_URL}/#organization`,
   websiteId: `${SITE_URL}/#website`,
   founderId: `${SITE_URL}/#glendias`,
-  name: "Dias Accounting and Tax Consulting LLC",
+  name: "DiasUAE — Dias Accounting and Tax Consulting LLC",
   legalName: "Dias Accounting and Tax Consulting LLC",
-  shortName: "Dias Accounting",
+  alternateName: ["DiasUAE", "diasuae.ae", "Dias Accounting"],
+  shortName: "DiasUAE",
   url: `${SITE_URL}/`,
   logo: `${SITE_URL}/favicon.ico`,
   image: DEFAULT_OG_IMAGE,
@@ -68,15 +69,18 @@ export const BUSINESS_ENTITY = {
   founder: {
     name: "Glen Dias",
     jobTitle: "FTA-Registered Tax Agent",
-    sameAs: ["https://www.linkedin.com/company/diasaccounting/"],
+    sameAs: ["https://ae.linkedin.com/company/diasaccounting"],
   },
   award: [
     "Top Financial Risk Advisory Consultants Company - United Arab Emirates 2026 (Clutch)",
     "Top Financial Forecast Consultants Company - United Arab Emirates 2026 (Clutch)",
   ],
   sameAs: [
+    "https://www.instagram.com/diasuae.ae/",
+    "https://www.youtube.com/@diasuae",
+    "https://ae.linkedin.com/company/diasaccounting",
+    "https://www.facebook.com/diasuae",
     "https://clutch.co/profile/dias-accounting-tax-consulting",
-    "https://www.linkedin.com/company/diasaccounting/",
     "https://insights.diasuae.ae/",
     "https://wa.me/971529226958",
   ],

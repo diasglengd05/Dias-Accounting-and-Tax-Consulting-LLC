@@ -28,11 +28,11 @@ export interface SEOConfig {
 
 export const SECTION_SEO_MAP_EN: Record<string, SEOConfig> = {
   home: {
-    title: "Dias Accounting UAE | FTA-Registered Tax Agents Dubai & SHAMS (From AED 400/Mo)",
+    title: "DiasUAE | UAE Tax Agents & IFRS Accounting From AED 400/Mo",
     description:
-      "Fixed-fee monthly IFRS bookkeeping, 5% VAT Form 201 returns & 9% UAE Corporate Tax filing in Dubai, DIFC, DTEC & SHAMS. Led by FTA-Registered Tax Agent Glen Dias. Book a free 15-min check.",
+      "FTA-Registered Tax Agency in Dubai & SHAMS led by Glen Dias. Monthly IFRS bookkeeping, 5% VAT, 9% Corporate Tax & dividend audits from AED 400/mo. Free 15-min review.",
     keywords:
-      "UAE Corporate Tax, UAE VAT Compliance, IFRS Bookkeeping Dubai, FTA Registered Tax Agent, Fixed-Fee Accounting Packages UAE, SHAMS Accounting Firm, DIFC Tax Compliance, Dias Accounting",
+      "DiasUAE, diasuae.ae, UAE Corporate Tax, UAE VAT Compliance, IFRS Bookkeeping Dubai, FTA Registered Tax Agent, Fixed-Fee Accounting Packages UAE, SHAMS Accounting Firm, DIFC Tax Compliance, Dias Accounting",
     hash: "#home",
     ogImage: DEFAULT_OG_IMAGE,
   },
@@ -143,6 +143,7 @@ export function useDynamicSEO({
       setMetaTag("name", "title", seoConfig.title);
       setMetaTag("name", "description", seoConfig.description);
       setMetaTag("name", "keywords", seoConfig.keywords);
+      setMetaTag("name", "robots", "index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1");
 
       setMetaTag("property", "og:site_name", SITE_NAME);
       setMetaTag("property", "og:title", seoConfig.title);

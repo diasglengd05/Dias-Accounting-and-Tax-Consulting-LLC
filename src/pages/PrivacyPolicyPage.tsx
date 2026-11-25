@@ -30,6 +30,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({
       canonicalPath: "/privacy-policy",
       keywords:
         "Dias Accounting privacy policy, UAE PDPL compliance, client confidentiality tax advisory",
+      robots: "noindex, follow",
     });
     upsertJsonLd(
       "page-breadcrumb-jsonld",

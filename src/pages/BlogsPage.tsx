@@ -10,7 +10,6 @@ import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
 import SectionCTA from "../components/editorial/SectionCTA";
 import { blogsData } from "../data/blogsData";
-import { draftPlaceholderPosts } from "../data/blogDrafts";
 import { BlogPost } from "../types";
 import {
   applyPageSEO,
@@ -167,7 +166,7 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
     };
   }, []);
 
-  const combinedPosts = [...allPosts, ...draftPlaceholderPosts];
+  const combinedPosts = allPosts.filter((post) => !post.id.startsWith("draft-"));
 
   const matchesFilter = (item: {
     title: string;
@@ -666,6 +665,83 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
             <p className="pt-6 border-t border-[#E2E8F0] text-xs text-[#64748B] leading-relaxed">
               <strong className="text-[#0D1B2A]">General Information Notice:</strong> Articles published on diasuae.ae and insights.diasuae.ae provide general UAE regulatory information and do not constitute entity-specific legal or tax advice. Consult an FTA-Registered Tax Agent before making statutory filings.
             </p>
+          </div>
+        </section>
+
+        {/* 3.5 Strategic Internal Links to Priority UAE Compliance & Audit Hubs */}
+        <section className="bg-[#070d19] border-t border-[#c5a059]/25 py-14 text-white">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+              <div>
+                <span className="inline-block text-xs font-semibold uppercase tracking-[0.14em] text-[#c5a059] mb-1.5">
+                  FTA-Registered Execution Desks
+                </span>
+                <h2 className="font-display text-2xl font-bold text-white tracking-tight">
+                  Explore Our Core 2026 UAE Tax &amp; Statutory Audit Services
+                </h2>
+              </div>
+              <a
+                href="/pricing"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onNavigate("/pricing");
+                }}
+                className="text-sm font-semibold text-[#c5a059] hover:text-white transition-colors inline-flex items-center gap-1"
+              >
+                <span>Compare fixed-fee retainers from AED 400/mo</span>
+                <ArrowRight className="w-4 h-4" />
+              </a>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              {[
+                {
+                  eyebrow: "5% VAT · Form 201",
+                  title: "UAE VAT Compliance & FTA Audit Support",
+                  desc: "AED 375k TRN registration, quarterly Form 201 returns, 2026 FTA Decision 13 input tax recovery, and VAT-to-Corporate-Tax reconciliation from AED 400/mo.",
+                  href: "/services/vat-compliance",
+                  cta: "View 2026 VAT Checklist",
+                },
+                {
+                  eyebrow: "4–5 Day Turnaround",
+                  title: "Statutory Dividends Audit Dubai & UAE",
+                  desc: "Interim and final statutory dividend audits, 10% legal reserve verification, IFRS solvency sign-off, and UAE bank remittance clearance.",
+                  href: "/dividends-audit",
+                  cta: "Explore Dividends Audit",
+                },
+                {
+                  eyebrow: "0% QFZP · IFRS",
+                  title: "DIFC & DTEC Virtual Bookkeeping & Tax",
+                  desc: "Fixed-fee virtual IFRS bookkeeping, 0% Qualifying Free Zone Person compliance, and audit readiness for DIFC & DTEC entities.",
+                  href: "/tax-planning-difc",
+                  cta: "View DIFC & DTEC Hub",
+                },
+              ].map((hub) => (
+                <a
+                  key={hub.href}
+                  href={hub.href}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onNavigate(hub.href);
+                  }}
+                  className="rounded-xl bg-[#0d1b2a] border border-[#c5a059]/25 hover:border-[#c5a059]/70 p-6 flex flex-col justify-between gap-4 transition-all group"
+                >
+                  <div className="space-y-2">
+                    <span className="inline-block text-[11px] font-semibold uppercase tracking-widest text-[#c5a059]">
+                      {hub.eyebrow}
+                    </span>
+                    <h3 className="font-display text-lg font-bold text-white group-hover:text-[#c5a059] transition-colors">
+                      {hub.title}
+                    </h3>
+                    <p className="text-sm text-slate-300 leading-relaxed">{hub.desc}</p>
+                  </div>
+                  <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#c5a059] group-hover:translate-x-0.5 transition-transform">
+                    <span>{hub.cta}</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </span>
+                </a>
+              ))}
+            </div>
           </div>
         </section>
 

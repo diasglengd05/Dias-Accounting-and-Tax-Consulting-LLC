@@ -3,19 +3,23 @@ import React from "react";
 interface DiasLogoProps {
   className?: string;
   showText?: boolean;
+  showSubLabel?: boolean;
   textSize?: string;
   textColor?: string;
+  subLabelColor?: string;
 }
 
 export default function DiasLogo({
   className = "w-10 h-10",
   showText = true,
+  showSubLabel = false,
   textSize = "text-xl",
   textColor = "text-navy-950",
+  subLabelColor = "text-slate-500",
 }: DiasLogoProps) {
   return (
-    <div className="flex items-center gap-3 select-none">
-      <div className={`relative ${className}`}>
+    <div className="flex items-center gap-2.5 sm:gap-3 select-none">
+      <div className={`relative shrink-0 ${className}`}>
         <svg
           viewBox="0 0 250 250"
           fill="none"
@@ -103,8 +107,22 @@ export default function DiasLogo({
         </svg>
       </div>
       {showText && (
-        <span className={`${textSize} font-display font-bold tracking-tight whitespace-nowrap ${textColor}`}>
-          Dias Accounting
+        <span className="flex flex-col leading-none">
+          <span
+            className={`${textSize} font-display font-extrabold tracking-tight whitespace-nowrap ${textColor}`}
+          >
+            DiasUAE
+            <span className="text-[#c5a059] font-semibold text-[0.82em] tracking-normal">
+              .ae
+            </span>
+          </span>
+          {showSubLabel && (
+            <span
+              className={`hidden sm:block text-[10px] font-medium tracking-[0.06em] mt-0.5 whitespace-nowrap ${subLabelColor}`}
+            >
+              Accounting &amp; Tax · UAE
+            </span>
+          )}
         </span>
       )}
     </div>

@@ -22,7 +22,7 @@ function toIsoDate(dateStr?: string): string {
 export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact, onNavigate }) => {
   const canonicalPostUrl = blog
     ? blog.externalUrl || `https://diasuae.ae/blog/${blog.id}`
-    : "https://diasuae.ae/blogs";
+    : "https://diasuae.ae/blog";
 
   const blogPostingPayload = blog
     ? {

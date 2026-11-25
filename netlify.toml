@@ -39,6 +39,96 @@
   force = true
 
 [[redirects]]
+  from = "/blogs"
+  to = "/blog"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blogs/"
+  to = "/blog"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blog/draft-top-tax-mistakes-uae-companies-make"
+  to = "/blog/top-tax-mistakes-uae-companies-make"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blogs/draft-top-tax-mistakes-uae-companies-make"
+  to = "/blog/top-tax-mistakes-uae-companies-make"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blog/draft-free-zone-qualifying-income"
+  to = "/blog/free-zone-qualifying-income"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blogs/draft-free-zone-qualifying-income"
+  to = "/blog/free-zone-qualifying-income"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blog/draft-claim-small-business-relief"
+  to = "/blog/claim-small-business-relief"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blogs/draft-claim-small-business-relief"
+  to = "/blog/claim-small-business-relief"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blog/draft-vat-registration-checklist"
+  to = "/blog/vat-compliance-checklist"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blogs/draft-vat-registration-checklist"
+  to = "/blog/vat-compliance-checklist"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blog/draft-backlog-bookkeeping-penalty-shield"
+  to = "/services/backlog-accounting"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blogs/draft-backlog-bookkeeping-penalty-shield"
+  to = "/services/backlog-accounting"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blog/draft-*"
+  to = "/blog"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blogs/draft-*"
+  to = "/blog"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/blogs/*"
+  to = "/blog/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
   from = "/blog"
   to = "/blog.html"
   status = 200
