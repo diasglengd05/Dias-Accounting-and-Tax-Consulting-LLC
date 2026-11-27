@@ -25,7 +25,7 @@ export const ComplianceTable: React.FC<ComplianceTableProps> = ({
         <table className="w-full min-w-[540px] text-left border-collapse text-sm">
           {caption && <caption className="sr-only">{caption}</caption>}
           <thead>
-            <tr className="bg-[#0D1B2A] text-white">
+            <tr className="bg-[#F8FAFC] text-[#0D1B2A] border-b border-[#E2E8F0]">
               {columns.map((col) => (
                 <th
                   key={col.key}
@@ -222,15 +222,15 @@ export const ExecutiveClosingCta: React.FC<ExecutiveClosingCtaProps> = ({
   return (
     <section className="bg-[#FFFFFF] py-16 lg:py-20 border-t border-[#E2E8F0]">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-2xl bg-[#0D1B2A] text-white px-6 py-10 sm:px-12 sm:py-14 shadow-[0_16px_44px_-16px_rgba(13,27,42,0.3)] flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+        <div className="rounded-2xl bg-gradient-to-br from-[#F8FAFC] via-[#FFFFFF] to-[#F8FAFC] border border-[#E2E8F0] text-[#0D1B2A] px-6 py-10 sm:px-12 sm:py-14 shadow-[0_14px_38px_-20px_rgba(13,27,42,0.1)] flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
           <div className="space-y-3 max-w-2xl">
-            <span className="inline-block text-xs font-semibold tracking-wider uppercase text-[#C5A059]">
+            <span className="inline-block text-xs font-semibold tracking-wider uppercase text-[#856422]">
               {eyebrow}
             </span>
-            <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight leading-snug">
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#0D1B2A] tracking-tight leading-snug">
               {title}
             </h2>
-            <p className="text-slate-300 text-sm sm:text-base leading-[1.65] max-w-[60ch]">
+            <p className="text-[#475569] text-sm sm:text-base leading-[1.65] max-w-[60ch]">
               {description}
             </p>
           </div>
@@ -238,7 +238,7 @@ export const ExecutiveClosingCta: React.FC<ExecutiveClosingCtaProps> = ({
             <button
               type="button"
               onClick={onCtaClick}
-              className="min-h-[48px] px-7 py-3 rounded-xl bg-[#FFFFFF] hover:bg-[#F8FAFC] text-[#0D1B2A] text-sm font-semibold transition-colors cursor-pointer inline-flex items-center justify-center gap-2 shadow-xs whitespace-nowrap"
+              className="min-h-[48px] px-7 py-3 rounded-xl bg-[#1B4332] hover:bg-[#143326] text-white text-sm font-semibold transition-colors cursor-pointer inline-flex items-center justify-center gap-2 shadow-xs whitespace-nowrap"
             >
               <span>{ctaLabel}</span>
               <ArrowRight className="w-4 h-4 shrink-0" />
@@ -247,7 +247,7 @@ export const ExecutiveClosingCta: React.FC<ExecutiveClosingCtaProps> = ({
               <button
                 type="button"
                 onClick={onSecondaryClick}
-                className="min-h-[44px] px-3 text-sm font-medium text-slate-300 hover:text-white transition-colors cursor-pointer whitespace-nowrap"
+                className="min-h-[44px] px-4 py-2 rounded-xl bg-white hover:bg-[#F8FAFC] border border-[#CBD5E1] hover:border-[#1B4332] text-sm font-semibold text-[#0D1B2A] hover:text-[#1B4332] transition-colors cursor-pointer whitespace-nowrap"
               >
                 {secondaryLabel}
               </button>

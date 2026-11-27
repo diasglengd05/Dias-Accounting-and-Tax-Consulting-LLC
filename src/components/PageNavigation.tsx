@@ -240,7 +240,7 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
           aria-label="DiasUAE — Dias Accounting and Tax Consulting LLC Home"
         >
           <DiasLogo
-            className="w-8 h-8"
+            className="h-9 md:h-10 w-auto"
             showText={true}
             showSubLabel={true}
             textSize="text-base sm:text-lg"

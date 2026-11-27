@@ -71,42 +71,30 @@ export function ClientCaseStudies() {
   const isAr = language === "ar";
 
   return (
-    <section id="case-studies" className="py-6 sm:py-8 md:py-10 bg-gradient-to-b from-navy-950 via-slate-900 to-navy-950 border-b border-slate-800 text-white relative overflow-hidden scroll-mt-20">
-      {/* Ambient Animated Glows */}
-      <motion.div
-        animate={{ scale: [1, 1.15, 1], opacity: [0.12, 0.2, 0.12] }}
-        transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -top-24 left-1/3 w-96 h-48 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"
-      />
-      <motion.div
-        animate={{ opacity: [0.08, 0.16, 0.08] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -bottom-20 right-1/4 w-80 h-40 bg-gold-500/15 rounded-full blur-3xl pointer-events-none"
-      />
-
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-4 sm:space-y-5">
+    <section id="case-studies" className="py-10 sm:py-12 md:py-14 bg-gradient-to-b from-[#FFFFFF] via-[#F8FAFC] to-[#FFFFFF] border-y border-[#E2E8F0] text-[#0D1B2A] relative overflow-hidden scroll-mt-20">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-5 sm:space-y-6">
         
         {/* Crisp Header */}
-        <div className="text-center space-y-1.5 max-w-xl mx-auto">
+        <div className="text-center space-y-2 max-w-xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: -4 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[10.5px] font-bold uppercase tracking-wider font-mono"
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F8FAFC] border border-[#C5A059]/40 text-[#856422] text-[10.5px] font-bold uppercase tracking-wider font-mono"
           >
-            <Award className="w-3 h-3" />
+            <Award className="w-3.5 h-3.5 text-[#C5A059]" />
             <span>{isAr ? "نتائج حقيقية موثقة" : "Proven UAE Results"}</span>
           </motion.div>
 
-          <h2 className="font-display text-lg sm:text-2xl font-extrabold text-white tracking-tight">
+          <h2 className="font-display text-xl sm:text-2xl md:text-3xl font-extrabold text-[#0D1B2A] tracking-tight">
             {isAr ? (
-              <>وفورات ضريبية وحماية من الغرامات <span className="text-gold-400">بأرقام ملموسة</span></>
+              <>وفورات ضريبية وحماية من الغرامات <span className="text-[#856422]">بأرقام ملموسة</span></>
             ) : (
-              <>Defensible Tax Savings & <span className="text-gold-400">Zero-Penalty Track Record</span></>
+              <>Defensible Tax Savings &amp; <span className="text-[#856422]">Zero-Penalty Track Record</span></>
             )}
           </h2>
 
-          <p className="text-slate-400 text-xs max-w-md mx-auto">
+          <p className="text-[#475569] text-xs sm:text-sm max-w-md mx-auto">
             {isAr
               ? "أمثلة حقيقية على حل النزاعات الضريبية، وهيكلة 0% للشخص المؤهل، وإسقاط الغرامات الإدارية."
               : "Measurable outcomes resolving FTA audits, securing 0% QFZP tax, and waiving late fines."}
@@ -114,7 +102,7 @@ export function ClientCaseStudies() {
         </div>
 
         {/* 3 Animated Metric-First Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {CASE_STUDIES.map((study, idx) => (
             <motion.div
               key={study.id}
@@ -123,40 +111,40 @@ export function ClientCaseStudies() {
               viewport={{ once: true }}
               transition={{ duration: 0.25, delay: idx * 0.05 }}
               whileHover={{ y: -4, transition: { duration: 0.18 } }}
-              className="group bg-navy-950/80 border border-slate-800 hover:border-gold-400/70 rounded-2xl p-4 flex flex-col justify-between shadow-md hover:shadow-xl hover:shadow-gold-500/5 transition-colors text-left rtl:text-right"
+              className="group bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#C5A059] rounded-2xl p-5 flex flex-col justify-between shadow-sm hover:shadow-md transition-all text-left rtl:text-right"
             >
-              <div className="space-y-2">
+              <div className="space-y-2.5">
                 {/* Metric & Tag Top Bar */}
-                <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-2">
-                  <span className="font-display text-xl sm:text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-gold-300 via-amber-200 to-emerald-300 group-hover:scale-102 transition-transform inline-block">
+                <div className="flex items-center justify-between gap-2 border-b border-[#E2E8F0] pb-2.5">
+                  <span className="font-display text-xl sm:text-2xl font-extrabold text-[#1B4332] group-hover:scale-102 transition-transform inline-block">
                     {study.metric}
                   </span>
-                  <span className="text-[9.5px] font-mono font-bold text-emerald-300 bg-emerald-500/15 border border-emerald-400/30 px-2 py-0.5 rounded-full shrink-0">
+                  <span className="text-[9.5px] font-mono font-bold text-[#1B4332] bg-[#1B4332]/8 border border-[#1B4332]/20 px-2 py-0.5 rounded-full shrink-0">
                     {isAr ? study.badgeAr : study.badge}
                   </span>
                 </div>
 
                 {/* Sub-label & Industry */}
                 <div>
-                  <div className="text-xs font-bold text-slate-200">
+                  <div className="text-xs font-bold text-[#0D1B2A]">
                     {isAr ? study.metricLabelAr : study.metricLabel}
                   </div>
-                  <div className="flex items-center gap-1.5 text-[10.5px] text-gold-400 font-medium mt-0.5">
+                  <div className="flex items-center gap-1.5 text-[10.5px] text-[#856422] font-semibold mt-0.5">
                     <span>{isAr ? study.industryAr : study.industry}</span>
-                    <span className="text-slate-600">•</span>
-                    <span className="text-slate-400">{study.location}</span>
+                    <span className="text-[#CBD5E1]">•</span>
+                    <span className="text-[#64748B]">{study.location}</span>
                   </div>
                 </div>
 
                 {/* Crisp Takeaway */}
-                <p className="text-[11.5px] text-slate-300 leading-relaxed pt-1">
+                <p className="text-xs text-[#475569] leading-relaxed pt-1">
                   {isAr ? study.takeawayAr : study.takeaway}
                 </p>
               </div>
 
               {/* Bottom Verification Status */}
-              <div className="mt-3 pt-2 border-t border-white/5 flex items-center gap-1.5 text-[10px] text-emerald-400 font-medium">
-                <CheckCircle2 className="w-3 h-3 shrink-0" />
+              <div className="mt-3.5 pt-2.5 border-t border-[#E2E8F0] flex items-center gap-1.5 text-[10.5px] text-[#1B4332] font-semibold">
+                <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
                 <span>{isAr ? "معتمد ومطابق لـ EmaraTax" : "EmaraTax & Audit Verified"}</span>
               </div>
             </motion.div>
@@ -168,11 +156,11 @@ export function ClientCaseStudies() {
           initial={{ opacity: 0, y: 8 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="bg-navy-950/90 border border-gold-500/25 hover:border-gold-500/40 rounded-xl p-3 sm:p-3.5 flex flex-col sm:flex-row items-center justify-between gap-2.5 text-xs shadow-md transition-colors"
+          className="bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#C5A059] rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs shadow-sm transition-colors"
         >
-          <div className="flex items-center gap-2 text-center sm:text-left rtl:sm:text-right">
-            <Sparkles className="w-4 h-4 text-gold-400 shrink-0" />
-            <span className="text-slate-200 text-xs font-medium">
+          <div className="flex items-center gap-2.5 text-center sm:text-left rtl:sm:text-right">
+            <Sparkles className="w-4 h-4 text-[#C5A059] shrink-0" />
+            <span className="text-[#0D1B2A] text-xs sm:text-sm font-semibold">
               {isAr 
                 ? "هل تريد نتائج وحماية ضريبية مماثلة لشركتك في الإمارات؟" 
                 : "Want measurable tax savings and zero penalties for your UAE business?"}
@@ -181,7 +169,7 @@ export function ClientCaseStudies() {
 
           <a
             href="#contact"
-            className="shrink-0 inline-flex items-center gap-1.5 bg-gold-500 hover:bg-gold-400 text-navy-950 font-bold px-3.5 py-1.5 rounded-lg text-xs transition-all shadow-xs cursor-pointer active:scale-95 whitespace-nowrap"
+            className="shrink-0 inline-flex items-center gap-1.5 bg-[#1B4332] hover:bg-[#143326] text-white font-bold px-4 py-2 rounded-lg text-xs transition-all shadow-xs cursor-pointer active:scale-95 whitespace-nowrap"
           >
             <span>{isAr ? "استشارة مجانية" : "Free Strategy Call"}</span>
             <ArrowRight className="w-3.5 h-3.5" />

@@ -206,33 +206,31 @@ export const CompanySetupHub: React.FC<CompanySetupHubProps> = ({
         </div>
 
         {/* Mainland vs Free Zone Selector Card */}
-        <div className="bg-navy-950 rounded-2xl p-5 sm:p-6 text-white relative overflow-hidden border border-slate-800 shadow-xl">
-          <div className="absolute -top-32 -right-32 w-80 h-80 bg-gold-500/10 rounded-full blur-3xl pointer-events-none" />
-
+        <div className="bg-gradient-to-br from-[#F8FAFC] via-[#FFFFFF] to-[#F8FAFC] rounded-2xl p-5 sm:p-6 text-[#0D1B2A] relative overflow-hidden border border-[#E2E8F0] shadow-xs">
           <div className="relative z-10 space-y-4">
             {/* Header & Animated Tabs */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 border-b border-white/10">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3.5 border-b border-[#E2E8F0]">
               <div>
-                <span className="text-[10px] font-mono font-bold text-gold-400 uppercase tracking-widest block mb-0.5">
+                <span className="text-[10px] font-mono font-bold text-[#856422] uppercase tracking-widest block mb-0.5">
                   {isAr ? "المقارنة القانونية" : "Jurisdiction Selection"}
                 </span>
-                <h3 className="font-display text-lg sm:text-2xl font-bold text-white">
+                <h3 className="font-display text-lg sm:text-2xl font-bold text-[#0D1B2A]">
                   {isAr ? "البر الرئيسي أم المنطقة الحرة؟" : "Mainland vs. Free Zone"}
                 </h3>
               </div>
 
               {/* Animated Tab Switcher */}
-              <div className="inline-flex bg-white/10 p-1 rounded-xl border border-white/10 shrink-0 self-start sm:self-auto">
+              <div className="inline-flex bg-[#F1F5F9] p-1 rounded-xl border border-[#E2E8F0] shrink-0 self-start sm:self-auto">
                 <button
                   onClick={() => setActiveTab("mainland")}
                   className={`relative px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer select-none ${
-                    activeTab === "mainland" ? "text-navy-950" : "text-slate-300 hover:text-white"
+                    activeTab === "mainland" ? "text-white" : "text-[#475569] hover:text-[#0D1B2A]"
                   }`}
                 >
                   {activeTab === "mainland" && (
                     <motion.div
                       layoutId="setupActiveTab"
-                      className="absolute inset-0 bg-gold-400 rounded-lg shadow-sm"
+                      className="absolute inset-0 bg-[#1B4332] rounded-lg shadow-xs"
                       transition={{ type: "spring", stiffness: 450, damping: 32 }}
                     />
                   )}
@@ -241,13 +239,13 @@ export const CompanySetupHub: React.FC<CompanySetupHubProps> = ({
                 <button
                   onClick={() => setActiveTab("freezone")}
                   className={`relative px-3.5 py-1.5 rounded-lg text-xs font-bold transition-colors cursor-pointer select-none ${
-                    activeTab === "freezone" ? "text-navy-950" : "text-slate-300 hover:text-white"
+                    activeTab === "freezone" ? "text-white" : "text-[#475569] hover:text-[#0D1B2A]"
                   }`}
                 >
                   {activeTab === "freezone" && (
                     <motion.div
                       layoutId="setupActiveTab"
-                      className="absolute inset-0 bg-gold-400 rounded-lg shadow-sm"
+                      className="absolute inset-0 bg-[#1B4332] rounded-lg shadow-xs"
                       transition={{ type: "spring", stiffness: 450, damping: 32 }}
                     />
                   )}
@@ -266,7 +264,7 @@ export const CompanySetupHub: React.FC<CompanySetupHubProps> = ({
                 transition={{ duration: 0.18 }}
                 className="space-y-3.5"
               >
-                <p className="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-3xl">
+                <p className="text-[#475569] text-xs sm:text-sm leading-relaxed max-w-3xl">
                   {activeTab === "mainland"
                     ? (isAr
                         ? "تتيح رخصة البر الرئيسي التجارة بحرية كاملة داخل السوق المحلي الإماراتي والتعاقدات الحكومية مع ملكية أجنبية 100% لكافة الأنشطة التجارية."
@@ -290,16 +288,16 @@ export const CompanySetupHub: React.FC<CompanySetupHubProps> = ({
                     { en: "Fast setup with zero upfront paid-up capital", ar: "تأسيس فوري بدون متطلبات رأس مال مدفوع" },
                     { en: "100% capital and profit repatriation to home country", ar: "إعادة كامل الأرباح ورأس المال بنسبة 100%" },
                   ]).map((item, idx) => (
-                    <div key={idx} className="bg-white/5 border border-white/10 rounded-xl p-2.5 text-xs text-slate-200 flex items-center gap-2">
-                      <CheckCircle2 className={`w-4 h-4 shrink-0 ${activeTab === "mainland" ? "text-gold-400" : "text-emerald-400"}`} />
+                    <div key={idx} className="bg-[#FFFFFF] border border-[#E2E8F0] rounded-xl p-2.5 text-xs text-[#334155] flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 shrink-0 text-[#1B4332]" />
                       <span className="leading-tight text-[11px]">{isAr ? item.ar : item.en}</span>
                     </div>
                   ))}
                 </div>
 
                 {/* Compact Bottom Action Bar */}
-                <div className="pt-2 border-t border-white/10 flex flex-wrap items-center justify-between gap-2.5 text-xs">
-                  <span className="text-slate-400 text-xs">
+                <div className="pt-2 border-t border-[#E2E8F0] flex flex-wrap items-center justify-between gap-2.5 text-xs">
+                  <span className="text-[#64748B] text-xs">
                     {isAr
                       ? "تقييم مجاني لاختيار الهيئة والنشاط الأنسب لشركتك وتحديد الرسوم الدقيقة."
                       : "Free 15-minute advisory to match the optimal jurisdiction and exact formation fee."}
@@ -307,7 +305,7 @@ export const CompanySetupHub: React.FC<CompanySetupHubProps> = ({
 
                   <button
                     onClick={() => handleConsultClick(activeTab === "mainland" ? "Dubai Mainland Company Setup" : "UAE Free Zone Company Setup")}
-                    className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold py-2 px-3.5 rounded-xl shadow-md transition-all flex items-center gap-1.5 text-xs cursor-pointer active:scale-95 shrink-0"
+                    className="bg-[#1B4332] hover:bg-[#143326] text-white font-display font-semibold py-2.5 px-4 rounded-xl shadow-xs transition-colors flex items-center gap-1.5 text-xs cursor-pointer active:scale-95 shrink-0"
                   >
                     <span>{isAr ? "احجز استشارة التأسيس المجانية" : "Book Free Setup Advisory"}</span>
                     <ArrowRight className={`w-3.5 h-3.5 ${isRTL ? "rotate-180" : ""}`} />

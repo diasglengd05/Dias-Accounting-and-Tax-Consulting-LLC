@@ -149,43 +149,43 @@ export const CompanySetupPage: React.FC<CompanySetupPageProps> = ({
 
       <PageMainTransition id="main-content">
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-b from-navy-950 via-navy-900 to-navy-950 text-white py-16 lg:py-24 border-b border-white/10">
+        <section className="relative bg-gradient-to-b from-[#FFFFFF] via-[#F8FAFC] to-[#FFFFFF] text-[#0D1B2A] py-16 lg:py-24 border-b border-[#E2E8F0]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-2 text-xs font-mono text-gold-400 mb-4">
+            <div className="flex items-center gap-2 text-xs font-mono text-[#856422] mb-4">
               <button
                 type="button"
                 onClick={() => onNavigate("/")}
-                className="hover:underline cursor-pointer"
+                className="hover:text-[#0D1B2A] hover:underline cursor-pointer transition-colors"
               >
                 Home
               </button>
-              <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-              <span className="text-white">Company Setup &amp; Free Zones</span>
+              <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8]" />
+              <span className="text-[#0D1B2A] font-semibold">Company Setup &amp; Free Zones</span>
             </div>
 
             <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-500/10 border border-gold-400/30 text-gold-300 text-xs font-semibold uppercase tracking-wider mb-4">
-                <Shield className="w-3.5 h-3.5 text-gold-400" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F8FAFC] border border-[#E2E8F0] text-[#856422] text-xs font-semibold uppercase tracking-wider mb-4">
+                <Shield className="w-3.5 h-3.5 text-[#1B4332]" />
                 <span>Turnkey Corporate Formation &amp; Structuring</span>
               </div>
-              <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-6">
+              <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0D1B2A] leading-tight mb-6">
                 UAE Company Setup (SHAMS, IFZA, DIFC &amp; Dubai Mainland) With Tax Compliance
               </h1>
-              <p className="text-slate-300 text-base sm:text-lg leading-relaxed mb-8">
+              <p className="text-[#475569] text-base sm:text-lg leading-relaxed mb-8">
                 Form your business in Dubai or Sharjah with full regulatory compliance from Day 1. Benefit from 100% foreign ownership, 0% Qualifying Free Zone Person (QFZP) tax structuring, and fast-track corporate bank account opening.
               </p>
               <div className="flex flex-wrap gap-4">
                 <button
                   type="button"
                   onClick={() => onNavigate("/contact")}
-                  className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold px-6 py-3.5 rounded-xl text-sm transition-all shadow-lg shadow-gold-500/20 cursor-pointer flex items-center gap-2"
+                  className="bg-[#1B4332] hover:bg-[#143326] text-white font-display font-semibold px-6 py-3.5 rounded-xl text-sm transition-colors shadow-xs cursor-pointer flex items-center gap-2"
                 >
                   <span>Request Free Formation Proposal</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
                 <a
                   href="tel:+971529226958"
-                  className="bg-white/10 hover:bg-white/20 text-white font-display font-semibold px-6 py-3.5 rounded-xl text-sm border border-white/20 transition-all"
+                  className="bg-white hover:bg-[#F8FAFC] text-[#0D1B2A] hover:text-[#1B4332] font-display font-semibold px-6 py-3.5 rounded-xl text-sm border border-[#CBD5E1] hover:border-[#1B4332] transition-colors"
                 >
                   Call +971 52 922 6958
                 </a>
@@ -261,55 +261,55 @@ export const CompanySetupPage: React.FC<CompanySetupPageProps> = ({
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-xs">
-              <div className="inline-block px-3 py-1 rounded-full bg-gold-500/10 text-gold-600 font-mono text-xs font-bold uppercase mb-4">
+            <div className="bg-white rounded-2xl border border-[#E2E8F0] p-8 shadow-xs">
+              <div className="inline-block px-3 py-1 rounded-full bg-[#F8FAFC] border border-[#E2E8F0] text-[#856422] font-mono text-xs font-bold uppercase mb-4">
                 UAE Free Zones (SHAMS, DMCC, IFZA, DTEC)
               </div>
-              <h3 className="font-display text-xl font-bold text-navy-950 mb-4">
+              <h3 className="font-display text-xl font-bold text-[#0D1B2A] mb-4">
                 Ideal for International Trade &amp; 0% QFZP Tax
               </h3>
-              <ul className="space-y-3 text-xs sm:text-sm text-slate-700">
+              <ul className="space-y-3 text-xs sm:text-sm text-[#475569]">
                 <li className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 text-[#1B4332] shrink-0 mt-0.5" />
                   <span>Eligible for 0% Corporate Tax on Qualifying Income (QFZP)</span>
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 text-[#1B4332] shrink-0 mt-0.5" />
                   <span>100% foreign ownership with zero requirement for local sponsor</span>
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 text-[#1B4332] shrink-0 mt-0.5" />
                   <span>100% repatriation of capital and business profits</span>
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 text-[#1B4332] shrink-0 mt-0.5" />
                   <span>Cost-effective flexi-desk and virtual office licenses</span>
                 </li>
               </ul>
             </div>
 
-            <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-xs">
-              <div className="inline-block px-3 py-1 rounded-full bg-navy-950/10 text-navy-950 font-mono text-xs font-bold uppercase mb-4">
+            <div className="bg-white rounded-2xl border border-[#E2E8F0] p-8 shadow-xs">
+              <div className="inline-block px-3 py-1 rounded-full bg-[#F8FAFC] border border-[#E2E8F0] text-[#0D1B2A] font-mono text-xs font-bold uppercase mb-4">
                 Dubai Mainland (DET LLC)
               </div>
-              <h3 className="font-display text-xl font-bold text-navy-950 mb-4">
+              <h3 className="font-display text-xl font-bold text-[#0D1B2A] mb-4">
                 Ideal for Local UAE Market &amp; Government Tenders
               </h3>
-              <ul className="space-y-3 text-xs sm:text-sm text-slate-700">
+              <ul className="space-y-3 text-xs sm:text-sm text-[#475569]">
                 <li className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 text-[#1B4332] shrink-0 mt-0.5" />
                   <span>Trade freely across all 7 Emirates with no territory limits</span>
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 text-[#1B4332] shrink-0 mt-0.5" />
                   <span>Eligible to bid directly on UAE government &amp; semi-government tenders</span>
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 text-[#1B4332] shrink-0 mt-0.5" />
                   <span>100% foreign ownership for over 1,000 commercial and industrial activities</span>
                 </li>
                 <li className="flex items-start gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 text-[#1B4332] shrink-0 mt-0.5" />
                   <span>Subject to standard 9% Corporate Tax above AED 375,000</span>
                 </li>
               </ul>
@@ -343,33 +343,44 @@ export const CompanySetupPage: React.FC<CompanySetupPageProps> = ({
                   >
                     <button
                       type="button"
+                      aria-expanded={isOpen}
+                      aria-controls={`setup-faq-panel-${idx}`}
                       onClick={() => setOpenFaq(isOpen ? null : idx)}
-                      className="w-full text-left p-5 flex items-center justify-between gap-4 font-display font-semibold text-navy-950 hover:text-gold-600 transition-colors"
+                      className="w-full text-left p-5 flex items-center justify-between gap-4 font-display font-semibold text-navy-950 hover:text-gold-600 transition-colors cursor-pointer"
                     >
                       <span className="text-sm sm:text-base">{faq.q}</span>
                       <ChevronDown
                         className={`w-5 h-5 shrink-0 text-slate-400 transition-transform ${
                           isOpen ? "rotate-180 text-gold-500" : ""
                         }`}
+                        aria-hidden="true"
                       />
                     </button>
-                    {isOpen && (
-                      <div className="px-5 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
-                        {faq.a}
+                    <div
+                      id={`setup-faq-panel-${idx}`}
+                      aria-hidden={!isOpen}
+                      className={`grid transition-[grid-template-rows,opacity] duration-200 ease-out ${
+                        isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                      }`}
+                    >
+                      <div className="overflow-hidden">
+                        <div className="px-5 pb-5 text-sm text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
+                          {faq.a}
+                        </div>
                       </div>
-                    )}
+                    </div>
                   </div>
                 );
               })}
             </div>
 
             {/* Contextual Internal Linking */}
-            <div className="mt-12 p-6 rounded-2xl bg-navy-950 text-white flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="mt-12 p-6 sm:p-7 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] text-[#0D1B2A] flex flex-col md:flex-row items-center justify-between gap-6">
               <div>
-                <h3 className="font-display text-lg font-bold text-white mb-1">
+                <h3 className="font-display text-lg font-bold text-[#0D1B2A] mb-1">
                   Looking for DIFC Tax Compliance or Fixed-Fee Accounting?
                 </h3>
-                <p className="text-slate-300 text-xs sm:text-sm">
+                <p className="text-[#475569] text-xs sm:text-sm">
                   Explore our specialized DIFC advisory, all-inclusive monthly packages, and interactive tax tools.
                 </p>
               </div>
@@ -377,23 +388,23 @@ export const CompanySetupPage: React.FC<CompanySetupPageProps> = ({
                 <button
                   type="button"
                   onClick={() => onNavigate("/tax-planning-difc")}
-                  className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-semibold px-4 py-2 rounded-lg text-xs transition-colors"
+                  className="bg-[#1B4332] hover:bg-[#143326] text-white font-display font-semibold px-4 py-2.5 rounded-xl text-xs transition-colors cursor-pointer"
                 >
                   DIFC Tax Compliance
                 </button>
                 <button
                   type="button"
                   onClick={() => onNavigate("/pricing")}
-                  className="bg-white/10 hover:bg-white/20 text-white font-display font-semibold px-4 py-2 rounded-lg text-xs border border-white/20 transition-colors"
+                  className="bg-white hover:bg-[#F8FAFC] text-[#0D1B2A] hover:text-[#1B4332] font-display font-semibold px-4 py-2.5 rounded-xl text-xs border border-[#CBD5E1] hover:border-[#1B4332] transition-colors cursor-pointer"
                 >
                   View Accounting Packages
                 </button>
                 <button
                   type="button"
                   onClick={() => onNavigate("/uae-tax-planner")}
-                  className="bg-white/10 hover:bg-white/20 text-white font-display font-semibold px-4 py-2 rounded-lg text-xs border border-white/20 transition-colors flex items-center gap-1.5"
+                  className="bg-white hover:bg-[#F8FAFC] text-[#0D1B2A] hover:text-[#1B4332] font-display font-semibold px-4 py-2.5 rounded-xl text-xs border border-[#CBD5E1] hover:border-[#1B4332] transition-colors flex items-center gap-1.5 cursor-pointer"
                 >
-                  <Calculator className="w-3.5 h-3.5 text-gold-400" />
+                  <Calculator className="w-3.5 h-3.5 text-[#1B4332]" />
                   <span>Tax Planner</span>
                 </button>
               </div>
@@ -402,19 +413,19 @@ export const CompanySetupPage: React.FC<CompanySetupPageProps> = ({
         </section>
 
         {/* CTA Banner */}
-        <section className="bg-navy-950 text-white py-14 border-t border-slate-800">
+        <section className="bg-gradient-to-b from-[#FFFFFF] via-[#F8FAFC] to-[#FFFFFF] text-[#0D1B2A] py-14 border-t border-[#E2E8F0]">
           <div className="max-w-4xl mx-auto px-4 text-center space-y-6">
-            <h2 className="font-display text-2xl sm:text-3xl font-bold">
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#0D1B2A]">
               Ready to Launch Your UAE Entity?
             </h2>
-            <p className="text-slate-300 text-sm max-w-xl mx-auto">
+            <p className="text-[#475569] text-sm max-w-xl mx-auto">
               Get an itemized quotation covering government license fees, visa allocations, and statutory tax registration.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <button
                 type="button"
                 onClick={() => onNavigate("/contact")}
-                className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold px-7 py-3.5 rounded-xl text-sm transition-all cursor-pointer shadow-lg"
+                className="bg-[#1B4332] hover:bg-[#143326] text-white font-display font-semibold px-7 py-3.5 rounded-xl text-sm transition-colors cursor-pointer shadow-xs"
               >
                 Schedule Free Incorporation Strategy Call
               </button>

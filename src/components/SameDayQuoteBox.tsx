@@ -48,19 +48,19 @@ export const SameDayQuoteBox: React.FC<SameDayQuoteBoxProps> = ({
 
   return (
     <div
-      className={`rounded-2xl bg-[#070d19] border border-[#c5a059]/40 p-5 sm:p-6 lg:p-7 text-white shadow-[0_14px_38px_-18px_rgba(7,13,25,0.55)] ${className}`}
+      className={`rounded-2xl bg-white border border-[#E2E8F0] p-5 sm:p-6 lg:p-7 text-[#0D1B2A] shadow-[0_8px_28px_-12px_rgba(13,27,42,0.08)] ${className}`}
     >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-5">
         <div className="flex items-center gap-2.5">
           <span
-            className="w-2 h-2 rounded-full bg-[#c5a059] shrink-0"
+            className="w-2 h-2 rounded-full bg-[#C5A059] shrink-0"
             aria-hidden="true"
           />
-          <h2 className="font-display text-base sm:text-lg font-bold text-white tracking-tight">
+          <h2 className="font-display text-base sm:text-lg font-bold text-[#0D1B2A] tracking-tight">
             Get a Same-Day Fixed Fee Quote (Free 15-Min Tax Agent Review)
           </h2>
         </div>
-        <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#c5a059] shrink-0">
+        <span className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#856422] shrink-0">
           1-Tap WhatsApp Dispatch
         </span>
       </div>
@@ -70,7 +70,7 @@ export const SameDayQuoteBox: React.FC<SameDayQuoteBoxProps> = ({
         <div className="lg:col-span-3">
           <label
             htmlFor={`${idPrefix}-name`}
-            className="block text-[11px] font-semibold uppercase tracking-wider text-slate-300 mb-1.5"
+            className="block text-[11px] font-semibold uppercase tracking-wider text-[#475569] mb-1.5"
           >
             Your Name
           </label>
@@ -81,7 +81,7 @@ export const SameDayQuoteBox: React.FC<SameDayQuoteBoxProps> = ({
             onChange={(e) => setName(e.target.value)}
             placeholder="Full name"
             autoComplete="name"
-            className="w-full h-11 rounded-xl bg-[#0d1b2a] border border-white/15 focus:border-[#c5a059] focus:outline-none px-3.5 text-sm text-white placeholder:text-slate-400 transition-colors"
+            className="w-full h-11 rounded-xl bg-[#F8FAFC] border border-[#CBD5E1] focus:border-[#1B4332] focus:bg-white focus:outline-none px-3.5 text-sm text-[#0D1B2A] placeholder:text-slate-400 transition-colors"
           />
         </div>
 
@@ -89,7 +89,7 @@ export const SameDayQuoteBox: React.FC<SameDayQuoteBoxProps> = ({
         <div className="lg:col-span-3">
           <label
             htmlFor={`${idPrefix}-jurisdiction`}
-            className="block text-[11px] font-semibold uppercase tracking-wider text-slate-300 mb-1.5"
+            className="block text-[11px] font-semibold uppercase tracking-wider text-[#475569] mb-1.5"
           >
             Company Jurisdiction
           </label>
@@ -97,10 +97,10 @@ export const SameDayQuoteBox: React.FC<SameDayQuoteBoxProps> = ({
             id={`${idPrefix}-jurisdiction`}
             value={jurisdiction}
             onChange={(e) => setJurisdiction(e.target.value as QuoteJurisdiction)}
-            className="w-full h-11 rounded-xl bg-[#0d1b2a] border border-white/15 focus:border-[#c5a059] focus:outline-none px-3 text-sm text-white transition-colors cursor-pointer"
+            className="w-full h-11 rounded-xl bg-[#F8FAFC] border border-[#CBD5E1] focus:border-[#1B4332] focus:bg-white focus:outline-none px-3 text-sm text-[#0D1B2A] transition-colors cursor-pointer"
           >
             {QUOTE_JURISDICTIONS.map((item) => (
-              <option key={item} value={item} className="bg-[#070d19] text-white">
+              <option key={item} value={item} className="bg-white text-[#0D1B2A]">
                 {item}
               </option>
             ))}
@@ -111,7 +111,7 @@ export const SameDayQuoteBox: React.FC<SameDayQuoteBoxProps> = ({
         <div className="sm:col-span-2 lg:col-span-3">
           <label
             htmlFor={`${idPrefix}-service`}
-            className="block text-[11px] font-semibold uppercase tracking-wider text-slate-300 mb-1.5"
+            className="block text-[11px] font-semibold uppercase tracking-wider text-[#475569] mb-1.5"
           >
             Service Needed
           </label>
@@ -119,10 +119,10 @@ export const SameDayQuoteBox: React.FC<SameDayQuoteBoxProps> = ({
             id={`${idPrefix}-service`}
             value={service}
             onChange={(e) => setService(e.target.value as QuoteService)}
-            className="w-full h-11 rounded-xl bg-[#0d1b2a] border border-white/15 focus:border-[#c5a059] focus:outline-none px-3 text-sm text-white transition-colors cursor-pointer"
+            className="w-full h-11 rounded-xl bg-[#F8FAFC] border border-[#CBD5E1] focus:border-[#1B4332] focus:bg-white focus:outline-none px-3 text-sm text-[#0D1B2A] transition-colors cursor-pointer"
           >
             {QUOTE_SERVICES.map((item) => (
-              <option key={item} value={item} className="bg-[#070d19] text-white">
+              <option key={item} value={item} className="bg-white text-[#0D1B2A]">
                 {item}
               </option>
             ))}
@@ -135,7 +135,7 @@ export const SameDayQuoteBox: React.FC<SameDayQuoteBoxProps> = ({
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full h-11 rounded-xl bg-[#c5a059] hover:bg-[#d4b06a] text-[#070d19] font-bold text-sm px-4 inline-flex items-center justify-center gap-2 transition-colors shadow-sm whitespace-nowrap"
+            className="w-full h-11 rounded-xl bg-[#1B4332] hover:bg-[#143326] text-white font-semibold text-sm px-4 inline-flex items-center justify-center gap-2 transition-colors shadow-xs whitespace-nowrap"
           >
             <MessageCircle className="w-4 h-4 shrink-0" />
             <span>Get Instant Quote on WhatsApp</span>
@@ -145,12 +145,12 @@ export const SameDayQuoteBox: React.FC<SameDayQuoteBoxProps> = ({
       </div>
 
       {/* 1-Line Trust Strip */}
-      <div className="mt-4 pt-3.5 border-t border-white/10 flex items-center justify-center sm:justify-start gap-2 text-xs text-slate-300">
-        <ShieldCheck className="w-4 h-4 text-[#c5a059] shrink-0" aria-hidden="true" />
+      <div className="mt-4 pt-3.5 border-t border-[#E2E8F0] flex items-center justify-center sm:justify-start gap-2 text-xs text-[#475569]">
+        <ShieldCheck className="w-4 h-4 text-[#1B4332] shrink-0" aria-hidden="true" />
         <p className="leading-snug">
           FTA-Registered Tax Agent Glen Dias ·{" "}
-          <span className="text-white font-medium">5.0★ Google (48 Reviews)</span> ·{" "}
-          <span className="text-[#c5a059] font-medium">2x Clutch UAE Leader 2026</span>
+          <span className="text-[#0D1B2A] font-semibold">5.0★ Google (48 Reviews)</span> ·{" "}
+          <span className="text-[#856422] font-semibold">2x Clutch UAE Leader 2026</span>
         </p>
       </div>
     </div>

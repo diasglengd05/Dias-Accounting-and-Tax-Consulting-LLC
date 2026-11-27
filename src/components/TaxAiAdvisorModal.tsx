@@ -229,32 +229,32 @@ export default function TaxAiAdvisorModal({
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-navy-950/80 backdrop-blur-md animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-[#0D1B2A]/45 backdrop-blur-md animate-fade-in"
       dir={isRTL ? "rtl" : "ltr"}
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl shadow-2xl border border-slate-200/90 w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden transform transition-all duration-300 scale-100"
+        className="bg-white rounded-2xl shadow-2xl border border-[#E2E8F0] w-full max-w-4xl max-h-[92vh] flex flex-col overflow-hidden transform transition-all duration-300 scale-100"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="bg-gradient-to-r from-navy-950 via-slate-900 to-navy-900 p-5 sm:p-6 text-white border-b border-white/10 relative">
+        <div className="bg-[#F8FAFC] p-5 sm:p-6 text-[#0D1B2A] border-b border-[#E2E8F0] relative">
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-tr from-gold-500/20 to-emerald-500/20 border border-gold-500/30 flex items-center justify-center shrink-0 shadow-inner">
-                <Sparkles className="w-6 h-6 text-gold-400 animate-pulse" />
+              <div className="w-12 h-12 rounded-xl bg-white border border-[#C5A059]/45 flex items-center justify-center shrink-0 shadow-xs">
+                <Sparkles className="w-6 h-6 text-[#856422]" />
               </div>
               <div>
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h3 className="font-display font-bold text-lg sm:text-xl text-white">
+                  <h3 className="font-display font-bold text-lg sm:text-xl text-[#0D1B2A]">
                     {language === "ar" ? "مستشار الذكاء الضريبي الإماراتي" : "UAE Regulatory Tax AI Intelligence"}
                   </h3>
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/20 text-blue-300 border border-blue-400/30">
-                    <Globe className="w-3 h-3 text-blue-400" />
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#1B4332]/8 text-[#1B4332] border border-[#1B4332]/20">
+                    <Globe className="w-3 h-3 text-[#1B4332]" />
                     <span>Google Search Grounded</span>
                   </span>
                 </div>
-                <p className="text-xs sm:text-sm text-slate-300 mt-1">
+                <p className="text-xs sm:text-sm text-[#475569] mt-1">
                   {language === "ar"
                     ? "بحث مباشر مدعوم بـ Gemini 3.5 Flash ومحرك Google Search للحصول على أحدث قرارات وتعاميم الهيئة الاتحادية للضرائب"
                     : "Real-time regulatory retrieval grounded by Gemini 3.5 Flash & Google Search for official FTA and Ministry of Finance decisions."}
@@ -264,7 +264,7 @@ export default function TaxAiAdvisorModal({
 
             <button
               onClick={onClose}
-              className="text-slate-400 hover:text-white p-2 rounded-xl hover:bg-white/10 transition-colors cursor-pointer shrink-0"
+              className="text-[#475569] hover:text-[#0D1B2A] p-2 rounded-xl bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] transition-colors cursor-pointer shrink-0"
               aria-label="Close modal"
             >
               <X className="w-5 h-5" />
@@ -310,16 +310,16 @@ export default function TaxAiAdvisorModal({
               <button
                 type="submit"
                 disabled={isLoading || !query.trim()}
-                className="bg-navy-950 hover:bg-navy-900 disabled:opacity-50 text-gold-400 font-bold px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 shadow transition-all cursor-pointer shrink-0"
+                className="bg-[#1B4332] hover:bg-[#143326] disabled:opacity-50 text-white font-bold px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm flex items-center gap-2 shadow-xs transition-all cursor-pointer shrink-0"
               >
                 {isLoading ? (
                   <>
-                    <RefreshCw className="w-4 h-4 animate-spin text-gold-400" />
+                    <RefreshCw className="w-4 h-4 animate-spin text-white" />
                     <span>{language === "ar" ? "جاري البحث..." : "Searching..."}</span>
                   </>
                 ) : (
                   <>
-                    <Globe className="w-4 h-4 text-blue-400" />
+                    <Globe className="w-4 h-4 text-white" />
                     <span>{language === "ar" ? "بحث فوري" : "Search Live"}</span>
                   </>
                 )}
@@ -487,16 +487,16 @@ export default function TaxAiAdvisorModal({
               </div>
 
               {/* Next Step Advisory CTA Banner */}
-              <div className="bg-gradient-to-r from-navy-950 to-slate-900 text-white rounded-2xl p-5 border border-gold-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="bg-[#F8FAFC] text-[#0D1B2A] rounded-2xl p-5 border border-[#E2E8F0] border-l-[3px] border-l-[#C5A059] flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-gold-500/20 border border-gold-500/30 flex items-center justify-center shrink-0">
-                    <BookOpen className="w-5 h-5 text-gold-400" />
+                  <div className="w-10 h-10 rounded-xl bg-white border border-[#C5A059]/40 flex items-center justify-center shrink-0">
+                    <BookOpen className="w-5 h-5 text-[#856422]" />
                   </div>
                   <div>
-                    <h5 className="font-bold text-sm text-white">
+                    <h5 className="font-bold text-sm text-[#0D1B2A]">
                       {language === "ar" ? "هل تحتاج لمراجعة وضع شركتك مع مستشار ضرائب معتمد؟" : "Need Glen Dias to audit your firm's specific compliance?"}
                     </h5>
-                    <p className="text-xs text-slate-300 mt-0.5">
+                    <p className="text-xs text-[#475569] mt-0.5">
                       {language === "ar"
                         ? "احصل على استشارة مخصصة تضمن الاستفادة من كافة الإعفاءات وتفادي الغرامات."
                         : "Receive a tailored 1:1 assessment on qualifying tax relief and statutory filing."}
@@ -507,7 +507,7 @@ export default function TaxAiAdvisorModal({
                 <div className="flex items-center gap-2.5 w-full sm:w-auto shrink-0">
                   <button
                     onClick={handleWhatsAppEscalation}
-                    className="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md cursor-pointer"
+                    className="flex-1 sm:flex-none bg-[#1B4332] hover:bg-[#143326] text-white font-bold px-4 py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer"
                   >
                     <MessageSquare className="w-3.5 h-3.5" />
                     <span>{language === "ar" ? "تواصل عبر واتساب" : "Discuss on WhatsApp"}</span>
@@ -519,7 +519,7 @@ export default function TaxAiAdvisorModal({
                         onClose();
                         onOpenScheduler();
                       }}
-                      className="flex-1 sm:flex-none bg-gold-500 hover:bg-gold-600 text-navy-950 font-bold px-4 py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all shadow-md cursor-pointer"
+                      className="flex-1 sm:flex-none bg-white hover:bg-[#F8FAFC] border border-[#CBD5E1] hover:border-[#1B4332] text-[#0D1B2A] hover:text-[#1B4332] font-bold px-4 py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer"
                     >
                       <Clock className="w-3.5 h-3.5" />
                       <span>{language === "ar" ? "حجز استشارة" : "Book 1:1 Call"}</span>

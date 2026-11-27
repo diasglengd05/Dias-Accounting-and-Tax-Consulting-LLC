@@ -62,6 +62,7 @@ const ROUTE_SCOPED_JSONLD_IDS = [
   "page-webapp-jsonld",
   "page-service-jsonld",
   "page-collection-jsonld",
+  "page-pricing-offers-jsonld",
   "calculator-software-jsonld",
   "pricing-faq-jsonld",
   "faqs-page-jsonld",
@@ -225,7 +226,16 @@ export function buildAccountingServiceSchema() {
   });
 }
 
-export function buildFAQPageSchema(items: FAQSchemaItem[], schemaId?: string) {
+export function buildFAQPageSchema(
+  items: FAQSchemaItem[],
+  schemaId?: string,
+  options?: {
+    url?: string;
+    name?: string;
+    description?: string;
+    inLanguage?: string;
+  }
+) {
   const validItems = items
     .map((item) => ({
       question: stripMarkup(item.question),
@@ -233,10 +243,23 @@ export function buildFAQPageSchema(items: FAQSchemaItem[], schemaId?: string) {
     }))
     .filter((item) => item.question.length > 0 && item.answer.length > 0);
 
+  const derivedUrl =
+    options?.url || (schemaId && schemaId.includes("#") ? schemaId.split("#")[0] : undefined);
+
   return sanitizeJsonLd({
     "@context": "https://schema.org",
     "@type": "FAQPage",
     ...(schemaId ? { "@id": schemaId } : {}),
+    ...(derivedUrl ? { url: derivedUrl } : {}),
+    ...(options?.name ? { name: stripMarkup(options.name) } : {}),
+    ...(options?.description ? { description: stripMarkup(options.description) } : {}),
+    inLanguage: options?.inLanguage || "en-AE",
+    isPartOf: {
+      "@id": `${CANONICAL_DOMAIN}/#website`,
+    },
+    publisher: {
+      "@id": BUSINESS_ENTITY.id,
+    },
     mainEntity: validItems.map((item) => ({
       "@type": "Question",
       name: item.question,
@@ -390,9 +413,69 @@ export function clearRouteJsonLd(keepIds: string[] = []) {
   }
 }
 
+/**
+ * Guarantees every meta description sits strictly within 120–155 characters
+ * (optimal for Bing Webmaster Tools and Google Search snippets) without
+ * mid-word truncation or awkward trailing punctuation.
+ */
+export function fitMetaDescription(raw: string, minLen = 120, maxLen = 155): string {
+  const clean = stripMarkup(raw || "");
+  if (clean.length >= minLen && clean.length <= maxLen) {
+    return clean;
+  }
+
+  if (clean.length > maxLen) {
+    // 1. Prefer cutting cleanly at a complete sentence boundary inside [minLen, maxLen]
+    const slice = clean.slice(0, maxLen);
+    const sentenceMatches = [...slice.matchAll(/[.!?](?=\s|$)/g)];
+    for (let i = sentenceMatches.length - 1; i >= 0; i--) {
+      const endPos = (sentenceMatches[i].index ?? 0) + 1;
+      if (endPos >= minLen && endPos <= maxLen) {
+        return slice.slice(0, endPos).trim();
+      }
+    }
+
+    // 2. Otherwise trim cleanly at the last word boundary and conclude with a period
+    let cut = clean.slice(0, maxLen - 1);
+    const lastSpace = cut.lastIndexOf(" ");
+    if (lastSpace >= minLen - 4) {
+      cut = cut.slice(0, lastSpace);
+    }
+    cut = cut.replace(/[\s,;:\-—–&/(]+$/g, "").trim();
+    // Avoid ending on a dangling preposition/conjunction
+    cut = cut.replace(/\s+(and|or|for|with|to|of|in|on|at|the|a|an|by)$/i, "").trim();
+    cut = cut.replace(/[\s,;:\-—–&/(]+$/g, "").trim();
+    if (!/[.!?]$/.test(cut)) {
+      cut = `${cut}.`;
+    }
+    if (cut.length >= minLen && cut.length <= maxLen) {
+      return cut;
+    }
+    return `${clean.slice(0, maxLen - 1).trimEnd().replace(/[\s,;:\-—–&/(.]+$/g, "")}.`;
+  }
+
+  // Short description (< minLen): pad cleanly with authoritative DiasUAE context
+  const base = clean ? (/[.!?]$/.test(clean) ? clean : `${clean}.`) : "";
+  const padPhrases = [
+    " Fixed-fee UAE IFRS bookkeeping, 5% VAT & 9% Corporate Tax by FTA-Registered Tax Agents at DiasUAE.",
+    " Advised by FTA-Registered Tax Agents in Dubai & SHAMS from AED 400/mo.",
+  ];
+  let padded = base;
+  for (const phrase of padPhrases) {
+    if (padded.length >= minLen) break;
+    padded = `${padded}${phrase}`.trim();
+  }
+  return padded.length > maxLen ? fitMetaDescription(padded, minLen, maxLen) : padded;
+}
+
 function upsertMeta(attr: "name" | "property", key: string, content: string) {
   if (typeof document === "undefined") return;
-  let el = document.querySelector(`meta[${attr}="${key}"]`);
+  const existing = Array.from(document.querySelectorAll(`meta[${attr}="${key}"]`));
+  let el = existing[0] as Element | undefined;
+  // Remove any duplicate tags so only one tag exists in <head>
+  for (let i = 1; i < existing.length; i++) {
+    existing[i].parentNode?.removeChild(existing[i]);
+  }
   if (!el) {
     el = document.createElement("meta");
     el.setAttribute(attr, key);
@@ -403,9 +486,9 @@ function upsertMeta(attr: "name" | "property", key: string, content: string) {
 
 function removeMeta(attr: "name" | "property", key: string) {
   if (typeof document === "undefined") return;
-  const el = document.querySelector(`meta[${attr}="${key}"]`);
-  if (el && el.parentNode) {
-    el.parentNode.removeChild(el);
+  const existing = Array.from(document.querySelectorAll(`meta[${attr}="${key}"]`));
+  for (const el of existing) {
+    el.parentNode?.removeChild(el);
   }
 }
 
@@ -432,7 +515,7 @@ export function applyPageSEO({
   const cleanPath = normalizeCanonicalPath(canonicalPath);
   const canonicalUrl = `${CANONICAL_DOMAIN}${cleanPath}`;
   const cleanTitle = stripMarkup(title);
-  const cleanDescription = stripMarkup(description);
+  const cleanDescription = fitMetaDescription(description);
 
   // Clear route-scoped schemas so previous page schemas never leak
   clearRouteJsonLd();

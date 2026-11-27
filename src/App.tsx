@@ -30,9 +30,7 @@ import LazyMount from "./components/LazyMount";
 import { ClutchRatingWidget } from "./components/ClutchBadges";
 import OfficialRecognitionSection from "./components/OfficialRecognitionSection";
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
-import QuickSummaryBox from "./components/QuickSummaryBox";
 import TaxAgentReviewStrip from "./components/TaxAgentReviewStrip";
-import MonthlyPackageConversionStrip from "./components/MonthlyPackageConversionStrip";
 import PageMainTransition, { RouteTransitionProvider } from "./components/PageMainTransition";
 
 // Lazy-loaded components for fast mobile JS execution & small initial bundle size
@@ -46,6 +44,11 @@ const TaxHealthCheckModal = React.lazy(() => import("./components/TaxHealthCheck
 const LeadMagnetDownloadModal = React.lazy(() => import("./components/LeadMagnetDownloadModal"));
 const TaxAiAdvisorModal = React.lazy<React.ComponentType<any>>(() => import("./components/TaxAiAdvisorModal"));
 const SeoEngineDashboardModal = React.lazy(() => import("./components/SeoEngineDashboardModal"));
+const MobileConversionBar = React.lazy(() => import("./components/MobileConversionBar"));
+const CookieConsentBanner = React.lazy(() => import("./components/CookieConsentBanner"));
+const MonthlyPackageConversionStrip = React.lazy(
+  () => import("./components/MonthlyPackageConversionStrip")
+);
 // Route pages imported directly so build-time SSG renderToString outputs full HTML & <h1> with zero Suspense fallback
 import { SmallBusinessTaxReliefPage } from "./pages/SmallBusinessTaxReliefPage";
 import { DifcDtecAccountingPage } from "./pages/DifcDtecAccountingPage";
@@ -68,8 +71,7 @@ import ServiceDetailPage from "./pages/ServiceDetailPage";
 import VatPlannerPage from "./pages/VatPlannerPage";
 import FtaDeadlinesPage from "./pages/FtaDeadlinesPage";
 import PartnersPage from "./pages/PartnersPage";
-import CookieConsentBanner from "./components/CookieConsentBanner";
-import HomepagePricingSection from "./components/HomepagePricingSection";
+import PricingSection from "./components/PricingSection";
 import ScopeInstantQuoteBuilder from "./components/ScopeInstantQuoteBuilder";
 import SameDayQuoteBox from "./components/SameDayQuoteBox";
 
@@ -205,6 +207,8 @@ function MainApp({ initialPath }: { initialPath?: string }) {
   const [hasNavigated, setHasNavigated] = useState(false);
   const [isRoutePending, startRouteTransition] = useTransition();
   const [isPageLoadingPulse, setIsPageLoadingPulse] = useState(false);
+  // Defer non-critical mobile footer & conversion bar chunks until after the main hero finishes hydrating
+  const [isHeroHydrated, setIsHeroHydrated] = useState(false);
   const normalizedRouteKey = currentPath.toLowerCase().replace(/\/+$/, "") || "/";
   const currentRouteKeyRef = useRef(normalizedRouteKey);
   const pendingHashRef = useRef<string | null>(null);
@@ -212,6 +216,45 @@ function MainApp({ initialPath }: { initialPath?: string }) {
   useEffect(() => {
     currentRouteKeyRef.current = normalizedRouteKey;
   }, [normalizedRouteKey]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    let cancelled = false;
+    let rafId: number | undefined;
+    let idleId: number | undefined;
+    let timeoutId: number | undefined;
+
+    const markHydrated = () => {
+      if (!cancelled) {
+        setIsHeroHydrated(true);
+      }
+    };
+
+    // Wait until after the hero's initial hydrated paint before loading non-critical bars
+    rafId = window.requestAnimationFrame(() => {
+      if (cancelled) return;
+      const winWithIdle = window as Window & {
+        requestIdleCallback?: (cb: () => void, options?: { timeout?: number }) => number;
+      };
+      if (typeof winWithIdle.requestIdleCallback === "function") {
+        idleId = winWithIdle.requestIdleCallback(markHydrated, { timeout: 1200 });
+      } else {
+        timeoutId = window.setTimeout(markHydrated, 120);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+      if (rafId !== undefined) window.cancelAnimationFrame(rafId);
+      if (idleId !== undefined) {
+        const winWithCancelIdle = window as Window & {
+          cancelIdleCallback?: (id: number) => void;
+        };
+        winWithCancelIdle.cancelIdleCallback?.(idleId);
+      }
+      if (timeoutId !== undefined) window.clearTimeout(timeoutId);
+    };
+  }, []);
 
   // Subtle single-turn loading animation for the header emblem on initial page load and route changes
   useEffect(() => {
@@ -810,14 +853,14 @@ function MainApp({ initialPath }: { initialPath?: string }) {
     return (
       <div
         data-page-transition="content"
-        className="min-h-screen bg-navy-950 flex flex-col items-center justify-center text-white p-6 space-y-6 text-center"
+        className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center text-[#0D1B2A] p-6 space-y-6 text-center"
       >
-        <div className="w-16 h-16 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center animate-pulse">
+        <div className="w-16 h-16 rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] text-[#1B4332] flex items-center justify-center shadow-xs">
           <FileSpreadsheet className="w-8 h-8" />
         </div>
         <div className="space-y-2 max-w-md">
-          <h1 className="font-display text-2xl font-bold">DiasUAE Inquiries Spreadsheet</h1>
-          <p className="text-slate-300 text-xs leading-relaxed">
+          <h1 className="font-display text-2xl font-bold text-[#0D1B2A]">DiasUAE Inquiries Spreadsheet</h1>
+          <p className="text-[#475569] text-xs leading-relaxed">
             Direct access to the live Google Sheets database for all consultation inquiries and lead submissions.
           </p>
         </div>
@@ -827,7 +870,7 @@ function MainApp({ initialPath }: { initialPath?: string }) {
             target="_blank"
             rel="noopener noreferrer"
             referrerPolicy="no-referrer"
-            className="inline-flex items-center justify-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-navy-950 font-display font-bold px-6 py-3 rounded-xl text-xs shadow-lg transition-all"
+            className="inline-flex items-center justify-center gap-2 bg-[#1B4332] hover:bg-[#143326] text-white font-display font-semibold px-6 py-3 rounded-xl text-xs shadow-xs transition-colors"
           >
             <FileSpreadsheet className="w-4 h-4" />
             <span>Open Google Spreadsheet</span>
@@ -835,7 +878,7 @@ function MainApp({ initialPath }: { initialPath?: string }) {
           </a>
           <a
             href="/api/inquiries/export-csv"
-            className="inline-flex items-center justify-center gap-2 bg-gold-500/20 hover:bg-gold-500/30 text-gold-300 border border-gold-400/40 font-display font-semibold px-6 py-3 rounded-xl text-xs transition-all"
+            className="inline-flex items-center justify-center gap-2 bg-white hover:bg-[#F8FAFC] text-[#0D1B2A] hover:text-[#1B4332] border border-[#CBD5E1] hover:border-[#1B4332] font-display font-semibold px-6 py-3 rounded-xl text-xs transition-colors"
           >
             <span>Download Inquiries CSV</span>
           </a>
@@ -878,64 +921,69 @@ function MainApp({ initialPath }: { initialPath?: string }) {
         {/* 1. Executive Hero Section */}
         <section
           id="home"
-          className="bg-white py-16 sm:py-20 lg:py-28 scroll-mt-20"
+          className="relative bg-gradient-to-b from-[#FFFFFF] via-[#F8FAFC] to-[#FFFFFF] text-[#0D1B2A] border-b border-[#E2E8F0] py-16 sm:py-20 lg:py-28 scroll-mt-20 overflow-hidden"
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(197,160,89,0.09),transparent_55%),radial-gradient(ellipse_at_bottom_left,rgba(27,67,50,0.05),transparent_55%)]"
+          />
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
               {/* Left 7 Cols: Value Proposition */}
               <div className="lg:col-span-7 space-y-7 text-left rtl:text-right">
                 <div className="space-y-5">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#856422]">
+                    {isAr
+                      ? "دياس الإمارات · وكالة ضريبية مسجلة لدى الهيئة · فائز بجائزة كلاتش 2026 مرتين"
+                      : "DIASUAE · FTA-REGISTERED TAX AGENCY · 2x CLUTCH 2026 UAE LEADER"}
+                  </p>
+
                   <h1
-                    className="text-4xl sm:text-5xl lg:text-[3.35rem] font-bold tracking-tight text-[#0D1B2A] leading-[1.1]"
+                    className="font-display text-4xl sm:text-5xl lg:text-[3.35rem] font-bold tracking-tight text-[#0D1B2A] leading-[1.1]"
                     style={{ textWrap: "balance" } as React.CSSProperties}
                   >
-                    {isAr
-                      ? "باقات المحاسبة وضريبة القيمة المضافة 5% وضريبة الشركات 9% في الإمارات — تبدأ من 400 درهم شهرياً"
-                      : "UAE Accounting, 5% VAT & 9% Corporate Tax Packages — From AED 400/Month"}
+                    {isAr ? (
+                      "المحاسبة والاستشارات الضريبية في الإمارات المصممة لنمو الأعمال"
+                    ) : (
+                      <>
+                        UAE Accounting &amp; Tax Advisory Built for{" "}
+                        <span className="bg-gradient-to-r from-[#1B4332] via-[#047857] to-[#856422] bg-clip-text text-transparent">
+                          Growing Businesses
+                        </span>
+                      </>
+                    )}
                   </h1>
 
-                  <QuickSummaryBox variant="light" label="Quick Summary">
-                    <strong className="text-[#0D1B2A] font-semibold">
-                      DiasUAE (Dias Accounting and Tax Consulting LLC)
-                    </strong>
-                    , led by FTA-Registered Tax Agent{" "}
-                    <strong className="text-[#0D1B2A] font-semibold">Glen Dias</strong> (SHAMS Licence{" "}
-                    <span className="tabular-nums font-medium text-[#0D1B2A]">2646813.01</span>) and recognized as a{" "}
-                    <span className="font-medium text-[#856422]">2x Clutch 2026 UAE Leader</span>, delivers fixed-fee IFRS bookkeeping, 5% UAE VAT, 9% Corporate Tax, and statutory dividend audits. We serve Dubai Mainland, DIFC, DTEC, DMCC, IFZA, and SHAMS with 5th-business-day monthly closes, 5-working-day dividend audits, and retainers starting{" "}
-                    <strong className="text-[#1B4332] font-semibold">from AED 400/month</strong>.
-                  </QuickSummaryBox>
-
-                  <p className="text-base sm:text-lg text-[#475569] leading-[1.6] max-w-[58ch]">
+                  <p className="text-base sm:text-lg text-[#475569] leading-[1.65] max-w-[62ch]">
                     {isAr
-                      ? "وكلاء ضرائب معتمدون لدى الهيئة الاتحادية للضرائب ومحاسبون قانونيون لشركات البر الرئيسي والمناطق الحرة في دبي والشارقة، بباقات ثابتة تبدأ من 400 درهم شهرياً."
-                      : "FTA-registered tax agents and chartered accountants serving Dubai Mainland, DIFC, SHAMS, and UAE Free Zone businesses under transparent fixed fees from AED 400/month."}
+                      ? "تقدم دياس الإمارات (دياس للمحاسبة والاستشارات الضريبية ذ.م.م) مسك الدفاتر وفق معايير IFRS، والامتثال لضريبة القيمة المضافة 5%، وإقرارات ضريبة الشركات 9% في دبي ومركز دبي المالي العالمي ومدينة الشارقة للإعلام بباقات شهرية ثابتة تبدأ من 400 درهم/شهرياً."
+                      : "DiasUAE (Dias Accounting and Tax Consulting LLC) delivers senior-led IFRS bookkeeping, 5% VAT compliance, and 9% Corporate Tax filings across Dubai, DIFC, and SHAMS—on fixed monthly packages from AED 400/month."}
                   </p>
                 </div>
 
-                {/* Max 2 Action Buttons */}
+                {/* Primary & Secondary Action Buttons */}
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 pt-1">
                   <a
-                    href="/#contact"
+                    href="/pricing"
                     onClick={(e) => {
+                      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
                       e.preventDefault();
-                      navigateTo("/#contact");
+                      navigateTo("/pricing");
                     }}
-                    className="min-h-[48px] inline-flex items-center justify-center gap-2 rounded-xl bg-[#1B4332] hover:bg-[#143326] text-white font-semibold text-sm sm:text-base px-6 py-3.5 transition-colors whitespace-nowrap"
+                    className="min-h-[48px] inline-flex items-center justify-center gap-2 rounded-xl bg-[#1B4332] hover:bg-[#143326] text-white font-semibold text-sm sm:text-base px-6 py-3.5 transition-colors whitespace-nowrap shadow-xs"
                   >
-                    <span>{isAr ? "احجز استشارة مجانية" : "Book Free Consultation"}</span>
+                    <span>{isAr ? "استكشف الباقات الشهرية" : "Explore Monthly Packages"}</span>
                     <ArrowRight className="w-4 h-4 rtl:rotate-180" />
                   </a>
 
                   <a
-                    href="/uae-tax-planner"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      navigateTo("/uae-tax-planner");
-                    }}
-                    className="min-h-[48px] inline-flex items-center justify-center gap-2 rounded-xl bg-white hover:bg-[#F8FAFC] text-[#0D1B2A] border border-slate-300 font-semibold text-sm sm:text-base px-6 py-3.5 transition-colors whitespace-nowrap"
+                    href="https://wa.me/971529226958?text=Hi%20DiasUAE%2C%20I%20would%20like%20a%20free%2015-minute%20accounting%20and%20tax%20review."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="min-h-[48px] inline-flex items-center justify-center gap-2 rounded-xl bg-white hover:bg-[#F8FAFC] text-[#0D1B2A] border border-[#CBD5E1] hover:border-[#1B4332]/50 font-semibold text-sm sm:text-base px-6 py-3.5 transition-colors whitespace-nowrap shadow-xs"
                   >
-                    <Calculator className="w-4 h-4 text-[#475569]" />
-                    <span>{isAr ? "جرّب حاسبة الضرائب 2026" : "Try 2026 Tax Calculator"}</span>
+                    <MessageCircle className="w-4 h-4 text-[#1B4332]" />
+                    <span>{isAr ? "مراجعة ضريبية مجانية (15 دقيقة)" : "Free 15-Min Tax Review"}</span>
                   </a>
                 </div>
 
@@ -951,22 +999,25 @@ function MainApp({ initialPath }: { initialPath?: string }) {
                     rel="noopener noreferrer"
                     className="hover:text-[#0D1B2A] transition-colors tabular-nums"
                   >
-                    <span className="font-medium text-[#0D1B2A]">5.0★ Google Rating</span> (48 Reviews)
+                    <span className="font-medium text-[#0D1B2A]">
+                      5.0<span className="text-[#C5A059]">★</span> Google Rating
+                    </span>{" "}
+                    (48 Reviews)
                   </a>
                   <span aria-hidden="true" className="text-slate-300">•</span>
-                  <span className="inline-flex items-center">
-                    <ClutchRatingWidget />
-                  </span>
+                  <ClutchRatingWidget />
                   <span aria-hidden="true" className="text-slate-300 hidden sm:inline">•</span>
-                  <span className="tabular-nums">{isAr ? "+500 شركة وإقرار في الإمارات" : "500+ UAE Businesses & Filings"}</span>
+                  <span className="tabular-nums text-[#475569]">
+                    {isAr ? "+50 شركة وإقرار في الإمارات" : "50+ UAE Businesses & Filings"}
+                  </span>
                 </div>
               </div>
 
               {/* Right 5 Cols: Calm Executive 2026 UAE Compliance Snapshot */}
               <div className="lg:col-span-5">
-                <div className="rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] p-7 sm:p-8 space-y-6">
+                <div className="rounded-2xl bg-white/95 border border-[#E2E8F0] p-7 sm:p-8 space-y-6 shadow-[0_8px_28px_-12px_rgba(13,27,42,0.08)]">
                   <div className="space-y-1">
-                    <h2 className="text-base font-semibold text-[#0D1B2A]">
+                    <h2 className="font-display text-base font-semibold text-[#0D1B2A]">
                       {isAr ? "ملخص الامتثال الضريبي 2026" : "2026 UAE Compliance Snapshot"}
                     </h2>
                     <p className="text-sm text-[#475569]">
@@ -997,7 +1048,7 @@ function MainApp({ initialPath }: { initialPath?: string }) {
                     </div>
                     <div className="py-3.5 flex items-baseline justify-between gap-4">
                       <dt className="text-[#475569]">Fixed Retainers</dt>
-                      <dd className="font-semibold text-[#0D1B2A] text-right tabular-nums">
+                      <dd className="font-semibold text-[#1B4332] text-right tabular-nums">
                         From AED 400 / month
                       </dd>
                     </div>
@@ -1048,7 +1099,7 @@ function MainApp({ initialPath }: { initialPath?: string }) {
               </div>
               <div>
                 <p className="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight tabular-nums">
-                  500+
+                  50+
                 </p>
                 <p className="text-sm text-slate-500 mt-1.5">
                   UAE filings &amp; entities advised
@@ -1165,12 +1216,12 @@ function MainApp({ initialPath }: { initialPath?: string }) {
             </div>
 
             {/* Priority 2026 UAE Tax & Audit Quick-Access Links */}
-            <div className="rounded-2xl bg-[#070d19] border border-[#c5a059]/30 p-5 sm:p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4 text-white">
+            <div className="rounded-2xl bg-gradient-to-r from-[#F8FAFC] via-white to-[#F8FAFC] border border-[#E2E8F0] p-5 sm:p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4 text-[#0D1B2A] shadow-xs">
               <div className="space-y-1">
-                <span className="inline-block text-[11px] font-semibold uppercase tracking-[0.14em] text-[#c5a059]">
+                <span className="inline-block text-[11px] font-semibold uppercase tracking-[0.14em] text-[#856422]">
                   2026 FTA Priority Guides &amp; Execution Desks
                 </span>
-                <p className="text-sm text-slate-300">
+                <p className="text-sm text-[#475569]">
                   Jump directly to our 2026 VAT compliance checklist, 4–5 day statutory dividends audit timeline, or DIFC &amp; DTEC 0% QFZP hub.
                 </p>
               </div>
@@ -1181,10 +1232,10 @@ function MainApp({ initialPath }: { initialPath?: string }) {
                     e.preventDefault();
                     navigateTo("/services/vat-compliance");
                   }}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-[#0d1b2a] border border-[#c5a059]/40 hover:border-[#c5a059] px-3.5 py-2 text-xs sm:text-sm font-semibold text-white hover:text-[#c5a059] transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-white border border-[#CBD5E1] hover:border-[#1B4332] px-3.5 py-2 text-xs sm:text-sm font-semibold text-[#0D1B2A] hover:text-[#1B4332] transition-colors shadow-xs"
                 >
                   <span>UAE VAT Compliance &amp; Form 201</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-[#c5a059]" />
+                  <ArrowRight className="w-3.5 h-3.5 text-[#1B4332]" />
                 </a>
                 <a
                   href="/dividends-audit"
@@ -1192,10 +1243,10 @@ function MainApp({ initialPath }: { initialPath?: string }) {
                     e.preventDefault();
                     navigateTo("/dividends-audit");
                   }}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-[#0d1b2a] border border-[#c5a059]/40 hover:border-[#c5a059] px-3.5 py-2 text-xs sm:text-sm font-semibold text-white hover:text-[#c5a059] transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-white border border-[#CBD5E1] hover:border-[#1B4332] px-3.5 py-2 text-xs sm:text-sm font-semibold text-[#0D1B2A] hover:text-[#1B4332] transition-colors shadow-xs"
                 >
                   <span>Statutory Dividends Audit</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-[#c5a059]" />
+                  <ArrowRight className="w-3.5 h-3.5 text-[#1B4332]" />
                 </a>
                 <a
                   href="/tax-planning-difc"
@@ -1203,10 +1254,10 @@ function MainApp({ initialPath }: { initialPath?: string }) {
                     e.preventDefault();
                     navigateTo("/tax-planning-difc");
                   }}
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-[#0d1b2a] border border-[#c5a059]/40 hover:border-[#c5a059] px-3.5 py-2 text-xs sm:text-sm font-semibold text-white hover:text-[#c5a059] transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-lg bg-white border border-[#CBD5E1] hover:border-[#1B4332] px-3.5 py-2 text-xs sm:text-sm font-semibold text-[#0D1B2A] hover:text-[#1B4332] transition-colors shadow-xs"
                 >
                   <span>DIFC &amp; DTEC 0% QFZP</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-[#c5a059]" />
+                  <ArrowRight className="w-3.5 h-3.5 text-[#1B4332]" />
                 </a>
               </div>
             </div>
@@ -1237,8 +1288,9 @@ function MainApp({ initialPath }: { initialPath?: string }) {
           </div>
         </section>
 
-        {/* 5. Pricing Section Refactor (Monthly Retainers | Backlog Catch-Up | Standalone Filings) */}
-        <HomepagePricingSection
+        {/* 5. Pricing Section (Single-Source-of-Truth Shared Component) */}
+        <PricingSection
+          headingLevel="h2"
           billingPeriod={billingPeriod}
           setBillingPeriod={setBillingPeriod}
           pricingPath={pricingPath}
@@ -1251,89 +1303,89 @@ function MainApp({ initialPath }: { initialPath?: string }) {
         {/* 5.25 AI Mode Cost & Governance Comparison: In-House vs. DiasUAE */}
         <section
           aria-label="In-House UAE Accountant vs. DiasUAE Outsourced Tax Agency"
-          className="bg-[#070d19] border-y border-[#c5a059]/25 py-16 lg:py-22 text-white"
+          className="bg-gradient-to-b from-[#FFFFFF] via-[#F8FAFC] to-[#FFFFFF] border-y border-[#E2E8F0] py-16 lg:py-22 text-[#0D1B2A]"
         >
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
             <div className="max-w-3xl space-y-2.5">
-              <span className="inline-block text-xs font-semibold uppercase tracking-[0.14em] text-[#c5a059]">
+              <span className="inline-block text-xs font-semibold uppercase tracking-[0.14em] text-[#856422]">
                 2026 UAE Cost &amp; Governance Comparison
               </span>
-              <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">
+              <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#0D1B2A] tracking-tight">
                 In-House UAE Accountant vs. DiasUAE Outsourced Tax Agency
               </h2>
-              <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-[65ch]">
+              <p className="text-sm sm:text-base text-[#475569] leading-relaxed max-w-[65ch]">
                 Compare total employer overhead, FTA Tax Agent representation, and year-round continuity when scaling a UAE Mainland, DIFC, DTEC, or Free Zone company.
               </p>
             </div>
 
-            <div className="overflow-x-auto rounded-2xl border border-[#c5a059]/30 bg-[#0d1b2a] shadow-sm">
+            <div className="overflow-x-auto rounded-2xl border border-[#E2E8F0] bg-white shadow-[0_8px_28px_-12px_rgba(13,27,42,0.08)]">
               <table className="w-full text-left border-collapse text-sm">
                 <thead>
-                  <tr className="border-b border-[#c5a059]/25 bg-[#070d19]/85 text-xs uppercase tracking-wider">
-                    <th scope="col" className="px-5 py-4 font-semibold text-slate-300">
+                  <tr className="border-b border-[#E2E8F0] bg-[#F8FAFC] text-xs uppercase tracking-wider">
+                    <th scope="col" className="px-5 py-4 font-semibold text-[#475569]">
                       Comparison Factor
                     </th>
-                    <th scope="col" className="px-5 py-4 font-semibold text-slate-300">
+                    <th scope="col" className="px-5 py-4 font-semibold text-[#475569]">
                       In-House UAE Accountant
                     </th>
-                    <th scope="col" className="px-5 py-4 font-semibold text-[#c5a059]">
+                    <th scope="col" className="px-5 py-4 font-semibold text-[#1B4332]">
                       DiasUAE Outsourced Tax Agency
                     </th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-white/10">
-                  <tr className="hover:bg-white/[0.02] transition-colors">
-                    <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                <tbody className="divide-y divide-[#E2E8F0]">
+                  <tr className="hover:bg-[#F8FAFC]/80 transition-colors">
+                    <td className="px-5 py-4 font-semibold text-[#0D1B2A] whitespace-nowrap">
                       Monthly Cost
                     </td>
-                    <td className="px-5 py-4 text-slate-300 tabular-nums">
+                    <td className="px-5 py-4 text-[#475569] tabular-nums">
                       AED 8,000–15,000+ / month (base salary + software licenses)
                     </td>
-                    <td className="px-5 py-4 font-semibold text-[#c5a059] tabular-nums">
+                    <td className="px-5 py-4 font-semibold text-[#1B4332] tabular-nums">
                       From AED 400/month (fixed all-inclusive IFRS &amp; tax retainer)
                     </td>
                   </tr>
-                  <tr className="hover:bg-white/[0.02] transition-colors">
-                    <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                  <tr className="hover:bg-[#F8FAFC]/80 transition-colors">
+                    <td className="px-5 py-4 font-semibold text-[#0D1B2A] whitespace-nowrap">
                       FTA Tax Agent Sign-Off
                     </td>
-                    <td className="px-5 py-4 text-slate-300">
+                    <td className="px-5 py-4 text-[#475569]">
                       Not included — requires paying an external FTA-registered tax agency separately
                     </td>
-                    <td className="px-5 py-4 font-semibold text-white">
+                    <td className="px-5 py-4 font-semibold text-[#0D1B2A]">
                       Included — direct sign-off &amp; FTA representation by Glen Dias, FTA-Registered Tax Agent
                     </td>
                   </tr>
-                  <tr className="hover:bg-white/[0.02] transition-colors">
-                    <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                  <tr className="hover:bg-[#F8FAFC]/80 transition-colors">
+                    <td className="px-5 py-4 font-semibold text-[#0D1B2A] whitespace-nowrap">
                       Visa, Medical &amp; Gratuity Overhead
                     </td>
-                    <td className="px-5 py-4 text-slate-300 tabular-nums">
+                    <td className="px-5 py-4 text-[#475569] tabular-nums">
                       AED 15,000–25,000+ / year (UAE employment visa, health insurance, EOSB gratuity &amp; leave airfare)
                     </td>
-                    <td className="px-5 py-4 font-semibold text-[#c5a059]">
+                    <td className="px-5 py-4 font-semibold text-[#1B4332]">
                       AED 0 employer overhead — zero visa, HR, insurance, or gratuity liability
                     </td>
                   </tr>
-                  <tr className="hover:bg-white/[0.02] transition-colors">
-                    <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                  <tr className="hover:bg-[#F8FAFC]/80 transition-colors">
+                    <td className="px-5 py-4 font-semibold text-[#0D1B2A] whitespace-nowrap">
                       Continuity &amp; Penalty Protection
                     </td>
-                    <td className="px-5 py-4 text-slate-300">
+                    <td className="px-5 py-4 text-[#475569]">
                       Single point of failure during annual leave, illness, or unexpected staff resignation
                     </td>
-                    <td className="px-5 py-4 font-semibold text-white">
+                    <td className="px-5 py-4 font-semibold text-[#0D1B2A]">
                       Uninterrupted chartered accounting &amp; tax team with 5th-day closes and zero missed FTA deadlines
                     </td>
                   </tr>
-                  <tr className="hover:bg-white/[0.02] transition-colors">
-                    <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                  <tr className="hover:bg-[#F8FAFC]/80 transition-colors">
+                    <td className="px-5 py-4 font-semibold text-[#0D1B2A] whitespace-nowrap">
                       Specialist Scope (QFZP &amp; Audits)
                     </td>
-                    <td className="px-5 py-4 text-slate-300">
+                    <td className="px-5 py-4 text-[#475569]">
                       Routine bookkeeping only; external consultants needed for 0% QFZP, VAT audits &amp; dividend audits
                     </td>
-                    <td className="px-5 py-4 font-semibold text-white">
+                    <td className="px-5 py-4 font-semibold text-[#0D1B2A]">
                       2x Clutch 2026 UAE Leader covering 0% QFZP, 5% VAT Form 201, forecasting &amp; 5-day dividend audits
                     </td>
                   </tr>
@@ -1461,6 +1513,7 @@ function MainApp({ initialPath }: { initialPath?: string }) {
                       onClick={() => setOpenFaq(isOpen ? null : faq.id)}
                       className="w-full min-h-[56px] py-5 text-left rtl:text-right flex items-center justify-between gap-4 cursor-pointer focus:outline-none focus-visible:text-[#1B4332]"
                       aria-expanded={isOpen}
+                      aria-controls={`home-faq-panel-${faq.id}`}
                     >
                       <span className="text-base font-semibold text-[#0D1B2A]">
                         {faq.question}
@@ -1469,13 +1522,23 @@ function MainApp({ initialPath }: { initialPath?: string }) {
                         className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-200 ${
                           isOpen ? "rotate-180 text-[#1B4332]" : ""
                         }`}
+                        aria-hidden="true"
                       />
                     </button>
-                    {isOpen && (
-                      <div className="pb-6 pr-8 text-base text-[#475569] leading-[1.6] max-w-[65ch]">
-                        {faq.answer}
+                    {/* Keep all FAQ answers mounted in the DOM for 1:1 FAQPage JSON-LD parity */}
+                    <div
+                      id={`home-faq-panel-${faq.id}`}
+                      aria-hidden={!isOpen}
+                      className={`grid transition-[grid-template-rows,opacity] duration-200 ease-out ${
+                        isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                      }`}
+                    >
+                      <div className="overflow-hidden">
+                        <div className="pb-6 pr-8 text-base text-[#475569] leading-[1.6] max-w-[65ch]">
+                          {faq.answer}
+                        </div>
                       </div>
-                    )}
+                    </div>
                   </div>
                 );
               })}
@@ -1594,7 +1657,7 @@ function MainApp({ initialPath }: { initialPath?: string }) {
                 <LazyMount minHeight={510}>
                   <React.Suspense
                     fallback={
-                      <div className="h-[450px] bg-[#070d19] border border-[#c5a059]/40 rounded-2xl flex items-center justify-center text-xs text-slate-300">
+                      <div className="h-[450px] bg-white border border-[#E2E8F0] rounded-2xl flex items-center justify-center text-xs text-[#475569]">
                         Loading office map...
                       </div>
                     }
@@ -1607,8 +1670,19 @@ function MainApp({ initialPath }: { initialPath?: string }) {
           </div>
         </section>
 
-        {/* Monthly Package Internal-Link Conversion Strip */}
-        <MonthlyPackageConversionStrip onNavigate={navigateTo} />
+        {/* Monthly Package Internal-Link Conversion Strip (deferred until hero finishes hydrating) */}
+        {isHeroHydrated && (
+          <Suspense
+            fallback={
+              <div
+                aria-hidden="true"
+                className="bg-[#F8FAFC] border-t border-[#E2E8F0] py-12 lg:py-16 min-h-[260px]"
+              />
+            }
+          >
+            <MonthlyPackageConversionStrip onNavigate={navigateTo} />
+          </Suspense>
+        )}
 
         {/* E-E-A-T Tax Agent Verification Strip */}
         <TaxAgentReviewStrip />
@@ -1692,12 +1766,6 @@ function MainApp({ initialPath }: { initialPath?: string }) {
           />
         )}
       </React.Suspense>
-
-      {/* UAE PDPL & Cookie Consent Banner */}
-      <CookieConsentBanner
-        onNavigate={navigateTo}
-        onOpenPrivacy={() => navigateTo("/privacy-policy")}
-      />
     </div>
   );
   };
@@ -1733,6 +1801,17 @@ function MainApp({ initialPath }: { initialPath?: string }) {
           {renderRouteView()}
         </motion.div>
       </AnimatePresence>
+
+      {/* Deferred Mobile Footer & Conversion Bars — loaded only after main hero finishes hydrating */}
+      {isHeroHydrated && (
+        <Suspense fallback={null}>
+          <MobileConversionBar onNavigate={navigateTo} />
+          <CookieConsentBanner
+            onNavigate={navigateTo}
+            onOpenPrivacy={() => navigateTo("/privacy-policy")}
+          />
+        </Suspense>
+      )}
     </RouteTransitionProvider>
   );
 }

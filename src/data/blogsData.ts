@@ -63,7 +63,7 @@ export const blogsData: BlogPost[] = [
             "url": "https://diasuae.ae",
             "logo": {
               "@type": "ImageObject",
-              "url": "https://diasuae.ae/favicon.svg",
+              "url": "https://diasuae.ae/logo.png",
             },
           },
           "speakable": {
@@ -254,7 +254,7 @@ Fragmented books and reactive year-end reconciliations restrict enterprise growt
             "url": "https://diasuae.ae",
             "logo": {
               "@type": "ImageObject",
-              "url": "https://diasuae.ae/favicon.svg",
+              "url": "https://diasuae.ae/logo.png",
             },
           },
           "speakable": {
@@ -1676,7 +1676,7 @@ Whether you operate a technology venture in **DTEC Silicon Oasis**, a financial 
         "name": "Dias Accounting & Tax Consulting LLC",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://diasuae.ae/favicon.svg",
+          "url": "https://diasuae.ae/logo.png",
         },
       },
       "datePublished": "2026-10-30",

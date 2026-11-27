@@ -167,8 +167,8 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({
 
               {/* Prominent Verify Our 5.0★ Rating on Google & Clutch Button Bar */}
               <div className="pt-4">
-                <div className="mx-auto max-w-2xl rounded-2xl bg-[#070d19] border border-[#c5a059]/35 px-5 py-5 sm:px-7 sm:py-6 shadow-[0_12px_32px_-18px_rgba(7,13,25,0.55)] space-y-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#c5a059]">
+                <div className="mx-auto max-w-2xl rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] px-5 py-5 sm:px-7 sm:py-6 shadow-[0_8px_24px_-16px_rgba(13,27,42,0.08)] space-y-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.15em] text-[#856422]">
                     Verify Our 5.0★ Rating on Google &amp; Clutch
                   </p>
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3">
@@ -176,9 +176,9 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({
                       href={GOOGLE_BUSINESS_URL}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="min-h-[46px] inline-flex items-center justify-center gap-2 rounded-xl bg-[#c5a059] hover:bg-[#d4b06a] text-[#070d19] font-semibold text-sm px-5 py-2.5 transition-colors"
+                      className="min-h-[46px] inline-flex items-center justify-center gap-2 rounded-xl bg-[#1B4332] hover:bg-[#143326] text-white font-semibold text-sm px-5 py-2.5 transition-colors shadow-xs"
                     >
-                      <Star className="w-4 h-4 fill-[#070d19] text-[#070d19] shrink-0" aria-hidden="true" />
+                      <Star className="w-4 h-4 fill-[#C5A059] text-[#C5A059] shrink-0" aria-hidden="true" />
                       <span>Verify 5.0★ Reviews on Google</span>
                       <ExternalLink className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
                     </a>
@@ -186,11 +186,11 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({
                       href={CLUTCH_PROFILE_URL}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="min-h-[46px] inline-flex items-center justify-center gap-2 rounded-xl bg-[#0d1b2a] hover:bg-[#13263a] border border-[#c5a059]/50 hover:border-[#c5a059] text-white font-semibold text-sm px-5 py-2.5 transition-colors"
+                      className="min-h-[46px] inline-flex items-center justify-center gap-2 rounded-xl bg-white hover:bg-[#F8FAFC] border border-[#CBD5E1] hover:border-[#1B4332] text-[#0D1B2A] hover:text-[#1B4332] font-semibold text-sm px-5 py-2.5 transition-colors"
                     >
-                      <Award className="w-4 h-4 text-[#c5a059] shrink-0" aria-hidden="true" />
+                      <Award className="w-4 h-4 text-[#856422] shrink-0" aria-hidden="true" />
                       <span>Verify Profile &amp; Awards on Clutch</span>
-                      <ExternalLink className="w-3.5 h-3.5 text-[#c5a059] shrink-0" aria-hidden="true" />
+                      <ExternalLink className="w-3.5 h-3.5 text-[#1B4332] shrink-0" aria-hidden="true" />
                     </a>
                   </div>
                 </div>

@@ -15,7 +15,7 @@ export default function GoogleOfficeMap({ language = "en" }: GoogleOfficeMapProp
 
   return (
     <div className="space-y-3.5">
-      <div className="w-full h-[450px] rounded-2xl overflow-hidden border border-[#c5a059]/60 bg-[#070d19] shadow-lg">
+      <div className="w-full h-[450px] rounded-2xl overflow-hidden border border-[#E2E8F0] bg-[#F8FAFC] shadow-xs">
         <iframe
           title="DiasUAE — Dias Accounting and Tax Consulting LLC Office Location"
           src="/office-map.html"
@@ -33,9 +33,9 @@ export default function GoogleOfficeMap({ language = "en" }: GoogleOfficeMapProp
           href={GOOGLE_MAPS_PLACE_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center justify-center gap-2 min-h-[46px] px-5 py-3 rounded-xl bg-[#070d19] hover:bg-[#0d1b2a] border border-[#c5a059]/70 text-white text-sm font-semibold transition-colors shadow-xs"
+          className="inline-flex items-center justify-center gap-2 min-h-[46px] px-5 py-3 rounded-xl bg-white hover:bg-[#F8FAFC] border border-[#CBD5E1] hover:border-[#1B4332]/50 text-[#0D1B2A] text-sm font-semibold transition-colors shadow-xs"
         >
-          <Navigation className="w-4 h-4 text-[#c5a059] shrink-0" />
+          <Navigation className="w-4 h-4 text-[#1B4332] shrink-0" />
           <span>{isAr ? "الحصول على الاتجاهات" : "Get Directions"}</span>
         </a>
 
@@ -43,9 +43,9 @@ export default function GoogleOfficeMap({ language = "en" }: GoogleOfficeMapProp
           href={GOOGLE_REVIEW_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center justify-center gap-2 min-h-[46px] px-5 py-3 rounded-xl bg-[#c5a059] hover:bg-[#b58f48] border border-[#c5a059] text-[#070d19] text-sm font-bold transition-colors shadow-xs"
+          className="inline-flex items-center justify-center gap-2 min-h-[46px] px-5 py-3 rounded-xl bg-[#1B4332] hover:bg-[#143326] border border-[#1B4332] text-white text-sm font-semibold transition-colors shadow-xs"
         >
-          <Star className="w-4 h-4 fill-[#070d19] text-[#070d19] shrink-0" />
+          <Star className="w-4 h-4 fill-[#C5A059] text-[#C5A059] shrink-0" />
           <span>{isAr ? "اترك تقييم 5★ على Google" : "Leave a 5★ Google Review"}</span>
         </a>
       </div>

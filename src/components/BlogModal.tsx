@@ -98,21 +98,21 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact, 
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-navy-950/80 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-[#0D1B2A]/45 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"
       aria-labelledby="blog-modal-title"
     >
-      <div className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl overflow-y-auto max-h-[92vh] md:max-h-[88vh] animate-scaleUp scroll-smooth">
+      <div className="relative w-full max-w-3xl bg-white border border-[#E2E8F0] rounded-3xl shadow-2xl overflow-y-auto max-h-[92vh] md:max-h-[88vh] animate-scaleUp scroll-smooth">
         {/* Header (Scrolls together with article content) */}
-        <div className="bg-navy-900 text-white relative">
+        <div className="bg-[#F8FAFC] text-[#0D1B2A] border-b border-[#E2E8F0] relative">
           {/* Top Sticky Bar with Contact Now & Navigation */}
-          <div className="sticky top-0 z-30 bg-navy-900/95 backdrop-blur-md px-5 sm:px-6 md:px-8 py-3.5 border-b border-navy-800/80 flex items-center justify-between gap-3 shadow-xs">
+          <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-md px-5 sm:px-6 md:px-8 py-3.5 border-b border-[#E2E8F0] flex items-center justify-between gap-3 shadow-xs">
             <div className="flex items-center gap-2 min-w-0">
-              <span className="text-[10px] bg-gold-400 text-navy-950 font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full shrink-0">
+              <span className="text-[10px] bg-[#F8FAFC] border border-[#C5A059]/45 text-[#856422] font-bold uppercase tracking-widest px-2.5 py-0.5 rounded-full shrink-0">
                 {blog.tag}
               </span>
-              <span className="text-xs text-slate-300 font-medium truncate hidden sm:inline">
+              <span className="text-xs text-[#475569] font-medium truncate hidden sm:inline">
                 {blog.title}
               </span>
             </div>
@@ -121,11 +121,11 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact, 
               {/* High-Converting Contact Now Button on Top While Reading */}
               <button
                 onClick={handleContactClick}
-                className="px-3.5 py-1.5 text-xs font-bold text-navy-950 bg-gradient-to-r from-gold-400 via-amber-300 to-gold-400 hover:from-gold-300 hover:to-amber-200 rounded-full transition-all shadow-md hover:shadow-lg active:scale-95 flex items-center gap-1.5 cursor-pointer min-h-[34px] border border-gold-300/40"
+                className="px-3.5 py-1.5 text-xs font-bold text-white bg-[#1B4332] hover:bg-[#143326] rounded-full transition-all shadow-xs active:scale-95 flex items-center gap-1.5 cursor-pointer min-h-[34px]"
                 title="Contact Glen Dias & our tax consulting desk"
                 aria-label="Contact Now"
               >
-                <PhoneCall className="w-3.5 h-3.5 text-navy-950" />
+                <PhoneCall className="w-3.5 h-3.5 text-white" />
                 <span>Contact Now</span>
               </button>
 
@@ -133,17 +133,17 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact, 
                 href={standaloneBlogUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex px-3 py-1.5 text-xs font-semibold text-slate-200 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-all cursor-pointer min-h-[34px] items-center gap-1.5 active:scale-95 border border-white/10"
+                className="inline-flex px-3 py-1.5 text-xs font-semibold text-[#0D1B2A] hover:text-[#1B4332] bg-white hover:bg-[#F8FAFC] rounded-full transition-all cursor-pointer min-h-[34px] items-center gap-1.5 active:scale-95 border border-[#CBD5E1] hover:border-[#1B4332]"
                 title="Open full article in a new browser tab"
                 aria-label="Open article in a new tab"
               >
-                <ExternalLink className="w-3.5 h-3.5 text-gold-400" />
+                <ExternalLink className="w-3.5 h-3.5 text-[#856422]" />
                 <span>New Tab</span>
               </a>
 
               <button
                 onClick={onClose}
-                className="p-1.5 text-slate-300 hover:text-white bg-white/10 hover:bg-white/20 rounded-full transition-colors cursor-pointer min-w-[34px] min-h-[34px] flex items-center justify-center"
+                className="p-1.5 text-[#475569] hover:text-[#0D1B2A] bg-white hover:bg-[#F8FAFC] border border-[#E2E8F0] rounded-full transition-colors cursor-pointer min-w-[34px] min-h-[34px] flex items-center justify-center"
                 aria-label="Close article modal"
               >
                 <X className="w-4 h-4" />
@@ -155,20 +155,20 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact, 
           <div className="p-5 sm:p-6 md:p-8 pt-4 sm:pt-6 space-y-3">
             <div className="flex flex-wrap items-center gap-2">
               {blog.isAiGenerated && (
-                <span className="text-[9px] bg-emerald-950/90 text-emerald-300 border border-emerald-500/40 font-semibold px-2 py-0.5 rounded-full inline-flex items-center gap-1.5">
-                  <Sparkles className="w-3 h-3 text-emerald-400 animate-pulse" />
+                <span className="text-[9px] bg-[#1B4332]/8 text-[#1B4332] border border-[#1B4332]/20 font-semibold px-2 py-0.5 rounded-full inline-flex items-center gap-1.5">
+                  <Sparkles className="w-3 h-3 text-[#1B4332]" />
                   24-Hour Gemini AI Briefing (Google Search Grounded)
                 </span>
               )}
-              <span className="text-[9px] bg-blue-950/80 text-blue-300 border border-blue-500/30 font-semibold px-2 py-0.5 rounded-full inline-flex items-center gap-1">
-                <CheckCircle2 className="w-2.5 h-2.5 text-blue-400" />
+              <span className="text-[9px] bg-white text-[#475569] border border-[#E2E8F0] font-semibold px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                <CheckCircle2 className="w-2.5 h-2.5 text-[#1B4332]" />
                 Google Schema (JSON-LD) Active
               </span>
               <a
                 href={standaloneBlogUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[10px] text-gold-400 hover:text-gold-300 ml-auto inline-flex items-center gap-1 underline underline-offset-2"
+                className="text-[10px] text-[#856422] hover:text-[#1B4332] ml-auto inline-flex items-center gap-1 underline underline-offset-2 font-semibold"
               >
                 <span>Read in New Tab</span>
                 <ExternalLink className="w-3 h-3" />
@@ -178,15 +178,15 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact, 
               href={standaloneBlogUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="group/title block text-white hover:text-gold-400 transition-colors"
+              className="group/title block text-[#0D1B2A] hover:text-[#1B4332] transition-colors"
               title="Open article in a new tab"
             >
               <h3 id="blog-modal-title" className="font-display text-lg sm:text-xl md:text-3xl font-bold tracking-tight inline-flex items-center gap-2 flex-wrap">
                 <span>{blog.title}</span>
-                <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5 text-gold-400 shrink-0 opacity-70 group-hover/title:opacity-100 transition-opacity" />
+                <ExternalLink className="w-4 h-4 sm:w-5 sm:h-5 text-[#856422] shrink-0 opacity-75 group-hover/title:opacity-100 transition-opacity" />
               </h3>
             </a>
-            <div className="flex flex-wrap gap-2 sm:gap-4 text-xs text-slate-400 font-medium">
+            <div className="flex flex-wrap gap-2 sm:gap-4 text-xs text-[#64748B] font-medium">
               <span>Published: {blog.date}</span>
               <span>•</span>
               <span>Read time: {blog.readTime}</span>
@@ -226,19 +226,19 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact, 
 
           {/* Official Video Broadcast Player (YouTube & Meta) */}
           {blog.videoUrl && (
-            <div className="mb-8 rounded-2xl overflow-hidden border border-slate-200 bg-navy-950 shadow-lg">
-              <div className="bg-navy-900 px-4 py-2.5 border-b border-navy-800 flex items-center justify-between">
+            <div className="mb-8 rounded-2xl overflow-hidden border border-[#E2E8F0] bg-[#FFFFFF] shadow-sm">
+              <div className="bg-[#F8FAFC] px-4 py-2.5 border-b border-[#E2E8F0] flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-red-500 animate-pulse" />
-                  <span className="text-xs font-display font-bold text-white tracking-wide">
+                  <span className="text-xs font-display font-bold text-[#0D1B2A] tracking-wide">
                     {blog.videoTitle || "Executive Video Briefing (YouTube & Meta) | Glen Dias"}
                   </span>
                 </div>
-                <span className="text-[10px] font-mono text-gold-400 bg-gold-500/10 border border-gold-400/30 px-2 py-0.5 rounded-full">
+                <span className="text-[10px] font-mono font-bold text-[#856422] bg-white border border-[#C5A059]/40 px-2 py-0.5 rounded-full">
                   Official Broadcast
                 </span>
               </div>
-              <div className="p-3 sm:p-4 bg-slate-900/60">
+              <div className="p-3 sm:p-4 bg-[#F8FAFC]">
                 <video
                   src={blog.videoUrl}
                   controls
@@ -247,9 +247,9 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact, 
                   className="w-full max-h-[440px] rounded-xl bg-black object-contain mx-auto shadow-md"
                 />
               </div>
-              <div className="px-4 py-2.5 bg-navy-950 text-slate-400 text-xs flex items-center justify-between">
+              <div className="px-4 py-2.5 bg-white border-t border-[#E2E8F0] text-[#475569] text-xs flex items-center justify-between">
                 <span>Glen Dias, Managing Director &amp; Certified Tax Advisor</span>
-                <span className="text-gold-400 font-medium">Dias Accounting &amp; Tax Consulting LLC</span>
+                <span className="text-[#856422] font-semibold">Dias Accounting &amp; Tax Consulting LLC</span>
               </div>
             </div>
           )}
@@ -279,9 +279,9 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact, 
                   href={blog.slidesUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-navy-950 hover:bg-navy-900 text-white font-display font-semibold text-xs transition-colors shadow-xs"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-[#1B4332] hover:bg-[#143326] text-white font-display font-semibold text-xs transition-colors shadow-xs"
                 >
-                  <ExternalLink className="w-3.5 h-3.5 text-gold-400" />
+                  <ExternalLink className="w-3.5 h-3.5 text-white" />
                   <span>View Slides (PDF)</span>
                 </a>
               </div>
@@ -334,7 +334,7 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact, 
                   }
                   onClose();
                 }}
-                className="w-full sm:w-auto bg-navy-900 hover:bg-navy-950 text-white font-display font-bold py-3 px-6 rounded-xl text-xs sm:text-sm transition-colors min-h-[44px] flex items-center justify-center cursor-pointer shadow-sm"
+                className="w-full sm:w-auto bg-[#1B4332] hover:bg-[#143326] text-white font-display font-bold py-3 px-6 rounded-xl text-xs sm:text-sm transition-colors min-h-[44px] flex items-center justify-center cursor-pointer shadow-xs"
               >
                 Book Professional Assessment
               </a>

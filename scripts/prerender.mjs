@@ -29,24 +29,36 @@ function serializeJsonLd(data) {
 
 function replaceMetaByName(html, name, value) {
   const escaped = escapeHtmlAttr(value);
-  const regex = new RegExp(`<meta\\s+name="${name}"\\s+content="[^"]*"\\s*/?>`, "i");
+  const regex = new RegExp(`<meta\\s+name="${name}"\\s+content="[^"]*"\\s*/?>`, "gi");
   if (regex.test(html)) {
-    return html.replace(regex, () => `<meta name="${name}" content="${escaped}" />`);
+    let replacedFirst = false;
+    return html.replace(regex, () => {
+      if (replacedFirst) return "";
+      replacedFirst = true;
+      return `<meta name="${name}" content="${escaped}" />`;
+    });
   }
   return html.replace("</head>", () => `    <meta name="${name}" content="${escaped}" />\n  </head>`);
 }
 
 function replaceMetaByProperty(html, property, value) {
   const escaped = escapeHtmlAttr(value);
-  const regex = new RegExp(`<meta\\s+property="${property}"\\s+content="[^"]*"\\s*/?>`, "i");
+  const regex = new RegExp(`<meta\\s+property="${property}"\\s+content="[^"]*"\\s*/?>`, "gi");
   if (regex.test(html)) {
-    return html.replace(regex, () => `<meta property="${property}" content="${escaped}" />`);
+    let replacedFirst = false;
+    return html.replace(regex, () => {
+      if (replacedFirst) return "";
+      replacedFirst = true;
+      return `<meta property="${property}" content="${escaped}" />`;
+    });
   }
   return html.replace("</head>", () => `    <meta property="${property}" content="${escaped}" />\n  </head>`);
 }
 
 function stripTagsAndDecode(raw) {
   return String(raw || "")
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<\/?(?:strong|em|b|i|u|span|a|code|small|sup|sub|mark)\b[^>]*>/gi, "")
     .replace(/<[^>]+>/g, " ")
     .replace(/&amp;/g, "&")
     .replace(/&lt;/g, "<")
@@ -202,6 +214,123 @@ async function runPrerender() {
     }
 
     const finalDocument = buildRouteDocument(template, appHtml, head);
+
+    // Strict Bing & Google Webmaster Tools audit: exactly 1 <meta name="description"> within 120–155 chars
+    const descMatches = [
+      ...finalDocument.matchAll(/<meta\s+name="description"\s+content="([^"]*)"\s*\/?>/gi),
+    ];
+    if (descMatches.length !== 1) {
+      throw new Error(
+        `SSG Meta Description audit failed for route "${route}": expected exactly 1 <meta name="description">, found ${descMatches.length}`
+      );
+    }
+    const decodedDesc = stripTagsAndDecode(descMatches[0][1]);
+    if (decodedDesc.length < 120 || decodedDesc.length > 155) {
+      throw new Error(
+        `SSG Meta Description length audit failed for route "${route}": length is ${decodedDesc.length} chars (must be 120–155): "${decodedDesc}"`
+      );
+    }
+
+    // Strict JSON-LD syntax, array nesting, and FAQPage vs visible HTML parity audit across ALL routes
+    const allJsonLdMatches = [
+      ...finalDocument.matchAll(
+        /<script\s+type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/gi
+      ),
+    ];
+    const faqNodes = [];
+    for (let sIdx = 0; sIdx < allJsonLdMatches.length; sIdx++) {
+      const rawJson = allJsonLdMatches[sIdx][1].trim();
+      if (/,\s*[}\]]/.test(rawJson)) {
+        throw new Error(
+          `SSG JSON-LD audit failed on "${route}" (script #${sIdx}): trailing comma detected`
+        );
+      }
+      let parsed;
+      try {
+        parsed = JSON.parse(rawJson);
+      } catch (err) {
+        throw new Error(
+          `SSG JSON-LD audit failed on "${route}" (script #${sIdx}): invalid JSON (${err.message})`
+        );
+      }
+      const visit = (node) => {
+        if (!node || typeof node !== "object") return;
+        if (Array.isArray(node)) {
+          node.forEach(visit);
+          return;
+        }
+        if (node["@type"] === "FAQPage") {
+          faqNodes.push({ node, context: node["@context"] || parsed["@context"] });
+        }
+        if (Array.isArray(node["@graph"])) {
+          node["@graph"].forEach(visit);
+        }
+      };
+      visit(parsed);
+    }
+
+    if (faqNodes.length > 1) {
+      throw new Error(
+        `SSG FAQPage audit failed for route "${route}": expected at most 1 FAQPage schema per page, found ${faqNodes.length}`
+      );
+    }
+
+    if (faqNodes.length === 1) {
+      const { node: faqNode, context } = faqNodes[0];
+      if (context !== "https://schema.org") {
+        throw new Error(
+          `SSG FAQPage audit failed for route "${route}": invalid @context "${context}"`
+        );
+      }
+      const mainEntity = faqNode.mainEntity;
+      if (!Array.isArray(mainEntity) || mainEntity.length === 0) {
+        throw new Error(
+          `SSG FAQPage audit failed for route "${route}": mainEntity must be a non-empty array`
+        );
+      }
+
+      const visiblePlainText = stripTagsAndDecode(appHtml);
+      const seenQuestions = new Set();
+      for (let qIdx = 0; qIdx < mainEntity.length; qIdx++) {
+        const qa = mainEntity[qIdx];
+        if (!qa || typeof qa !== "object" || Array.isArray(qa) || qa["@type"] !== "Question") {
+          throw new Error(
+            `SSG FAQPage audit failed on "${route}" (item #${qIdx}): invalid Question object or array nesting`
+          );
+        }
+        const ans = qa.acceptedAnswer;
+        if (!ans || typeof ans !== "object" || Array.isArray(ans) || ans["@type"] !== "Answer") {
+          throw new Error(
+            `SSG FAQPage audit failed on "${route}" (item #${qIdx}): invalid acceptedAnswer object`
+          );
+        }
+        const qText = stripTagsAndDecode(qa.name || "");
+        const aText = stripTagsAndDecode(ans.text || "");
+        if (!qText || !aText) {
+          throw new Error(
+            `SSG FAQPage audit failed on "${route}" (item #${qIdx}): empty question or answer text`
+          );
+        }
+        const qKey = qText.toLowerCase();
+        if (seenQuestions.has(qKey)) {
+          throw new Error(
+            `SSG FAQPage audit failed on "${route}": duplicate Question "${qText}"`
+          );
+        }
+        seenQuestions.add(qKey);
+        if (!visiblePlainText.includes(qText)) {
+          throw new Error(
+            `SSG FAQPage parity failed on "${route}": Question not found verbatim in visible HTML: "${qText}"`
+          );
+        }
+        if (!visiblePlainText.includes(aText)) {
+          throw new Error(
+            `SSG FAQPage parity failed on "${route}": Answer not found verbatim in visible HTML: "${aText}"`
+          );
+        }
+      }
+    }
+
     const relativeOutPath =
       route === "/"
         ? "index.html"
@@ -216,6 +345,7 @@ async function runPrerender() {
       file: `dist/${relativeOutPath.replace(/\\/g, "/")}`,
       title: head.title,
       h1: h1Matches[0],
+      descLength: decodedDesc.length,
       jsonLdCount: (head.keepHomepageFaq ? 4 : 3) + (head.jsonLdScripts?.length || 0),
     });
   }
@@ -234,7 +364,9 @@ async function runPrerender() {
 
   console.log(`\n[SSG Prerender] Successfully generated ${report.length} static HTML pages:\n`);
   for (const item of report) {
-    console.log(`  ✔ ${item.file.padEnd(64)} | <h1>: ${item.h1}`);
+    console.log(
+      `  ✔ ${item.file.padEnd(64)} | desc:${String(item.descLength).padStart(3)}c | <h1>: ${item.h1}`
+    );
   }
   console.log(`\n[SSG Prerender] Cleaned temporary dist-ssr directory and preserved public static files.\n`);
 }

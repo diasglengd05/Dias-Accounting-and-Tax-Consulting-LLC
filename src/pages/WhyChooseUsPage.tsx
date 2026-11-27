@@ -71,44 +71,44 @@ export const WhyChooseUsPage: React.FC<WhyChooseUsPageProps> = ({
 
       <PageMainTransition id="main-content">
         {/* Hero Section */}
-        <section className="relative bg-gradient-to-b from-navy-950 via-navy-900 to-navy-950 text-white py-16 lg:py-24 border-b border-white/10">
+        <section className="relative bg-gradient-to-b from-[#FFFFFF] via-[#F8FAFC] to-[#FFFFFF] text-[#0D1B2A] py-16 lg:py-24 border-b border-[#E2E8F0]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-mono text-gold-400 mb-4">
+            <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-mono text-[#856422] mb-4">
               <button
                 type="button"
                 onClick={() => onNavigate("/")}
-                className="hover:underline cursor-pointer"
+                className="hover:text-[#0D1B2A] hover:underline cursor-pointer transition-colors"
               >
                 Home
               </button>
-              <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
+              <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8]" />
               <button
                 type="button"
                 onClick={() => onNavigate("/about")}
-                className="hover:underline cursor-pointer"
+                className="hover:text-[#0D1B2A] hover:underline cursor-pointer transition-colors"
               >
                 About Us
               </button>
-              <ChevronRight className="w-3.5 h-3.5 text-slate-400" />
-              <span className="text-white">Why Choose Dias</span>
+              <ChevronRight className="w-3.5 h-3.5 text-[#94A3B8]" />
+              <span className="text-[#0D1B2A] font-semibold">Why Choose Dias</span>
             </nav>
 
             <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gold-500/10 border border-gold-400/30 text-gold-300 text-xs font-semibold uppercase tracking-wider mb-4">
-                <Award className="w-3.5 h-3.5 text-gold-400" />
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#F8FAFC] border border-[#E2E8F0] text-[#856422] text-xs font-semibold uppercase tracking-wider mb-4">
+                <Award className="w-3.5 h-3.5 text-[#C5A059]" />
                 <span>The Dias Advantage · Dubai &amp; Sharjah</span>
               </div>
-              <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-6">
+              <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0D1B2A] leading-tight mb-6">
                 Why Industry Leaders Choose Dias Accounting
               </h1>
-              <p className="text-slate-300 text-base sm:text-lg leading-relaxed mb-8">
+              <p className="text-[#475569] text-base sm:text-lg leading-relaxed mb-8">
                 We combine the rigorous regulatory compliance of an FTA Registered Tax Agency with the responsiveness and modern cloud tech stack that high-growth UAE businesses demand.
               </p>
               <div className="flex flex-wrap gap-4">
                 <button
                   type="button"
                   onClick={() => onNavigate("/contact")}
-                  className="bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold px-6 py-3.5 rounded-xl text-sm transition-all shadow-lg shadow-gold-500/20 cursor-pointer flex items-center gap-2"
+                  className="bg-[#1B4332] hover:bg-[#143326] text-white font-display font-semibold px-6 py-3.5 rounded-xl text-sm transition-colors shadow-xs cursor-pointer flex items-center gap-2"
                 >
                   <span>Consult Glen Dias, FTA Tax Agent</span>
                   <ArrowRight className="w-4 h-4" />
@@ -126,31 +126,31 @@ export const WhyChooseUsPage: React.FC<WhyChooseUsPageProps> = ({
         {/* Glen Dias Leadership Bio Block */}
         <section className="py-16 bg-white border-y border-slate-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="bg-gradient-to-br from-navy-950 to-navy-900 rounded-3xl p-8 sm:p-12 text-white border border-gold-500/30 shadow-xl flex flex-col md:flex-row items-center gap-8 lg:gap-12">
-              <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-2xl bg-gold-500/20 border-2 border-gold-400/50 flex items-center justify-center shrink-0 text-gold-400 font-display text-4xl sm:text-5xl font-extrabold">
+            <div className="bg-gradient-to-br from-[#F8FAFC] via-[#FFFFFF] to-[#F8FAFC] rounded-3xl p-8 sm:p-12 text-[#0D1B2A] border border-[#E2E8F0] shadow-[0_12px_36px_-18px_rgba(13,27,42,0.08)] flex flex-col md:flex-row items-center gap-8 lg:gap-12">
+              <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-2xl bg-[#FFFFFF] border-2 border-[#C5A059]/60 flex items-center justify-center shrink-0 text-[#0D1B2A] font-display text-4xl sm:text-5xl font-extrabold shadow-xs">
                 GD
               </div>
               <div className="space-y-4 text-center md:text-left">
-                <div className="inline-block px-3 py-1 rounded-full bg-gold-500/20 border border-gold-400/40 text-gold-300 font-mono text-xs font-bold uppercase tracking-wider">
+                <div className="inline-block px-3 py-1 rounded-full bg-[#FFFFFF] border border-[#E2E8F0] text-[#856422] font-mono text-xs font-bold uppercase tracking-wider">
                   Founder &amp; Senior Tax Advisor
                 </div>
-                <h2 className="font-display text-2xl sm:text-3xl font-bold text-white">
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#0D1B2A]">
                   Glen Gilbert Dias
                 </h2>
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-2xl">
+                <p className="text-xs sm:text-sm text-[#475569] leading-relaxed max-w-2xl">
                   FTA Registered Tax Agent and Managing Partner at Dias Accounting &amp; Tax Consulting LLC. With over a decade of specialized corporate finance, UAE tax jurisprudence, and IFRS advisory experience, Glen has structured hundreds of mainland and free zone corporate tax entities to achieve complete compliance while eliminating penalty exposure.
                 </p>
-                <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-2 text-xs text-gold-400 font-medium">
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-2 text-xs text-[#0D1B2A] font-medium">
                   <span className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    <CheckCircle2 className="w-4 h-4 text-[#1B4332]" />
                     FTA Registered Tax Agent
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    <CheckCircle2 className="w-4 h-4 text-[#1B4332]" />
                     Zoho Books Implementation Specialist
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                    <CheckCircle2 className="w-4 h-4 text-[#1B4332]" />
                     IFRS Chartered Accounting Professional
                   </span>
                 </div>

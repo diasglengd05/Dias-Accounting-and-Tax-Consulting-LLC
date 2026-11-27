@@ -125,17 +125,17 @@ export const ArticleLayout: React.FC<ArticleLayoutProps> = ({
             {/* Direct Commercial Service Internal Links (Prevents Blog-vs-Service Cannibalization) */}
             <aside
               aria-label="Core UAE Tax and Accounting Services"
-              className="rounded-2xl bg-[#070d19] text-white border border-[#c5a059]/35 p-6 sm:p-7 space-y-4"
+              className="rounded-2xl bg-[#F8FAFC] text-[#0D1B2A] border border-[#E2E8F0] p-6 sm:p-7 space-y-4 shadow-[0_6px_24px_-16px_rgba(13,27,42,0.06)]"
             >
               <div className="space-y-1">
-                <span className="inline-block text-[11px] font-semibold uppercase tracking-wider text-[#c5a059]">
+                <span className="inline-block text-[11px] font-semibold uppercase tracking-wider text-[#856422]">
                   FTA-Registered Tax Agency · Direct Services
                 </span>
-                <h2 className="font-display text-lg sm:text-xl font-bold text-white tracking-tight">
+                <h2 className="font-display text-lg sm:text-xl font-bold text-[#0D1B2A] tracking-tight">
                   Ready for UAE Compliance? Explore Our Core Advisory Pages
                 </h2>
               </div>
-              <p className="text-sm text-slate-300 leading-relaxed">
+              <p className="text-sm text-[#475569] leading-relaxed">
                 Move from regulatory guidance to turnkey execution with FTA-Registered Tax Agent Glen Dias across Dubai Mainland, DIFC, DTEC, and SHAMS:
               </p>
               <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
@@ -146,10 +146,10 @@ export const ArticleLayout: React.FC<ArticleLayoutProps> = ({
                       e.preventDefault();
                       onNavigate("/tax-planning-difc");
                     }}
-                    className="flex items-center justify-between gap-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-[#c5a059]/60 px-4 py-3 text-sm font-semibold text-[#c5a059] transition-colors no-underline"
+                    className="flex items-center justify-between gap-2 rounded-xl bg-[#FFFFFF] hover:bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#1B4332]/50 px-4 py-3 text-sm font-semibold text-[#0D1B2A] hover:text-[#1B4332] transition-colors no-underline"
                   >
                     <span>DIFC tax compliance services</span>
-                    <ArrowRight className="w-4 h-4 shrink-0" />
+                    <ArrowRight className="w-4 h-4 text-[#1B4332] shrink-0" />
                   </a>
                 </li>
                 <li>
@@ -159,10 +159,10 @@ export const ArticleLayout: React.FC<ArticleLayoutProps> = ({
                       e.preventDefault();
                       onNavigate("/dividends-audit");
                     }}
-                    className="flex items-center justify-between gap-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-[#c5a059]/60 px-4 py-3 text-sm font-semibold text-[#c5a059] transition-colors no-underline"
+                    className="flex items-center justify-between gap-2 rounded-xl bg-[#FFFFFF] hover:bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#1B4332]/50 px-4 py-3 text-sm font-semibold text-[#0D1B2A] hover:text-[#1B4332] transition-colors no-underline"
                   >
                     <span>statutory dividends audit in Dubai</span>
-                    <ArrowRight className="w-4 h-4 shrink-0" />
+                    <ArrowRight className="w-4 h-4 text-[#1B4332] shrink-0" />
                   </a>
                 </li>
                 <li>
@@ -172,10 +172,10 @@ export const ArticleLayout: React.FC<ArticleLayoutProps> = ({
                       e.preventDefault();
                       onNavigate("/pricing");
                     }}
-                    className="flex items-center justify-between gap-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-[#c5a059]/60 px-4 py-3 text-sm font-semibold text-[#c5a059] transition-colors no-underline"
+                    className="flex items-center justify-between gap-2 rounded-xl bg-[#FFFFFF] hover:bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#1B4332]/50 px-4 py-3 text-sm font-semibold text-[#0D1B2A] hover:text-[#1B4332] transition-colors no-underline"
                   >
                     <span>fixed-fee accounting packages in Dubai</span>
-                    <ArrowRight className="w-4 h-4 shrink-0" />
+                    <ArrowRight className="w-4 h-4 text-[#1B4332] shrink-0" />
                   </a>
                 </li>
                 <li>
@@ -185,10 +185,10 @@ export const ArticleLayout: React.FC<ArticleLayoutProps> = ({
                       e.preventDefault();
                       onNavigate("/uae-tax-planner");
                     }}
-                    className="flex items-center justify-between gap-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/10 hover:border-[#c5a059]/60 px-4 py-3 text-sm font-semibold text-[#c5a059] transition-colors no-underline"
+                    className="flex items-center justify-between gap-2 rounded-xl bg-[#FFFFFF] hover:bg-[#F8FAFC] border border-[#E2E8F0] hover:border-[#1B4332]/50 px-4 py-3 text-sm font-semibold text-[#0D1B2A] hover:text-[#1B4332] transition-colors no-underline"
                   >
                     <span>2026 UAE Corporate Tax &amp; 5% VAT Calculator</span>
-                    <ArrowRight className="w-4 h-4 shrink-0" />
+                    <ArrowRight className="w-4 h-4 text-[#1B4332] shrink-0" />
                   </a>
                 </li>
               </ul>
@@ -213,7 +213,7 @@ export const ArticleLayout: React.FC<ArticleLayoutProps> = ({
 
             {/* Clean Author Bio Strip */}
             <div className="pt-8 border-t border-[#E2E8F0] flex flex-col sm:flex-row sm:items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-[#0D1B2A] text-white font-display font-bold text-sm flex items-center justify-center shrink-0">
+              <div className="w-12 h-12 rounded-xl bg-[#F8FAFC] border border-[#E2E8F0] text-[#1B4332] font-display font-bold text-sm flex items-center justify-center shrink-0">
                 {authorInitials}
               </div>
               <div className="space-y-1">

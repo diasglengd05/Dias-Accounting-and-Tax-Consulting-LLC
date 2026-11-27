@@ -20,7 +20,7 @@ export const BUSINESS_ENTITY = {
   alternateName: ["DiasUAE", "diasuae.ae", "Dias Accounting"],
   shortName: "DiasUAE",
   url: `${SITE_URL}/`,
-  logo: `${SITE_URL}/favicon.ico`,
+  logo: `${SITE_URL}/logo.png`,
   image: DEFAULT_OG_IMAGE,
   description:
     "FTA-Registered Tax Agency and Chartered Accounting firm in Dubai and Sharjah (SHAMS) led by FTA-Registered Tax Agent Glen Dias. Fixed-fee monthly IFRS bookkeeping, 5% UAE VAT Form 201 returns, 9% Corporate Tax filings, 0% Small Business Relief (SBR) & 0% QFZP compliance, and statutory dividend audits starting from AED 400/month.",

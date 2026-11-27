@@ -378,46 +378,33 @@ export const OurAffiliations: React.FC = () => {
   });
 
   return (
-    <section id="affiliations" className="py-8 sm:py-10 md:py-12 bg-slate-900 text-white relative overflow-hidden">
-      {/* Dynamic Ambient Glows */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#1e293b,transparent_75%)] pointer-events-none" />
-      <motion.div
-        animate={{ scale: [1, 1.15, 1], opacity: [0.15, 0.28, 0.15] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute -top-28 left-1/2 -translate-x-1/2 w-[650px] h-[220px] bg-gold-500/20 rounded-full blur-3xl pointer-events-none"
-      />
-      <motion.div
-        animate={{ opacity: [0.08, 0.18, 0.08] }}
-        transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-0 right-10 w-72 h-72 bg-blue-500/15 rounded-full blur-3xl pointer-events-none"
-      />
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-5 sm:space-y-6">
+    <section id="affiliations" className="py-10 sm:py-12 md:py-14 bg-gradient-to-b from-[#FFFFFF] via-[#F8FAFC] to-[#FFFFFF] border-b border-[#E2E8F0] text-[#0D1B2A] relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-6">
         {/* Section Header */}
         <div className="text-center space-y-2 max-w-xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: -6 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-gold-500/15 border border-gold-500/30 text-gold-400 text-[11px] font-bold uppercase tracking-widest font-mono"
+            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#F8FAFC] border border-[#C5A059]/40 text-[#856422] text-[11px] font-bold uppercase tracking-widest font-mono"
           >
-            <Award className="w-3.5 h-3.5 text-gold-400" />
+            <Award className="w-3.5 h-3.5 text-[#C5A059]" />
             <span>{isAr ? "شراكات واعتمادات رسمية" : "Official UAE Jurisdictions"}</span>
           </motion.div>
 
-          <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+          <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-[#0D1B2A] tracking-tight">
             {isAr ? (
               <>
-                شراكاتنا <span className="text-gold-400">واعتماداتنا</span>
+                شراكاتنا <span className="text-[#856422]">واعتماداتنا</span>
               </>
             ) : (
               <>
-                Our <span className="text-gold-400">Affiliations</span>
+                Our <span className="text-[#856422]">Affiliations</span>
               </>
             )}
           </h2>
 
-          <p className="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-lg mx-auto">
+          <p className="text-[#475569] text-xs sm:text-sm leading-relaxed max-w-lg mx-auto">
             {isAr
               ? "معتمدون ومخولون لتأسيس الشركات، مسك الدفاتر المؤهل، والامتثال لضريبة الشركات في كافة مناطق الدولة."
               : "Officially authorized partner for company setup, compliant accounting, and 0% Free Zone tax eligibility across the UAE."}
@@ -426,7 +413,7 @@ export const OurAffiliations: React.FC = () => {
 
         {/* Animated Filter Pills */}
         <div className="flex items-center justify-center">
-          <div className="inline-flex items-center p-1 bg-navy-950/80 border border-slate-800/90 rounded-full shadow-inner backdrop-blur-md">
+          <div className="inline-flex items-center p-1 bg-[#F8FAFC] border border-[#E2E8F0] rounded-full shadow-xs">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.id;
               return (
@@ -434,13 +421,13 @@ export const OurAffiliations: React.FC = () => {
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`relative px-3.5 py-1.5 text-xs font-semibold rounded-full transition-colors cursor-pointer select-none ${
-                    isActive ? "text-navy-950" : "text-slate-400 hover:text-slate-200"
+                    isActive ? "text-white" : "text-[#475569] hover:text-[#0D1B2A]"
                   }`}
                 >
                   {isActive && (
                     <motion.div
                       layoutId="activeAffiliationTab"
-                      className="absolute inset-0 bg-gold-400 rounded-full shadow-sm"
+                      className="absolute inset-0 bg-[#1B4332] rounded-full shadow-sm"
                       transition={{ type: "spring", stiffness: 450, damping: 32 }}
                     />
                   )}
@@ -472,11 +459,11 @@ export const OurAffiliations: React.FC = () => {
                   whileHover={{ y: -5, transition: { duration: 0.2 } }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setSelectedAffiliation(aff)}
-                  className="group relative bg-navy-950/90 border border-slate-800/90 hover:border-gold-400/80 rounded-2xl overflow-hidden shadow-md hover:shadow-xl hover:shadow-gold-500/10 flex flex-col justify-between transition-colors cursor-pointer"
+                  className="group relative bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#C5A059] rounded-2xl overflow-hidden shadow-sm hover:shadow-md flex flex-col justify-between transition-all cursor-pointer"
                 >
                   {/* White Logo Chamber */}
-                  <div className="h-24 sm:h-28 bg-white p-2.5 flex flex-col items-center justify-center relative overflow-hidden border-b border-slate-200/40">
-                    <span className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded-full bg-slate-100 text-[7.5px] font-extrabold uppercase tracking-wider text-slate-700 shadow-2xs">
+                  <div className="h-24 sm:h-28 bg-white p-2.5 flex flex-col items-center justify-center relative overflow-hidden border-b border-[#E2E8F0]">
+                    <span className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded-full bg-[#F8FAFC] border border-[#E2E8F0] text-[7.5px] font-extrabold uppercase tracking-wider text-[#475569]">
                       {aff.accentBadge}
                     </span>
                     <div className="transform scale-85 sm:scale-90 group-hover:scale-100 transition-transform duration-300">
@@ -484,18 +471,18 @@ export const OurAffiliations: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Dark Action Block */}
-                  <div className="p-3 bg-gradient-to-b from-navy-900 to-navy-950 flex flex-col justify-between gap-2.5 flex-1 text-center">
+                  {/* Light Action Block */}
+                  <div className="p-3 bg-[#F8FAFC] flex flex-col justify-between gap-2.5 flex-1 text-center">
                     <div className="space-y-0.5">
-                      <span className="text-[8.5px] uppercase tracking-wider text-gold-400 font-mono block truncate">
+                      <span className="text-[8.5px] uppercase tracking-wider text-[#856422] font-mono font-semibold block truncate">
                         {category}
                       </span>
-                      <h3 className="font-display text-xs font-bold tracking-tight text-white line-clamp-1 group-hover:text-gold-300 transition-colors">
+                      <h3 className="font-display text-xs font-bold tracking-tight text-[#0D1B2A] line-clamp-1 group-hover:text-[#1B4332] transition-colors">
                         {name}
                       </h3>
                     </div>
 
-                    <div className="w-full py-1.5 rounded-lg border border-gold-400/50 group-hover:border-gold-400 bg-gold-400/10 group-hover:bg-gold-500 text-gold-300 group-hover:text-navy-950 text-[10px] font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-1 shadow-xs">
+                    <div className="w-full py-1.5 rounded-lg border border-[#CBD5E1] group-hover:border-[#1B4332] bg-[#FFFFFF] group-hover:bg-[#1B4332] text-[#0D1B2A] group-hover:text-white text-[10px] font-extrabold uppercase tracking-wider transition-all flex items-center justify-center gap-1 shadow-2xs">
                       <span>{isAr ? "اكتشف المزيد" : "KNOW MORE"}</span>
                       <ChevronRight className={`w-3 h-3 transition-transform group-hover:translate-x-0.5 ${isRTL ? "rotate-180 group-hover:-translate-x-0.5" : ""}`} />
                     </div>
@@ -511,17 +498,17 @@ export const OurAffiliations: React.FC = () => {
           initial={{ opacity: 0, y: 10 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="bg-navy-950/80 border border-slate-800/80 hover:border-slate-700/90 rounded-2xl p-3 sm:p-3.5 max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left transition-colors"
+          className="bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#C5A059] rounded-2xl p-4 sm:p-5 max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left shadow-sm transition-colors"
         >
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-gold-500/15 border border-gold-500/30 flex items-center justify-center shrink-0">
-              <Globe2 className="w-4 h-4 text-gold-400" />
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[#F8FAFC] border border-[#C5A059]/40 flex items-center justify-center shrink-0">
+              <Globe2 className="w-4 h-4 text-[#856422]" />
             </div>
             <div className="space-y-0.5">
-              <h4 className="font-display text-xs sm:text-sm font-bold text-white">
+              <h4 className="font-display text-xs sm:text-sm font-bold text-[#0D1B2A]">
                 {isAr ? "هل تبحث عن ترخيص أو استشارة لمنطقة أخرى؟" : "Looking for Setup or Tax Filing in Another Jurisdiction?"}
               </h4>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-xs text-[#475569]">
                 {isAr
                   ? "نوفر الدعم والمحاسبة والامتثال الضريبي عبر كافة المناطق الحرة والتراخيص التجارية في دبي والإمارات."
                   : "We support formation, bookkeeping, and tax compliance across all UAE Free Zones and Mainland authorities."}
@@ -533,9 +520,9 @@ export const OurAffiliations: React.FC = () => {
             href="https://wa.me/971529226958"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-3.5 py-1.5 rounded-lg bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-sm shrink-0 transition-all active:scale-95 whitespace-nowrap"
+            className="px-4 py-2 rounded-lg bg-[#1B4332] hover:bg-[#143326] text-white font-display font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer shadow-xs shrink-0 transition-all active:scale-95 whitespace-nowrap"
           >
-            <MessageCircle className="w-3.5 h-3.5 text-navy-950" />
+            <MessageCircle className="w-3.5 h-3.5 text-white" />
             <span>{isAr ? "تحدث مع مستشارنا" : "Talk to an Advisor"}</span>
           </a>
         </motion.div>
@@ -550,25 +537,25 @@ export const OurAffiliations: React.FC = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedAffiliation(null)}
-              className="fixed inset-0 bg-navy-950/80 backdrop-blur-sm cursor-pointer"
+              className="fixed inset-0 bg-[#0D1B2A]/45 backdrop-blur-sm cursor-pointer"
             />
             <motion.div
               initial={{ opacity: 0, scale: 0.92, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.92, y: 15 }}
               transition={{ type: "spring", damping: 26, stiffness: 360 }}
-              className="bg-white border border-slate-200 rounded-3xl max-w-lg w-full shadow-2xl overflow-hidden relative z-10"
+              className="bg-white border border-[#E2E8F0] rounded-3xl max-w-lg w-full shadow-2xl overflow-hidden relative z-10"
             >
               {/* Modal Header */}
-              <div className="p-5 sm:p-6 bg-navy-950 text-white flex items-start justify-between relative border-b border-gold-500/30">
+              <div className="p-5 sm:p-6 bg-[#F8FAFC] text-[#0D1B2A] flex items-start justify-between relative border-b border-[#E2E8F0]">
                 <div className="space-y-1">
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-gold-400 block">
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-[#856422] block">
                     {isAr ? selectedAffiliation.categoryAr : selectedAffiliation.categoryEn}
                   </span>
-                  <h3 className="font-display text-xl sm:text-2xl font-bold text-white">
+                  <h3 className="font-display text-xl sm:text-2xl font-bold text-[#0D1B2A]">
                     {isAr ? selectedAffiliation.nameAr : selectedAffiliation.nameEn}
                   </h3>
-                  <p className="text-xs text-slate-300">
+                  <p className="text-xs text-[#475569]">
                     {isAr ? selectedAffiliation.taglineAr : selectedAffiliation.taglineEn}
                   </p>
                 </div>
@@ -576,34 +563,34 @@ export const OurAffiliations: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setSelectedAffiliation(null)}
-                  className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center cursor-pointer transition-colors shrink-0"
+                  className="w-8 h-8 rounded-full bg-white border border-[#E2E8F0] hover:border-[#CBD5E1] text-[#0D1B2A] flex items-center justify-center cursor-pointer transition-colors shrink-0"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
               {/* Modal Content */}
-              <div className="p-5 sm:p-6 space-y-4 max-h-[75vh] overflow-y-auto text-slate-800">
+              <div className="p-5 sm:p-6 space-y-4 max-h-[75vh] overflow-y-auto text-[#0D1B2A]">
                 {/* Logo & Description */}
-                <div className="flex items-center gap-4 p-3.5 rounded-2xl bg-slate-50 border border-slate-100">
-                  <div className="w-24 shrink-0 flex items-center justify-center bg-white p-2 rounded-xl shadow-xs">
+                <div className="flex items-center gap-4 p-3.5 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0]">
+                  <div className="w-24 shrink-0 flex items-center justify-center bg-white p-2 rounded-xl border border-[#E2E8F0]">
                     {selectedAffiliation.logoComponent}
                   </div>
-                  <p className="text-xs text-slate-600 leading-relaxed">
+                  <p className="text-xs text-[#475569] leading-relaxed">
                     {isAr ? selectedAffiliation.descriptionAr : selectedAffiliation.descriptionEn}
                   </p>
                 </div>
 
                 {/* Key Advantages */}
                 <div className="space-y-2">
-                  <h4 className="text-xs font-extrabold uppercase tracking-wider text-navy-950 flex items-center gap-1.5">
-                    <Building2 className="w-3.5 h-3.5 text-gold-600" />
+                  <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#0D1B2A] flex items-center gap-1.5">
+                    <Building2 className="w-3.5 h-3.5 text-[#856422]" />
                     <span>{isAr ? "أبرز المزايا والتسهيلات:" : "Key Authority Advantages:"}</span>
                   </h4>
                   <div className="space-y-1.5">
                     {(isAr ? selectedAffiliation.benefitsAr : selectedAffiliation.benefitsEn).map((benefit, idx) => (
-                      <div key={idx} className="flex items-start gap-2 text-xs text-slate-700">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                      <div key={idx} className="flex items-start gap-2 text-xs text-[#475569]">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#1B4332] shrink-0 mt-0.5" />
                         <span className="leading-tight">{benefit}</span>
                       </div>
                     ))}
@@ -611,12 +598,12 @@ export const OurAffiliations: React.FC = () => {
                 </div>
 
                 {/* Corporate Tax / FTA Highlight */}
-                <div className="bg-gold-500/10 border border-gold-500/30 rounded-2xl p-3 space-y-1">
-                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-navy-950 flex items-center gap-1">
-                    <ShieldCheck className="w-3.5 h-3.5 text-gold-600" />
+                <div className="bg-[#F8FAFC] border border-[#C5A059]/40 rounded-2xl p-3.5 space-y-1">
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#856422] flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5 text-[#1B4332]" />
                     {isAr ? "الامتثال لضريبة الشركات في الإمارات:" : "UAE Corporate Tax & 0% Treatment:"}
                   </span>
-                  <p className="text-xs text-slate-700 leading-relaxed font-medium">
+                  <p className="text-xs text-[#475569] leading-relaxed font-medium">
                     {isAr ? selectedAffiliation.corporateTaxAr : selectedAffiliation.corporateTaxEn}
                   </p>
                 </div>
@@ -629,16 +616,16 @@ export const OurAffiliations: React.FC = () => {
                       handleOpenWhatsApp(selectedAffiliation);
                       setSelectedAffiliation(null);
                     }}
-                    className="w-full sm:flex-1 py-2.5 px-4 rounded-xl bg-navy-950 hover:bg-navy-900 text-gold-400 hover:text-white font-display font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-lg transition-all"
+                    className="w-full sm:flex-1 py-2.5 px-4 rounded-xl bg-[#1B4332] hover:bg-[#143326] text-white font-display font-bold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-xs transition-all"
                   >
-                    <MessageCircle className="w-4 h-4 text-emerald-400" />
+                    <MessageCircle className="w-4 h-4 text-white" />
                     <span>{isAr ? "استفسر عبر واتساب" : "Inquire on WhatsApp"}</span>
                   </button>
 
                   <a
                     href="#contact"
                     onClick={() => setSelectedAffiliation(null)}
-                    className="w-full sm:w-auto py-2.5 px-5 rounded-xl border border-slate-200 hover:border-slate-300 text-navy-950 font-display font-bold text-xs text-center cursor-pointer transition-colors"
+                    className="w-full sm:w-auto py-2.5 px-5 rounded-xl bg-white hover:bg-[#F8FAFC] border border-[#CBD5E1] hover:border-[#1B4332] text-[#0D1B2A] hover:text-[#1B4332] font-display font-bold text-xs text-center cursor-pointer transition-colors"
                   >
                     {isAr ? "حجز استشارة" : "Book Meeting"}
                   </a>

@@ -8,6 +8,13 @@ import fs from "fs";
 import path from "path";
 import { blogsData } from "../src/data/blogsData.ts";
 import { draftPlaceholderPosts } from "../src/data/blogDrafts.ts";
+import { buildFAQPageSchema, fitMetaDescription } from "../src/lib/seo.ts";
+import {
+  ALL_CORPORATE_TAX_SCHEMA_FAQS,
+  ALL_DIVIDEND_SCHEMA_FAQS,
+  ALL_VAT_COMPLIANCE_SCHEMA_FAQS,
+  DIFC_DTEC_FAQS,
+} from "../src/data/pageFaqs.ts";
 
 const DEFAULT_OG_IMAGE = "https://diasuae.ae/og-image.png";
 
@@ -190,12 +197,12 @@ const KNOWN_SERVICES: Record<string, { title: string; desc: string; keywords?: s
   },
   "corporate-tax-advisory": {
     title: "Corporate Tax Filing UAE | Tax Advisory Dubai | Dias UAE",
-    desc: "Certified Corporate Tax filing services in UAE. 9% return submission on EmaraTax, Small Business Relief (AED 3M) & 0% Free Zone advisory. Book review today!",
+    desc: "9% UAE Corporate Tax registration, 0% Small Business Relief, EmaraTax filing & AED 10,000 penalty waiver support in Dubai & SHAMS. Fixed monthly packages.",
     keywords: "corporate tax filing uae, tax advisory services in dubai, tax filing services uae, tax planning services in dubai, corporate tax return emaratax, small business relief 0%, fta audit defense",
   },
   "vat-compliance": {
     title: "UAE VAT Compliance, Form 201 Filing & FTA Audit Support | From AED 400/Mo",
-    desc: "5% UAE VAT registration, quarterly Form 201 returns, 2026 FTA Decision 13 input tax recovery reviews & VAT-to-Corporate-Tax reconciliation in Dubai & Sharjah.",
+    desc: "5% UAE VAT registration, quarterly Form 201 filing, input VAT recovery & FTA audit defense in Dubai & SHAMS. Monthly VAT & accounting from AED 400/mo.",
     keywords: "uae vat compliance, vat form 201 filing dubai, fta decision 13 input tax recovery, vat audit support uae, vat registration threshold aed 375000, fta voluntary disclosure 211",
   },
   "auditing-assurance": {
@@ -215,12 +222,12 @@ const KNOWN_SERVICES: Record<string, { title: string; desc: string; keywords?: s
   },
   "business-incorporation": {
     title: "Business Incorporation Services UAE | Company Setup Dubai & Free Zones | Dias UAE",
-    desc: "Premier business incorporation services in UAE. 100% foreign ownership company setup in Dubai Mainland (DET) and top Free Zones (SHAMS, DMCC, IFZA, DTEC). Fast-track trade licenses and corporate bank accounts.",
+    desc: "100% foreign ownership company setup in Dubai Mainland (DET) and top UAE Free Zones (SHAMS, DMCC, IFZA, DTEC) with trade licensing & Day-1 tax setup.",
     keywords: "business incorporation services uae, business incorporation services in uae, company setup dubai, business setup uae, commercial license dubai, professional license uae, free zone company setup, mainland DET incorporation",
   },
   "business-incorporation-services": {
     title: "Business Incorporation Services UAE | Company Setup Dubai & Free Zones | Dias UAE",
-    desc: "Premier business incorporation services in UAE. 100% foreign ownership company setup in Dubai Mainland (DET) and top Free Zones (SHAMS, DMCC, IFZA, DTEC). Fast-track trade licenses and corporate bank accounts.",
+    desc: "100% foreign ownership company setup in Dubai Mainland (DET) and top UAE Free Zones (SHAMS, DMCC, IFZA, DTEC) with trade licensing & Day-1 tax setup.",
     keywords: "business incorporation services uae, business incorporation services in uae, company setup dubai, business setup uae, commercial license dubai, professional license uae, free zone company setup, mainland DET incorporation",
   },
   "cfo-advisory": {
@@ -408,85 +415,23 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     let serviceFaqSchema: string | undefined;
 
     if (canonicalServiceId === "vat-compliance") {
-      serviceFaqSchema = JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "@id": `${baseUrl}/services/vat-compliance#faqs`,
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "What is included in 5% UAE VAT compliance services at Dias Accounting?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Dias Accounting's 5% UAE VAT compliance services include FTA TRN registration, quarterly Form 201 return filing, 2026 FTA input tax recovery reviews, tax invoice compliance audits, and VAT-to-Corporate-Tax ledger reconciliation, bundled inside transparent fixed monthly retainers starting from AED 400/month with zero hourly surprises."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What is the threshold for mandatory UAE VAT registration?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "VAT registration is mandatory when taxable supplies and imports exceed AED 375,000 in the previous 12 months or are expected to exceed that threshold in the next 30 days. Voluntary registration starts at AED 187,500."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Can I reclaim VAT paid on commercial expenses and supplier invoices?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes. Input VAT paid on legitimate business expenses such as commercial rent, utilities, software, and professional fees is recoverable on Form VAT 201 when backed by a compliant UAE Tax Invoice."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "What are the penalties for late VAT return filing?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "The FTA imposes an AED 1,000 administrative penalty for the first late return, rising to AED 2,000 for repeated delays within 24 months, alongside late payment surcharges."
-            }
-          }
-        ]
-      });
+      const vatUrl = `${baseUrl}/services/vat-compliance`;
+      serviceFaqSchema = JSON.stringify(
+        buildFAQPageSchema(ALL_VAT_COMPLIANCE_SCHEMA_FAQS, `${vatUrl}#faqs`, {
+          url: vatUrl,
+          name: "Questions About VAT Registration and Returns",
+          description: s.desc,
+        })
+      );
     } else if (canonicalServiceId === "corporate-tax-advisory") {
-      serviceFaqSchema = JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        "@id": `${baseUrl}/services/corporate-tax-advisory#faqs`,
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "How does Dias Accounting help UAE companies reduce 9% Corporate Tax legally in 2026?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Dias Accounting legally reduces 9% UAE Corporate Tax in 2026 through 0% Small Business Relief elections (revenue up to AED 3,000,000), 0% Qualifying Free Zone Person (QFZP) structuring, arm's-length Connected Person salary optimization, full IFRS expense substantiation, and AED 10,000 late-registration penalty waiver filings."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "Can my company claim 0% Small Business Relief (SBR)?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Yes, if your company's gross revenue is AED 3,000,000 or less in the relevant and prior tax periods under Ministerial Decision No. 73 of 2023 (extended through December 31, 2029). When elected on EmaraTax, taxable profit is treated as AED 0."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "When must the UAE Corporate Tax return be filed?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "The annual Corporate Tax return and payment must be submitted via the FTA EmaraTax portal within 9 months following the end of your financial tax period."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "How can Free Zone entities qualify for 0% Corporate Tax?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "A Qualifying Free Zone Person (QFZP) must maintain adequate UAE economic substance, derive Qualifying Income within the De Minimis threshold (lower of 5% or AED 5M), prepare audited IFRS financial statements, and comply with arm's-length Transfer Pricing rules."
-            }
-          }
-        ]
-      });
+      const ctUrl = `${baseUrl}/services/corporate-tax-advisory`;
+      serviceFaqSchema = JSON.stringify(
+        buildFAQPageSchema(ALL_CORPORATE_TAX_SCHEMA_FAQS, `${ctUrl}#faqs`, {
+          url: ctUrl,
+          name: "Questions About Corporate Tax Advisory",
+          description: s.desc,
+        })
+      );
     }
 
     return {
@@ -652,15 +597,15 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
       ]
     });
     return {
-      title: "Accounting & Tax Packages in Dubai & UAE | Fixed Fees From AED 400/Month",
-      description: "Compare transparent monthly IFRS bookkeeping, 5% VAT filing & 2026 UAE Corporate Tax packages for startups and SMEs in Dubai & Sharjah. Zero hidden fees.",
+      title: "UAE Monthly Accounting, VAT & Corporate Tax Packages | From AED 400/Mo — DiasUAE",
+      description: "Fixed-fee UAE monthly accounting, 5% VAT & 9% Corporate Tax packages. Business Starter from AED 400/mo & Corporate Growth for UAE SMEs. Get a quick quote.",
       keywords: "Corporate Tax, accounting packages dubai, monthly accounting package dubai, fixed fee bookkeeping uae, corporate tax return fee, corporate tax consultants in difc, accounting solutions in uae",
       url: `${baseUrl}/pricing`,
       ogImage: DEFAULT_OG_IMAGE,
       ogType: "website",
       isArabic,
       schemaMarkup: pricingFaqSchema,
-      h1: "Fixed-Fee UAE Accounting, Bookkeeping & Tax Packages",
+      h1: "Fixed-Fee UAE Accounting, VAT & Corporate Tax Packages (Business Starter & Corporate Growth)",
     };
   }
 
@@ -698,7 +643,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
   ) {
     const difcTitle = "DIFC & DTEC Accounting, 0% QFZP Tax & Virtual Bookkeeping | Dias UAE";
     const difcDesc =
-      "Fixed-fee virtual IFRS bookkeeping, 0% QFZP Corporate Tax compliance & audit readiness for DIFC & DTEC companies in Dubai. 2x Clutch 2026 UAE Leader.";
+      "FTA-Registered Tax Agents for DIFC & DTEC companies. 0% QFZP compliance, audited IFRS books, 5% VAT & virtual bookkeeping from AED 400/mo. 2x Clutch 2026.";
     const difcSchema = JSON.stringify({
       "@context": "https://schema.org",
       "@graph": [
@@ -725,68 +670,11 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
             },
           ],
         },
-        {
-          "@type": "FAQPage",
-          "@id": `${baseUrl}/tax-planning-difc#faqs`,
-          mainEntity: [
-            {
-              "@type": "Question",
-              name: "What are the DIFC tax compliance and 0% QFZP rules in 2026?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "Under UAE Federal Decree-Law No. 47 of 2022 and Cabinet Decision No. 55 of 2023, DIFC and DTEC entities qualify for 0% Corporate Tax in 2026 as a Qualifying Free Zone Person (QFZP) on Qualifying Income only if they maintain adequate Free Zone economic substance, keep non-qualifying revenue within the de minimis cap (the lower of 5% of total revenue or AED 5,000,000), follow arm's-length Transfer Pricing rules, and prepare annual audited IFRS financial statements regardless of revenue size.",
-              },
-            },
-            {
-              "@type": "Question",
-              name: "When does a Dubai or DIFC company need a statutory dividends audit?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "Under UAE Commercial Companies Law (Federal Decree-Law No. 32 of 2021) and DIFC Companies Law, a Dubai Mainland, DIFC, or Free Zone company needs a statutory dividends audit before distributing interim or final shareholder dividends to certify realized distributable profits, mandatory legal reserves, and post-distribution solvency for board resolutions and corporate bank wire clearance.",
-              },
-            },
-            {
-              "@type": "Question",
-              name: "How do DIFC & DTEC entities qualify for 0% Corporate Tax under the QFZP regime?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "Under Federal Decree-Law No. 47 of 2022 and Cabinet Decision No. 55 of 2023, DIFC and DTEC entities qualify for a 0% Corporate Tax rate as a Qualifying Free Zone Person (QFZP) on Qualifying Income only if they: (1) maintain adequate economic substance and qualified personnel inside the Free Zone, (2) derive Qualifying Income from qualifying activities or other Free Zone persons, (3) keep non-qualifying revenue within the de minimis limit (lower of 5% of total revenue or AED 5,000,000), (4) comply with arm's length Transfer Pricing rules, and (5) prepare annual audited IFRS financial statements.",
-              },
-            },
-            {
-              "@type": "Question",
-              name: "Are audited IFRS financial statements mandatory for DIFC and DTEC companies?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "Yes. Maintaining and submitting annual financial statements prepared under International Financial Reporting Standards (IFRS) and audited by a UAE-licensed auditor is mandatory for DFSA-regulated DIFC entities, DTEC Free Zone license renewals, and all Qualifying Free Zone Persons (QFZPs) claiming the 0% Corporate Tax rate regardless of annual revenue.",
-              },
-            },
-            {
-              "@type": "Question",
-              name: "How does UAE dividend audit certification work for DIFC and holding companies?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "Under UAE Federal Decree-Law No. 32 of 2021 (Commercial Companies Law) and DIFC Companies Law, companies distributing dividends must verify realized distributable profits through a statutory Dividend Audit certification before passing board resolutions. Furthermore, under Article 23 of UAE Corporate Tax Law, dividends received from qualifying UAE or foreign shareholdings (at least 5% ownership held for 12 months) are exempt from Corporate Tax under the Participation Exemption.",
-              },
-            },
-            {
-              "@type": "Question",
-              name: "What are the transfer pricing requirements for DIFC businesses?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "Under Article 34 of the UAE Corporate Tax Law, all transactions with Related Parties and Connected Persons must satisfy the Arm's Length Principle. DIFC entities exceeding FTA thresholds must submit an annual Transfer Pricing Disclosure Form on EmaraTax and maintain Local File and Master File documentation.",
-              },
-            },
-            {
-              "@type": "Question",
-              name: "Why should CFOs hire certified corporate tax consultants in DIFC and DTEC?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "DIFC common law entities and DTEC venture-backed companies must coordinate DFSA/DIFC reporting with Federal Tax Authority (FTA) EmaraTax compliance. Certified FTA-registered tax consultants prevent accidental 5-year QFZP disqualifications, audit de minimis ratios quarterly, and ensure seamless IFRS audit readiness.",
-              },
-            },
-          ],
-        },
+        buildFAQPageSchema(DIFC_DTEC_FAQS, `${baseUrl}/tax-planning-difc#faqs`, {
+          url: `${baseUrl}/tax-planning-difc`,
+          name: "DIFC & DTEC Tax Compliance FAQs",
+          description: difcDesc,
+        }),
       ],
     });
     return {
@@ -817,7 +705,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
   if (pathname === "/small-business-tax-relief") {
     return {
       title: "UAE Small Business Tax Relief (AED 3M, 0%) | Dias UAE",
-      description: "Advisory on UAE Small Business Relief (SBR) under Ministerial Decision No. 73/2023. Claim 0% Corporate Tax on revenue up to AED 3M with EmaraTax filing.",
+      description: "Check eligibility for 0% UAE Small Business Relief (revenue up to AED 3M, extended to 2029). IFRS bookkeeping & Corporate Tax filing from AED 400/mo.",
       keywords: "small business tax relief dubai, UAE small business relief, SBR AED 3M revenue, 0% corporate tax dubai, EmaraTax SBR registration",
       url: `${baseUrl}/small-business-tax-relief`,
       ogImage: DEFAULT_OG_IMAGE,
@@ -831,56 +719,19 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     pathname === "/dividends-audit-dubai" ||
     pathname === "/dividends-audit-uae"
   ) {
-    const dividendsFaqSchema = JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "@id": `${baseUrl}/dividends-audit#faqs`,
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "When is a statutory dividends audit required in Dubai, DIFC, or UAE Free Zones?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "A statutory dividends audit is required whenever a Dubai Mainland, DIFC, or UAE Free Zone company distributes interim or final dividends, verifying realized distributable profits and 10% legal reserves under UAE Commercial Companies Law, confirming post-payout solvency for UAE banks, and protecting 0% Corporate Tax compliance."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How fast is a statutory dividends audit in Dubai & UAE?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "A statutory interim or final dividends audit in Dubai, DIFC, or UAE Free Zones typically takes 4 to 5 business days with Dias Accounting: Day 1 covers ledger and 10% statutory reserve verification, Days 2–3 complete IFRS solvency and working-capital testing, and Days 4–5 deliver the signed statutory audit report and bank clearance certificate."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Can a UAE company distribute interim dividends mid-year?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes, provided the company's Memorandum of Association (MOA) authorizes interim distributions, management prepares interim financial statements showing sufficient realized profit, and an auditor verifies that the company maintains adequate working capital and solvency."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Are dividends paid by a UAE company subject to personal income tax?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "No. The United Arab Emirates levies 0% personal income tax on individuals and 0% withholding tax on outbound dividend distributions under Article 45 of Decree-Law No. 47. Non-resident shareholders should verify domestic tax treaty treatment in their home jurisdiction."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What documents do UAE banks require to release dividend wire transfers?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Most UAE Tier-1 corporate banks (including Emirates NBD, FAB, ADCB, and Mashreq) require audited financial statements, a formal AGM or Board Dividend Resolution, a solvency confirmation, and a signed auditor certificate validating distributable reserves."
-          }
-        }
-      ]
-    });
+    const dividendsUrl = `${baseUrl}/dividends-audit`;
+    const dividendsDesc =
+      "Fast 5-day statutory interim & final dividends audits in Dubai, DIFC & UAE Free Zones under IFRS. Protect 0% dividend tax status. Same-day fixed quote.";
+    const dividendsFaqSchema = JSON.stringify(
+      buildFAQPageSchema(ALL_DIVIDEND_SCHEMA_FAQS, `${dividendsUrl}#faqs`, {
+        url: dividendsUrl,
+        name: "UAE Dividend Distribution FAQs",
+        description: dividendsDesc,
+      })
+    );
     return {
       title: "Dividends Audit Dubai & UAE | Fast Statutory Sign-Off (FTA Tax Agents)",
-      description: "Need an interim or final dividends audit in Dubai, DIFC, or UAE Free Zones? Compliant statutory audit reports under UAE Commercial Companies Law. Get a same-day fixed quote.",
+      description: "Fast 5-day statutory interim & final dividends audits in Dubai, DIFC & UAE Free Zones under IFRS. Protect 0% dividend tax status. Same-day fixed quote.",
       keywords: "dividends audit dubai, dividends audit uae, audit services for dividends uae, dividend distribution certification",
       url: `${baseUrl}/dividends-audit`,
       ogImage: DEFAULT_OG_IMAGE,
@@ -1049,7 +900,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     return {
       title: "UAE Business Setup Partners & Free Tax Calculator Widget | Dias Accounting",
       description:
-        "Resources for UAE company formation consultants, PRO agencies, legal advisors, and co-working hubs across Dubai, DIFC, DTEC, and SHAMS. Embed our free 2026 UAE Corporate Tax & 5% VAT Calculator.",
+        "Partner with DiasUAE across Dubai, DIFC, DTEC & SHAMS for company setup, PRO referrals, and our free embeddable 2026 UAE Corporate Tax & VAT Calculator.",
       keywords:
         "UAE company formation partners, Dubai business setup partners, embed UAE corporate tax calculator, PRO agency accounting partner UAE, DIFC DTEC SHAMS tax partner",
       url: `${baseUrl}/partners`,
@@ -1082,7 +933,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
       ogImage: DEFAULT_OG_IMAGE,
       ogType: "website",
       isArabic,
-      robots: "noindex, follow",
+      robots: "index, follow",
     };
   }
 
@@ -1105,7 +956,7 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
       : "Dias Accounting UAE | 2x Clutch 2026 Winner · Tax & IFRS From AED 400/Mo",
     description: isArabic
       ? "استشارات ضريبة الشركات، والامتثال لضريبة القيمة المضافة، والخدمات المحاسبية في دبي والإمارات. باقات محاسبية واضحة تبدأ من 400 درهم/شهرياً."
-      : "FTA-Registered Tax Agency in Dubai & SHAMS led by Glen Dias. Monthly IFRS bookkeeping, 5% VAT, 9% Corporate Tax & dividend audits from AED 400/mo. Free 15-min review.",
+      : "FTA-Registered Tax Agency in Dubai & SHAMS. Monthly IFRS bookkeeping, 5% VAT Form 201 & 9% Corporate Tax packages from AED 400/mo. 2x Clutch 2026 Winner.",
     keywords: isArabic
       ? "ضريبة الشركات, خدمات المحاسبة والضرائب في دبي, شركات الضرائب في الإمارات, تسجيل ضريبة القيمة المضافة"
       : "UAE Corporate Tax, Tax Services in Dubai, DIFC Tax Compliance, Accounting Services UAE, VAT Filing Dubai, FTA Registered Tax Agent",
@@ -1114,8 +965,8 @@ export function resolveMetaForRequest(reqUrl: string, host: string = "diasuae.ae
     ogType: "website",
     isArabic,
     h1: isArabic
-      ? "مكتب استشارات ضريبة الشركات والمحاسبة المعتمد في دبي والشارقة"
-      : "FTA-Registered Tax Agents & IFRS Accounting Firm in Dubai & Sharjah",
+      ? "المحاسبة والاستشارات الضريبية في الإمارات المصممة لنمو الأعمال"
+      : "UAE Accounting & Tax Advisory Built for Growing Businesses",
   };
 }
 
@@ -1160,14 +1011,39 @@ export function injectMetaIntoHtml(html: string, meta: MetaOverride): string {
   }
 
   if (meta.description) {
-    const safeDescText = escapeHtmlText(meta.description);
-    const safeDescAttr = escapeHtmlAttr(meta.description);
-    // Replace meta description
-    modified = modified.replace(/<meta name="description" content="[\s\S]*?" \/>/i, `<meta name="description" content="${safeDescAttr}" />`);
-    // Replace og:description
-    modified = modified.replace(/<meta property="og:description" content="[\s\S]*?" \/>/i, `<meta property="og:description" content="${safeDescAttr}" />`);
-    // Replace twitter:description
-    modified = modified.replace(/<meta name="twitter:description" content="[\s\S]*?" \/>/i, `<meta name="twitter:description" content="${safeDescAttr}" />`);
+    const normalizedDesc = meta.isArabic
+      ? meta.description
+      : fitMetaDescription(meta.description);
+    const safeDescText = escapeHtmlText(normalizedDesc);
+    const safeDescAttr = escapeHtmlAttr(normalizedDesc);
+
+    // Replace meta description (deduplicating any stray duplicate tags)
+    let descReplaced = false;
+    modified = modified.replace(/<meta\s+name="description"[^>]*\/?>/gi, () => {
+      if (descReplaced) return "";
+      descReplaced = true;
+      return `<meta name="description" content="${safeDescAttr}" />`;
+    });
+    if (!descReplaced) {
+      modified = modified.replace("</head>", `  <meta name="description" content="${safeDescAttr}" />\n  </head>`);
+    }
+
+    // Replace og:description (deduplicating any stray duplicate tags)
+    let ogDescReplaced = false;
+    modified = modified.replace(/<meta\s+property="og:description"[^>]*\/?>/gi, () => {
+      if (ogDescReplaced) return "";
+      ogDescReplaced = true;
+      return `<meta property="og:description" content="${safeDescAttr}" />`;
+    });
+
+    // Replace twitter:description (deduplicating any stray duplicate tags)
+    let twDescReplaced = false;
+    modified = modified.replace(/<meta\s+name="twitter:description"[^>]*\/?>/gi, () => {
+      if (twDescReplaced) return "";
+      twDescReplaced = true;
+      return `<meta name="twitter:description" content="${safeDescAttr}" />`;
+    });
+
     // Sync SSR preloader subtitle
     modified = modified.replace(
       /(<p id="ssr-page-subtitle"[^>]*>)[\s\S]*?(<\/p>)/i,

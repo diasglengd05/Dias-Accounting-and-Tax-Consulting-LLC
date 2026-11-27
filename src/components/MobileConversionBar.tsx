@@ -15,7 +15,7 @@ export const MobileConversionBar: React.FC<MobileConversionBarProps> = ({
     <div
       role="region"
       aria-label="Quick mobile actions"
-      className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-[#070d19]/98 backdrop-blur-md border-t border-[#c5a059] shadow-[0_-8px_24px_rgba(7,13,25,0.45)] px-3 py-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))]"
+      className="md:hidden fixed bottom-0 inset-x-0 z-50 bg-white/95 backdrop-blur-md border-t border-[#E2E8F0] shadow-[0_-8px_24px_rgba(13,27,42,0.08)] px-3 py-2.5 pb-[max(0.625rem,env(safe-area-inset-bottom))]"
     >
       <div className="grid grid-cols-2 gap-2.5 max-w-md mx-auto">
         <a
@@ -24,16 +24,16 @@ export const MobileConversionBar: React.FC<MobileConversionBarProps> = ({
             e.preventDefault();
             onNavigate("/uae-tax-planner");
           }}
-          className="h-11 rounded-xl bg-[#0d1b2a] border border-[#c5a059]/45 text-white font-semibold text-xs sm:text-sm inline-flex items-center justify-center gap-1.5 active:scale-[0.98] transition-transform"
+          className="h-11 rounded-xl bg-white hover:bg-[#F8FAFC] border border-[#CBD5E1] text-[#0D1B2A] font-semibold text-xs sm:text-sm inline-flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all"
         >
-          <Calculator className="w-4 h-4 text-[#c5a059] shrink-0" />
+          <Calculator className="w-4 h-4 text-[#1B4332] shrink-0" />
           <span>Free Tax Calc</span>
         </a>
         <a
           href={MOBILE_WHATSAPP_URL}
           target="_blank"
           rel="noopener noreferrer"
-          className="h-11 rounded-xl bg-[#c5a059] text-[#070d19] font-bold text-xs sm:text-sm inline-flex items-center justify-center gap-1.5 active:scale-[0.98] transition-transform"
+          className="h-11 rounded-xl bg-[#1B4332] hover:bg-[#143326] text-white font-semibold text-xs sm:text-sm inline-flex items-center justify-center gap-1.5 active:scale-[0.98] transition-all shadow-xs"
         >
           <MessageCircle className="w-4 h-4 shrink-0" />
           <span>WhatsApp Advisor</span>

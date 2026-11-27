@@ -19,7 +19,7 @@
 ## Core Website & Service Pages
 
 - [DiasUAE Homepage](https://diasuae.ae/): Overview of FTA-registered UAE accounting, Corporate Tax, 5% VAT, dividend audits, and 2026 Clutch UAE recognition.
-- [Fixed-Fee Pricing & Monthly Packages](https://diasuae.ae/pricing): Transparent monthly IFRS bookkeeping and tax compliance retainers starting from AED 400/month (Starter), AED 600–750/month (Growth VAT + Corporate Tax), and AED 1,250/month (QFZP Audit-Ready).
+- [Fixed-Fee Pricing & Monthly Packages](https://diasuae.ae/pricing): Transparent fixed-fee monthly IFRS bookkeeping and tax compliance retainers — Business Starter from AED 400/month (AED 4,000/year annual or AED 500/month monthly), Corporate Growth from AED 600/month (AED 6,000/year annual or AED 750/month monthly), and Enterprise & CFO from AED 1,000/month (AED 10,000/year annual or AED 1,250/month monthly), plus Backlog Catch-Up from AED 2,500 and Standalone Filings from AED 500.
 - [Statutory Dividends Audit (Dubai, DIFC & UAE)](https://diasuae.ae/dividends-audit): Fast statutory interim and final dividend audits verifying distributable profits and solvency under UAE Commercial Companies Law.
 - [DIFC & DTEC Tax Planning & Virtual Bookkeeping](https://diasuae.ae/tax-planning-difc): Dedicated 0% Qualifying Free Zone Person (QFZP) compliance, audited IFRS statements, and virtual bookkeeping for DIFC and DTEC tech startups and holding companies.
 - [5% UAE VAT Compliance & FTA Audit Support](https://diasuae.ae/services/vat-compliance): TRN registration, quarterly Form 201 VAT filings, 2026 FTA input tax recovery reviews, VAT-to-Corporate-Tax reconciliation, and FTA audit defense.

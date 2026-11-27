@@ -189,31 +189,31 @@ export const AboutPage: React.FC<AboutPageProps> = ({
               {/* Crisp Executive Portrait Container */}
               <div className="lg:col-span-5">
                 <div className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-8 sm:p-10 shadow-[0_8px_28px_-16px_rgba(13,27,42,0.08)]">
-                  <div className="aspect-[4/4] rounded-xl bg-[#0D1B2A] flex flex-col justify-between p-8 text-white relative overflow-hidden">
+                  <div className="aspect-[4/4] rounded-xl bg-gradient-to-br from-[#F8FAFC] via-[#FFFFFF] to-[#F1F5F9] border border-[#E2E8F0] flex flex-col justify-between p-8 text-[#0D1B2A] relative overflow-hidden">
                     <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#C5A059]">
+                      <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#856422]">
                         Managing Partner
                       </span>
-                      <span className="text-xs text-slate-400 tabular-nums">
+                      <span className="text-xs text-[#64748B] tabular-nums">
                         Dubai &amp; Sharjah
                       </span>
                     </div>
 
                     <div className="my-auto py-6">
-                      <div className="w-20 h-20 rounded-2xl border border-[#C5A059]/40 bg-white/5 flex items-center justify-center font-display text-3xl font-bold text-white tracking-tight mb-6">
+                      <div className="w-20 h-20 rounded-2xl border-2 border-[#C5A059]/60 bg-[#FFFFFF] flex items-center justify-center font-display text-3xl font-bold text-[#0D1B2A] tracking-tight mb-6 shadow-xs">
                         GD
                       </div>
-                      <p className="font-display text-2xl font-bold text-white tracking-tight">
+                      <p className="font-display text-2xl font-bold text-[#0D1B2A] tracking-tight">
                         Glen Gilbert Dias
                       </p>
-                      <p className="text-sm text-slate-300 mt-1">
+                      <p className="text-sm text-[#475569] mt-1">
                         Senior Tax Advisor &amp; FTA Registered Tax Agent
                       </p>
                     </div>
 
-                    <div className="pt-4 border-t border-white/10 flex items-center justify-between text-xs text-slate-300">
+                    <div className="pt-4 border-t border-[#E2E8F0] flex items-center justify-between text-xs text-[#64748B]">
                       <span>Dias Accounting LLC</span>
-                      <span className="text-[#C5A059] font-medium tabular-nums">
+                      <span className="text-[#856422] font-semibold tabular-nums">
                         Est. UAE Practice
                       </span>
                     </div>

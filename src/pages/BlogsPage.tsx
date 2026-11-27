@@ -385,7 +385,7 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
                   className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] hover:border-slate-300 shadow-[0_8px_28px_-16px_rgba(13,27,42,0.08)] hover:shadow-[0_14px_36px_-16px_rgba(13,27,42,0.12)] transition-all overflow-hidden grid grid-cols-1 lg:grid-cols-12 cursor-pointer group"
                 >
                   {/* Left Editorial Graphic or Image */}
-                  <div className="lg:col-span-5 bg-[#0D1B2A] min-h-[240px] lg:min-h-[320px] relative overflow-hidden flex flex-col justify-between p-8 text-white">
+                  <div className="lg:col-span-5 bg-gradient-to-br from-[#F8FAFC] via-[#FFFFFF] to-[#F1F5F9] border-b lg:border-b-0 lg:border-r border-[#E2E8F0] min-h-[240px] lg:min-h-[320px] relative overflow-hidden flex flex-col justify-between p-8 text-[#0D1B2A]">
                     {featuredPost.imageUrl && featuredPost.imageUrl.startsWith("/") ? (
                       <img
                         src={featuredPost.imageUrl}
@@ -398,14 +398,14 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
                       <>
                         <div className="h-[2px] w-12 bg-[#C5A059]" />
                         <div className="space-y-2 py-6">
-                          <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#C5A059] block">
+                          <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#856422] block">
                             Featured Briefing
                           </span>
-                          <p className="font-display text-xl sm:text-2xl font-bold text-white leading-snug">
+                          <p className="font-display text-xl sm:text-2xl font-bold text-[#0D1B2A] leading-snug">
                             {featuredPost.tag}
                           </p>
                         </div>
-                        <div className="flex items-center justify-between text-xs text-slate-400 border-t border-white/10 pt-4">
+                        <div className="flex items-center justify-between text-xs text-[#64748B] border-t border-[#E2E8F0] pt-4">
                           <span>Dias Advisory Desk</span>
                           <span className="tabular-nums">{featuredPost.readTime}</span>
                         </div>
@@ -670,14 +670,14 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
         </section>
 
         {/* 3.5 Strategic Internal Links to Priority UAE Compliance & Audit Hubs */}
-        <section className="bg-[#070d19] border-t border-[#c5a059]/25 py-14 text-white">
+        <section className="bg-[#F8FAFC] border-t border-[#E2E8F0] py-14 text-[#0D1B2A]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
               <div>
-                <span className="inline-block text-xs font-semibold uppercase tracking-[0.14em] text-[#c5a059] mb-1.5">
+                <span className="inline-block text-xs font-semibold uppercase tracking-[0.14em] text-[#856422] mb-1.5">
                   FTA-Registered Execution Desks
                 </span>
-                <h2 className="font-display text-2xl font-bold text-white tracking-tight">
+                <h2 className="font-display text-2xl font-bold text-[#0D1B2A] tracking-tight">
                   Explore Our Core 2026 UAE Tax &amp; Statutory Audit Services
                 </h2>
               </div>
@@ -687,7 +687,7 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
                   e.preventDefault();
                   onNavigate("/pricing");
                 }}
-                className="text-sm font-semibold text-[#c5a059] hover:text-white transition-colors inline-flex items-center gap-1"
+                className="text-sm font-semibold text-[#1B4332] hover:text-[#143326] transition-colors inline-flex items-center gap-1"
               >
                 <span>Compare fixed-fee retainers from AED 400/mo</span>
                 <ArrowRight className="w-4 h-4" />
@@ -725,18 +725,18 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
                     e.preventDefault();
                     onNavigate(hub.href);
                   }}
-                  className="rounded-xl bg-[#0d1b2a] border border-[#c5a059]/25 hover:border-[#c5a059]/70 p-6 flex flex-col justify-between gap-4 transition-all group"
+                  className="rounded-xl bg-[#FFFFFF] border border-[#E2E8F0] hover:border-[#1B4332]/50 p-6 flex flex-col justify-between gap-4 transition-all shadow-xs hover:shadow-sm group"
                 >
                   <div className="space-y-2">
-                    <span className="inline-block text-[11px] font-semibold uppercase tracking-widest text-[#c5a059]">
+                    <span className="inline-block text-[11px] font-semibold uppercase tracking-widest text-[#856422]">
                       {hub.eyebrow}
                     </span>
-                    <h3 className="font-display text-lg font-bold text-white group-hover:text-[#c5a059] transition-colors">
+                    <h3 className="font-display text-lg font-bold text-[#0D1B2A] group-hover:text-[#1B4332] transition-colors">
                       {hub.title}
                     </h3>
-                    <p className="text-sm text-slate-300 leading-relaxed">{hub.desc}</p>
+                    <p className="text-sm text-[#475569] leading-relaxed">{hub.desc}</p>
                   </div>
-                  <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#c5a059] group-hover:translate-x-0.5 transition-transform">
+                  <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1B4332] group-hover:translate-x-0.5 transition-transform">
                     <span>{hub.cta}</span>
                     <ArrowRight className="w-4 h-4" />
                   </span>

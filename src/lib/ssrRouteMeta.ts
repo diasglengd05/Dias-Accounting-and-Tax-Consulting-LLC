@@ -7,6 +7,7 @@ import {
   buildServiceSchema,
   buildWebApplicationSchema,
   FAQSchemaItem,
+  fitMetaDescription,
 } from "./seo";
 import {
   DEFAULT_OG_IMAGE,
@@ -19,14 +20,18 @@ function toCanonicalUrl(canonicalPath: string): string {
   return `${SITE_URL}${cleaned.startsWith("/") ? cleaned : `/${cleaned}`}`;
 }
 import { ALL_PRICING_SCHEMA_FAQS } from "../pages/PricingPage";
-import { ALL_DIVIDEND_SCHEMA_FAQS } from "../pages/DividendsAuditPage";
-import { DIFC_DTEC_FAQS } from "../pages/DifcDtecAccountingPage";
+import { PRICING_OFFER_CATALOG_JSONLD } from "../components/PricingSection";
+import {
+  ALL_DIVIDEND_SCHEMA_FAQS,
+  DIFC_DTEC_FAQS,
+  getServiceDetailFaqs,
+} from "../data/pageFaqs";
 import { SBR_FAQS } from "../pages/SmallBusinessTaxReliefPage";
 import { COMPANY_SETUP_FAQS } from "../pages/CompanySetupPage";
 import { TAX_PLANNER_FAQS } from "../pages/TaxPlannerPage";
 import { VAT_FAQS } from "../pages/VatPlannerPage";
 import { DEADLINES_FAQS } from "../pages/FtaDeadlinesPage";
-import { FAQS_PAGE_ITEMS } from "../pages/FaqsPage";
+import { FAQS_PAGE_JSONLD } from "../pages/FaqsPage";
 
 export interface SsrJsonLdBlock {
   id: string;
@@ -105,106 +110,7 @@ export function getAllPrerenderRoutes(): string[] {
   return Array.from(routes);
 }
 
-function getServiceDetailFaqs(serviceId: string, serviceTitle: string): FAQSchemaItem[] {
-  switch (serviceId) {
-    case "accounting-bookkeeping":
-      return [
-        {
-          question: "What cloud accounting software does Dias support for bookkeeping?",
-          answer:
-            "We are certified advisors for Zoho Books, QuickBooks Online, Xero Cloud, and Wafeq. We set up automated bank statement feeds, a tailored chart of accounts, and compliant bilingual UAE tax invoice templates.",
-        },
-        {
-          question: "Is bookkeeping included in Dias Accounting's monthly retainers?",
-          answer:
-            "Yes. Every monthly retainer includes double-entry IFRS bookkeeping, monthly bank and card reconciliations, and monthly Balance Sheet and Profit & Loss statements at fixed rates starting from AED 400/month billed annually.",
-        },
-        {
-          question: "Do Free Zone companies need to maintain IFRS accounting books?",
-          answer:
-            "Yes. Both the UAE Commercial Companies Law and UAE Corporate Tax Law require Mainland and Free Zone entities to maintain proper accounting records for at least 5 to 7 years.",
-        },
-      ];
-    case "corporate-tax-advisory":
-      return [
-        {
-          question:
-            "How does Dias Accounting help UAE companies reduce 9% Corporate Tax legally in 2026?",
-          answer:
-            "Dias Accounting legally reduces 9% UAE Corporate Tax in 2026 through 0% Small Business Relief elections (revenue up to AED 3,000,000), 0% Qualifying Free Zone Person (QFZP) structuring, arm's-length Connected Person salary optimization, full IFRS expense substantiation, and AED 10,000 late-registration penalty waiver filings.",
-        },
-        {
-          question: "Can my company claim 0% Small Business Relief (SBR)?",
-          answer:
-            "Yes, if your company's gross revenue is AED 3,000,000 or less in the relevant and prior tax periods under Ministerial Decision No. 73 of 2023 (extended through December 31, 2029). When elected on EmaraTax, taxable profit is treated as AED 0.",
-        },
-        {
-          question: "When must the UAE Corporate Tax return be filed?",
-          answer:
-            "The annual Corporate Tax return and payment must be submitted via the FTA EmaraTax portal within 9 months following the end of your financial tax period.",
-        },
-        {
-          question: "How can Free Zone entities qualify for 0% Corporate Tax?",
-          answer:
-            "A Qualifying Free Zone Person (QFZP) must maintain adequate UAE economic substance, derive Qualifying Income within the De Minimis threshold (lower of 5% or AED 5M), prepare audited IFRS financial statements, and comply with arm's-length Transfer Pricing rules.",
-        },
-      ];
-    case "vat-compliance":
-      return [
-        {
-          question: "What is included in 5% UAE VAT compliance services at Dias Accounting?",
-          answer:
-            "DiasUAE's (Dias Accounting and Tax Consulting LLC) 5% UAE VAT compliance services include FTA TRN registration, quarterly Form 201 return filing, 2026 FTA Decision 13 input tax recovery reviews, tax invoice compliance audits, and VAT-to-Corporate-Tax ledger reconciliation, bundled inside transparent fixed monthly retainers starting from AED 400/month with zero hourly surprises.",
-        },
-        {
-          question: "What is the threshold for mandatory UAE VAT registration?",
-          answer:
-            "VAT registration is mandatory when taxable supplies and imports exceed AED 375,000 in the previous 12 months or are expected to exceed that threshold in the next 30 days. Voluntary registration starts at AED 187,500.",
-        },
-        {
-          question: "Can I reclaim VAT paid on commercial expenses and supplier invoices?",
-          answer:
-            "Yes. Input VAT paid on legitimate business expenses such as commercial rent, utilities, software, and professional fees is recoverable on Form VAT 201 when backed by a compliant UAE Tax Invoice.",
-        },
-        {
-          question: "What are the penalties for late VAT return filing?",
-          answer:
-            "The FTA imposes an AED 1,000 administrative penalty for the first late return, rising to AED 2,000 for repeated delays within 24 months, alongside late payment surcharges.",
-        },
-      ];
-    case "backlog-accounting":
-      return [
-        {
-          question: "How fast can Dias complete multi-year backlog accounting?",
-          answer:
-            "Our reconstruction team typically completes one full financial year within 5 to 7 business days, and two to three historical years within 10 to 14 business days.",
-        },
-        {
-          question: "What documents are required to start historical ledger reconstruction?",
-          answer:
-            "We require your trade license copy, PDF or Excel bank statements for the relevant periods, and available sales invoices, supplier bills, and payroll summaries.",
-        },
-        {
-          question: "Will the reconstructed books be accepted for Corporate Tax filing?",
-          answer:
-            "Yes. All backlog financial statements are prepared in strict accordance with IFRS standards and are audit-defensible for FTA EmaraTax submission.",
-        },
-      ];
-    default:
-      return [
-        {
-          question: `How do I get started with ${serviceTitle}?`,
-          answer:
-            "Book a confidential 15-minute consultation with our FTA-registered team. We conduct an initial compliance review and share a fixed-fee engagement scope within 2 business hours.",
-        },
-        {
-          question: "Is the initial advisory consultation confidential?",
-          answer:
-            "Yes. All client discussions and financial documents are handled under strict NDA protocols and led directly by Glen Dias, Managing Partner & FTA-Registered Tax Agent.",
-        },
-      ];
-  }
-}
+// Service detail FAQs are imported from ../data/pageFaqs (single source of truth).
 
 /**
  * Resolves exact route-level <head> metadata, canonical URL, Open Graph tags,
@@ -212,6 +118,14 @@ function getServiceDetailFaqs(serviceId: string, serviceTitle: string): FAQSchem
  * with each React page's applyPageSEO and upsertJsonLd calls).
  */
 export function resolveSsrRouteHead(rawPath: string): SsrRouteHead {
+  const head = resolveRawSsrRouteHead(rawPath);
+  return {
+    ...head,
+    description: fitMetaDescription(head.description),
+  };
+}
+
+function resolveRawSsrRouteHead(rawPath: string): SsrRouteHead {
   const cleanPath = (rawPath || "/").split("?")[0].split("#")[0].replace(/\/+$/, "") || "/";
 
   if (cleanPath === "/") {
@@ -220,7 +134,7 @@ export function resolveSsrRouteHead(rawPath: string): SsrRouteHead {
       routePath: "/",
       title,
       description:
-        "FTA-Registered Tax Agency in Dubai & SHAMS led by Glen Dias. Monthly IFRS bookkeeping, 5% VAT, 9% Corporate Tax & dividend audits from AED 400/mo. Free 15-min review.",
+        "FTA-Registered Tax Agency in Dubai & SHAMS. Monthly IFRS bookkeeping, 5% VAT Form 201 & 9% Corporate Tax packages from AED 400/mo. 2x Clutch 2026 Winner.",
       canonicalUrl: `${SITE_URL}/`,
       keywords:
         "DiasUAE, diasuae.ae, UAE Corporate Tax, UAE VAT Compliance, IFRS Bookkeeping Dubai, FTA Registered Tax Agent, Fixed-Fee Accounting Packages UAE, SHAMS Accounting Firm, DIFC Tax Compliance, Dias Accounting",
@@ -238,7 +152,7 @@ export function resolveSsrRouteHead(rawPath: string): SsrRouteHead {
     const title =
       "UAE Monthly Accounting, VAT & Corporate Tax Packages | From AED 400/Mo — DiasUAE";
     const description =
-      "Fixed-fee UAE monthly IFRS bookkeeping, 5% VAT Form 201 & 9% Corporate Tax packages. Business Starter from AED 400/mo & Corporate Growth for VAT-registered SMEs. FTA Tax Agents.";
+      "Fixed-fee UAE monthly accounting, 5% VAT & 9% Corporate Tax packages. Business Starter from AED 400/mo & Corporate Growth for UAE SMEs. Get a quick quote.";
     return {
       routePath: cleanPath,
       title,
@@ -252,6 +166,10 @@ export function resolveSsrRouteHead(rawPath: string): SsrRouteHead {
       ogImageAlt: title,
       keepHomepageFaq: false,
       jsonLdScripts: [
+        {
+          id: "page-pricing-offers-jsonld",
+          data: PRICING_OFFER_CATALOG_JSONLD,
+        },
         {
           id: "page-faq-jsonld",
           data: buildFAQPageSchema(ALL_PRICING_SCHEMA_FAQS, `${SITE_URL}/pricing#faqs`),
@@ -273,7 +191,7 @@ export function resolveSsrRouteHead(rawPath: string): SsrRouteHead {
   if (cleanPath === "/dividends-audit") {
     const title = "Dividends Audit Dubai & UAE | Fast Statutory Sign-Off (FTA Tax Agents)";
     const description =
-      "Need an interim or final dividends audit in Dubai, DIFC, or UAE Free Zones? Compliant statutory audit reports under UAE Commercial Companies Law. Get a same-day fixed quote.";
+      "Fast 5-day statutory interim & final dividends audits in Dubai, DIFC & UAE Free Zones under IFRS. Protect 0% dividend tax status. Same-day fixed quote.";
     const pageUrl = toCanonicalUrl(cleanPath);
     return {
       routePath: cleanPath,
@@ -298,7 +216,11 @@ export function resolveSsrRouteHead(rawPath: string): SsrRouteHead {
         },
         {
           id: "page-faq-jsonld",
-          data: buildFAQPageSchema(ALL_DIVIDEND_SCHEMA_FAQS, `${pageUrl}#faqs`),
+          data: buildFAQPageSchema(ALL_DIVIDEND_SCHEMA_FAQS, `${pageUrl}#faqs`, {
+            url: pageUrl,
+            name: "UAE Dividend Distribution FAQs",
+            description,
+          }),
         },
         {
           id: "page-breadcrumb-jsonld",
@@ -318,7 +240,7 @@ export function resolveSsrRouteHead(rawPath: string): SsrRouteHead {
   if (cleanPath === "/tax-planning-difc") {
     const title = "DIFC & DTEC Accounting, 0% QFZP Tax & Virtual Bookkeeping | Dias UAE";
     const description =
-      "Fixed-fee virtual IFRS bookkeeping, 0% QFZP Corporate Tax compliance & audit readiness for DIFC & DTEC companies in Dubai. 2x Clutch 2026 UAE Leader.";
+      "FTA-Registered Tax Agents for DIFC & DTEC companies. 0% QFZP compliance, audited IFRS books, 5% VAT & virtual bookkeeping from AED 400/mo. 2x Clutch 2026.";
     const pageUrl = toCanonicalUrl(cleanPath);
     return {
       routePath: cleanPath,
@@ -343,7 +265,11 @@ export function resolveSsrRouteHead(rawPath: string): SsrRouteHead {
         },
         {
           id: "page-faq-jsonld",
-          data: buildFAQPageSchema(DIFC_DTEC_FAQS, `${pageUrl}#faqs`),
+          data: buildFAQPageSchema(DIFC_DTEC_FAQS, `${pageUrl}#faqs`, {
+            url: pageUrl,
+            name: "DIFC & DTEC Tax Compliance FAQs",
+            description,
+          }),
         },
         {
           id: "page-breadcrumb-jsonld",
@@ -363,7 +289,7 @@ export function resolveSsrRouteHead(rawPath: string): SsrRouteHead {
   if (cleanPath === "/small-business-tax-relief") {
     const title = "UAE Small Business Tax Relief (AED 3M) | Dias Accounting";
     const description =
-      "Guide to UAE 0% Small Business Relief (SBR) under Article 21 and Ministerial Decision No. 73/2023, extended through 2029 for businesses up to AED 3M.";
+      "Check eligibility for 0% UAE Small Business Relief (revenue up to AED 3M, extended to 2029). IFRS bookkeeping & Corporate Tax filing from AED 400/mo.";
     const pageUrl = toCanonicalUrl(cleanPath);
     return {
       routePath: cleanPath,
@@ -601,7 +527,7 @@ export function resolveSsrRouteHead(rawPath: string): SsrRouteHead {
     if (currentService.id === "corporate-tax-advisory") {
       title = "Corporate Tax Filing UAE | Tax Advisory Dubai | Dias UAE";
       desc =
-        "Certified Corporate Tax filing services in UAE. 9% return submission on EmaraTax, Small Business Relief (AED 3M) & 0% Free Zone advisory. Book review today!";
+        "9% UAE Corporate Tax registration, 0% Small Business Relief, EmaraTax filing & AED 10,000 penalty waiver support in Dubai & SHAMS. Fixed monthly packages.";
       keywords =
         "corporate tax filing uae, tax advisory services in dubai, tax filing services uae, tax planning services in dubai, corporate tax return emaratax, small business relief 0%, fta audit defense";
     } else if (currentService.id === "accounting-bookkeeping") {
@@ -613,7 +539,7 @@ export function resolveSsrRouteHead(rawPath: string): SsrRouteHead {
     } else if (currentService.id === "vat-compliance") {
       title = "UAE VAT Compliance, Form 201 Filing & FTA Audit Support | From AED 400/Mo";
       desc =
-        "5% UAE VAT registration, quarterly Form 201 returns, 2026 FTA Decision 13 input tax recovery reviews & VAT-to-Corporate-Tax reconciliation in Dubai & Sharjah.";
+        "5% UAE VAT registration, quarterly Form 201 filing, input VAT recovery & FTA audit defense in Dubai & SHAMS. Monthly VAT & accounting from AED 400/mo.";
       keywords =
         "uae vat compliance, vat form 201 filing dubai, fta decision 13 input tax recovery, vat audit support uae, vat registration threshold aed 375000, fta voluntary disclosure 211";
     } else if (currentService.id === "business-incorporation") {
@@ -670,7 +596,11 @@ export function resolveSsrRouteHead(rawPath: string): SsrRouteHead {
         },
         {
           id: "page-faq-jsonld",
-          data: buildFAQPageSchema(serviceFaqs, `${canonicalUrl}#faqs`),
+          data: buildFAQPageSchema(serviceFaqs, `${canonicalUrl}#faqs`, {
+            url: canonicalUrl,
+            name: `Questions About ${currentService.title}`,
+            description: desc,
+          }),
         },
         {
           id: "page-breadcrumb-jsonld",
@@ -840,14 +770,17 @@ export function resolveSsrRouteHead(rawPath: string): SsrRouteHead {
       jsonLdScripts: [
         {
           id: "page-faq-jsonld",
-          data: buildFAQPageSchema(FAQS_PAGE_ITEMS, `${SITE_URL}/faqs#faqpage`),
+          data: FAQS_PAGE_JSONLD,
         },
         {
           id: "page-breadcrumb-jsonld",
-          data: buildBreadcrumbSchema([
-            { name: "Home", path: "/" },
-            { name: "FAQs", path: "/faqs" },
-          ]),
+          data: buildBreadcrumbSchema(
+            [
+              { name: "Home", path: "/" },
+              { name: "FAQs", path: "/faqs" },
+            ],
+            `${SITE_URL}/faqs#breadcrumb`
+          ),
         },
       ],
     };
@@ -941,7 +874,7 @@ export function resolveSsrRouteHead(rawPath: string): SsrRouteHead {
       routePath: cleanPath,
       title,
       description:
-        "Resources for UAE company formation consultants, PRO agencies, legal advisors, and co-working hubs across Dubai, DIFC, DTEC, and SHAMS. Embed our free 2026 UAE Corporate Tax & 5% VAT Calculator.",
+        "Partner with DiasUAE across Dubai, DIFC, DTEC & SHAMS for company setup, PRO referrals, and our free embeddable 2026 UAE Corporate Tax & VAT Calculator.",
       canonicalUrl: toCanonicalUrl(cleanPath),
       keywords:
         "UAE company formation partners, Dubai business setup referral partners, embed UAE corporate tax calculator, PRO agency accounting partner UAE, DIFC DTEC SHAMS tax partner",
@@ -1025,7 +958,7 @@ export function resolveSsrRouteHead(rawPath: string): SsrRouteHead {
     routePath: cleanPath,
     title: fallbackTitle,
     description:
-      "FTA-Registered Tax Agency in Dubai & SHAMS led by Glen Dias. Monthly IFRS bookkeeping, 5% VAT, 9% Corporate Tax & dividend audits from AED 400/mo. Free 15-min review.",
+      "FTA-Registered Tax Agency in Dubai & SHAMS. Monthly IFRS bookkeeping, 5% VAT Form 201 & 9% Corporate Tax packages from AED 400/mo. 2x Clutch 2026 Winner.",
     canonicalUrl: toCanonicalUrl(cleanPath),
     keywords:
       "DiasUAE, UAE Corporate Tax, UAE VAT Compliance, IFRS Bookkeeping Dubai, FTA Registered Tax Agent",

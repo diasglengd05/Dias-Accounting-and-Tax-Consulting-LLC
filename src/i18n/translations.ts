@@ -262,7 +262,7 @@ export const translations: Record<Language, Translations> = {
       ctaServices: "Explore Services",
       ctaWhatsApp: "WhatsApp Tax Advisor",
       stats: {
-        smes: "500+",
+        smes: "50+",
         smesLabel: "UAE Businesses Managed",
         compliance: "100%",
         complianceLabel: "FTA Compliance & Audit Rate",
@@ -605,7 +605,7 @@ export const translations: Record<Language, Translations> = {
     testimonials: {
       badge: "Verified Client Reviews",
       title: "Trusted by Dubai's Most Ambitious Founders",
-      subtitle: "See why 500+ UAE businesses rely on Glen Dias and Dias Accounting for zero-penalty compliance and tax optimization.",
+      subtitle: "See why 50+ UAE businesses rely on Glen Dias and Dias Accounting for zero-penalty compliance and tax optimization.",
       verifiedGoogleBadge: "Verified Google 5.0★ Review",
       viewOnGoogle: "View on Google Business",
     },
@@ -789,7 +789,7 @@ export const translations: Record<Language, Translations> = {
       ctaServices: "استكشف خدماتنا",
       ctaWhatsApp: "محادثة واتساب مباشرة",
       stats: {
-        smes: "+500",
+        smes: "+50",
         smesLabel: "شركة ومؤسسة نخدمها في الإمارات",
         compliance: "100%",
         complianceLabel: "نسبة الامتثال والجاهزية للتدقيق",
@@ -1133,7 +1133,7 @@ export const translations: Record<Language, Translations> = {
     testimonials: {
       badge: "تقييمات وآراء العملاء",
       title: "يثق بنا رواد الأعمال الأكثر طموحاً في دبي",
-      subtitle: "اكتشف لماذا تعتمد أكثر من 500 شركة في الإمارات على المستشار غلين دياز وفريقنا لضمان صفر غرامات وتحقيق أعلى وفورات قانونية.",
+      subtitle: "اكتشف لماذا تعتمد أكثر من 50 شركة في الإمارات على المستشار غلين دياز وفريقنا لضمان صفر غرامات وتحقيق أعلى وفورات قانونية.",
       verifiedGoogleBadge: "تقييم 5.0★ موثق على Google Business",
       viewOnGoogle: "عرض التقييمات على Google",
     },

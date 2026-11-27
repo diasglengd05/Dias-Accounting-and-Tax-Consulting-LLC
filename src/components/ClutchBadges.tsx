@@ -30,15 +30,15 @@ export const ClutchRatingWidget: React.FC = () => {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="2x Clutch UAE Leader 2026 — View verified Dias Accounting profile on Clutch"
-      className="group inline-flex items-center gap-1.5 rounded-full bg-[#0d1b2a] hover:bg-[#070d19] border border-[#c5a059]/50 hover:border-[#c5a059] px-3 py-1 text-xs font-semibold text-white transition-all shadow-xs"
+      className="group inline-flex items-center gap-1.5 rounded-full bg-[#F8FAFC] hover:bg-[#FFFFFF] border border-[#C5A059]/60 hover:border-[#C5A059] px-3 py-1 text-xs font-semibold text-[#0D1B2A] transition-all shadow-xs"
     >
       <Award
-        className="w-3.5 h-3.5 text-[#c5a059] shrink-0"
+        className="w-3.5 h-3.5 text-[#856422] shrink-0"
         aria-hidden="true"
       />
       <span>2x Clutch UAE Leader 2026</span>
       <ArrowUpRight
-        className="w-3.5 h-3.5 text-[#c5a059] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0"
+        className="w-3.5 h-3.5 text-[#856422] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform shrink-0"
         aria-hidden="true"
       />
     </a>

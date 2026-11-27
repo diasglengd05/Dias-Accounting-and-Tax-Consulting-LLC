@@ -9,6 +9,10 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { servicesData } from "../data/staticData";
+import {
+  ALL_VAT_COMPLIANCE_SCHEMA_FAQS,
+  getServiceDetailFaqParts,
+} from "../data/pageFaqs";
 import { Service } from "../types";
 import {
   applyPageSEO,
@@ -88,6 +92,26 @@ function splitDeliverableTitle(inclusion: string): { title: string; description:
   };
 }
 
+const VAT_COMPLIANCE_CANONICAL_PATH = "/services/vat-compliance";
+const VAT_COMPLIANCE_PAGE_URL = `https://diasuae.ae${VAT_COMPLIANCE_CANONICAL_PATH}`;
+const VAT_COMPLIANCE_META_DESC =
+  "5% UAE VAT registration, quarterly Form 201 filing, input VAT recovery & FTA audit defense in Dubai & SHAMS. Monthly VAT & accounting from AED 400/mo.";
+const VAT_COMPLIANCE_FAQS_NAME = "Questions About VAT Registration and Returns";
+
+/**
+ * Dedicated Schema.org FAQPage JSON-LD structured data for `/services/vat-compliance`.
+ * Mirrors all 4 visible VAT FAQs (1 featured AEO card + 3 accordion items) verbatim.
+ */
+export const VAT_COMPLIANCE_FAQ_JSONLD = buildFAQPageSchema(
+  ALL_VAT_COMPLIANCE_SCHEMA_FAQS,
+  `${VAT_COMPLIANCE_PAGE_URL}#faqs`,
+  {
+    url: VAT_COMPLIANCE_PAGE_URL,
+    name: VAT_COMPLIANCE_FAQS_NAME,
+    description: VAT_COMPLIANCE_META_DESC,
+  }
+);
+
 export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
   serviceId,
   onNavigate,
@@ -108,6 +132,15 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
     return found || servicesData[0];
   }, [serviceId]);
 
+  const {
+    featuredFaq: featuredAeoFaq,
+    accordionFaqs: serviceFaqs,
+    allFaqs: schemaFaqs,
+  } = useMemo(
+    () => getServiceDetailFaqParts(currentService.id, currentService.title),
+    [currentService.id, currentService.title]
+  );
+
   useEffect(() => {
     let title = `${currentService.title} in Dubai & UAE | Dias Accounting & Tax`;
     let desc = currentService.shortDesc;
@@ -116,7 +149,7 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
     if (currentService.id === "corporate-tax-advisory" || serviceId?.includes("corporate-tax")) {
       title = "Corporate Tax Filing UAE | Tax Advisory Dubai | Dias UAE";
       desc =
-        "Certified Corporate Tax filing services in UAE. 9% return submission on EmaraTax, Small Business Relief (AED 3M) & 0% Free Zone advisory. Book review today!";
+        "9% UAE Corporate Tax registration, 0% Small Business Relief, EmaraTax filing & AED 10,000 penalty waiver support in Dubai & SHAMS. Fixed monthly packages.";
       keywords =
         "corporate tax filing uae, tax advisory services in dubai, tax filing services uae, tax planning services in dubai, corporate tax return emaratax, small business relief 0%, fta audit defense";
     } else if (currentService.id === "accounting-bookkeeping" || serviceId?.includes("accounting")) {
@@ -127,8 +160,7 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
         "accounting services uae, accounting consulting dubai, accounting service in uae, accounting solutions in uae, bookkeeping dubai, chartered accountants dubai, outsourced accounting uae";
     } else if (currentService.id === "vat-compliance" || serviceId?.includes("vat")) {
       title = "UAE VAT Compliance, Form 201 Filing & FTA Audit Support | From AED 400/Mo";
-      desc =
-        "5% UAE VAT registration, quarterly Form 201 returns, 2026 FTA Decision 13 input tax recovery reviews & VAT-to-Corporate-Tax reconciliation in Dubai & Sharjah.";
+      desc = VAT_COMPLIANCE_META_DESC;
       keywords =
         "uae vat compliance, vat form 201 filing dubai, fta decision 13 input tax recovery, vat audit support uae, vat registration threshold aed 375000, fta voluntary disclosure 211";
     } else if (
@@ -202,12 +234,28 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
       )
     );
 
+    if (currentService.id === "vat-compliance") {
+      upsertJsonLd("page-faq-jsonld", VAT_COMPLIANCE_FAQ_JSONLD);
+    } else if (schemaFaqs.length > 0) {
+      upsertJsonLd(
+        "page-faq-jsonld",
+        buildFAQPageSchema(schemaFaqs, `${canonicalUrl}#faqs`, {
+          url: canonicalUrl,
+          name: `Questions About ${currentService.title}`,
+          description: desc,
+        })
+      );
+    } else {
+      removeJsonLd("page-faq-jsonld");
+    }
+
     window.scrollTo({ top: 0, behavior: "instant" });
     return () => {
       removeJsonLd("page-service-jsonld");
       removeJsonLd("page-breadcrumb-jsonld");
+      removeJsonLd("page-faq-jsonld");
     };
-  }, [currentService, serviceId]);
+  }, [currentService, serviceId, schemaFaqs]);
 
   const serviceMeta = useMemo(() => {
     switch (currentService.id) {
@@ -314,128 +362,7 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
     }
   }, [currentService.id]);
 
-  const serviceFaqs = useMemo(() => {
-    switch (currentService.id) {
-      case "accounting-bookkeeping":
-        return [
-          {
-            question: "What cloud accounting software does Dias support for bookkeeping?",
-            answer:
-              "We are certified advisors for Zoho Books, QuickBooks Online, Xero Cloud, and Wafeq. We set up automated bank statement feeds, a tailored chart of accounts, and compliant bilingual UAE tax invoice templates.",
-          },
-          {
-            question: "Is bookkeeping included in Dias Accounting's monthly retainers?",
-            answer:
-              "Yes. Every monthly retainer includes double-entry IFRS bookkeeping, monthly bank and card reconciliations, and monthly Balance Sheet and Profit & Loss statements at fixed rates starting from AED 400/month billed annually.",
-          },
-          {
-            question: "Do Free Zone companies need to maintain IFRS accounting books?",
-            answer:
-              "Yes. Both the UAE Commercial Companies Law and UAE Corporate Tax Law require Mainland and Free Zone entities to maintain proper accounting records for at least 5 to 7 years.",
-          },
-        ];
-      case "corporate-tax-advisory":
-        return [
-          {
-            question: "Can my company claim 0% Small Business Relief (SBR)?",
-            answer:
-              "Yes, if your company's gross revenue is AED 3,000,000 or less in the relevant and prior tax periods under Ministerial Decision No. 73 of 2023 (extended through December 31, 2029). When elected on EmaraTax, taxable profit is treated as AED 0.",
-          },
-          {
-            question: "When must the UAE Corporate Tax return be filed?",
-            answer:
-              "The annual Corporate Tax return and payment must be submitted via the FTA EmaraTax portal within 9 months following the end of your financial tax period.",
-          },
-          {
-            question: "How can Free Zone entities qualify for 0% Corporate Tax?",
-            answer:
-              "A Qualifying Free Zone Person (QFZP) must maintain adequate UAE economic substance, derive Qualifying Income within the De Minimis threshold (lower of 5% or AED 5M), prepare audited IFRS financial statements, and comply with arm's-length Transfer Pricing rules.",
-          },
-        ];
-      case "vat-compliance":
-        return [
-          {
-            question: "What is the threshold for mandatory UAE VAT registration?",
-            answer:
-              "VAT registration is mandatory when taxable supplies and imports exceed AED 375,000 in the previous 12 months or are expected to exceed that threshold in the next 30 days. Voluntary registration starts at AED 187,500.",
-          },
-          {
-            question: "Can I reclaim VAT paid on commercial expenses and supplier invoices?",
-            answer:
-              "Yes. Input VAT paid on legitimate business expenses such as commercial rent, utilities, software, and professional fees is recoverable on Form VAT 201 when backed by a compliant UAE Tax Invoice.",
-          },
-          {
-            question: "What are the penalties for late VAT return filing?",
-            answer:
-              "The FTA imposes an AED 1,000 administrative penalty for the first late return, rising to AED 2,000 for repeated delays within 24 months, alongside late payment surcharges.",
-          },
-        ];
-      case "backlog-accounting":
-        return [
-          {
-            question: "How fast can Dias complete multi-year backlog accounting?",
-            answer:
-              "Our reconstruction team typically completes one full financial year within 5 to 7 business days, and two to three historical years within 10 to 14 business days.",
-          },
-          {
-            question: "What documents are required to start historical ledger reconstruction?",
-            answer:
-              "We require your trade license copy, PDF or Excel bank statements for the relevant periods, and available sales invoices, supplier bills, and payroll summaries.",
-          },
-          {
-            question: "Will the reconstructed books be accepted for Corporate Tax filing?",
-            answer:
-              "Yes. All backlog financial statements are prepared in strict accordance with IFRS standards and are audit-defensible for FTA EmaraTax submission.",
-          },
-        ];
-      default:
-        return [
-          {
-            question: `How do I get started with ${currentService.title}?`,
-            answer:
-              "Book a confidential 15-minute consultation with our FTA-registered team. We conduct an initial compliance review and share a fixed-fee engagement scope within 2 business hours.",
-          },
-          {
-            question: "Is the initial advisory consultation confidential?",
-            answer:
-              "Yes. All client discussions and financial documents are handled under strict NDA protocols and led directly by Glen Dias, Managing Partner & FTA-Registered Tax Agent.",
-          },
-        ];
-    }
-  }, [currentService]);
-
-  const featuredAeoFaq = useMemo(() => {
-    if (currentService.id === "vat-compliance") {
-      return {
-        question: "What is included in 5% UAE VAT compliance services at Dias Accounting?",
-        answer:
-          "DiasUAE's (Dias Accounting and Tax Consulting LLC) 5% UAE VAT compliance services include FTA TRN registration, quarterly Form 201 return filing, 2026 FTA Decision 13 input tax recovery reviews, tax invoice compliance audits, and VAT-to-Corporate-Tax ledger reconciliation, bundled inside transparent fixed monthly retainers starting from AED 400/month with zero hourly surprises.",
-      };
-    }
-    if (currentService.id === "corporate-tax-advisory") {
-      return {
-        question: "How does Dias Accounting help UAE companies reduce 9% Corporate Tax legally in 2026?",
-        answer:
-          "Dias Accounting legally reduces 9% UAE Corporate Tax in 2026 through 0% Small Business Relief elections (revenue up to AED 3,000,000), 0% Qualifying Free Zone Person (QFZP) structuring, arm's-length Connected Person salary optimization, full IFRS expense substantiation, and AED 10,000 late-registration penalty waiver filings.",
-      };
-    }
-    return null;
-  }, [currentService.id]);
-
-  useEffect(() => {
-    const schemaFaqs = featuredAeoFaq ? [featuredAeoFaq, ...serviceFaqs] : serviceFaqs;
-    if (schemaFaqs.length > 0) {
-      upsertJsonLd(
-        "page-faq-jsonld",
-        buildFAQPageSchema(schemaFaqs, `https://diasuae.ae/services/${currentService.id}#faqs`)
-      );
-    } else {
-      removeJsonLd("page-faq-jsonld");
-    }
-    return () => {
-      removeJsonLd("page-faq-jsonld");
-    };
-  }, [currentService.id, featuredAeoFaq, serviceFaqs]);
+  // FAQs and FAQPage JSON-LD are driven by the shared getServiceDetailFaqParts helper above.
 
   const deliverableIcons = [
     <ShieldCheck className="w-5 h-5" key="shield" />,
@@ -482,13 +409,13 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
       quickSummary={
         currentService.id === "vat-compliance" ? (
           <QuickSummaryBox>
-            <strong className="text-white font-semibold">
+            <strong className="text-[#0D1B2A] font-semibold">
               DiasUAE (Dias Accounting and Tax Consulting LLC)
             </strong>
             , led by FTA-Registered Tax Agent{" "}
-            <strong className="text-[#c5a059] font-semibold">Glen Dias</strong> (SHAMS Licence{" "}
+            <strong className="text-[#856422] font-semibold">Glen Dias</strong> (SHAMS Licence{" "}
             <span className="tabular-nums">2646813.01</span>) and recognized as a 2x Clutch 2026 UAE Leader, delivers 5% UAE VAT TRN registration, quarterly Form 201 filings, 2026 FTA Decision 13 input tax recovery reviews, and FTA audit defense. Serving Dubai Mainland, DIFC, DTEC, DMCC, IFZA, and SHAMS, we deliver same-week TRN onboarding and pre-28th VAT returns inside fixed-fee monthly retainers starting{" "}
-            <strong className="text-white font-semibold">from AED 400/month</strong>.
+            <strong className="text-[#0D1B2A] font-semibold">from AED 400/month</strong>.
           </QuickSummaryBox>
         ) : undefined
       }
@@ -522,20 +449,20 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
             {/* Dedicated Corporate Growth VAT Package Section */}
             <section
               aria-label="Monthly Accounting and Quarterly 5% VAT Form 201 Packages"
-              className="bg-[#0d1b2a] border-b border-[#c5a059]/30 py-14 lg:py-16 text-white"
+              className="bg-gradient-to-b from-[#FFFFFF] via-[#F8FAFC] to-[#FFFFFF] border-b border-[#E2E8F0] py-14 lg:py-16 text-[#0D1B2A]"
             >
               <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
                 <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
                   <div className="max-w-3xl space-y-3">
-                    <span className="inline-block text-xs font-semibold uppercase tracking-[0.14em] text-[#c5a059]">
+                    <span className="inline-block text-xs font-semibold uppercase tracking-[0.14em] text-[#856422]">
                       Corporate Growth Package · Most Popular for UAE SMEs
                     </span>
-                    <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight leading-snug">
+                    <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#0D1B2A] tracking-tight leading-snug">
                       Monthly Accounting &amp; Quarterly 5% VAT Form 201 Packages (Corporate Growth)
                     </h2>
-                    <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-[68ch]">
+                    <p className="text-sm sm:text-base text-[#475569] leading-relaxed max-w-[68ch]">
                       Stop paying separate fees for monthly bookkeeping, quarterly VAT filings, and annual Corporate Tax returns. DiasUAE&apos;s{" "}
-                      <strong className="text-white font-semibold">Corporate Growth</strong> package bundles full monthly IFRS accounting, EmaraTax Form VAT 201 filing, VAT-to-Corporate-Tax reconciliation, and FTA audit-ready documentation for one fixed monthly fee.
+                      <strong className="text-[#0D1B2A] font-semibold">Corporate Growth</strong> package bundles full monthly IFRS accounting, EmaraTax Form VAT 201 filing, VAT-to-Corporate-Tax reconciliation, and FTA audit-ready documentation for one fixed monthly fee.
                     </p>
                   </div>
                   <a
@@ -545,7 +472,7 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
                       e.preventDefault();
                       onNavigate("/pricing");
                     }}
-                    className="min-h-[46px] px-6 py-3 rounded-xl bg-[#c5a059] hover:bg-[#b58f47] text-[#070d19] font-semibold text-sm inline-flex items-center justify-center gap-2 transition-colors shrink-0 whitespace-nowrap"
+                    className="min-h-[46px] px-6 py-3 rounded-xl bg-[#1B4332] hover:bg-[#143326] text-white font-semibold text-sm inline-flex items-center justify-center gap-2 transition-colors shrink-0 whitespace-nowrap shadow-xs"
                   >
                     <span>Explore Corporate Growth Pricing</span>
                     <ArrowRight className="w-4 h-4 shrink-0" />
@@ -553,47 +480,47 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                  <div className="rounded-2xl bg-[#070d19] border border-[#c5a059]/30 p-6 space-y-2.5">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-[#c5a059]">
+                  <div className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-6 space-y-2.5 shadow-xs">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-[#856422]">
                       Strict 28-Day Filing Deadlines
                     </span>
-                    <h3 className="font-display text-lg font-bold text-white">
+                    <h3 className="font-display text-lg font-bold text-[#0D1B2A]">
                       Pre-28th Form VAT 201 Submission
                     </h3>
-                    <p className="text-sm text-slate-300 leading-relaxed">
+                    <p className="text-sm text-[#475569] leading-relaxed">
                       Every quarterly or monthly UAE VAT Form 201 return and EmaraTax payment must be settled within{" "}
-                      <strong className="text-white font-semibold">28 days</strong> of the tax period end. We close ledgers early and reconcile Emirate-wise output VAT, Reverse Charge (Box 3/10), and supplier TRNs ahead of the deadline.
+                      <strong className="text-[#0D1B2A] font-semibold">28 days</strong> of the tax period end. We close ledgers early and reconcile Emirate-wise output VAT, Reverse Charge (Box 3/10), and supplier TRNs ahead of the deadline.
                     </p>
                   </div>
 
-                  <div className="rounded-2xl bg-[#070d19] border border-[#c5a059]/30 p-6 space-y-2.5">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-[#c5a059]">
+                  <div className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-6 space-y-2.5 shadow-xs">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-[#856422]">
                       Penalty Protection
                     </span>
-                    <h3 className="font-display text-lg font-bold text-white">
+                    <h3 className="font-display text-lg font-bold text-[#0D1B2A]">
                       14% p.a. Late-Payment Penalty Avoidance
                     </h3>
-                    <p className="text-sm text-slate-300 leading-relaxed">
+                    <p className="text-sm text-[#475569] leading-relaxed">
                       Late VAT payments trigger up to{" "}
-                      <strong className="text-white font-semibold">14% per annum</strong> compounding late-payment penalties on top of AED 1,000–2,000 late filing fines. Monthly IFRS tracking gives you exact VAT payable forecasts weeks before due dates.
+                      <strong className="text-[#0D1B2A] font-semibold">14% per annum</strong> compounding late-payment penalties on top of AED 1,000–2,000 late filing fines. Monthly IFRS tracking gives you exact VAT payable forecasts weeks before due dates.
                     </p>
                   </div>
 
-                  <div className="rounded-2xl bg-[#070d19] border border-[#c5a059]/30 p-6 space-y-2.5">
-                    <span className="text-xs font-semibold uppercase tracking-wider text-[#c5a059]">
+                  <div className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-6 space-y-2.5 shadow-xs">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-[#856422]">
                       Statutory Cutoff · Dec 31, 2026
                     </span>
-                    <h3 className="font-display text-lg font-bold text-white">
+                    <h3 className="font-display text-lg font-bold text-[#0D1B2A]">
                       Dec 31, 2026 Box 14 VAT Credit Recovery
                     </h3>
-                    <p className="text-sm text-slate-300 leading-relaxed">
+                    <p className="text-sm text-[#475569] leading-relaxed">
                       Businesses carrying unclaimed excess input VAT credits face critical{" "}
-                      <strong className="text-white font-semibold">December 31, 2026 Box 14 VAT credit recovery</strong> cutoffs. Our FTA-Registered Tax Agents audit historical tax invoices and execute compliant refund or offset claims before credits lapse.
+                      <strong className="text-[#0D1B2A] font-semibold">December 31, 2026 Box 14 VAT credit recovery</strong> cutoffs. Our FTA-Registered Tax Agents audit historical tax invoices and execute compliant refund or offset claims before credits lapse.
                     </p>
                   </div>
                 </div>
 
-                <div className="pt-1 text-sm text-slate-300">
+                <div className="pt-1 text-sm text-[#475569]">
                   Ready to consolidate your monthly books and quarterly VAT?{" "}
                   <a
                     href="/pricing"
@@ -602,7 +529,7 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
                       e.preventDefault();
                       onNavigate("/pricing");
                     }}
-                    className="text-[#c5a059] hover:text-[#e6c884] font-semibold underline underline-offset-4 transition-colors"
+                    className="text-[#1B4332] hover:text-[#143326] font-semibold underline underline-offset-4 transition-colors"
                   >
                     Compare Corporate Growth &amp; Business Starter packages on our Pricing page →
                   </a>
@@ -612,85 +539,85 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
 
             <section
               aria-label="2026 UAE VAT Compliance Checklist"
-              className="bg-[#070d19] border-b border-[#c5a059]/25 py-14 lg:py-20 text-white"
+              className="bg-[#F8FAFC] border-b border-[#E2E8F0] py-14 lg:py-20 text-[#0D1B2A]"
             >
               <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
                 <div className="max-w-3xl space-y-2.5">
-                  <span className="inline-block text-xs font-semibold uppercase tracking-[0.14em] text-[#c5a059]">
+                  <span className="inline-block text-xs font-semibold uppercase tracking-[0.14em] text-[#856422]">
                     Federal Decree-Law No. 8 of 2017 · 2026 FTA Standards
                   </span>
-                  <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">
+                  <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#0D1B2A] tracking-tight">
                     2026 UAE VAT Compliance Checklist
                   </h2>
-                  <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-[65ch]">
+                  <p className="text-sm sm:text-base text-[#475569] leading-relaxed max-w-[65ch]">
                     Key statutory thresholds, Form 201 submission deadlines, 2026 FTA Decision 13 input tax rules, and audit-defense controls managed end-to-end by our FTA-Registered Tax Agents from AED 400/month.
                   </p>
                 </div>
 
-                <div className="overflow-x-auto rounded-2xl border border-[#c5a059]/30 bg-[#0d1b2a] shadow-sm">
+                <div className="overflow-x-auto rounded-2xl border border-[#E2E8F0] bg-[#FFFFFF] shadow-xs">
                   <table className="w-full text-left border-collapse text-sm">
                     <thead>
-                      <tr className="border-b border-[#c5a059]/25 bg-[#070d19]/80 text-xs uppercase tracking-wider text-[#c5a059]">
+                      <tr className="border-b border-[#E2E8F0] bg-[#F8FAFC] text-xs uppercase tracking-wider text-[#0D1B2A]">
                         <th scope="col" className="px-5 py-4 font-semibold">Compliance Area</th>
                         <th scope="col" className="px-5 py-4 font-semibold">2026 Statutory Rule</th>
                         <th scope="col" className="px-5 py-4 font-semibold">Key Threshold / Penalty</th>
                         <th scope="col" className="px-5 py-4 font-semibold">DiasUAE Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-white/10">
-                      <tr className="hover:bg-white/[0.02] transition-colors">
-                        <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                    <tbody className="divide-y divide-[#E2E8F0]">
+                      <tr className="hover:bg-[#F8FAFC] transition-colors">
+                        <td className="px-5 py-4 font-semibold text-[#0D1B2A] whitespace-nowrap">
                           Registration Threshold
                         </td>
-                        <td className="px-5 py-4 text-slate-300 leading-relaxed">
+                        <td className="px-5 py-4 text-[#475569] leading-relaxed">
                           Mandatory when taxable supplies and imports exceed AED 375,000 over the prior 12 months or projected next 30 days; voluntary at AED 187,500.
                         </td>
-                        <td className="px-5 py-4 font-semibold text-[#c5a059] whitespace-nowrap">
+                        <td className="px-5 py-4 font-semibold text-[#1B4332] whitespace-nowrap">
                           AED 375,000 · AED 10,000 Late Fine
                         </td>
-                        <td className="px-5 py-4 text-slate-200 leading-relaxed">
+                        <td className="px-5 py-4 text-[#475569] leading-relaxed">
                           Monthly turnover monitoring and same-week EmaraTax TRN registration.
                         </td>
                       </tr>
-                      <tr className="hover:bg-white/[0.02] transition-colors">
-                        <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                      <tr className="hover:bg-[#F8FAFC] transition-colors">
+                        <td className="px-5 py-4 font-semibold text-[#0D1B2A] whitespace-nowrap">
                           Quarterly Form 201 Deadlines
                         </td>
-                        <td className="px-5 py-4 text-slate-300 leading-relaxed">
+                        <td className="px-5 py-4 text-[#475569] leading-relaxed">
                           VAT Form 201 return filing and tax settlement due by the 28th day following the end of each assigned quarterly or monthly tax period.
                         </td>
-                        <td className="px-5 py-4 font-semibold text-[#c5a059] whitespace-nowrap">
+                        <td className="px-5 py-4 font-semibold text-[#1B4332] whitespace-nowrap">
                           28th of Following Month · 14% p.a. Late Fee
                         </td>
-                        <td className="px-5 py-4 text-slate-200 leading-relaxed">
+                        <td className="px-5 py-4 text-[#475569] leading-relaxed">
                           Emirates-wise sales mapping, RCM Box 3/10 reconciliation, and pre-deadline filing.
                         </td>
                       </tr>
-                      <tr className="hover:bg-white/[0.02] transition-colors">
-                        <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                      <tr className="hover:bg-[#F8FAFC] transition-colors">
+                        <td className="px-5 py-4 font-semibold text-[#0D1B2A] whitespace-nowrap">
                           2026 Input VAT &amp; Box 14 Recovery
                         </td>
-                        <td className="px-5 py-4 text-slate-300 leading-relaxed">
+                        <td className="px-5 py-4 text-[#475569] leading-relaxed">
                           Strict FTA Decision 13 tax invoice verification, supplier TRN validation, and Dec 31, 2026 Box 14 VAT credit recovery deadline compliance.
                         </td>
-                        <td className="px-5 py-4 font-semibold text-[#c5a059] whitespace-nowrap">
+                        <td className="px-5 py-4 font-semibold text-[#1B4332] whitespace-nowrap">
                           100% Tax Invoice &amp; Dec 31, 2026 Cutoff
                         </td>
-                        <td className="px-5 py-4 text-slate-200 leading-relaxed">
+                        <td className="px-5 py-4 text-[#475569] leading-relaxed">
                           Line-by-line input VAT audit before every return to maximize lawful refunds.
                         </td>
                       </tr>
-                      <tr className="hover:bg-white/[0.02] transition-colors">
-                        <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                      <tr className="hover:bg-[#F8FAFC] transition-colors">
+                        <td className="px-5 py-4 font-semibold text-[#0D1B2A] whitespace-nowrap">
                           FTA Audit Defense
                         </td>
-                        <td className="px-5 py-4 text-slate-300 leading-relaxed">
+                        <td className="px-5 py-4 text-[#475569] leading-relaxed">
                           Mandatory 5–7 year archival of IFRS ledgers, Voluntary Disclosures (Form 211) for historical corrections, and VAT-to-Corporate-Tax revenue tie-out.
                         </td>
-                        <td className="px-5 py-4 font-semibold text-[#c5a059] whitespace-nowrap">
+                        <td className="px-5 py-4 font-semibold text-[#1B4332] whitespace-nowrap">
                           FAF Audit File &amp; Form 211 Ready
                         </td>
-                        <td className="px-5 py-4 text-slate-200 leading-relaxed">
+                        <td className="px-5 py-4 text-[#475569] leading-relaxed">
                           Direct FTA-Registered Tax Agent representation led by Glen Dias and penalty reconsideration support.
                         </td>
                       </tr>
@@ -703,20 +630,20 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
         ) : currentService.id === "corporate-tax-advisory" ? (
           <section
             aria-label="Small Business Corporate Tax Filing and AED 10,000 Penalty Waiver"
-            className="bg-[#070d19] border-b border-[#c5a059]/30 py-14 lg:py-20 text-white"
+            className="bg-gradient-to-b from-[#FFFFFF] via-[#F8FAFC] to-[#FFFFFF] border-b border-[#E2E8F0] py-14 lg:py-20 text-[#0D1B2A]"
           >
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
               <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
                 <div className="max-w-3xl space-y-3">
-                  <span className="inline-block text-xs font-semibold uppercase tracking-[0.14em] text-[#c5a059]">
+                  <span className="inline-block text-xs font-semibold uppercase tracking-[0.14em] text-[#856422]">
                     Business Starter Package · From AED 400/Month · MD 131/2026
                   </span>
-                  <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight leading-snug">
+                  <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#0D1B2A] tracking-tight leading-snug">
                     Small Business Corporate Tax Filing &amp; AED 10,000 Penalty Waiver (Business Starter)
                   </h2>
-                  <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-[68ch]">
+                  <p className="text-sm sm:text-base text-[#475569] leading-relaxed max-w-[68ch]">
                     Protect your UAE Free Zone or Mainland company from automatic FTA fines while keeping your Corporate Tax rate at 0% legally. DiasUAE&apos;s{" "}
-                    <strong className="text-white font-semibold">Business Starter</strong> package (from AED 400/month) combines monthly IFRS bookkeeping with EmaraTax Corporate Tax registration, timely first-return filing, and 0% Small Business Relief elections.
+                    <strong className="text-[#0D1B2A] font-semibold">Business Starter</strong> package (from AED 400/month) combines monthly IFRS bookkeeping with EmaraTax Corporate Tax registration, timely first-return filing, and 0% Small Business Relief elections.
                   </p>
                 </div>
                 <a
@@ -726,7 +653,7 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
                     e.preventDefault();
                     onNavigate("/pricing");
                   }}
-                  className="min-h-[46px] px-6 py-3 rounded-xl bg-[#c5a059] hover:bg-[#b58f47] text-[#070d19] font-semibold text-sm inline-flex items-center justify-center gap-2 transition-colors shrink-0 whitespace-nowrap"
+                  className="min-h-[46px] px-6 py-3 rounded-xl bg-[#1B4332] hover:bg-[#143326] text-white font-semibold text-sm inline-flex items-center justify-center gap-2 transition-colors shrink-0 whitespace-nowrap shadow-xs"
                 >
                   <span>View Business Starter Pricing</span>
                   <ArrowRight className="w-4 h-4 shrink-0" />
@@ -734,50 +661,50 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-                <div className="rounded-2xl bg-[#0d1b2a] border border-[#c5a059]/30 p-6 space-y-2.5">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[#c5a059]">
+                <div className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-6 space-y-2.5 shadow-xs">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#856422]">
                     FTA Decision No. 3 of 2024
                   </span>
-                  <h3 className="font-display text-lg font-bold text-white">
+                  <h3 className="font-display text-lg font-bold text-[#0D1B2A]">
                     3-Month Corporate Tax Registration Rule
                   </h3>
-                  <p className="text-sm text-slate-300 leading-relaxed">
+                  <p className="text-sm text-[#475569] leading-relaxed">
                     Every newly incorporated UAE Mainland or Free Zone entity must submit its EmaraTax Corporate Tax registration within{" "}
-                    <strong className="text-white font-semibold">3 months</strong> of trade licence issuance to avoid the automatic AED 10,000 administrative penalty.
+                    <strong className="text-[#0D1B2A] font-semibold">3 months</strong> of trade licence issuance to avoid the automatic AED 10,000 administrative penalty.
                   </p>
                 </div>
 
-                <div className="rounded-2xl bg-[#0d1b2a] border border-[#c5a059]/30 p-6 space-y-2.5">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[#c5a059]">
+                <div className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-6 space-y-2.5 shadow-xs">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#856422]">
                     FTA Penalty Waiver Initiative
                   </span>
-                  <h3 className="font-display text-lg font-bold text-white">
+                  <h3 className="font-display text-lg font-bold text-[#0D1B2A]">
                     7-Month First-Return Waiver Window
                   </h3>
-                  <p className="text-sm text-slate-300 leading-relaxed">
+                  <p className="text-sm text-[#475569] leading-relaxed">
                     Missed the registration deadline? Under the FTA waiver initiative, filing your first Corporate Tax return (or annual declaration) within{" "}
-                    <strong className="text-white font-semibold">7 months</strong> of your first tax period end qualifies your company to waive or credit back the{" "}
-                    <strong className="text-[#c5a059] font-semibold">AED 10,000</strong> late-registration penalty.
+                    <strong className="text-[#0D1B2A] font-semibold">7 months</strong> of your first tax period end qualifies your company to waive or credit back the{" "}
+                    <strong className="text-[#1B4332] font-semibold">AED 10,000</strong> late-registration penalty.
                   </p>
                 </div>
 
-                <div className="rounded-2xl bg-[#0d1b2a] border border-[#c5a059]/30 p-6 space-y-2.5">
-                  <span className="text-xs font-semibold uppercase tracking-wider text-[#c5a059]">
+                <div className="rounded-2xl bg-[#FFFFFF] border border-[#E2E8F0] p-6 space-y-2.5 shadow-xs">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#856422]">
                     Ministerial Decision No. 131 of 2026
                   </span>
-                  <h3 className="font-display text-lg font-bold text-white">
+                  <h3 className="font-display text-lg font-bold text-[#0D1B2A]">
                     Small Business Relief Extended to Dec 31, 2029
                   </h3>
-                  <p className="text-sm text-slate-300 leading-relaxed">
+                  <p className="text-sm text-[#475569] leading-relaxed">
                     UAE resident businesses with annual gross revenue up to{" "}
-                    <strong className="text-white font-semibold">AED 3,000,000</strong> can elect{" "}
-                    <strong className="text-[#c5a059] font-semibold">0% Small Business Relief</strong> on their EmaraTax return for tax periods ending on or before{" "}
-                    <strong className="text-white font-semibold">December 31, 2029</strong>—bundled into our Business Starter retainer.
+                    <strong className="text-[#0D1B2A] font-semibold">AED 3,000,000</strong> can elect{" "}
+                    <strong className="text-[#1B4332] font-semibold">0% Small Business Relief</strong> on their EmaraTax return for tax periods ending on or before{" "}
+                    <strong className="text-[#0D1B2A] font-semibold">December 31, 2029</strong>—bundled into our Business Starter retainer.
                   </p>
                 </div>
               </div>
 
-              <div className="pt-1 text-sm text-slate-300">
+              <div className="pt-1 text-sm text-[#475569]">
                 Looking for fixed-fee monthly IFRS bookkeeping + EmaraTax filing?{" "}
                 <a
                   href="/pricing"
@@ -786,7 +713,7 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
                     e.preventDefault();
                     onNavigate("/pricing");
                   }}
-                  className="text-[#c5a059] hover:text-[#e6c884] font-semibold underline underline-offset-4 transition-colors"
+                  className="text-[#1B4332] hover:text-[#143326] font-semibold underline underline-offset-4 transition-colors"
                 >
                   Start Business Starter (from AED 400/mo) or upgrade to Corporate Growth on our Pricing page →
                 </a>
@@ -832,12 +759,12 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
       faqsHeading={`Questions About ${currentService.title}`}
       customFaqSection={
         featuredAeoFaq ? (
-          <article className="rounded-2xl bg-[#070d19] text-white border border-[#c5a059]/35 p-6 sm:p-8 shadow-sm">
-            <div className="w-10 h-[2px] bg-[#c5a059] mb-4" aria-hidden="true" />
-            <h2 className="font-display text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug mb-3">
+          <article className="rounded-2xl bg-[#FFFFFF] text-[#0D1B2A] border border-[#E2E8F0] p-6 sm:p-8 shadow-xs">
+            <div className="w-10 h-[2px] bg-[#C5A059] mb-4" aria-hidden="true" />
+            <h3 className="font-display text-xl sm:text-2xl font-bold text-[#0D1B2A] tracking-tight leading-snug mb-3">
               {featuredAeoFaq.question}
-            </h2>
-            <p className="text-sm sm:text-[15px] text-slate-200 leading-relaxed">
+            </h3>
+            <p className="text-sm sm:text-[15px] text-[#475569] leading-relaxed">
               {featuredAeoFaq.answer}
             </p>
           </article>

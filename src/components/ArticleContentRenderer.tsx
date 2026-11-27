@@ -156,7 +156,7 @@ export const ArticleContentRenderer: React.FC<ArticleContentRendererProps> = ({
           >
             <table className="min-w-full border-collapse text-left text-sm">
               <thead>
-                <tr className="bg-[#0D1B2A] text-white">
+                <tr className="bg-[#F8FAFC] text-[#0D1B2A] border-b border-[#E2E8F0]">
                   {headerCells.map((cell, cIdx) => (
                     <th key={cIdx} className="px-4 py-3.5 font-semibold text-xs sm:text-sm tracking-tight">
                       {renderFormattedInline(cell, onNavigate)}

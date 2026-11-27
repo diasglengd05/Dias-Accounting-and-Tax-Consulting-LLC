@@ -30,7 +30,7 @@ export const SECTION_SEO_MAP_EN: Record<string, SEOConfig> = {
   home: {
     title: "DiasUAE | UAE Tax Agents & IFRS Accounting From AED 400/Mo",
     description:
-      "FTA-Registered Tax Agency in Dubai & SHAMS led by Glen Dias. Monthly IFRS bookkeeping, 5% VAT, 9% Corporate Tax & dividend audits from AED 400/mo. Free 15-min review.",
+      "FTA-Registered Tax Agency in Dubai & SHAMS. Monthly IFRS bookkeeping, 5% VAT Form 201 & 9% Corporate Tax packages from AED 400/mo. 2x Clutch 2026 Winner.",
     keywords:
       "DiasUAE, diasuae.ae, UAE Corporate Tax, UAE VAT Compliance, IFRS Bookkeeping Dubai, FTA Registered Tax Agent, Fixed-Fee Accounting Packages UAE, SHAMS Accounting Firm, DIFC Tax Compliance, Dias Accounting",
     hash: "#home",
@@ -61,7 +61,11 @@ interface UseDynamicSEOMetadataProps {
 
 function setMetaTag(attributeName: "name" | "property", attributeValue: string, content: string) {
   if (typeof document === "undefined") return;
-  let element = document.querySelector(`meta[${attributeName}="${attributeValue}"]`);
+  const existing = Array.from(document.querySelectorAll(`meta[${attributeName}="${attributeValue}"]`));
+  let element = existing[0] as Element | undefined;
+  for (let i = 1; i < existing.length; i++) {
+    existing[i].parentNode?.removeChild(existing[i]);
+  }
   if (!element) {
     element = document.createElement("meta");
     element.setAttribute(attributeName, attributeValue);

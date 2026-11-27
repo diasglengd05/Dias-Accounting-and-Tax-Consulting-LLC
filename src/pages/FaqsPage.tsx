@@ -203,6 +203,28 @@ export const FAQS_PAGE_ITEMS: StructuredFaq[] = [
   },
 ];
 
+const FAQS_CANONICAL_PATH = "/faqs";
+const FAQS_PAGE_URL = `https://diasuae.ae${FAQS_CANONICAL_PATH}`;
+const FAQS_PAGE_TITLE = "UAE Corporate Tax, VAT & Accounting FAQs | Dias UAE";
+const FAQS_PAGE_HEADING =
+  "UAE Accounting, 5% VAT & 9% Corporate Tax Frequently Asked Questions";
+const FAQS_PAGE_DESCRIPTION =
+  "Clear answers to top UAE tax questions: 9% Corporate Tax, AED 3M Small Business Relief, 0% QFZP Free Zone rules, VAT 201 filing, and fixed-fee pricing.";
+
+/**
+ * Schema.org FAQPage JSON-LD structured data for /faqs.
+ * Mirrors all 26 FAQ questions and answers displayed on the page verbatim.
+ */
+export const FAQS_PAGE_JSONLD = buildFAQPageSchema(
+  FAQS_PAGE_ITEMS,
+  `${FAQS_PAGE_URL}#faqpage`,
+  {
+    url: FAQS_PAGE_URL,
+    name: FAQS_PAGE_HEADING,
+    description: FAQS_PAGE_DESCRIPTION,
+  }
+);
+
 export const FaqsPage: React.FC<FaqsPageProps> = ({
   onNavigate,
   onOpenAudit,
@@ -236,29 +258,25 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
     });
   }, [faqs, searchQuery, selectedCategory]);
 
-  // Generate FAQPage JSON-LD Schema matching 100% of visible FAQs on /faqs
-  const faqPageSchema = useMemo(
-    () => buildFAQPageSchema(faqs, "https://diasuae.ae/faqs#faqpage"),
-    [faqs]
-  );
-
   useEffect(() => {
     applyPageSEO({
-      title: "UAE Corporate Tax, VAT & Accounting FAQs | Dias UAE",
-      description:
-        "Clear answers to top UAE tax questions: 9% Corporate Tax, AED 3M Small Business Relief, 0% QFZP Free Zone rules, VAT 201 filing, and fixed-fee pricing.",
-      canonicalPath: "/faqs",
+      title: FAQS_PAGE_TITLE,
+      description: FAQS_PAGE_DESCRIPTION,
+      canonicalPath: FAQS_CANONICAL_PATH,
       keywords:
         "uae tax faqs, corporate tax questions dubai, small business relief faq, vat compliance answers",
     });
 
-    upsertJsonLd("page-faq-jsonld", faqPageSchema);
+    upsertJsonLd("page-faq-jsonld", FAQS_PAGE_JSONLD);
     upsertJsonLd(
       "page-breadcrumb-jsonld",
-      buildBreadcrumbSchema([
-        { name: "Home", path: "/" },
-        { name: "FAQs", path: "/faqs" },
-      ])
+      buildBreadcrumbSchema(
+        [
+          { name: "Home", path: "/" },
+          { name: "FAQs", path: FAQS_CANONICAL_PATH },
+        ],
+        `${FAQS_PAGE_URL}#breadcrumb`
+      )
     );
 
     window.scrollTo({ top: 0, behavior: "instant" });
@@ -267,7 +285,7 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
       removeJsonLd("page-faq-jsonld");
       removeJsonLd("page-breadcrumb-jsonld");
     };
-  }, [faqPageSchema]);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#FFFFFF] font-sans text-[#0D1B2A] antialiased">
@@ -371,6 +389,7 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
                       type="button"
                       onClick={() => setOpenFaq(isOpen ? null : faq.id)}
                       aria-expanded={isOpen}
+                      aria-controls={`faq-panel-${faq.id}`}
                       className="w-full min-h-[60px] p-5 sm:p-6 text-left flex items-center justify-between gap-4 cursor-pointer"
                     >
                       <div className="space-y-1">
@@ -389,11 +408,20 @@ export const FaqsPage: React.FC<FaqsPageProps> = ({
                       />
                     </button>
 
-                    {isOpen && (
-                      <div className="px-5 sm:px-6 pb-6 pt-3 text-sm sm:text-[15px] text-[#475569] leading-[1.65] border-t border-slate-100">
-                        <p className="whitespace-pre-line max-w-[68ch]">{faq.answer}</p>
+                    {/* Keep every FAQ answer mounted in the DOM so crawlers verify 1:1 parity with FAQPage JSON-LD */}
+                    <div
+                      id={`faq-panel-${faq.id}`}
+                      aria-hidden={!isOpen}
+                      className={`grid transition-[grid-template-rows,opacity] duration-200 ease-out ${
+                        isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                      }`}
+                    >
+                      <div className="overflow-hidden">
+                        <div className="px-5 sm:px-6 pb-6 pt-3 text-sm sm:text-[15px] text-[#475569] leading-[1.65] border-t border-slate-100">
+                          <p className="whitespace-pre-line max-w-[68ch]">{faq.answer}</p>
+                        </div>
                       </div>
-                    )}
+                    </div>
                   </div>
                 );
               })}

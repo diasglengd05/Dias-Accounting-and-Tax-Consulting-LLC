@@ -24,19 +24,18 @@ export const BlogInstantAdvisorStrip: React.FC<BlogInstantAdvisorStripProps> = (
   return (
     <aside
       aria-label="Instant Advisor and UAE Tax Calculator"
-      className="not-prose my-5 rounded-2xl bg-[#0d1b2a] p-5 sm:p-6 shadow-xl text-left"
-      style={{ border: "1px solid #c5a059" }}
+      className="not-prose my-5 rounded-2xl bg-[#F8FAFC] border border-[#E2E8F0] border-l-[3px] border-l-[#C5A059] p-5 sm:p-6 shadow-sm text-left"
     >
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-5">
         <div className="space-y-1.5 max-w-2xl">
-          <div className="inline-flex items-center gap-1.5 font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.14em] text-[#dec18c]">
-            <ShieldCheck className="w-3.5 h-3.5 text-[#c5a059] shrink-0" />
+          <div className="inline-flex items-center gap-1.5 font-mono text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.14em] text-[#856422]">
+            <ShieldCheck className="w-3.5 h-3.5 text-[#1B4332] shrink-0" />
             <span>FTA-REGISTERED TAX AGENCY · SHAMS HQ &amp; DUBAI</span>
           </div>
-          <h2 className="font-display text-lg sm:text-xl font-extrabold text-[#ffffff] leading-snug m-0">
+          <h2 className="font-display text-lg sm:text-xl font-extrabold text-[#0D1B2A] leading-snug m-0">
             Need an FTA-Registered Tax Agent in Dubai or Sharjah?
           </h2>
-          <p className="text-xs sm:text-sm text-[#cbd5e1] leading-relaxed m-0">
+          <p className="text-xs sm:text-sm text-[#475569] leading-relaxed m-0">
             Fixed-fee IFRS bookkeeping, 5% VAT, 9% Corporate Tax &amp; Dividend Audits starting from AED 400/month.
           </p>
         </div>
@@ -46,7 +45,7 @@ export const BlogInstantAdvisorStrip: React.FC<BlogInstantAdvisorStripProps> = (
             href={WHATSAPP_BLOG_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#c5a059] hover:bg-[#dec18c] text-[#070d19] font-display font-extrabold text-xs sm:text-[13px] px-4 sm:px-5 py-3 transition-colors whitespace-nowrap no-underline shadow-md shadow-[#c5a059]/15"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#1B4332] hover:bg-[#143326] text-white font-display font-bold text-xs sm:text-[13px] px-4 sm:px-5 py-3 transition-colors whitespace-nowrap no-underline shadow-xs"
           >
             <MessageCircle className="w-4 h-4 shrink-0" />
             <span>WhatsApp Advisor Now</span>
@@ -55,12 +54,11 @@ export const BlogInstantAdvisorStrip: React.FC<BlogInstantAdvisorStripProps> = (
           <a
             href="/uae-tax-planner"
             onClick={handleCalculatorClick}
-            className="inline-flex items-center justify-center gap-2 rounded-xl bg-transparent hover:bg-[#c5a059]/12 text-[#ffffff] font-display font-bold text-xs sm:text-[13px] px-4 sm:px-5 py-3 transition-colors whitespace-nowrap no-underline"
-            style={{ border: "1px solid #c5a059" }}
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-white hover:bg-[#F8FAFC] border border-[#CBD5E1] hover:border-[#1B4332] text-[#0D1B2A] hover:text-[#1B4332] font-display font-bold text-xs sm:text-[13px] px-4 sm:px-5 py-3 transition-colors whitespace-nowrap no-underline"
           >
-            <Calculator className="w-4 h-4 text-[#c5a059] shrink-0" />
+            <Calculator className="w-4 h-4 text-[#1B4332] shrink-0" />
             <span>Free 2026 Tax Calculator</span>
-            <ArrowRight className="w-3.5 h-3.5 text-[#c5a059] shrink-0" />
+            <ArrowRight className="w-3.5 h-3.5 text-[#1B4332] shrink-0" />
           </a>
         </div>
       </div>

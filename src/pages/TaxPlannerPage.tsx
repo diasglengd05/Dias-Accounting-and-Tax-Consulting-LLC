@@ -199,6 +199,7 @@ export const TaxPlannerPage: React.FC<TaxPlannerPageProps> = ({
                     <button
                       type="button"
                       aria-expanded={isOpen}
+                      aria-controls={`planner-faq-panel-${idx}`}
                       onClick={() => setOpenFaq(isOpen ? null : idx)}
                       className="w-full min-h-[56px] py-5 text-left flex items-center justify-between gap-4 cursor-pointer group"
                     >
@@ -212,11 +213,19 @@ export const TaxPlannerPage: React.FC<TaxPlannerPageProps> = ({
                         {isOpen ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                       </span>
                     </button>
-                    {isOpen && (
-                      <div className="pb-5 pr-8 text-sm sm:text-[15px] text-[#475569] leading-relaxed">
-                        {faq.a}
+                    <div
+                      id={`planner-faq-panel-${idx}`}
+                      aria-hidden={!isOpen}
+                      className={`grid transition-[grid-template-rows,opacity] duration-200 ease-out ${
+                        isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                      }`}
+                    >
+                      <div className="overflow-hidden">
+                        <div className="pb-5 pr-8 text-sm sm:text-[15px] text-[#475569] leading-relaxed">
+                          {faq.a}
+                        </div>
                       </div>
-                    )}
+                    </div>
                   </div>
                 );
               })}

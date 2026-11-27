@@ -156,12 +156,12 @@ export const WhyChooseUsGrid: React.FC<WhyChooseUsGridProps> = ({ onBookCall }) 
         </div>
 
         {/* Streamlined Bottom Action Bar */}
-        <div className="mt-10 bg-navy-950 rounded-2xl p-6 sm:p-8 text-white border border-slate-800 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+        <div className="mt-10 bg-gradient-to-br from-[#F8FAFC] via-[#FFFFFF] to-[#F8FAFC] rounded-2xl p-6 sm:p-8 text-[#0D1B2A] border border-[#E2E8F0] shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
           <div className="space-y-1">
-            <h4 className="font-display text-base sm:text-lg font-bold text-white">
+            <h4 className="font-display text-base sm:text-lg font-bold text-[#0D1B2A]">
               {isAr ? "جاهز لضمان الامتثال المالي والضريبي لشركتك؟" : "Ready for Flawless UAE Financial & Tax Compliance?"}
             </h4>
-            <p className="text-xs text-slate-300">
+            <p className="text-xs text-[#475569]">
               {isAr
                 ? "احصل على تدقيق مجاني ومراجعة محاسبية تمهيدية مع مستشارنا المعتمد."
                 : "Schedule a complimentary 30-minute diagnostic consultation with a senior UAE tax partner."}
@@ -177,7 +177,7 @@ export const WhyChooseUsGrid: React.FC<WhyChooseUsGridProps> = ({ onBookCall }) 
                 if (el) el.scrollIntoView({ behavior: "smooth" });
               }
             }}
-            className="shrink-0 bg-gold-500 hover:bg-gold-400 text-navy-950 font-display font-bold py-3 px-5 rounded-xl shadow-xs transition-all flex items-center gap-2 text-xs cursor-pointer active:scale-95 whitespace-nowrap"
+            className="shrink-0 bg-[#1B4332] hover:bg-[#143326] text-white font-display font-bold py-3 px-5 rounded-xl shadow-xs transition-all flex items-center gap-2 text-xs cursor-pointer active:scale-95 whitespace-nowrap"
           >
             <span>{isAr ? "تحدث مع مستشار معتمد الآن" : "Speak with an Advisor"}</span>
             <ArrowRight className={`w-3.5 h-3.5 ${isRTL ? "rotate-180" : ""}`} />

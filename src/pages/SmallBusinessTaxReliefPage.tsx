@@ -71,7 +71,7 @@ export const SmallBusinessTaxReliefPage: React.FC<PageProps> = ({
     applyPageSEO({
       title: "UAE Small Business Tax Relief (AED 3M) | Dias Accounting",
       description:
-        "Guide to UAE 0% Small Business Relief (SBR) under Article 21 and Ministerial Decision No. 73/2023, extended through 2029 for businesses up to AED 3M.",
+        "Check eligibility for 0% UAE Small Business Relief (revenue up to AED 3M, extended to 2029). IFRS bookkeeping & Corporate Tax filing from AED 400/mo.",
       canonicalPath,
       keywords:
         "Small Business Corporate Tax Relief Dubai, UAE small business relief 2029, 0% corporate tax UAE, Ministerial Decision 73 of 2023, EmaraTax SBR election",

@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import { Check, ArrowRight } from "lucide-react";
+import { BUSINESS_ENTITY, SITE_URL } from "../lib/seoConfig";
 
-interface HomepagePricingSectionProps {
-  billingPeriod: "monthly" | "annual";
-  setBillingPeriod: (period: "monthly" | "annual") => void;
-  pricingPath: "prospective" | "retrospective";
-  setPricingPath: (path: "prospective" | "retrospective") => void;
+export interface PricingSectionProps {
+  headingLevel?: "h1" | "h2";
+  billingPeriod?: "monthly" | "annual";
+  setBillingPeriod?: (period: "monthly" | "annual") => void;
+  pricingPath?: "prospective" | "retrospective";
+  setPricingPath?: (path: "prospective" | "retrospective") => void;
   onNavigate: (path: string) => void;
-  language: "en" | "ar";
+  language?: "en" | "ar";
   onPreselectedCallBooking?: (serviceTitle?: string) => void;
+  showFullPricingLink?: boolean;
 }
 
 type PricingTab = "retainers" | "backlog" | "standalone";
@@ -26,19 +29,179 @@ interface PricingCardItem {
   bookingTitle: string;
 }
 
-export const HomepagePricingSection: React.FC<HomepagePricingSectionProps> = ({
-  billingPeriod,
-  setBillingPeriod,
-  pricingPath,
-  setPricingPath,
+/**
+ * Structured OfferCatalog JSON-LD derived directly from the single-source-of-truth
+ * Homepage pricing tiers so `/pricing` structured data always matches the live cards verbatim.
+ */
+export const PRICING_OFFER_CATALOG_JSONLD = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "@id": `${SITE_URL}/pricing#pricing-catalog`,
+  name: "Transparent, Fixed-Fee UAE Accounting, VAT & Corporate Tax Packages",
+  description:
+    "Predictable retainers and standalone filings with zero surprise hourly billing. Packages start from AED 400/month.",
+  url: `${SITE_URL}/pricing`,
+  provider: {
+    "@id": BUSINESS_ENTITY.id,
+  },
+  areaServed: BUSINESS_ENTITY.areaServed,
+  hasOfferCatalog: {
+    "@type": "OfferCatalog",
+    name: "DiasUAE Fixed-Fee Accounting & Tax Packages",
+    itemListElement: [
+      {
+        "@type": "Offer",
+        name: "Business Starter",
+        description:
+          "Best for startups, solo founders, and micro-SMEs. Monthly IFRS double-entry bookkeeping, bank & corporate card reconciliation (up to 50 txns/mo), monthly Balance Sheet and Profit & Loss statements, annual Corporate Tax filing & 0% SBR election, and dedicated Senior Accountant support.",
+        price: "400",
+        priceCurrency: "AED",
+        url: `${SITE_URL}/pricing`,
+        priceSpecification: [
+          {
+            "@type": "UnitPriceSpecification",
+            name: "Annual Billing (AED 4,000/year + 5% VAT)",
+            price: "400",
+            priceCurrency: "AED",
+            unitText: "MONTH",
+          },
+          {
+            "@type": "UnitPriceSpecification",
+            name: "Monthly Billing (AED 500/mo + 5% VAT)",
+            price: "500",
+            priceCurrency: "AED",
+            unitText: "MONTH",
+          },
+        ],
+      },
+      {
+        "@type": "Offer",
+        name: "Corporate Growth",
+        description:
+          "Best for active UAE SMEs with VAT & 9% Corporate Tax. Includes everything in Business Starter plus quarterly VAT Form 201 preparation & EmaraTax filing, input VAT recovery checks, annual Corporate Tax return & 9% statutory adjustments, UAE E-Invoicing Phase 1 readiness, and priority FTA tax specialist access.",
+        price: "600",
+        priceCurrency: "AED",
+        url: `${SITE_URL}/pricing`,
+        priceSpecification: [
+          {
+            "@type": "UnitPriceSpecification",
+            name: "Annual Billing (AED 6,000/year + 5% VAT)",
+            price: "600",
+            priceCurrency: "AED",
+            unitText: "MONTH",
+          },
+          {
+            "@type": "UnitPriceSpecification",
+            name: "Monthly Billing (AED 750/mo + 5% VAT)",
+            price: "750",
+            priceCurrency: "AED",
+            unitText: "MONTH",
+          },
+        ],
+      },
+      {
+        "@type": "Offer",
+        name: "Enterprise & CFO",
+        description:
+          "Best for DIFC, QFZP Free Zones & multi-entity groups. Includes everything in Corporate Growth plus monthly fractional CFO review & cash flow forecasting, 0% Free Zone (QFZP) substance & de minimis compliance, statutory audit file preparation, TRC & ESR support, and direct Senior Tax Partner access.",
+        price: "1000",
+        priceCurrency: "AED",
+        url: `${SITE_URL}/pricing`,
+        priceSpecification: [
+          {
+            "@type": "UnitPriceSpecification",
+            name: "Annual Billing (AED 10,000/year + 5% VAT)",
+            price: "1000",
+            priceCurrency: "AED",
+            unitText: "MONTH",
+          },
+          {
+            "@type": "UnitPriceSpecification",
+            name: "Monthly Billing (AED 1,250/mo + 5% VAT)",
+            price: "1250",
+            priceCurrency: "AED",
+            unitText: "MONTH",
+          },
+        ],
+      },
+      {
+        "@type": "Offer",
+        name: "Single Fiscal Year (Backlog Catch-Up)",
+        description:
+          "Best for entities catching up 1 overdue fiscal year. Fixed one-time fee per fiscal year + 5% VAT.",
+        price: "2500",
+        priceCurrency: "AED",
+        url: `${SITE_URL}/pricing`,
+      },
+      {
+        "@type": "Offer",
+        name: "Multi-Year Catch-Up (2 FYs)",
+        description:
+          "Best for 2 consecutive years of ledger reconstruction. Covers both years (AED 2,400/yr) + 5% VAT.",
+        price: "4800",
+        priceCurrency: "AED",
+        url: `${SITE_URL}/pricing`,
+      },
+      {
+        "@type": "Offer",
+        name: "E-Commerce & High Volume (Backlog Catch-Up)",
+        description:
+          "Best for Stripe, Shopify, Amazon & multi-currency books. Fixed fee per complex fiscal year + 5% VAT.",
+        price: "7500",
+        priceCurrency: "AED",
+        url: `${SITE_URL}/pricing`,
+      },
+      {
+        "@type": "Offer",
+        name: "MicroBiz CT Filing (0% SBR)",
+        description:
+          "Best for UAE SMEs under AED 3M revenue electing 0% SBR. Flat fee per annual EmaraTax filing + 5% VAT.",
+        price: "500",
+        priceCurrency: "AED",
+        url: `${SITE_URL}/pricing`,
+      },
+      {
+        "@type": "Offer",
+        name: "QFZP 0% Free Zone Review",
+        description:
+          "Best for DIFC, DMCC, IFZA & SHAMS Free Zone entities. Fixed annual review & structuring fee + 5% VAT.",
+        price: "1499",
+        priceCurrency: "AED",
+        url: `${SITE_URL}/pricing`,
+      },
+    ],
+  },
+};
+
+export const PricingSection: React.FC<PricingSectionProps> = ({
+  headingLevel = "h2",
+  billingPeriod: controlledBillingPeriod,
+  setBillingPeriod: controlledSetBillingPeriod,
+  pricingPath: controlledPricingPath,
+  setPricingPath: controlledSetPricingPath,
   onNavigate,
-  language,
+  language = "en",
   onPreselectedCallBooking,
+  showFullPricingLink,
 }) => {
   const isAr = language === "ar";
+  const [internalBillingPeriod, setInternalBillingPeriod] = useState<"monthly" | "annual">(
+    "annual"
+  );
+  const [internalPricingPath, setInternalPricingPath] = useState<"prospective" | "retrospective">(
+    "prospective"
+  );
+
+  const billingPeriod = controlledBillingPeriod ?? internalBillingPeriod;
+  const setBillingPeriod = controlledSetBillingPeriod ?? setInternalBillingPeriod;
+  const pricingPath = controlledPricingPath ?? internalPricingPath;
+  const setPricingPath = controlledSetPricingPath ?? setInternalPricingPath;
+
   const [activeTab, setActiveTab] = useState<PricingTab>(
     pricingPath === "retrospective" ? "backlog" : "retainers"
   );
+
+  const shouldShowFullPricingLink = showFullPricingLink ?? headingLevel === "h2";
 
   const handleTabChange = (tab: PricingTab) => {
     setActiveTab(tab);
@@ -363,6 +526,10 @@ export const HomepagePricingSection: React.FC<HomepagePricingSectionProps> = ({
       ? backlogCards
       : standaloneCards;
 
+  const headingText = isAr
+    ? "باقات محاسبية وضريبية ثابتة وواضحة"
+    : "Transparent, Fixed-Fee Pricing";
+
   return (
     <section
       id="pricing"
@@ -371,14 +538,21 @@ export const HomepagePricingSection: React.FC<HomepagePricingSectionProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         {/* Section Heading */}
         <div className="max-w-2xl mx-auto text-center space-y-4">
-          <h2
-            className="text-3xl sm:text-4xl font-bold text-[#0D1B2A] tracking-tight"
-            style={{ textWrap: "balance" } as React.CSSProperties}
-          >
-            {isAr
-              ? "باقات محاسبية وضريبية ثابتة وواضحة"
-              : "Transparent, Fixed-Fee Pricing"}
-          </h2>
+          {headingLevel === "h1" ? (
+            <h1
+              className="text-3xl sm:text-4xl font-bold text-[#0D1B2A] tracking-tight"
+              style={{ textWrap: "balance" } as React.CSSProperties}
+            >
+              {headingText}
+            </h1>
+          ) : (
+            <h2
+              className="text-3xl sm:text-4xl font-bold text-[#0D1B2A] tracking-tight"
+              style={{ textWrap: "balance" } as React.CSSProperties}
+            >
+              {headingText}
+            </h2>
+          )}
           <p className="text-base sm:text-lg text-[#475569] leading-[1.6] max-w-[60ch] mx-auto">
             {isAr
               ? "رسوم شهرية أو سنوية واضحة بدون فواتير ساعات مفاجئة. تبدأ باقاتنا من 400 درهم شهرياً."
@@ -542,21 +716,35 @@ export const HomepagePricingSection: React.FC<HomepagePricingSectionProps> = ({
               ? "يعتمد العرض النهائي على حجم المعاملات ونشاط الرخصة. احجز استشارة مجانية لعرض سعر مكتوب."
               : "Final fees depend on monthly transaction volume and licensing scope. Request a written quote in minutes."}
           </p>
-          <a
-            href="/pricing"
-            onClick={(e) => {
-              e.preventDefault();
-              onNavigate("/pricing");
-            }}
-            className="inline-flex items-center gap-1.5 font-semibold text-[#1B4332] hover:text-[#143326] whitespace-nowrap shrink-0"
-          >
-            <span>{isAr ? "مقارنة تفصيلية للباقات" : "Compare all package features"}</span>
-            <ArrowRight className="w-4 h-4 rtl:rotate-180" />
-          </a>
+          {shouldShowFullPricingLink ? (
+            <a
+              href="/pricing"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate("/pricing");
+              }}
+              className="inline-flex items-center gap-1.5 font-semibold text-[#1B4332] hover:text-[#143326] whitespace-nowrap shrink-0"
+            >
+              <span>{isAr ? "مقارنة تفصيلية للباقات" : "Compare all package features"}</span>
+              <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+            </a>
+          ) : (
+            <a
+              href="/contact"
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate("/contact");
+              }}
+              className="inline-flex items-center gap-1.5 font-semibold text-[#1B4332] hover:text-[#143326] whitespace-nowrap shrink-0"
+            >
+              <span>{isAr ? "اطلب عرض سعر مكتوب" : "Request a written quote"}</span>
+              <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+            </a>
+          )}
         </div>
       </div>
     </section>
   );
 };
 
-export default HomepagePricingSection;
+export default PricingSection;
