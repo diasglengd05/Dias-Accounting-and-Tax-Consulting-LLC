@@ -21,6 +21,7 @@ import {
   findBloggerPostBySlug,
   getInitialBloggerPosts,
   mergeWithFallbackPosts,
+  normalizeSlugParam,
   sanitizeBloggerHtml,
   syncUnifiedBloggerPosts,
 } from "../utils/bloggerFeed";
@@ -50,39 +51,62 @@ export const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
   onOpenPrivacy,
   onOpenGooglePreferred,
 }) => {
+  const normalizedSlug = useMemo(
+    () => normalizeSlugParam(blogSlug),
+    [blogSlug]
+  );
+
   const [posts, setPosts] = useState<BloggerPost[]>(() =>
     initialPosts && initialPosts.length > 0
       ? mergeWithFallbackPosts(initialPosts)
       : getInitialBloggerPosts()
   );
-  const [loadingRemote, setLoadingRemote] = useState<boolean>(() => {
+
+  // Track whether both static (/blogger-posts.json + fallback) AND live JSONP sync
+  // have completed for the current slug so "Article Not Found" NEVER flashes early.
+  const [isLoading, setIsLoading] = useState<boolean>(() => {
     const initialList =
       initialPosts && initialPosts.length > 0
         ? mergeWithFallbackPosts(initialPosts)
         : getInitialBloggerPosts();
-    return !findBloggerPostBySlug(blogSlug, initialList);
+    return !findBloggerPostBySlug(normalizedSlug, initialList);
+  });
+  const [settledSlug, setSettledSlug] = useState<string | null>(() => {
+    const initialList =
+      initialPosts && initialPosts.length > 0
+        ? mergeWithFallbackPosts(initialPosts)
+        : getInitialBloggerPosts();
+    return findBloggerPostBySlug(normalizedSlug, initialList)
+      ? normalizedSlug
+      : null;
   });
   const [copiedLink, setCopiedLink] = useState(false);
 
   const post = useMemo(
-    () => findBloggerPostBySlug(blogSlug, posts),
-    [blogSlug, posts]
+    () => findBloggerPostBySlug(normalizedSlug, posts),
+    [normalizedSlug, posts]
   );
 
+  // Guard against any 1-frame render race when navigating to a new slug
+  const showLoadingSkeleton =
+    !post && (isLoading || settledSlug !== normalizedSlug);
+
   useEffect(() => {
-    const alreadyFound = Boolean(findBloggerPostBySlug(blogSlug, posts));
-    if (!alreadyFound) {
-      setLoadingRemote(true);
+    const initialFound = Boolean(findBloggerPostBySlug(normalizedSlug, posts));
+    if (!initialFound) {
+      setIsLoading(true);
     }
 
     let active = true;
     syncUnifiedBloggerPosts({
-      maxResults: 50,
+      maxResults: 100,
+      forceRefresh: !initialFound,
       onSnapshot: (snapshotPosts) => {
         if (!active || snapshotPosts.length === 0) return;
         setPosts(snapshotPosts);
-        if (findBloggerPostBySlug(blogSlug, snapshotPosts)) {
-          setLoadingRemote(false);
+        if (findBloggerPostBySlug(normalizedSlug, snapshotPosts)) {
+          setSettledSlug(normalizedSlug);
+          setIsLoading(false);
         }
       },
     })
@@ -93,19 +117,21 @@ export const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
         }
       })
       .finally(() => {
-        if (active) setLoadingRemote(false);
+        if (!active) return;
+        setSettledSlug(normalizedSlug);
+        setIsLoading(false);
       });
 
     return () => {
       active = false;
     };
-  }, [blogSlug]);
+  }, [normalizedSlug]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
 
     if (!post) {
-      if (!loadingRemote) {
+      if (!showLoadingSkeleton) {
         applyPageSEO({
           title: "Article Not Found | UAE Tax Insights | DiasUAE",
           description:
@@ -178,7 +204,7 @@ export const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
       removeJsonLd("page-article-jsonld");
       removeJsonLd("page-breadcrumb-jsonld");
     };
-  }, [post, loadingRemote]);
+  }, [post, showLoadingSkeleton]);
 
   const relatedPosts: BlogPost[] = useMemo(() => {
     const others = posts.filter(
@@ -254,13 +280,36 @@ export const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
       />
 
       <PageMainTransition id="main-content">
-        {loadingRemote ? (
-          <section className="bg-[#FFFFFF] py-28">
-            <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
-              <div className="w-8 h-8 border-2 border-[#1B4332] border-t-transparent rounded-full animate-spin mx-auto" />
-              <p className="text-sm text-[#475569] font-medium">
-                Loading regulatory briefing...
-              </p>
+        {showLoadingSkeleton ? (
+          <section
+            aria-busy="true"
+            aria-label="Loading article"
+            className="bg-[#FFFFFF] py-14 sm:py-20 border-b border-[#E2E8F0]"
+          >
+            <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 animate-pulse">
+              <div className="space-y-4">
+                <div className="h-4 w-36 rounded-md bg-[#E2E8F0]" />
+                <div className="h-9 w-11/12 rounded-lg bg-[#E2E8F0]" />
+                <div className="h-9 w-3/4 rounded-lg bg-[#E2E8F0]" />
+                <div className="h-5 w-full rounded-md bg-[#F1F5F9]" />
+                <div className="h-5 w-5/6 rounded-md bg-[#F1F5F9]" />
+              </div>
+              <div className="flex items-center gap-4 pt-4 border-t border-[#E2E8F0]">
+                <div className="h-10 w-10 rounded-full bg-[#E2E8F0]" />
+                <div className="space-y-2 flex-1">
+                  <div className="h-4 w-44 rounded bg-[#E2E8F0]" />
+                  <div className="h-3 w-56 rounded bg-[#F1F5F9]" />
+                </div>
+              </div>
+              <div className="space-y-3.5 pt-4">
+                <div className="h-4 w-full rounded bg-[#F1F5F9]" />
+                <div className="h-4 w-full rounded bg-[#F1F5F9]" />
+                <div className="h-4 w-11/12 rounded bg-[#F1F5F9]" />
+                <div className="h-4 w-5/6 rounded bg-[#F1F5F9]" />
+                <div className="h-6 w-2/5 rounded bg-[#E2E8F0] mt-6" />
+                <div className="h-4 w-full rounded bg-[#F1F5F9]" />
+                <div className="h-4 w-10/12 rounded bg-[#F1F5F9]" />
+              </div>
             </div>
           </section>
         ) : !post ? (

@@ -100,8 +100,35 @@ Want to verify your exact 2026 UAE Corporate Tax, Small Business Relief (0% up t
   isFallback: true,
 };
 
-function sanitizeSlug(raw: string): string {
-  return String(raw || "")
+export function normalizeSlugParam(raw: string): string {
+  let value = String(raw || "").trim();
+  if (!value) return "";
+
+  try {
+    value = decodeURIComponent(value);
+  } catch {
+    // Keep original value if URI decoding fails on malformed escape sequences
+  }
+
+  // Strip protocol/domain if a full URL was passed
+  value = value.replace(/^https?:\/\/[^/]+/i, "");
+  // Strip query string and hash fragment (e.g. ?m=1 from Blogger mobile redirects)
+  value = value.split("?")[0].split("#")[0];
+  // Trim leading/trailing slashes
+  value = value.replace(/^\/+|\/+$/g, "");
+  // Strip optional /blog/ or /blogs/ prefix
+  value = value.replace(/^blogs?\//i, "");
+  // Strip Blogger /YYYY/MM/ archive prefix if preserved in a redirect
+  value = value.replace(/^\d{4}\/\d{2}\//, "");
+  // Strip trailing slashes again and .html/.htm suffix
+  value = value.replace(/\/+$/g, "").replace(/\.html?$/i, "");
+  // Keep only the final path segment if extra slashes remain
+  if (value.includes("/")) {
+    const segments = value.split("/").filter(Boolean);
+    value = segments[segments.length - 1] || "";
+  }
+
+  return value
     .toLowerCase()
     .replace(/\.html?$/i, "")
     .replace(/[^a-z0-9-]+/g, "-")
@@ -109,27 +136,37 @@ function sanitizeSlug(raw: string): string {
     .replace(/^-+|-+$/g, "");
 }
 
+function sanitizeSlug(raw: string): string {
+  return normalizeSlugParam(raw);
+}
+
 /**
  * Extracts each post's exact URL slug from its `rel="alternate"` Blogger link
- * by taking the filename before `.html` (e.g., `.../2026/11/my-slug.html` -> `my-slug`).
+ * by stripping the domain, `/YYYY/MM/` prefix, `.html` suffix, query params,
+ * and trailing slashes, then lowercasing. Falls back to `entry.title.$t`.
  */
 export function extractBloggerSlug(altUrl?: string, fallbackTitle?: string): string {
-  if (altUrl && typeof altUrl === "string") {
+  if (altUrl && typeof altUrl === "string" && altUrl.trim()) {
     try {
-      const parsed = new URL(altUrl);
-      const segments = parsed.pathname.split("/").filter(Boolean);
-      const lastSegment = segments[segments.length - 1] || "";
-      const fromFile = sanitizeSlug(lastSegment.replace(/\.html?$/i, ""));
-      if (fromFile) return fromFile;
+      const parsed = new URL(altUrl.trim());
+      const cleanPath = parsed.pathname.replace(/^\/+|\/+$/g, "");
+      if (/\.html?$/i.test(cleanPath) || /^\d{4}\/\d{2}\//.test(cleanPath)) {
+        const stripped = cleanPath
+          .replace(/^\d{4}\/\d{2}\//, "")
+          .replace(/\.html?$/i, "")
+          .replace(/\/+$/g, "");
+        const fromUrl = normalizeSlugParam(stripped);
+        if (fromUrl) return fromUrl;
+      }
     } catch {
-      const match = altUrl.match(/\/([^/?#]+)\.html?(?:[?#]|$)/i);
-      if (match?.[1]) {
-        const fromRegex = sanitizeSlug(match[1]);
-        if (fromRegex) return fromRegex;
+      const noQuery = altUrl.split("?")[0].split("#")[0].replace(/\/+$/g, "");
+      if (/\.html?$/i.test(noQuery) || /\/\d{4}\/\d{2}\//.test(noQuery)) {
+        const fromFallbackUrl = normalizeSlugParam(noQuery);
+        if (fromFallbackUrl) return fromFallbackUrl;
       }
     }
   }
-  return sanitizeSlug(fallbackTitle || "uae-tax-briefing");
+  return normalizeSlugParam(fallbackTitle || "uae-tax-briefing");
 }
 
 export function formatBloggerDate(iso?: string): string {
@@ -550,13 +587,16 @@ export function getInitialBloggerPosts(): BloggerPost[] {
   return [TOP_TAX_MISTAKES_FALLBACK_POST];
 }
 
+let jsonpCallbackSequence = 0;
+
 /**
  * Cross-origin safe JSONP loader for Blogger's `alt=json-in-script` endpoint
- * (zero CORS errors in static hosting and browsers).
+ * (zero CORS errors in static hosting and browsers; never calls plain fetch() on insights.diasuae.ae).
+ * Cleans up both the injected <script> tag and window callback, with an 8-second timeout fallback.
  */
 export function fetchBloggerPostsJsonp(
-  maxResults = 50,
-  timeoutMs = 8500
+  maxResults = 100,
+  timeoutMs = 8000
 ): Promise<BloggerPost[]> {
   return new Promise((resolve, reject) => {
     if (typeof window === "undefined" || typeof document === "undefined") {
@@ -564,9 +604,8 @@ export function fetchBloggerPostsJsonp(
       return;
     }
 
-    const callbackName = `__diasBloggerCb_${Date.now()}_${Math.random()
-      .toString(36)
-      .slice(2, 9)}`;
+    jsonpCallbackSequence += 1;
+    const callbackName = `__diasBloggerCb_${Date.now()}_${jsonpCallbackSequence}`;
     const script = document.createElement("script");
     let settled = false;
 
@@ -586,7 +625,7 @@ export function fetchBloggerPostsJsonp(
       if (settled) return;
       settled = true;
       cleanup();
-      reject(new Error("Blogger JSONP request timed out"));
+      reject(new Error("Blogger JSONP request timed out after 8s"));
     }, timeoutMs);
 
     (window as unknown as Record<string, (payload: unknown) => void>)[
@@ -615,7 +654,7 @@ export function fetchBloggerPostsJsonp(
 
 /**
  * Loads the build-time static fallback snapshot (`/blogger-posts.json`) so `/blog`
- * and `/blog/:slug` render instantaneously before JSONP completes.
+ * and `/blog/:slug` render instantaneously before JSONP completes or when JSONP times out.
  */
 export async function loadStaticBloggerSnapshot(): Promise<BloggerPost[]> {
   if (typeof window === "undefined") {
@@ -644,9 +683,12 @@ export async function loadStaticBloggerSnapshot(): Promise<BloggerPost[]> {
 
 /**
  * Unified client sync:
- * 1. Invokes `onSnapshot` immediately if `/blogger-posts.json` loads faster than JSONP.
- * 2. Performs live browser JSONP sync against `insights.diasuae.ae/feeds/posts/default?alt=json-in-script&max-results=50`
- *    so newly published Blogger posts appear automatically without code edits.
+ * 1. Loads same-origin static snapshot (`/blogger-posts.json`) in parallel with live JSONP.
+ * 2. Performs live browser JSONP sync against
+ *    `https://insights.diasuae.ae/feeds/posts/default?alt=json-in-script&max-results=100`
+ *    with an 8-second timeout fallback to `/blogger-posts.json`.
+ * 3. Resolves only after BOTH static snapshot and live JSONP have settled so `/blog/:slug`
+ *    never prematurely shows "Article Not Found" while either source is still in flight.
  */
 export async function syncUnifiedBloggerPosts(
   options?: {
@@ -655,7 +697,7 @@ export async function syncUnifiedBloggerPosts(
     onSnapshot?: (posts: BloggerPost[]) => void;
   }
 ): Promise<BloggerPost[]> {
-  const maxResults = options?.maxResults ?? 50;
+  const maxResults = options?.maxResults ?? 100;
 
   if (liveSyncCompleted && memoryCachedPosts && !options?.forceRefresh) {
     return memoryCachedPosts;
@@ -666,7 +708,6 @@ export async function syncUnifiedBloggerPosts(
   }
 
   const run = async (): Promise<BloggerPost[]> => {
-    // Kick off instant local static snapshot in parallel with live JSONP
     const snapshotPromise = loadStaticBloggerSnapshot().then((snapshot) => {
       if (snapshot.length > 0 && !liveSyncCompleted) {
         memoryCachedPosts = snapshot;
@@ -675,19 +716,23 @@ export async function syncUnifiedBloggerPosts(
       return snapshot;
     });
 
-    try {
-      const livePosts = await fetchBloggerPostsJsonp(maxResults, 8500);
-      if (livePosts.length > 0) {
-        const merged = mergeWithFallbackPosts(livePosts);
-        memoryCachedPosts = merged;
-        liveSyncCompleted = true;
-        return merged;
-      }
-    } catch {
-      // Fall through cleanly to static snapshot / local fallback
+    const jsonpPromise = fetchBloggerPostsJsonp(maxResults, 8000).catch(
+      () => [] as BloggerPost[]
+    );
+
+    const [livePosts, snapshot] = await Promise.all([
+      jsonpPromise,
+      snapshotPromise,
+    ]);
+
+    if (livePosts.length > 0) {
+      // Live Blogger posts take priority; merge any snapshot/fallback posts so nothing disappears
+      const merged = mergeWithFallbackPosts([...livePosts, ...snapshot]);
+      memoryCachedPosts = merged;
+      liveSyncCompleted = true;
+      return merged;
     }
 
-    const snapshot = await snapshotPromise;
     if (snapshot.length > 0) {
       memoryCachedPosts = snapshot;
       return snapshot;
@@ -705,20 +750,46 @@ export async function syncUnifiedBloggerPosts(
   return inflightSyncPromise;
 }
 
+/**
+ * Matches a URL `:slug` parameter against loaded Blogger posts:
+ * 1. Normalizes the incoming slug (URI decode, strip trailing `/`, strip `.html`, strip `/YYYY/MM/`, lowercase).
+ * 2. Tries exact slug match first.
+ * 3. Falls back to prefix / partial slug match (handles Blogger auto-truncated permalinks).
+ */
 export function findBloggerPostBySlug(
   slug: string,
   posts: BloggerPost[]
 ): BloggerPost | null {
-  const clean = sanitizeSlug(slug);
+  const clean = normalizeSlugParam(slug);
   if (!clean || clean.startsWith("draft-")) return null;
-  return (
-    posts.find((p) => p.slug === clean) ||
-    posts.find(
-      (p) =>
-        p.slug.toLowerCase() === clean ||
-        p.slug.toLowerCase().startsWith(clean) ||
-        clean.startsWith(p.slug.toLowerCase())
-    ) ||
-    null
-  );
+
+  // 1. Exact match
+  const exact = posts.find((p) => normalizeSlugParam(p.slug) === clean);
+  if (exact) return exact;
+
+  // 2. Prefix match (either direction — handles Blogger permalink truncation)
+  if (clean.length >= 6) {
+    const prefixMatch = posts.find((p) => {
+      const candidate = normalizeSlugParam(p.slug);
+      return (
+        candidate.length >= 6 &&
+        (candidate.startsWith(clean) || clean.startsWith(candidate))
+      );
+    });
+    if (prefixMatch) return prefixMatch;
+  }
+
+  // 3. Partial containment match for longer slugs
+  if (clean.length >= 10) {
+    const partialMatch = posts.find((p) => {
+      const candidate = normalizeSlugParam(p.slug);
+      return (
+        candidate.length >= 10 &&
+        (candidate.includes(clean) || clean.includes(candidate))
+      );
+    });
+    if (partialMatch) return partialMatch;
+  }
+
+  return null;
 }

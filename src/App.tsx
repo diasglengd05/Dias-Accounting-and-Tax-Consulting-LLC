@@ -20,7 +20,7 @@ import {
 
 // Imports from our modular files
 import { Service, BlogPost } from "./types";
-import type { BloggerPost } from "./utils/bloggerFeed";
+import { type BloggerPost, normalizeSlugParam } from "./utils/bloggerFeed";
 import { faqsData, GOOGLE_BUSINESS_URL } from "./data/staticData";
 import { blogsData } from "./data/blogsData";
 import PageNavigation from "./components/PageNavigation";
@@ -118,9 +118,9 @@ const normalizeAppPath = (rawPath: string): string => {
   if (/^\/blogs?\/draft-.+$/.test(lower)) {
     return "/blog";
   }
-  if (lower.startsWith("/blogs/")) {
-    const slug = pathOnly.replace(/^\/blogs\//i, "").replace(/\/+$/, "");
-    return slug ? `/blog/${slug}` : "/blog";
+  if (lower.startsWith("/blogs/") || lower.startsWith("/blog/")) {
+    const cleanSlug = normalizeSlugParam(pathOnly);
+    return cleanSlug ? `/blog/${cleanSlug}` : "/blog";
   }
   if (
     lower === "/corporate-tax-calculator" ||
@@ -794,10 +794,18 @@ function MainApp({
   }
 
   if (currentPath.startsWith("/blog/") || currentPath.startsWith("/blogs/")) {
-    const blogSlug = currentPath
-      .replace(/^\/blogs?\//, "")
-      .replace(/\/+$/, "")
-      .trim();
+    const blogSlug = normalizeSlugParam(currentPath);
+    if (!blogSlug) {
+      return (
+        <BlogsPage
+          initialPosts={initialBloggerPosts}
+          onNavigate={navigateTo}
+          onOpenAudit={() => setTaxHealthModalOpen(true)}
+          onOpenPrivacy={() => setPrivacyOpen(true)}
+          onOpenGooglePreferred={() => setGooglePreferredModalOpen(true)}
+        />
+      );
+    }
     return (
       <BlogDetailPage
         blogSlug={blogSlug}

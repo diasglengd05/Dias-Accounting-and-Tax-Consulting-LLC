@@ -90,7 +90,7 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
 
     let active = true;
     syncUnifiedBloggerPosts({
-      maxResults: 50,
+      maxResults: 100,
       onSnapshot: (snapshotPosts) => {
         if (!active || snapshotPosts.length === 0) return;
         setPosts(snapshotPosts);

@@ -11,7 +11,7 @@ const DIST_SSR_DIR = path.join(ROOT_DIR, "dist-ssr");
 
 const SITE_DOMAIN = "https://diasuae.ae";
 const BLOGGER_JSON_FEED_URL =
-  "https://insights.diasuae.ae/feeds/posts/default?alt=json&max-results=50";
+  "https://insights.diasuae.ae/feeds/posts/default?alt=json&max-results=100";
 
 function escapeHtmlAttr(str) {
   return String(str || "")
@@ -127,8 +127,12 @@ async function fetchLiveBloggerPostsInNode(parseBloggerFeedEntries, mergeWithFal
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 15000);
     const res = await fetch(BLOGGER_JSON_FEED_URL, {
+      method: "GET",
+      redirect: "follow",
+      cache: "no-store",
       headers: {
         Accept: "application/json",
+        "Cache-Control": "no-cache",
         "User-Agent": "DiasUAE-SSG-Prerender/2026 (+https://diasuae.ae)",
       },
       signal: controller.signal,
@@ -148,8 +152,11 @@ async function fetchLiveBloggerPostsInNode(parseBloggerFeedEntries, mergeWithFal
     const parsed = parseBloggerFeedEntries(payload);
     const unified = mergeWithFallbackPosts(parsed);
     console.log(
-      `[SSG Prerender] Live Blogger sync succeeded: ${parsed.length} Blogger posts -> ${unified.length} unified blog articles.`
+      `\n[SSG Prerender] Live Blogger sync succeeded: fetched ${parsed.length} Blogger posts -> ${unified.length} unified blog articles:`
     );
+    parsed.forEach((post, idx) => {
+      console.log(`  [${String(idx + 1).padStart(2, "0")}] /blog/${post.slug}`);
+    });
     return unified;
   } catch (err) {
     console.warn(

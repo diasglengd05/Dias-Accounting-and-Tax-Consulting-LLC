@@ -361,7 +361,7 @@ app.use((req, res, next) => {
     "Content-Security-Policy",
     [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://apis.google.com https://*.firebaseapp.com https://*.googleapis.com https://widget.clutch.co https://*.clutch.co https://www.clarity.ms https://*.clarity.ms",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://insights.diasuae.ae https://apis.google.com https://*.firebaseapp.com https://*.googleapis.com https://widget.clutch.co https://*.clutch.co https://www.clarity.ms https://*.clarity.ms",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com data:",
       "img-src 'self' data: blob: https://images.unsplash.com https://*.googleusercontent.com https://*.google.com https://www.google.com https://widget.clutch.co https://*.clutch.co https://c.clarity.ms https://*.clarity.ms",

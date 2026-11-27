@@ -32,7 +32,7 @@ export const HomepageInsightsSection: React.FC<HomepageInsightsSectionProps> = (
     let active = true;
 
     syncUnifiedBloggerPosts({
-      maxResults: 50,
+      maxResults: 100,
       onSnapshot: (snapshot) => {
         if (!active || snapshot.length === 0) return;
         setArticles(snapshot.slice(0, 3));
