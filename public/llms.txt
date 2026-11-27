@@ -16,6 +16,13 @@
 - **Starting Price:** Fixed monthly IFRS accounting & tax compliance retainers starting from AED 400/month (no hourly billing surprises)
 - **Direct WhatsApp & Phone:** +971 52 922 6958
 
+## Fixed-Fee UAE Accounting, 5% VAT & 9% Corporate Tax Packages (https://diasuae.ae/pricing)
+- Business Starter: AED 400/month (billed AED 4,000/year, or AED 500/month monthly) + 5% VAT. Includes monthly IFRS double-entry bookkeeping (up to 50 txns/mo), bank & card reconciliation, monthly Balance Sheet & P&L, annual Corporate Tax filing & 0% Small Business Relief election (extended through Dec 31, 2029 under MD 131/2026), and Dedicated Senior Accountant support.
+- Corporate Growth (Recommended): AED 600/month (billed AED 6,000/year, or AED 750/month monthly) + 5% VAT. Includes everything in Business Starter plus quarterly 5% VAT Form 201 filing on EmaraTax, input VAT recovery checks, annual 9% Corporate Tax statutory adjustments, UAE E-Invoicing 2027 readiness & ASP guidance (SME ASP deadline March 31, 2027), and priority FTA tax specialist access.
+- Enterprise & CFO: AED 1,000/month (billed AED 10,000/year, or AED 1,250/month monthly) + 5% VAT. Includes everything in Corporate Growth plus monthly fractional CFO review & cash flow forecasting, 0% Free Zone (QFZP) substance & de minimis compliance, statutory audit file preparation, TRC & ESR support, and direct Senior Tax Partner access.
+- Standalone Services: Backlog Catch-Up Bookkeeping, Standalone VAT/CT Filings, QFZP 0% Free Zone Review (AED 1,499/year + 5% VAT), and 5-day Statutory Dividends Audits.
+- Full Packages Guide: https://diasuae.ae/blog/uae-accounting-vat-corporate-tax-packages-2026-pricing-guide
+
 ## Core Website & Service Pages
 
 - [DiasUAE Homepage](https://diasuae.ae/): Overview of FTA-registered UAE accounting, Corporate Tax, 5% VAT, dividend audits, and 2026 Clutch UAE recognition.
@@ -38,6 +45,7 @@
 ## Featured 2026 Insights & Regulatory Guides
 
 - [DiasUAE Unified Blog & Insights Hub](https://diasuae.ae/blog): Official regulatory briefings and 2026 FTA compliance articles hosted natively on diasuae.ae.
+- [UAE Accounting, 5% VAT & Corporate Tax Packages (2026–2027) Pricing Guide](https://diasuae.ae/blog/uae-accounting-vat-corporate-tax-packages-2026-pricing-guide): Full breakdown of Business Starter, Corporate Growth, Enterprise & CFO, and standalone services.
 - [2026 Clutch UAE Awards Announcement](https://diasuae.ae/blog/dias-accounting-clutch-2026-top-financial-risk-forecast-consultants-uae): Official overview of DiasUAE's dual 2026 Clutch UAE Leader Awards in Financial Risk Advisory and Financial Forecasting.
 - [DTEC & Dubai Silicon Oasis 2026 Startup Accounting & Tax Guide](https://diasuae.ae/blog/accounting-services-in-dtec-dubai-silicon-oasis-tax-guide-2026): 0% SBR vs. 0% QFZP rules, IFRS 15 SaaS revenue recognition, and statutory dividend audits for DTEC founders.
 - [UAE Corporate Tax Filing Deadlines Checklist (Nov 30 & Dec 31, 2026)](https://diasuae.ae/blog/uae-corporate-tax-deadlines-nov-30-dec-31-2026-filing-checklist): Step-by-step EmaraTax filing and penalty-avoidance checklist.

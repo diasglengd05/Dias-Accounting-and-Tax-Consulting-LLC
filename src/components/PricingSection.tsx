@@ -53,7 +53,7 @@ export const PRICING_OFFER_CATALOG_JSONLD = {
         "@type": "Offer",
         name: "Business Starter",
         description:
-          "Best for startups, solo founders, and micro-SMEs. Monthly IFRS double-entry bookkeeping, bank & corporate card reconciliation (up to 50 txns/mo), monthly Balance Sheet and Profit & Loss statements, annual Corporate Tax filing & 0% SBR election, and dedicated Senior Accountant support.",
+          "Best for startups, solo founders, and micro-SMEs. Monthly IFRS double-entry bookkeeping (up to 50 txns/mo), bank & card reconciliation, monthly Balance Sheet & P&L, annual Corporate Tax filing & 0% Small Business Relief election (extended through Dec 31, 2029 under MD 131/2026), and Dedicated Senior Accountant support.",
         price: "400",
         priceCurrency: "AED",
         url: `${SITE_URL}/pricing`,
@@ -78,7 +78,7 @@ export const PRICING_OFFER_CATALOG_JSONLD = {
         "@type": "Offer",
         name: "Corporate Growth",
         description:
-          "Best for active UAE SMEs with VAT & 9% Corporate Tax. Includes everything in Business Starter plus quarterly VAT Form 201 preparation & EmaraTax filing, input VAT recovery checks, annual Corporate Tax return & 9% statutory adjustments, UAE E-Invoicing Phase 1 readiness, and priority FTA tax specialist access.",
+          "Best for active UAE SMEs with VAT & 9% Corporate Tax. Includes everything in Business Starter plus quarterly 5% VAT Form 201 filing on EmaraTax, input VAT recovery checks, annual 9% Corporate Tax statutory adjustments, UAE E-Invoicing 2027 readiness & ASP guidance (SME ASP deadline March 31, 2027), and priority FTA tax specialist access.",
         price: "600",
         priceCurrency: "AED",
         url: `${SITE_URL}/pricing`,
@@ -256,7 +256,7 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
             "Monthly IFRS double-entry bookkeeping & ledger close",
             "Bank & corporate card reconciliation (up to 50 txns/mo)",
             "Monthly Balance Sheet and Profit & Loss statements",
-            "Annual Corporate Tax filing & 0% SBR election",
+            "Annual Corporate Tax filing & 0% SBR election (through Dec 31, 2029 under MD 131/2026)",
             "Dedicated Senior Accountant support",
           ],
       ctaLabel: isAr ? "اختر باقة المبتدئين" : "Choose Starter",
@@ -290,10 +290,10 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
           ]
         : [
             "Everything included in Business Starter",
-            "Quarterly VAT Form 201 preparation & EmaraTax filing",
+            "Quarterly 5% VAT Form 201 preparation & EmaraTax filing",
             "Input VAT recovery & tax invoice compliance checks",
-            "Annual Corporate Tax return & 9% statutory adjustments",
-            "UAE E-Invoicing Phase 1 readiness & ASP guidance",
+            "Annual 9% Corporate Tax return & statutory adjustments",
+            "UAE E-Invoicing 2027 readiness & ASP guidance (SME ASP deadline March 31, 2027)",
             "Priority advisory access with FTA tax specialists",
           ],
       ctaLabel: isAr ? "اختر باقة النمو" : "Choose Growth",
@@ -716,31 +716,44 @@ export const PricingSection: React.FC<PricingSectionProps> = ({
               ? "يعتمد العرض النهائي على حجم المعاملات ونشاط الرخصة. احجز استشارة مجانية لعرض سعر مكتوب."
               : "Final fees depend on monthly transaction volume and licensing scope. Request a written quote in minutes."}
           </p>
-          {shouldShowFullPricingLink ? (
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-x-6 gap-y-2 shrink-0">
             <a
-              href="/pricing"
+              href="/blog/uae-accounting-vat-corporate-tax-packages-2026-pricing-guide"
               onClick={(e) => {
                 e.preventDefault();
-                onNavigate("/pricing");
+                onNavigate("/blog/uae-accounting-vat-corporate-tax-packages-2026-pricing-guide");
               }}
-              className="inline-flex items-center gap-1.5 font-semibold text-[#1B4332] hover:text-[#143326] whitespace-nowrap shrink-0"
+              className="inline-flex items-center gap-1.5 font-semibold text-[#856422] hover:text-[#6b4f18] whitespace-nowrap"
             >
-              <span>{isAr ? "مقارنة تفصيلية للباقات" : "Compare all package features"}</span>
+              <span>{isAr ? "الدليل الكامل للباقات (2026–2027)" : "Read Full Packages Guide"}</span>
               <ArrowRight className="w-4 h-4 rtl:rotate-180" />
             </a>
-          ) : (
-            <a
-              href="/contact"
-              onClick={(e) => {
-                e.preventDefault();
-                onNavigate("/contact");
-              }}
-              className="inline-flex items-center gap-1.5 font-semibold text-[#1B4332] hover:text-[#143326] whitespace-nowrap shrink-0"
-            >
-              <span>{isAr ? "اطلب عرض سعر مكتوب" : "Request a written quote"}</span>
-              <ArrowRight className="w-4 h-4 rtl:rotate-180" />
-            </a>
-          )}
+            {shouldShowFullPricingLink ? (
+              <a
+                href="/pricing"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onNavigate("/pricing");
+                }}
+                className="inline-flex items-center gap-1.5 font-semibold text-[#1B4332] hover:text-[#143326] whitespace-nowrap"
+              >
+                <span>{isAr ? "مقارنة تفصيلية للباقات" : "Compare all package features"}</span>
+                <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+              </a>
+            ) : (
+              <a
+                href="/contact"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onNavigate("/contact");
+                }}
+                className="inline-flex items-center gap-1.5 font-semibold text-[#1B4332] hover:text-[#143326] whitespace-nowrap"
+              >
+                <span>{isAr ? "اطلب عرض سعر مكتوب" : "Request a written quote"}</span>
+                <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+              </a>
+            )}
+          </div>
         </div>
       </div>
     </section>
