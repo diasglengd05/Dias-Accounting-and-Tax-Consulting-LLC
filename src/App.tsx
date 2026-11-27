@@ -20,6 +20,7 @@ import {
 
 // Imports from our modular files
 import { Service, BlogPost } from "./types";
+import type { BloggerPost } from "./utils/bloggerFeed";
 import { faqsData, GOOGLE_BUSINESS_URL } from "./data/staticData";
 import { blogsData } from "./data/blogsData";
 import PageNavigation from "./components/PageNavigation";
@@ -187,7 +188,13 @@ const SOFTWARE_ECOSYSTEM = [
   "Dubai DET",
 ];
 
-function MainApp({ initialPath }: { initialPath?: string }) {
+function MainApp({
+  initialPath,
+  initialBloggerPosts,
+}: {
+  initialPath?: string;
+  initialBloggerPosts?: BloggerPost[];
+}) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
@@ -794,6 +801,7 @@ function MainApp({ initialPath }: { initialPath?: string }) {
     return (
       <BlogDetailPage
         blogSlug={blogSlug}
+        initialPosts={initialBloggerPosts}
         allBlogs={allBlogs}
         onNavigate={navigateTo}
         onOpenAudit={() => setTaxHealthModalOpen(true)}
@@ -806,6 +814,7 @@ function MainApp({ initialPath }: { initialPath?: string }) {
   if (currentPath === "/blog" || currentPath === "/blogs" || currentPath === "/insights") {
     return (
       <BlogsPage
+        initialPosts={initialBloggerPosts}
         onNavigate={navigateTo}
         onOpenAudit={() => setTaxHealthModalOpen(true)}
         onOpenPrivacy={() => setPrivacyOpen(true)}
@@ -1482,6 +1491,7 @@ function MainApp({ initialPath }: { initialPath?: string }) {
             }
           >
             <HomepageInsightsSection
+              initialPosts={initialBloggerPosts}
               onSelectBlog={(blog) => navigateTo(`/blog/${blog.id}`)}
               onNavigate={navigateTo}
             />
@@ -1818,13 +1828,17 @@ function MainApp({ initialPath }: { initialPath?: string }) {
 
 export interface AppProps {
   initialPath?: string;
+  initialBloggerPosts?: BloggerPost[];
 }
 
-export default function App({ initialPath }: AppProps = {}) {
+export default function App({ initialPath, initialBloggerPosts }: AppProps = {}) {
   return (
     <MotionConfig reducedMotion="user">
       <LanguageProvider>
-        <MainApp initialPath={initialPath} />
+        <MainApp
+          initialPath={initialPath}
+          initialBloggerPosts={initialBloggerPosts}
+        />
       </LanguageProvider>
     </MotionConfig>
   );

@@ -307,7 +307,7 @@ export function buildServiceSchema(options: {
   });
 }
 
-export function buildBlogPostingSchema(input: BlogPostingSchemaInput) {
+export function buildArticleSchema(input: BlogPostingSchemaInput) {
   const canonicalUrl = buildCanonicalUrl(input.canonicalPath);
   const resolvedImage = input.image
     ? input.image.startsWith("http")
@@ -317,14 +317,15 @@ export function buildBlogPostingSchema(input: BlogPostingSchemaInput) {
 
   return sanitizeJsonLd({
     "@context": "https://schema.org",
-    "@type": "BlogPosting",
+    "@type": "Article",
     "@id": `${canonicalUrl}#article`,
+    url: canonicalUrl,
     mainEntityOfPage: {
       "@type": "WebPage",
       "@id": canonicalUrl,
     },
     headline: stripMarkup(input.headline),
-    description: stripMarkup(input.description),
+    description: fitMetaDescription(input.description),
     image: resolvedImage,
     datePublished: input.datePublished,
     dateModified: input.dateModified || input.datePublished,
@@ -344,6 +345,8 @@ export function buildBlogPostingSchema(input: BlogPostingSchemaInput) {
     inLanguage: "en-AE",
   });
 }
+
+export const buildBlogPostingSchema = buildArticleSchema;
 
 export function buildWebApplicationSchema(options?: {
   name?: string;

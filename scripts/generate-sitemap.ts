@@ -1,12 +1,17 @@
 import fs from "fs";
 import path from "path";
-import { servicesData, blogsData } from "../src/data/staticData.ts";
+import { servicesData } from "../src/data/staticData.ts";
+import {
+  mergeWithFallbackPosts,
+  type BloggerPost,
+} from "../src/utils/bloggerFeed.ts";
 
 /**
  * Clean Sitemap Generator for Dias Accounting & Tax Consulting LLC (https://diasuae.ae)
  * - Outputs ONLY canonical, indexable HTTP 200 absolute HTTPS URLs (no hash fragments, no aliases/redirects)
+ * - Syncs /blog/<slug> URLs from public/blogger-posts.json + protected fallback (top-tax-mistakes-uae-companies-make)
  * - Omits deprecated <priority> and <changefreq> tags
- * - Emits genuine ISO YYYY-MM-DD <lastmod> dates parsed from actual published post dates only
+ * - Emits genuine ISO YYYY-MM-DD <lastmod> dates parsed from actual published/updated dates only
  */
 
 interface SitemapUrl {
@@ -57,6 +62,21 @@ const CANONICAL_STATIC_PATHS: string[] = [
   "/terms",
 ];
 
+function loadUnifiedBloggerSnapshot(): BloggerPost[] {
+  const snapshotPath = path.join(process.cwd(), "public", "blogger-posts.json");
+  if (fs.existsSync(snapshotPath)) {
+    try {
+      const raw = JSON.parse(fs.readFileSync(snapshotPath, "utf-8"));
+      if (Array.isArray(raw)) {
+        return mergeWithFallbackPosts(raw as BloggerPost[]);
+      }
+    } catch {
+      // Fall through to built-in fallback
+    }
+  }
+  return mergeWithFallbackPosts([]);
+}
+
 export function generateSitemapXml(domain = "https://diasuae.ae"): string {
   const cleanDomain = domain.replace(/\/+$/, "");
   const seenLocs = new Set<string>();
@@ -85,66 +105,14 @@ export function generateSitemapXml(domain = "https://diasuae.ae"): string {
     }
   }
 
-  // 3. Deduplicated Published Insights Articles (/blog/:id) with genuine ISO publication dates
-  const normTitle = (t: string) =>
-    (t || "")
-      .toLowerCase()
-      .replace(/&amp;/g, "and")
-      .replace(/[^\w\s]/g, " ")
-      .replace(/\s+/g, " ")
-      .trim();
-
-  const seenBlogIds = new Set<string>();
-  const seenBlogTitles = new Set<string>();
-  let seenAuditThresholds = false;
-  let seenEnforcement = false;
-  const combinedBlogs: Array<{
-    id: string;
-    title: string;
-    date?: string;
-    publishedIso?: string;
-  }> = [];
-
-  const pushUniqueBlog = (post: any) => {
-    if (!post || !post.id || !post.title) return;
-    if (String(post.id).startsWith("draft-")) return;
-    const norm = normTitle(post.title);
-    const isAuditThresholds =
-      norm.includes("uae corporate tax return preparation") && norm.includes("audit threshold");
-    const isEnforcement = norm.includes("uae corporate tax enforcement");
-    if (seenBlogIds.has(post.id) || seenBlogTitles.has(norm)) return;
-    if (isAuditThresholds && seenAuditThresholds) return;
-    if (isEnforcement && seenEnforcement) return;
-    seenBlogIds.add(post.id);
-    seenBlogTitles.add(norm);
-    if (isAuditThresholds) seenAuditThresholds = true;
-    if (isEnforcement) seenEnforcement = true;
-    combinedBlogs.push(post);
-  };
-
-  blogsData.forEach(pushUniqueBlog);
-
-  try {
-    const rootFallbackPath = path.join(process.cwd(), "db_fallback.json");
-    const serverFallbackPath = path.join(process.cwd(), "server", "db_fallback.json");
-    const targetPath = fs.existsSync(rootFallbackPath) ? rootFallbackPath : serverFallbackPath;
-    if (fs.existsSync(targetPath)) {
-      const fallbackRaw = fs.readFileSync(targetPath, "utf-8");
-      const fallbackData = JSON.parse(fallbackRaw);
-      const rawList = Array.isArray(fallbackData.blogs)
-        ? fallbackData.blogs
-        : fallbackData.blog_posts && typeof fallbackData.blog_posts === "object"
-          ? Object.values(fallbackData.blog_posts)
-          : [];
-      rawList.forEach(pushUniqueBlog);
-    }
-  } catch {
-    // Graceful fallback when local db_fallback.json is absent
-  }
-
-  for (const blog of combinedBlogs) {
-    const genuineDate = parseGenuineIsoDate(blog.publishedIso || blog.date);
-    pushUrl(`/blog/${blog.id}`, genuineDate);
+  // 3. Unified Blogger + Protected Fallback Articles (/blog/<slug>)
+  const unifiedPosts = loadUnifiedBloggerSnapshot();
+  for (const post of unifiedPosts) {
+    if (!post?.slug || post.slug.toLowerCase().startsWith("draft-")) continue;
+    const genuineDate = parseGenuineIsoDate(
+      post.updatedIso || post.publishedIso || post.publishedDate
+    );
+    pushUrl(`/blog/${post.slug}`, genuineDate);
   }
 
   const xmlEntries = urls

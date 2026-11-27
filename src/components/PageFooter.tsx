@@ -8,7 +8,6 @@ import {
   Facebook,
   Award,
   ShieldCheck,
-  ArrowUpRight,
 } from "lucide-react";
 import {
   ClutchRatingWidget,
@@ -256,18 +255,7 @@ export const PageFooter: React.FC<PageFooterProps> = ({
                   onClick={(e) => handleLink(e, "/blog")}
                   className="hover:text-[#1B4332] transition-colors"
                 >
-                  Tax Blog &amp; Guides
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://insights.diasuae.ae/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 hover:text-[#1B4332] transition-colors"
-                >
-                  <span>Live Tax Insights</span>
-                  <ArrowUpRight className="w-3.5 h-3.5 text-[#64748B]" />
+                  Tax Blog &amp; Insights
                 </a>
               </li>
               <li>

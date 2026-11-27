@@ -1,76 +1,60 @@
 import React, { useEffect, useState } from "react";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { BlogPost } from "../types";
-import { blogsData } from "../data/blogsData";
-import { fetchLiveBloggerPosts } from "../lib/bloggerFeed";
+import {
+  BloggerPost,
+  bloggerPostToBlogPost,
+  getInitialBloggerPosts,
+  mergeWithFallbackPosts,
+  syncUnifiedBloggerPosts,
+} from "../utils/bloggerFeed";
 
 interface HomepageInsightsSectionProps {
-  onSelectBlog: (blog: BlogPost) => void;
+  initialPosts?: BloggerPost[];
+  onSelectBlog?: (blog: BlogPost) => void;
   onNavigate: (path: string) => void;
 }
 
-interface DisplayArticle {
-  id: string;
-  title: string;
-  summary: string;
-  date: string;
-  category: string;
-  externalUrl?: string;
-  internalBlogRef?: BlogPost;
-}
-
 export const HomepageInsightsSection: React.FC<HomepageInsightsSectionProps> = ({
+  initialPosts,
   onSelectBlog,
   onNavigate,
 }) => {
-  const fallbackStatic: DisplayArticle[] = [...blogsData]
-    .sort((a, b) => (Date.parse(b.date) || 0) - (Date.parse(a.date) || 0))
-    .slice(0, 3)
-    .map((b) => ({
-      id: b.id,
-      title: b.title,
-      summary: b.summary,
-      date: b.date,
-      category: b.tag || "Tax Guide",
-      internalBlogRef: b,
-    }));
-
-  const [articles, setArticles] = useState<DisplayArticle[]>(fallbackStatic);
+  const [articles, setArticles] = useState<BloggerPost[]>(() => {
+    const seed =
+      initialPosts && initialPosts.length > 0
+        ? mergeWithFallbackPosts(initialPosts)
+        : getInitialBloggerPosts();
+    return seed.slice(0, 3);
+  });
 
   useEffect(() => {
-    let isMounted = true;
+    let active = true;
 
-    async function loadLatest() {
-      try {
-        const livePosts = await fetchLiveBloggerPosts(3);
-        if (!isMounted || livePosts.length === 0) return;
-
-        const mapped: DisplayArticle[] = livePosts.slice(0, 3).map((post) => ({
-          id: post.id,
-          title: post.title,
-          summary: post.excerpt,
-          date: post.publishedDate,
-          category: post.primaryCategory,
-          externalUrl: post.url,
-        }));
-
-        if (mapped.length < 3) {
-          const needed = 3 - mapped.length;
-          setArticles([...mapped, ...fallbackStatic.slice(0, needed)]);
-        } else {
-          setArticles(mapped);
-        }
-      } catch {
-        // Silently retain clean static guides
-      }
-    }
-
-    loadLatest();
+    syncUnifiedBloggerPosts({
+      maxResults: 50,
+      onSnapshot: (snapshot) => {
+        if (!active || snapshot.length === 0) return;
+        setArticles(snapshot.slice(0, 3));
+      },
+    }).then((livePosts) => {
+      if (!active || livePosts.length === 0) return;
+      setArticles(livePosts.slice(0, 3));
+    });
 
     return () => {
-      isMounted = false;
+      active = false;
     };
   }, []);
+
+  const openArticle = (e: React.MouseEvent, post: BloggerPost) => {
+    e.preventDefault();
+    if (onSelectBlog) {
+      onSelectBlog(bloggerPostToBlogPost(post));
+    } else {
+      onNavigate(`/blog/${post.slug}`);
+    }
+  };
 
   return (
     <section
@@ -98,55 +82,37 @@ export const HomepageInsightsSection: React.FC<HomepageInsightsSectionProps> = (
               }}
               className="inline-flex items-center gap-1.5 text-[#1B4332] hover:text-[#143326] transition-colors"
             >
-              <span>All guides</span>
+              <span>View all insights</span>
               <ArrowRight className="w-4 h-4" />
-            </a>
-            <a
-              href="https://insights.diasuae.ae/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-[#475569] hover:text-[#0D1B2A] transition-colors"
-            >
-              <span>Live briefings</span>
-              <ArrowUpRight className="w-4 h-4 text-slate-400" />
             </a>
           </div>
         </div>
 
-        {/* 3 Clean Editorial Cards */}
+        {/* 3 Clean Editorial Cards — All Native to diasuae.ae/blog/<slug> */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
           {articles.map((item) => {
-            const isExternal = Boolean(item.externalUrl);
-            const href = isExternal && item.externalUrl ? item.externalUrl : `/blog/${item.id}`;
+            const href = `/blog/${item.slug}`;
 
             return (
               <article
-                key={item.id}
-                className="bg-white rounded-2xl border border-[#E2E8F0] hover:border-slate-300 p-7 flex flex-col justify-between transition-all shadow-xs hover:shadow-sm group"
+                key={item.slug}
+                className="bg-white rounded-2xl border border-[#E2E8F0] hover:border-[#C5A059] p-7 flex flex-col justify-between transition-all shadow-xs hover:shadow-sm group"
               >
                 <div className="space-y-3">
-                  {/* Quiet Unboxed Metadata */}
                   <div className="flex items-center gap-2 text-xs text-[#475569] tabular-nums">
-                    <span className="font-semibold text-[#1B4332]">{item.category}</span>
+                    <span className="font-semibold text-[#1B4332]">
+                      {item.primaryCategory}
+                    </span>
                     <span aria-hidden="true">·</span>
-                    <span>{item.date}</span>
+                    <time dateTime={item.publishedIso || undefined}>
+                      {item.publishedDate}
+                    </time>
                   </div>
 
                   <h3 className="text-lg font-bold text-[#0D1B2A] leading-snug group-hover:text-[#1B4332] transition-colors line-clamp-2">
                     <a
                       href={href}
-                      target={isExternal ? "_blank" : undefined}
-                      rel={isExternal ? "noopener noreferrer" : undefined}
-                      onClick={(e) => {
-                        if (!isExternal) {
-                          e.preventDefault();
-                          if (item.internalBlogRef) {
-                            onSelectBlog(item.internalBlogRef);
-                          } else {
-                            onNavigate("/blog");
-                          }
-                        }
-                      }}
+                      onClick={(e) => openArticle(e, item)}
                     >
                       {item.title}
                     </a>
@@ -160,26 +126,11 @@ export const HomepageInsightsSection: React.FC<HomepageInsightsSectionProps> = (
                 <div className="pt-6 mt-6 border-t border-slate-100">
                   <a
                     href={href}
-                    target={isExternal ? "_blank" : undefined}
-                    rel={isExternal ? "noopener noreferrer" : undefined}
-                    onClick={(e) => {
-                      if (!isExternal) {
-                        e.preventDefault();
-                        if (item.internalBlogRef) {
-                          onSelectBlog(item.internalBlogRef);
-                        } else {
-                          onNavigate("/blog");
-                        }
-                      }
-                    }}
+                    onClick={(e) => openArticle(e, item)}
                     className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#0D1B2A] group-hover:text-[#1B4332] transition-colors"
                   >
-                    <span>{isExternal ? "Read briefing" : "Read guide"}</span>
-                    {isExternal ? (
-                      <ArrowUpRight className="w-4 h-4" />
-                    ) : (
-                      <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
-                    )}
+                    <span>Read guide</span>
+                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
                   </a>
                 </div>
               </article>

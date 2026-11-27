@@ -7,10 +7,21 @@ import {
   resolveSsrRouteHead,
   type SsrRouteHead,
 } from "./lib/ssrRouteMeta";
+import {
+  type BloggerPost,
+  mergeWithFallbackPosts,
+  parseBloggerFeedEntries,
+  setSsrBloggerPosts,
+  TOP_TAX_MISTAKES_FALLBACK_POST,
+} from "./utils/bloggerFeed";
 
 export interface RenderRouteResult {
   html: string;
   head: SsrRouteHead;
+}
+
+export interface RenderRouteOptions {
+  bloggerPosts?: BloggerPost[];
 }
 
 /**
@@ -18,8 +29,17 @@ export interface RenderRouteResult {
  * its route-specific <head> metadata and JSON-LD structured data using native
  * React server rendering (`react-dom/server`).
  */
-export function render(url: string): RenderRouteResult {
-  const head = resolveSsrRouteHead(url);
+export function render(
+  url: string,
+  options?: RenderRouteOptions
+): RenderRouteResult {
+  const posts =
+    options?.bloggerPosts && options.bloggerPosts.length > 0
+      ? options.bloggerPosts
+      : undefined;
+  setSsrBloggerPosts(posts || null);
+
+  const head = resolveSsrRouteHead(url, posts);
   const html = renderToString(
     React.createElement(
       React.StrictMode,
@@ -27,7 +47,10 @@ export function render(url: string): RenderRouteResult {
       React.createElement(
         ErrorBoundary,
         null,
-        React.createElement(App, { initialPath: url })
+        React.createElement(App, {
+          initialPath: url,
+          initialBloggerPosts: posts,
+        })
       )
     )
   );
@@ -35,4 +58,10 @@ export function render(url: string): RenderRouteResult {
   return { html, head };
 }
 
-export { getAllPrerenderRoutes, resolveSsrRouteHead };
+export {
+  getAllPrerenderRoutes,
+  resolveSsrRouteHead,
+  parseBloggerFeedEntries,
+  mergeWithFallbackPosts,
+  TOP_TAX_MISTAKES_FALLBACK_POST,
+};

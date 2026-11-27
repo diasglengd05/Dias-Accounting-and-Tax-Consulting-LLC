@@ -126,11 +126,11 @@ const RESOURCE_CATALOG = {
   },
   corporateTaxArticle: {
     eyebrow: "FTA Briefing",
-    title: "2026 UAE Corporate Tax & SBR Guide",
+    title: "2026 UAE Corporate Tax Filing Deadlines",
     description:
-      "Detailed analysis of 9% brackets, Small Business Relief elections through 2029, and the AED 10,000 penalty waiver.",
+      "Detailed analysis of 9% brackets, Small Business Relief elections, and EmaraTax filing deadlines to prevent penalties.",
     anchorLabel: "Read 2026 Corporate Tax Briefing",
-    path: "/blog/uae-corporate-tax-2026-sbr-relief-penalty-shield-guide",
+    path: "/blog/uae-corporate-tax-deadlines-nov-30-dec-31-2026-filing-checklist",
   },
   vatChecklistArticle: {
     eyebrow: "FTA Briefing",
@@ -138,7 +138,7 @@ const RESOURCE_CATALOG = {
     description:
       "Actionable guidance on compliant tax invoices, input VAT recovery rules, and eliminating Form 201 audit triggers.",
     anchorLabel: "Read UAE VAT Compliance Checklist",
-    path: "/blog/vat-compliance-checklist",
+    path: "/blog/uae-vat-compliance-fta-audit-defense-form-201-reconciliation-2026",
   },
 } as const satisfies Record<string, RelatedResourceItem>;
 

@@ -37,16 +37,16 @@
 
 ## Featured 2026 Insights & Regulatory Guides
 
-- [DiasUAE Insights Hub](https://insights.diasuae.ae/): Official regulatory briefings and 2026 FTA compliance articles.
-- [2026 Clutch UAE Awards Announcement](https://insights.diasuae.ae/2026/11/dias-accounting-clutch-2026-top-financial-risk-forecast-consultants-uae.html): Official overview of DiasUAE's dual 2026 Clutch UAE Leader Awards in Financial Risk Advisory and Financial Forecasting.
-- [DTEC & Dubai Silicon Oasis 2026 Startup Accounting & Tax Guide](https://insights.diasuae.ae/2026/11/accounting-services-in-dtec-dubai-silicon-oasis-tax-guide-2026.html): 0% SBR vs. 0% QFZP rules, IFRS 15 SaaS revenue recognition, and statutory dividend audits for DTEC founders.
-- [UAE Corporate Tax Filing Deadlines Checklist (Nov 30 & Dec 31, 2026)](https://insights.diasuae.ae/2026/11/uae-corporate-tax-deadlines-nov-30-dec-31-2026-filing-checklist.html): Step-by-step EmaraTax filing and penalty-avoidance checklist.
-- [2026 UAE Input VAT Recovery Rules (FTA Decisions 13 & 17)](https://insights.diasuae.ae/2026/11/new-uae-input-vat-recovery-rules-fta-decision-13-17-2026.html): Practical breakdown of 2026 FTA input tax documentation and recovery compliance.
+- [DiasUAE Unified Blog & Insights Hub](https://diasuae.ae/blog): Official regulatory briefings and 2026 FTA compliance articles hosted natively on diasuae.ae.
+- [2026 Clutch UAE Awards Announcement](https://diasuae.ae/blog/dias-accounting-clutch-2026-top-financial-risk-forecast-consultants-uae): Official overview of DiasUAE's dual 2026 Clutch UAE Leader Awards in Financial Risk Advisory and Financial Forecasting.
+- [DTEC & Dubai Silicon Oasis 2026 Startup Accounting & Tax Guide](https://diasuae.ae/blog/accounting-services-in-dtec-dubai-silicon-oasis-tax-guide-2026): 0% SBR vs. 0% QFZP rules, IFRS 15 SaaS revenue recognition, and statutory dividend audits for DTEC founders.
+- [UAE Corporate Tax Filing Deadlines Checklist (Nov 30 & Dec 31, 2026)](https://diasuae.ae/blog/uae-corporate-tax-deadlines-nov-30-dec-31-2026-filing-checklist): Step-by-step EmaraTax filing and penalty-avoidance checklist.
+- [2026 UAE Input VAT Recovery Rules (FTA Decisions 13 & 17)](https://diasuae.ae/blog/new-uae-input-vat-recovery-rules-fta-decision-13-17-2026): Practical breakdown of 2026 FTA input tax documentation and recovery compliance.
 
 ## Official Verified Profiles & Contact Channels
 
 - **Official Website:** https://diasuae.ae/
-- **Insights Blog:** https://insights.diasuae.ae/
+- **Tax & IFRS Blog:** https://diasuae.ae/blog
 - **Clutch (2026 UAE Awards & Reviews):** https://clutch.co/profile/dias-accounting-tax-consulting
 - **LinkedIn (Company Page):** https://ae.linkedin.com/company/diasaccounting
 - **Instagram (@diasuae.ae):** https://www.instagram.com/diasuae.ae/

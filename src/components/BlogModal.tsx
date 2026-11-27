@@ -323,8 +323,8 @@ export const BlogModal: React.FC<BlogModalProps> = ({ blog, onClose, onContact, 
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 bg-white hover:bg-slate-100 text-navy-950 border border-slate-300 font-display font-bold py-3 px-5 rounded-xl text-xs sm:text-sm transition-colors min-h-[44px]"
               >
-                <ExternalLink className="w-4 h-4 text-gold-500" />
-                <span>{blog.isLiveBlogger || blog.externalUrl?.includes("insights.diasuae.ae") ? "Read on insights.diasuae.ae" : "Open in New Tab"}</span>
+                <ExternalLink className="w-4 h-4 text-[#856422]" />
+                <span>Open Full Article</span>
               </a>
               <a
                 href="#contact"

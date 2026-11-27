@@ -82,7 +82,6 @@ export const BUSINESS_ENTITY = {
     "https://ae.linkedin.com/company/diasaccounting",
     "https://www.facebook.com/diasuae",
     "https://clutch.co/profile/dias-accounting-tax-consulting",
-    "https://insights.diasuae.ae/",
     "https://wa.me/971529226958",
   ],
   offerCatalog: [

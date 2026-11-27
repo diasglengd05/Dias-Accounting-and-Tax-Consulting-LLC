@@ -1,18 +1,22 @@
 import { servicesData } from "../data/staticData";
-import { blogsData } from "../data/blogsData";
 import {
-  buildBlogPostingSchema,
+  buildArticleSchema,
   buildBreadcrumbSchema,
   buildFAQPageSchema,
   buildServiceSchema,
   buildWebApplicationSchema,
-  FAQSchemaItem,
   fitMetaDescription,
 } from "./seo";
 import {
   DEFAULT_OG_IMAGE,
   SITE_URL,
 } from "./seoConfig";
+import {
+  type BloggerPost,
+  findBloggerPostBySlug,
+  getInitialBloggerPosts,
+  mergeWithFallbackPosts,
+} from "../utils/bloggerFeed";
 
 function toCanonicalUrl(canonicalPath: string): string {
   const cleaned = (canonicalPath || "/").trim().replace(/\/+$/, "");
@@ -92,7 +96,7 @@ function toSafeIsoDate(raw?: string): string {
  * Returns the complete, deduplicated list of all live routes to statically pre-render
  * into standalone HTML files during `npm run build`.
  */
-export function getAllPrerenderRoutes(): string[] {
+export function getAllPrerenderRoutes(bloggerPosts?: BloggerPost[]): string[] {
   const routes = new Set<string>(STATIC_PRERENDER_ROUTES);
 
   for (const service of servicesData) {
@@ -101,10 +105,14 @@ export function getAllPrerenderRoutes(): string[] {
     }
   }
 
-  for (const post of blogsData) {
-    if (!post?.id) continue;
-    if (post.id.toLowerCase().startsWith("draft-")) continue;
-    routes.add(`/blog/${post.id}`);
+  const unifiedPosts = mergeWithFallbackPosts(
+    bloggerPosts && bloggerPosts.length > 0 ? bloggerPosts : getInitialBloggerPosts()
+  );
+
+  for (const post of unifiedPosts) {
+    if (!post?.slug) continue;
+    if (post.slug.toLowerCase().startsWith("draft-")) continue;
+    routes.add(`/blog/${post.slug}`);
   }
 
   return Array.from(routes);
@@ -117,15 +125,21 @@ export function getAllPrerenderRoutes(): string[] {
  * and JSON-LD structured data for build-time static pre-rendering (1:1 parity
  * with each React page's applyPageSEO and upsertJsonLd calls).
  */
-export function resolveSsrRouteHead(rawPath: string): SsrRouteHead {
-  const head = resolveRawSsrRouteHead(rawPath);
+export function resolveSsrRouteHead(
+  rawPath: string,
+  bloggerPosts?: BloggerPost[]
+): SsrRouteHead {
+  const head = resolveRawSsrRouteHead(rawPath, bloggerPosts);
   return {
     ...head,
     description: fitMetaDescription(head.description),
   };
 }
 
-function resolveRawSsrRouteHead(rawPath: string): SsrRouteHead {
+function resolveRawSsrRouteHead(
+  rawPath: string,
+  bloggerPosts?: BloggerPost[]
+): SsrRouteHead {
   const cleanPath = (rawPath || "/").split("?")[0].split("#")[0].replace(/\/+$/, "") || "/";
 
   if (cleanPath === "/") {
@@ -663,50 +677,63 @@ function resolveRawSsrRouteHead(rawPath: string): SsrRouteHead {
 
   if (cleanPath.startsWith("/blog/")) {
     const slug = cleanPath.replace(/^\/blog\//, "").trim();
-    const post = blogsData.find((p) => p.id === slug || p.id.toLowerCase() === slug.toLowerCase());
+    const unifiedPosts = mergeWithFallbackPosts(
+      bloggerPosts && bloggerPosts.length > 0 ? bloggerPosts : getInitialBloggerPosts()
+    );
+    const post = findBloggerPostBySlug(slug, unifiedPosts);
     if (post) {
-      const canonicalPath = `/blog/${post.id}`;
+      const canonicalPath = `/blog/${post.slug}`;
       const canonicalUrl = toCanonicalUrl(canonicalPath);
-      const publishedIso = toSafeIsoDate(post.publishedIso || post.date);
+      const publishedIso = toSafeIsoDate(post.publishedIso || post.publishedDate);
+      const modifiedIso = toSafeIsoDate(
+        post.updatedIso || post.publishedIso || post.publishedDate
+      );
       const resolvedPostImage =
-        post.imageUrl && post.imageUrl.trim()
-          ? post.imageUrl.startsWith("http")
-            ? post.imageUrl
-            : `${SITE_URL}${post.imageUrl.startsWith("/") ? "" : "/"}${post.imageUrl}`
+        post.featuredImage && post.featuredImage.trim()
+          ? post.featuredImage.startsWith("http")
+            ? post.featuredImage
+            : `${SITE_URL}${post.featuredImage.startsWith("/") ? "" : "/"}${post.featuredImage}`
           : DEFAULT_OG_IMAGE;
+
+      const postKeywords =
+        post.keywords && post.keywords.length > 0
+          ? post.keywords
+          : post.categories && post.categories.length > 0
+            ? post.categories
+            : [];
 
       return {
         routePath: canonicalPath,
-        title: `${post.title} | Dias Accounting`,
-        description: post.summary,
+        title: `${post.title} | DiasUAE`,
+        description: fitMetaDescription(post.summary),
         canonicalUrl,
         keywords:
-          post.keywords && post.keywords.length > 0
-            ? post.keywords.join(", ")
-            : `UAE tax guide, ${post.tag}, corporate tax Dubai, FTA compliance`,
+          postKeywords.length > 0
+            ? [...postKeywords, "DiasUAE", "UAE Tax & Accounting"].join(", ")
+            : `UAE tax guide, ${post.primaryCategory}, corporate tax Dubai, FTA compliance`,
         robots: DEFAULT_ROBOTS,
         ogType: "article",
         ogImage: resolvedPostImage,
         ogImageAlt: post.title,
         publishedTime: publishedIso,
-        modifiedTime: publishedIso,
+        modifiedTime: modifiedIso,
         authorName: post.author?.name || "Glen Dias",
-        articleSection: post.tag || "UAE Tax & Accounting",
+        articleSection: post.primaryCategory || "UAE Tax & Accounting",
         keepHomepageFaq: false,
         jsonLdScripts: [
           {
             id: "page-article-jsonld",
-            data: buildBlogPostingSchema({
+            data: buildArticleSchema({
               headline: post.title,
               description: post.summary,
               canonicalPath,
               datePublished: publishedIso,
-              dateModified: publishedIso,
+              dateModified: modifiedIso,
               image: resolvedPostImage,
               authorName: post.author?.name,
               authorRole: post.author?.role,
-              articleSection: post.tag,
-              keywords: post.keywords,
+              articleSection: post.primaryCategory,
+              keywords: postKeywords,
             }),
           },
           {
@@ -714,7 +741,7 @@ function resolveRawSsrRouteHead(rawPath: string): SsrRouteHead {
             data: buildBreadcrumbSchema(
               [
                 { name: "Home", path: "/" },
-                { name: "Insights", path: "/blog" },
+                { name: "Blog", path: "/blog" },
                 { name: post.title, path: canonicalPath },
               ],
               `${canonicalUrl}#breadcrumb`

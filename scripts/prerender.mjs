@@ -6,7 +6,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.resolve(__dirname, "..");
 const DIST_DIR = path.join(ROOT_DIR, "dist");
+const PUBLIC_DIR = path.join(ROOT_DIR, "public");
 const DIST_SSR_DIR = path.join(ROOT_DIR, "dist-ssr");
+
+const SITE_DOMAIN = "https://diasuae.ae";
+const BLOGGER_JSON_FEED_URL =
+  "https://insights.diasuae.ae/feeds/posts/default?alt=json&max-results=50";
 
 function escapeHtmlAttr(str) {
   return String(str || "")
@@ -23,8 +28,32 @@ function escapeHtmlText(str) {
     .replace(/>/g, "&gt;");
 }
 
+function escapeXml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
 function serializeJsonLd(data) {
-  return JSON.stringify(data).replace(/</g, "\\u003c");
+  return JSON.stringify(data)
+    .replace(/</g, "\\u003c")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
+}
+
+function parseGenuineIsoDate(raw) {
+  if (!raw || typeof raw !== "string") return undefined;
+  const trimmed = raw.trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return trimmed;
+  if (/^\d{4}-\d{2}-\d{2}T/.test(trimmed)) return trimmed.slice(0, 10);
+  const parsed = Date.parse(trimmed);
+  if (Number.isNaN(parsed)) return undefined;
+  const dt = new Date(parsed);
+  if (dt.getUTCFullYear() < 2020 || dt.getUTCFullYear() > 2030) return undefined;
+  return dt.toISOString().slice(0, 10);
 }
 
 function replaceMetaByName(html, name, value) {
@@ -38,7 +67,10 @@ function replaceMetaByName(html, name, value) {
       return `<meta name="${name}" content="${escaped}" />`;
     });
   }
-  return html.replace("</head>", () => `    <meta name="${name}" content="${escaped}" />\n  </head>`);
+  return html.replace(
+    "</head>",
+    () => `    <meta name="${name}" content="${escaped}" />\n  </head>`
+  );
 }
 
 function replaceMetaByProperty(html, property, value) {
@@ -52,7 +84,10 @@ function replaceMetaByProperty(html, property, value) {
       return `<meta property="${property}" content="${escaped}" />`;
     });
   }
-  return html.replace("</head>", () => `    <meta property="${property}" content="${escaped}" />\n  </head>`);
+  return html.replace(
+    "</head>",
+    () => `    <meta property="${property}" content="${escaped}" />\n  </head>`
+  );
 }
 
 function stripTagsAndDecode(raw) {
@@ -79,11 +114,112 @@ function extractH1Matches(html) {
   return matches;
 }
 
-function buildRouteDocument(template, appHtml, head) {
+/**
+ * Fetches live Blogger posts directly in Node during `npm run build`.
+ * Falls back gracefully to the existing static snapshot `public/blogger-posts.json`
+ * if offline, and always merges via `mergeWithFallbackPosts` so
+ * `top-tax-mistakes-uae-companies-make` stays safe when absent from Blogger.
+ */
+async function fetchLiveBloggerPostsInNode(parseBloggerFeedEntries, mergeWithFallbackPosts) {
+  const snapshotPath = path.join(PUBLIC_DIR, "blogger-posts.json");
+
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    const res = await fetch(BLOGGER_JSON_FEED_URL, {
+      headers: {
+        Accept: "application/json",
+        "User-Agent": "DiasUAE-SSG-Prerender/2026 (+https://diasuae.ae)",
+      },
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status} fetching Blogger feed`);
+    }
+
+    const payload = await res.json();
+    const entries = payload?.feed?.entry;
+    if (!Array.isArray(entries) || entries.length === 0) {
+      throw new Error("Blogger feed returned zero entries");
+    }
+
+    const parsed = parseBloggerFeedEntries(payload);
+    const unified = mergeWithFallbackPosts(parsed);
+    console.log(
+      `[SSG Prerender] Live Blogger sync succeeded: ${parsed.length} Blogger posts -> ${unified.length} unified blog articles.`
+    );
+    return unified;
+  } catch (err) {
+    console.warn(
+      `[SSG Prerender] Live Blogger fetch unavailable (${err instanceof Error ? err.message : String(err)}). Using local snapshot fallback.`
+    );
+    if (fs.existsSync(snapshotPath)) {
+      try {
+        const cached = JSON.parse(fs.readFileSync(snapshotPath, "utf-8"));
+        if (Array.isArray(cached) && cached.length > 0) {
+          return mergeWithFallbackPosts(cached);
+        }
+      } catch {
+        // Ignore malformed snapshot and fall through to built-in fallback
+      }
+    }
+    return mergeWithFallbackPosts([]);
+  }
+}
+
+/**
+ * Builds and writes `dist/sitemap.xml` and `public/sitemap.xml` with all
+ * canonical static routes, service pages, and live synced `/blog/<slug>` URLs.
+ */
+function writeUnifiedSitemap(routes, bloggerPosts) {
+  const postByRoute = new Map();
+  for (const post of bloggerPosts) {
+    if (!post?.slug) continue;
+    postByRoute.set(
+      `/blog/${post.slug}`,
+      parseGenuineIsoDate(post.updatedIso || post.publishedIso || post.publishedDate)
+    );
+  }
+
+  const seenLocs = new Set();
+  const entries = [];
+
+  for (const route of routes) {
+    const cleanPath =
+      route === "/" ? "/" : `/${String(route).replace(/^\/+/, "").replace(/\/+$/, "")}`;
+    if (/^\/blog\/draft-/i.test(cleanPath)) continue;
+    const loc = `${SITE_DOMAIN}${cleanPath}`;
+    if (seenLocs.has(loc)) continue;
+    seenLocs.add(loc);
+    const lastmod = postByRoute.get(cleanPath);
+    entries.push({ loc, lastmod });
+  }
+
+  const xmlItems = entries
+    .map((item) => {
+      const lastmodLine = item.lastmod ? `\n    <lastmod>${item.lastmod}</lastmod>` : "";
+      return `  <url>\n    <loc>${escapeXml(item.loc)}</loc>${lastmodLine}\n  </url>`;
+    })
+    .join("\n");
+
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${xmlItems}\n</urlset>\n`;
+
+  fs.writeFileSync(path.join(DIST_DIR, "sitemap.xml"), xml, "utf-8");
+  fs.writeFileSync(path.join(PUBLIC_DIR, "sitemap.xml"), xml, "utf-8");
+
+  return entries.length;
+}
+
+function buildRouteDocument(template, appHtml, head, hydratedPosts) {
   let doc = template;
 
   // 1. Update <title> and primary <meta> tags
-  doc = doc.replace(/<title>[\s\S]*?<\/title>/i, () => `<title>${escapeHtmlText(head.title)}</title>`);
+  doc = doc.replace(
+    /<title>[\s\S]*?<\/title>/i,
+    () => `<title>${escapeHtmlText(head.title)}</title>`
+  );
   doc = replaceMetaByName(doc, "title", head.title);
   doc = replaceMetaByName(doc, "description", head.description);
   doc = replaceMetaByName(doc, "keywords", head.keywords);
@@ -167,9 +303,20 @@ function buildRouteDocument(template, appHtml, head) {
   // 6. Replace the dev preloader inside <div id="root">...</div> with SSR-rendered HTML
   const rootDivPattern = /<div\s+id="root">[\s\S]*<\/div>(?=\s*(?:<script\b|<\/body>))/i;
   if (!rootDivPattern.test(doc)) {
-    throw new Error(`Could not locate <div id="root">...</div> anchor in dist/index.html for route ${head.routePath}`);
+    throw new Error(
+      `Could not locate <div id="root">...</div> anchor in dist/index.html for route ${head.routePath}`
+    );
   }
-  doc = doc.replace(rootDivPattern, () => `<div id="root" data-ssr="true">${appHtml}</div>`);
+
+  const hydrationSnippet =
+    Array.isArray(hydratedPosts) && hydratedPosts.length > 0
+      ? `\n    <script>window.__DIAS_BLOGGER_POSTS__=${serializeJsonLd(hydratedPosts)};</script>`
+      : "";
+
+  doc = doc.replace(
+    rootDivPattern,
+    () => `<div id="root" data-ssr="true">${appHtml}</div>${hydrationSnippet}`
+  );
 
   return doc;
 }
@@ -194,17 +341,43 @@ async function runPrerender() {
 
   const template = fs.readFileSync(templatePath, "utf-8");
   const serverModule = await import(pathToFileURL(ssrEntryPath).href);
-  const { render, getAllPrerenderRoutes } = serverModule;
+  const {
+    render,
+    getAllPrerenderRoutes,
+    parseBloggerFeedEntries,
+    mergeWithFallbackPosts,
+  } = serverModule;
 
-  if (typeof render !== "function" || typeof getAllPrerenderRoutes !== "function") {
-    throw new Error("SSR entry bundle must export `render` and `getAllPrerenderRoutes`.");
+  if (
+    typeof render !== "function" ||
+    typeof getAllPrerenderRoutes !== "function" ||
+    typeof parseBloggerFeedEntries !== "function" ||
+    typeof mergeWithFallbackPosts !== "function"
+  ) {
+    throw new Error(
+      "SSR entry bundle must export `render`, `getAllPrerenderRoutes`, `parseBloggerFeedEntries`, and `mergeWithFallbackPosts`."
+    );
   }
 
-  const routes = getAllPrerenderRoutes();
+  // 1. Sync live Blogger posts at build time and persist static JSON snapshot
+  const bloggerPosts = await fetchLiveBloggerPostsInNode(
+    parseBloggerFeedEntries,
+    mergeWithFallbackPosts
+  );
+
+  const snapshotJson = JSON.stringify(bloggerPosts, null, 2);
+  fs.writeFileSync(path.join(PUBLIC_DIR, "blogger-posts.json"), snapshotJson, "utf-8");
+  fs.writeFileSync(path.join(DIST_DIR, "blogger-posts.json"), snapshotJson, "utf-8");
+
+  const postBySlug = new Map(bloggerPosts.map((p) => [p.slug.toLowerCase(), p]));
+
+  // 2. Pre-render all static routes, service routes, and live /blog/<slug> routes
+  const routes = getAllPrerenderRoutes(bloggerPosts);
   const report = [];
+  const blogReport = [];
 
   for (const route of routes) {
-    const { html: appHtml, head } = render(route);
+    const { html: appHtml, head } = render(route, { bloggerPosts });
     const h1Matches = extractH1Matches(appHtml);
 
     if (h1Matches.length !== 1) {
@@ -213,7 +386,17 @@ async function runPrerender() {
       );
     }
 
-    const finalDocument = buildRouteDocument(template, appHtml, head);
+    // Hydrate the active post on /blog/:slug pages to prevent any client flash
+    let hydratedPosts = undefined;
+    if (route.startsWith("/blog/")) {
+      const slug = route.replace(/^\/blog\//, "").trim().toLowerCase();
+      const activePost = postBySlug.get(slug);
+      if (activePost) {
+        hydratedPosts = [activePost];
+      }
+    }
+
+    const finalDocument = buildRouteDocument(template, appHtml, head, hydratedPosts);
 
     // Strict Bing & Google Webmaster Tools audit: exactly 1 <meta name="description"> within 120–155 chars
     const descMatches = [
@@ -331,24 +514,41 @@ async function runPrerender() {
       }
     }
 
+    // Strict path confinement: reject any slug attempting directory traversal outside dist/
     const relativeOutPath =
       route === "/"
         ? "index.html"
         : path.join(route.replace(/^\/+/, ""), "index.html");
-    const absoluteOutPath = path.join(DIST_DIR, relativeOutPath);
+    const resolvedOutPath = path.resolve(DIST_DIR, relativeOutPath);
+    const rootIndexFile = path.join(DIST_DIR, "index.html");
+    if (
+      resolvedOutPath !== rootIndexFile &&
+      !resolvedOutPath.startsWith(DIST_DIR + path.sep)
+    ) {
+      throw new Error(
+        `SSG path safety violation for route "${route}": resolved path escapes dist/`
+      );
+    }
 
-    fs.mkdirSync(path.dirname(absoluteOutPath), { recursive: true });
-    fs.writeFileSync(absoluteOutPath, finalDocument, "utf-8");
+    fs.mkdirSync(path.dirname(resolvedOutPath), { recursive: true });
+    fs.writeFileSync(resolvedOutPath, finalDocument, "utf-8");
 
-    report.push({
+    const entry = {
       route,
       file: `dist/${relativeOutPath.replace(/\\/g, "/")}`,
       title: head.title,
       h1: h1Matches[0],
       descLength: decodedDesc.length,
       jsonLdCount: (head.keepHomepageFaq ? 4 : 3) + (head.jsonLdScripts?.length || 0),
-    });
+    };
+    report.push(entry);
+    if (route.startsWith("/blog/")) {
+      blogReport.push(entry);
+    }
   }
+
+  // 3. Generate unified sitemap.xml in both dist/ and public/
+  const totalSitemapUrls = writeUnifiedSitemap(routes, bloggerPosts);
 
   // Remove stale root-level .html stubs copied from public/ that collide with SSG directories under Firebase cleanUrls
   const collidingStubs = ["blog.html", "tax-planning-difc.html"];
@@ -365,10 +565,13 @@ async function runPrerender() {
   console.log(`\n[SSG Prerender] Successfully generated ${report.length} static HTML pages:\n`);
   for (const item of report) {
     console.log(
-      `  ✔ ${item.file.padEnd(64)} | desc:${String(item.descLength).padStart(3)}c | <h1>: ${item.h1}`
+      `  ✔ ${item.file.padEnd(76)} | desc:${String(item.descLength).padStart(3)}c | <h1>: ${item.h1}`
     );
   }
-  console.log(`\n[SSG Prerender] Cleaned temporary dist-ssr directory and preserved public static files.\n`);
+  console.log(
+    `\n[SSG Prerender] Pre-rendered ${blogReport.length} unified /blog/<slug> pages, wrote public/blogger-posts.json & dist/blogger-posts.json, and updated sitemap.xml (${totalSitemapUrls} canonical URLs).`
+  );
+  console.log(`[SSG Prerender] Cleaned temporary dist-ssr directory.\n`);
 }
 
 runPrerender().catch((err) => {

@@ -1,11 +1,14 @@
 import React from "react";
-import { ArrowRight, ShieldCheck } from "lucide-react";
+import { ArrowRight, MessageCircle, ShieldCheck } from "lucide-react";
 
 interface MonthlyPackageConversionStripProps {
   onNavigate: (path: string) => void;
   /** Compact variant blends cleanly inside narrower editorial containers like blog posts */
   compact?: boolean;
 }
+
+const WHATSAPP_PACKAGES_URL =
+  "https://wa.me/971529226958?text=Hi%20DiasUAE%2C%20I%20would%20like%20to%20discuss%20your%20Business%20Starter%20%28AED%20400%2Fmo%29%20and%20Corporate%20Growth%20%28VAT%20%2B%20CT%29%20packages.";
 
 export const MonthlyPackageConversionStrip: React.FC<MonthlyPackageConversionStripProps> = ({
   onNavigate,
@@ -46,7 +49,15 @@ export const MonthlyPackageConversionStrip: React.FC<MonthlyPackageConversionStr
               </h2>
 
               <p className="text-sm sm:text-[15px] text-[#475569] leading-relaxed">
-                Bundle monthly IFRS bookkeeping,{" "}
+                Choose{" "}
+                <strong className="text-[#0D1B2A] font-semibold tabular-nums">
+                  Business Starter (AED 400/mo)
+                </strong>{" "}
+                or scale seamlessly with{" "}
+                <strong className="text-[#0D1B2A] font-semibold">
+                  Corporate Growth (VAT + CT)
+                </strong>
+                —combining monthly IFRS bookkeeping,{" "}
                 <a
                   href="/services/vat-compliance"
                   onClick={(e) => handleLinkClick(e, "/services/vat-compliance")}
@@ -62,20 +73,27 @@ export const MonthlyPackageConversionStrip: React.FC<MonthlyPackageConversionStr
                 >
                   UAE Corporate Tax Advisory &amp; Registration
                 </a>{" "}
-                into a single predictable monthly plan—starting from{" "}
-                <strong className="text-[#0D1B2A] font-semibold tabular-nums">AED 400/month</strong>{" "}
-                for Business Starter or scaling seamlessly with Corporate Growth.
+                under one transparent fixed monthly plan.
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row lg:flex-col items-stretch sm:items-center lg:items-stretch gap-3 shrink-0">
+            <div className="flex flex-col sm:flex-row lg:flex-col items-stretch sm:items-center lg:items-stretch gap-2.5 shrink-0">
               <a
                 href="/pricing"
                 onClick={(e) => handleLinkClick(e, "/pricing")}
-                className="min-h-[46px] px-6 py-3 rounded-xl bg-[#1B4332] hover:bg-[#143326] text-white font-semibold text-sm inline-flex items-center justify-center gap-2 transition-colors whitespace-nowrap shadow-xs"
+                className="min-h-[46px] px-6 py-3 rounded-xl bg-[#1B4332] hover:bg-[#143326] text-white font-semibold text-sm inline-flex items-center justify-center gap-2 transition-colors whitespace-nowrap shadow-xs no-underline"
               >
                 <span>View Monthly Packages</span>
                 <ArrowRight className="w-4 h-4 shrink-0" />
+              </a>
+              <a
+                href={WHATSAPP_PACKAGES_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="min-h-[44px] px-5 py-2.5 rounded-xl bg-white hover:bg-[#F8FAFC] border border-[#CBD5E1] hover:border-[#1B4332] text-[#0D1B2A] hover:text-[#1B4332] font-semibold text-xs sm:text-sm inline-flex items-center justify-center gap-2 transition-colors whitespace-nowrap no-underline"
+              >
+                <MessageCircle className="w-4 h-4 text-[#1B4332] shrink-0" />
+                <span className="tabular-nums">WhatsApp +971 52 922 6958</span>
               </a>
             </div>
           </div>
@@ -84,9 +102,9 @@ export const MonthlyPackageConversionStrip: React.FC<MonthlyPackageConversionStr
             <a
               href="/pricing"
               onClick={(e) => handleLinkClick(e, "/pricing")}
-              className="inline-flex items-center gap-1.5 text-[#0D1B2A] hover:text-[#1B4332] font-semibold transition-colors"
+              className="inline-flex items-center gap-1.5 text-[#0D1B2A] hover:text-[#1B4332] font-semibold transition-colors no-underline"
             >
-              <span>Business Starter &amp; Corporate Growth Pricing</span>
+              <span>Business Starter (AED 400/mo) &amp; Corporate Growth (VAT + CT)</span>
               <ArrowRight className="w-3.5 h-3.5 text-[#1B4332]" />
             </a>
             <span className="hidden sm:inline text-slate-300" aria-hidden="true">
@@ -95,7 +113,7 @@ export const MonthlyPackageConversionStrip: React.FC<MonthlyPackageConversionStr
             <a
               href="/services/vat-compliance"
               onClick={(e) => handleLinkClick(e, "/services/vat-compliance")}
-              className="inline-flex items-center gap-1.5 text-[#475569] hover:text-[#1B4332] font-medium transition-colors"
+              className="inline-flex items-center gap-1.5 text-[#475569] hover:text-[#1B4332] font-medium transition-colors no-underline"
             >
               <span>UAE 5% VAT Filing &amp; Compliance</span>
               <ArrowRight className="w-3.5 h-3.5 text-[#1B4332]" />
@@ -106,7 +124,7 @@ export const MonthlyPackageConversionStrip: React.FC<MonthlyPackageConversionStr
             <a
               href="/services/corporate-tax-advisory"
               onClick={(e) => handleLinkClick(e, "/services/corporate-tax-advisory")}
-              className="inline-flex items-center gap-1.5 text-[#475569] hover:text-[#1B4332] font-medium transition-colors"
+              className="inline-flex items-center gap-1.5 text-[#475569] hover:text-[#1B4332] font-medium transition-colors no-underline"
             >
               <span>UAE Corporate Tax Advisory &amp; Registration</span>
               <ArrowRight className="w-3.5 h-3.5 text-[#1B4332]" />

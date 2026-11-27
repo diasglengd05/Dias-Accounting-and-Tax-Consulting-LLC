@@ -72,19 +72,13 @@ const TAX_TOOLS_MENU: DropdownLink[] = [
 const RESOURCES_MENU: DropdownLink[] = [
   {
     label: "Tax & IFRS Insights",
-    description: "Practical UAE compliance guides & playbooks",
+    description: "Live UAE FTA briefings, Corporate Tax & VAT guides",
     path: "/blog",
   },
   {
     label: "0% Small Business Relief",
     description: "AED 3M threshold rules & EmaraTax election",
     path: "/small-business-tax-relief",
-  },
-  {
-    label: "Live FTA Briefings",
-    description: "Daily regulatory alerts on insights.diasuae.ae",
-    path: "https://insights.diasuae.ae/",
-    external: true,
   },
   {
     label: "Client Reviews",
