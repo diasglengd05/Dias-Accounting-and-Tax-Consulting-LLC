@@ -3,6 +3,7 @@ import { Menu, X, ChevronDown, ChevronRight, ArrowUpRight } from "lucide-react";
 import DiasLogo from "./DiasLogo";
 import LanguageToggle from "./LanguageToggle";
 import { useLanguage } from "../i18n/LanguageContext";
+import { useRouteTransition } from "./PageMainTransition";
 
 interface PageNavigationProps {
   currentPath: string;
@@ -109,6 +110,7 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
   onNavigate,
 }) => {
   const { language } = useLanguage();
+  const { isPageLoading } = useRouteTransition();
   const isAr = language === "ar";
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<DropdownKey | null>(null);
@@ -244,6 +246,7 @@ export const PageNavigation: React.FC<PageNavigationProps> = ({
             textSize="text-base sm:text-lg"
             textColor="text-[#0D1B2A]"
             subLabelColor="text-slate-500"
+            isLoading={isPageLoading}
           />
         </a>
 

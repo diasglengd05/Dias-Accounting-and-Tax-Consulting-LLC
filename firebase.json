@@ -174,15 +174,7 @@
         "destination": "/accounting-services-uae.html"
       },
       {
-        "source": "/tax-planning-difc",
-        "destination": "/tax-planning-difc.html"
-      },
-      {
-        "source": "/blog",
-        "destination": "/blog.html"
-      },
-      {
-        "regex": "^(?!/llms\\.txt$|/llms-full\\.txt$|/robots\\.txt$|/sitemap\\.xml$).*",
+        "source": "**",
         "destination": "/index.html"
       }
     ],

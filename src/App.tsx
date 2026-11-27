@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, useRef, useTransition, Suspense } from "react";
 import {
   Calculator,
   TrendingUp,
@@ -29,6 +29,11 @@ import { LanguageProvider, useLanguage } from "./i18n/LanguageContext";
 import LazyMount from "./components/LazyMount";
 import { ClutchRatingWidget } from "./components/ClutchBadges";
 import OfficialRecognitionSection from "./components/OfficialRecognitionSection";
+import { AnimatePresence, MotionConfig, motion } from "motion/react";
+import QuickSummaryBox from "./components/QuickSummaryBox";
+import TaxAgentReviewStrip from "./components/TaxAgentReviewStrip";
+import MonthlyPackageConversionStrip from "./components/MonthlyPackageConversionStrip";
+import PageMainTransition, { RouteTransitionProvider } from "./components/PageMainTransition";
 
 // Lazy-loaded components for fast mobile JS execution & small initial bundle size
 const GoogleOfficeMap = React.lazy(() => import("./components/GoogleOfficeMap"));
@@ -41,27 +46,28 @@ const TaxHealthCheckModal = React.lazy(() => import("./components/TaxHealthCheck
 const LeadMagnetDownloadModal = React.lazy(() => import("./components/LeadMagnetDownloadModal"));
 const TaxAiAdvisorModal = React.lazy<React.ComponentType<any>>(() => import("./components/TaxAiAdvisorModal"));
 const SeoEngineDashboardModal = React.lazy(() => import("./components/SeoEngineDashboardModal"));
-const SmallBusinessTaxReliefPage = React.lazy(() => import("./pages/SmallBusinessTaxReliefPage").then(m => ({ default: m.SmallBusinessTaxReliefPage })));
+// Route pages imported directly so build-time SSG renderToString outputs full HTML & <h1> with zero Suspense fallback
+import { SmallBusinessTaxReliefPage } from "./pages/SmallBusinessTaxReliefPage";
 import { DifcDtecAccountingPage } from "./pages/DifcDtecAccountingPage";
-const DividendsAuditPage = React.lazy(() => import("./pages/DividendsAuditPage").then(m => ({ default: m.DividendsAuditPage })));
-const ServicesPage = React.lazy(() => import("./pages/ServicesPage"));
+import { DividendsAuditPage } from "./pages/DividendsAuditPage";
+import ServicesPage from "./pages/ServicesPage";
 import CompanySetupPage from "./pages/CompanySetupPage";
 import PricingPage from "./pages/PricingPage";
-const WhyChooseUsPage = React.lazy(() => import("./pages/WhyChooseUsPage"));
-const AboutPage = React.lazy(() => import("./pages/AboutPage"));
-const TermsPage = React.lazy(() => import("./pages/TermsPage"));
-const PrivacyPolicyPage = React.lazy(() => import("./pages/PrivacyPolicyPage"));
+import WhyChooseUsPage from "./pages/WhyChooseUsPage";
+import AboutPage from "./pages/AboutPage";
+import TermsPage from "./pages/TermsPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import BlogsPage from "./pages/BlogsPage";
 import BlogDetailPage from "./pages/BlogDetailPage";
 import TestimonialsPage from "./pages/TestimonialsPage";
 const HomepageInsightsSection = React.lazy(() => import("./components/HomepageInsightsSection"));
 import FaqsPage from "./pages/FaqsPage";
-const ContactPage = React.lazy(() => import("./pages/ContactPage"));
+import ContactPage from "./pages/ContactPage";
 import TaxPlannerPage from "./pages/TaxPlannerPage";
-const ServiceDetailPage = React.lazy(() => import("./pages/ServiceDetailPage"));
-const VatPlannerPage = React.lazy(() => import("./pages/VatPlannerPage"));
-const FtaDeadlinesPage = React.lazy(() => import("./pages/FtaDeadlinesPage"));
-const PartnersPage = React.lazy(() => import("./pages/PartnersPage"));
+import ServiceDetailPage from "./pages/ServiceDetailPage";
+import VatPlannerPage from "./pages/VatPlannerPage";
+import FtaDeadlinesPage from "./pages/FtaDeadlinesPage";
+import PartnersPage from "./pages/PartnersPage";
 import CookieConsentBanner from "./components/CookieConsentBanner";
 import HomepagePricingSection from "./components/HomepagePricingSection";
 import ScopeInstantQuoteBuilder from "./components/ScopeInstantQuoteBuilder";
@@ -179,20 +185,48 @@ const SOFTWARE_ECOSYSTEM = [
   "Dubai DET",
 ];
 
-function MainApp() {
+function MainApp({ initialPath }: { initialPath?: string }) {
   const { language } = useLanguage();
   const isAr = language === "ar";
 
   // Navigation state
   const [activeSection, setActiveSection] = useState("home");
 
-  // Dedicated SEO Landing Pages Path State
+  // Dedicated SEO Landing Pages Path State & Seamless View Transitions
   const [currentPath, setCurrentPath] = useState<string>(() => {
+    if (initialPath) {
+      return normalizeAppPath(initialPath);
+    }
     if (typeof window !== "undefined") {
       return normalizeAppPath(window.location.pathname);
     }
     return "/";
   });
+  const [hasNavigated, setHasNavigated] = useState(false);
+  const [isRoutePending, startRouteTransition] = useTransition();
+  const [isPageLoadingPulse, setIsPageLoadingPulse] = useState(false);
+  const normalizedRouteKey = currentPath.toLowerCase().replace(/\/+$/, "") || "/";
+  const currentRouteKeyRef = useRef(normalizedRouteKey);
+  const pendingHashRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    currentRouteKeyRef.current = normalizedRouteKey;
+  }, [normalizedRouteKey]);
+
+  // Subtle single-turn loading animation for the header emblem on initial page load and route changes
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    setIsPageLoadingPulse(true);
+    let settled = false;
+    const stopTimer = window.setTimeout(() => {
+      if (!settled) setIsPageLoadingPulse(false);
+    }, 1150);
+
+    return () => {
+      settled = true;
+      window.clearTimeout(stopTimer);
+    };
+  }, [normalizedRouteKey]);
 
   useEffect(() => {
     const syncAndConsolidateHome = () => {
@@ -202,7 +236,13 @@ function MainApp() {
         const nextHash = window.location.hash === "#home" ? "" : window.location.hash;
         window.history.replaceState(null, "", `${normalized}${window.location.search}${nextHash}`);
       }
-      setCurrentPath(normalized);
+      const nextKey = normalized.toLowerCase().replace(/\/+$/, "") || "/";
+      if (nextKey !== currentRouteKeyRef.current) {
+        setHasNavigated(true);
+        startRouteTransition(() => {
+          setCurrentPath(normalized);
+        });
+      }
     };
 
     syncAndConsolidateHome();
@@ -210,26 +250,65 @@ function MainApp() {
     return () => window.removeEventListener("popstate", syncAndConsolidateHome);
   }, []);
 
+  // Reset scroll cleanly right after the outgoing route finishes its exit animation
+  const handleRouteExitComplete = () => {
+    if (typeof window === "undefined") return;
+
+    const targetHash =
+      pendingHashRef.current ||
+      (window.location.hash &&
+      window.location.hash !== "#home" &&
+      window.location.hash !== "#seo-engine" &&
+      window.location.hash !== "#admin-seo"
+        ? window.location.hash.replace(/^#/, "")
+        : null);
+    pendingHashRef.current = null;
+
+    if (targetHash) {
+      window.setTimeout(() => {
+        const el = document.getElementById(targetHash);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 80);
+      return;
+    }
+
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" as ScrollBehavior });
+  };
+
   const navigateTo = (path: string) => {
     if (typeof window !== "undefined") {
       const [rawBeforeHash, hashPart] = path.split("#");
       const [rawPathPart, queryPart] = (rawBeforeHash || "/").split("?");
       const normalized = normalizeAppPath(rawPathPart || "/");
+      const nextKey = normalized.toLowerCase().replace(/\/+$/, "") || "/";
+      const isSameRoute = nextKey === currentRouteKeyRef.current;
       const searchStr = queryPart ? `?${queryPart}` : "";
       const fullUrl = `${normalized}${searchStr}${hashPart ? `#${hashPart}` : ""}`;
+
       window.history.pushState(null, "", fullUrl);
-      window.dispatchEvent(new PopStateEvent("popstate"));
-      setCurrentPath(normalized);
-      if (hashPart) {
-        setTimeout(() => {
-          const el = document.getElementById(hashPart);
-          if (el) {
-            el.scrollIntoView({ behavior: "smooth" });
-          }
-        }, 80);
-      } else {
-        window.scrollTo({ top: 0, behavior: "smooth" });
+
+      if (isSameRoute) {
+        if (hashPart) {
+          window.setTimeout(() => {
+            const el = document.getElementById(hashPart);
+            if (el) {
+              el.scrollIntoView({ behavior: "smooth" });
+            }
+          }, 40);
+        } else {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+        return;
       }
+
+      pendingHashRef.current = hashPart || null;
+      setHasNavigated(true);
+      startRouteTransition(() => {
+        setCurrentPath(normalized);
+      });
+      window.dispatchEvent(new PopStateEvent("popstate"));
     }
   };
 
@@ -436,23 +515,34 @@ function MainApp() {
   };
 
   const renderPageFallback = (label: string) => (
-    <div className="min-h-screen bg-[#FFFFFF] flex flex-col items-center justify-center gap-3 text-[#475569] font-sans text-sm">
-      <div
-        className="w-6 h-6 rounded-full border-2 border-[#E2E8F0] border-t-[#1B4332] animate-spin"
-        aria-hidden="true"
+    <div className="min-h-screen flex flex-col bg-[#FFFFFF] font-sans text-[#0D1B2A] antialiased">
+      <PageNavigation
+        currentPath={currentPath}
+        onNavigate={navigateTo}
+        onOpenAudit={() => setTaxHealthModalOpen(true)}
       />
-      <span>{label}</span>
+      <div
+        data-page-transition="content"
+        className="flex-1 flex flex-col items-center justify-center gap-3 text-[#475569] text-sm px-4"
+      >
+        <div
+          className="w-6 h-6 rounded-full border-2 border-[#E2E8F0] border-t-[#C5A059] animate-spin"
+          aria-hidden="true"
+        />
+        <span>{label}</span>
+      </div>
     </div>
   );
 
-  // Dedicated Landing Page Routes
-  if (currentPath === "/small-business-tax-relief") {
-    return (
-      <Suspense fallback={renderPageFallback("Loading Small Business Relief Hub...")}>
-        <SmallBusinessTaxReliefPage onNavigate={navigateTo} />
-      </Suspense>
-    );
-  }
+  const renderRouteView = (): React.ReactNode => {
+    // Dedicated Landing Page Routes
+    if (currentPath === "/small-business-tax-relief") {
+      return (
+        <Suspense fallback={renderPageFallback("Loading Small Business Relief Hub...")}>
+          <SmallBusinessTaxReliefPage onNavigate={navigateTo} />
+        </Suspense>
+      );
+    }
 
   if (
     currentPath === "/difc-dtec-accounting" ||
@@ -718,12 +808,15 @@ function MainApp() {
 
   if (currentPath === "/admin" || currentPath === "/inquiry-sheet" || currentPath === "/admin/sheet" || currentPath === "/inquiries") {
     return (
-      <div className="min-h-screen bg-navy-950 flex flex-col items-center justify-center text-white p-6 space-y-6 text-center">
+      <div
+        data-page-transition="content"
+        className="min-h-screen bg-navy-950 flex flex-col items-center justify-center text-white p-6 space-y-6 text-center"
+      >
         <div className="w-16 h-16 rounded-2xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center animate-pulse">
           <FileSpreadsheet className="w-8 h-8" />
         </div>
         <div className="space-y-2 max-w-md">
-          <h2 className="font-display text-2xl font-bold">Dias UAE Inquiries Spreadsheet</h2>
+          <h1 className="font-display text-2xl font-bold">DiasUAE Inquiries Spreadsheet</h1>
           <p className="text-slate-300 text-xs leading-relaxed">
             Direct access to the live Google Sheets database for all consultation inquiries and lead submissions.
           </p>
@@ -781,7 +874,7 @@ function MainApp() {
         onOpenAudit={() => setTaxHealthModalOpen(true)}
       />
 
-      <main id="main-content" role="main">
+      <PageMainTransition id="main-content" role="main">
         {/* 1. Executive Hero Section */}
         <section
           id="home"
@@ -797,9 +890,20 @@ function MainApp() {
                     style={{ textWrap: "balance" } as React.CSSProperties}
                   >
                     {isAr
-                      ? "الضرائب والمحاسبة في الإمارات، بدقة وبدون غرامات."
-                      : "UAE Tax & Accounting, Handled Without Penalties."}
+                      ? "باقات المحاسبة وضريبة القيمة المضافة 5% وضريبة الشركات 9% في الإمارات — تبدأ من 400 درهم شهرياً"
+                      : "UAE Accounting, 5% VAT & 9% Corporate Tax Packages — From AED 400/Month"}
                   </h1>
+
+                  <QuickSummaryBox variant="light" label="Quick Summary">
+                    <strong className="text-[#0D1B2A] font-semibold">
+                      DiasUAE (Dias Accounting and Tax Consulting LLC)
+                    </strong>
+                    , led by FTA-Registered Tax Agent{" "}
+                    <strong className="text-[#0D1B2A] font-semibold">Glen Dias</strong> (SHAMS Licence{" "}
+                    <span className="tabular-nums font-medium text-[#0D1B2A]">2646813.01</span>) and recognized as a{" "}
+                    <span className="font-medium text-[#856422]">2x Clutch 2026 UAE Leader</span>, delivers fixed-fee IFRS bookkeeping, 5% UAE VAT, 9% Corporate Tax, and statutory dividend audits. We serve Dubai Mainland, DIFC, DTEC, DMCC, IFZA, and SHAMS with 5th-business-day monthly closes, 5-working-day dividend audits, and retainers starting{" "}
+                    <strong className="text-[#1B4332] font-semibold">from AED 400/month</strong>.
+                  </QuickSummaryBox>
 
                   <p className="text-base sm:text-lg text-[#475569] leading-[1.6] max-w-[58ch]">
                     {isAr
@@ -1144,6 +1248,101 @@ function MainApp() {
           onPreselectedCallBooking={handlePreselectedCallBooking}
         />
 
+        {/* 5.25 AI Mode Cost & Governance Comparison: In-House vs. DiasUAE */}
+        <section
+          aria-label="In-House UAE Accountant vs. DiasUAE Outsourced Tax Agency"
+          className="bg-[#070d19] border-y border-[#c5a059]/25 py-16 lg:py-22 text-white"
+        >
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+            <div className="max-w-3xl space-y-2.5">
+              <span className="inline-block text-xs font-semibold uppercase tracking-[0.14em] text-[#c5a059]">
+                2026 UAE Cost &amp; Governance Comparison
+              </span>
+              <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">
+                In-House UAE Accountant vs. DiasUAE Outsourced Tax Agency
+              </h2>
+              <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-[65ch]">
+                Compare total employer overhead, FTA Tax Agent representation, and year-round continuity when scaling a UAE Mainland, DIFC, DTEC, or Free Zone company.
+              </p>
+            </div>
+
+            <div className="overflow-x-auto rounded-2xl border border-[#c5a059]/30 bg-[#0d1b2a] shadow-sm">
+              <table className="w-full text-left border-collapse text-sm">
+                <thead>
+                  <tr className="border-b border-[#c5a059]/25 bg-[#070d19]/85 text-xs uppercase tracking-wider">
+                    <th scope="col" className="px-5 py-4 font-semibold text-slate-300">
+                      Comparison Factor
+                    </th>
+                    <th scope="col" className="px-5 py-4 font-semibold text-slate-300">
+                      In-House UAE Accountant
+                    </th>
+                    <th scope="col" className="px-5 py-4 font-semibold text-[#c5a059]">
+                      DiasUAE Outsourced Tax Agency
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/10">
+                  <tr className="hover:bg-white/[0.02] transition-colors">
+                    <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                      Monthly Cost
+                    </td>
+                    <td className="px-5 py-4 text-slate-300 tabular-nums">
+                      AED 8,000–15,000+ / month (base salary + software licenses)
+                    </td>
+                    <td className="px-5 py-4 font-semibold text-[#c5a059] tabular-nums">
+                      From AED 400/month (fixed all-inclusive IFRS &amp; tax retainer)
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-white/[0.02] transition-colors">
+                    <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                      FTA Tax Agent Sign-Off
+                    </td>
+                    <td className="px-5 py-4 text-slate-300">
+                      Not included — requires paying an external FTA-registered tax agency separately
+                    </td>
+                    <td className="px-5 py-4 font-semibold text-white">
+                      Included — direct sign-off &amp; FTA representation by Glen Dias, FTA-Registered Tax Agent
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-white/[0.02] transition-colors">
+                    <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                      Visa, Medical &amp; Gratuity Overhead
+                    </td>
+                    <td className="px-5 py-4 text-slate-300 tabular-nums">
+                      AED 15,000–25,000+ / year (UAE employment visa, health insurance, EOSB gratuity &amp; leave airfare)
+                    </td>
+                    <td className="px-5 py-4 font-semibold text-[#c5a059]">
+                      AED 0 employer overhead — zero visa, HR, insurance, or gratuity liability
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-white/[0.02] transition-colors">
+                    <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                      Continuity &amp; Penalty Protection
+                    </td>
+                    <td className="px-5 py-4 text-slate-300">
+                      Single point of failure during annual leave, illness, or unexpected staff resignation
+                    </td>
+                    <td className="px-5 py-4 font-semibold text-white">
+                      Uninterrupted chartered accounting &amp; tax team with 5th-day closes and zero missed FTA deadlines
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-white/[0.02] transition-colors">
+                    <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                      Specialist Scope (QFZP &amp; Audits)
+                    </td>
+                    <td className="px-5 py-4 text-slate-300">
+                      Routine bookkeeping only; external consultants needed for 0% QFZP, VAT audits &amp; dividend audits
+                    </td>
+                    <td className="px-5 py-4 font-semibold text-white">
+                      2x Clutch 2026 UAE Leader covering 0% QFZP, 5% VAT Form 201, forecasting &amp; 5-day dividend audits
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
         {/* 5.5 Step-by-Step Guided Scope Selector Underneath Pricing */}
         <ScopeInstantQuoteBuilder
           id="instant-quote"
@@ -1392,10 +1591,10 @@ function MainApp() {
                   </div>
                 </div>
 
-                <LazyMount minHeight={260}>
+                <LazyMount minHeight={510}>
                   <React.Suspense
                     fallback={
-                      <div className="h-64 bg-slate-100 rounded-2xl flex items-center justify-center text-xs text-slate-500">
+                      <div className="h-[450px] bg-[#070d19] border border-[#c5a059]/40 rounded-2xl flex items-center justify-center text-xs text-slate-300">
                         Loading office map...
                       </div>
                     }
@@ -1407,7 +1606,13 @@ function MainApp() {
             </div>
           </div>
         </section>
-      </main>
+
+        {/* Monthly Package Internal-Link Conversion Strip */}
+        <MonthlyPackageConversionStrip onNavigate={navigateTo} />
+
+        {/* E-E-A-T Tax Agent Verification Strip */}
+        <TaxAgentReviewStrip />
+      </PageMainTransition>
 
       {/* Clean 4-Column Executive Footer */}
       <PageFooter
@@ -1495,12 +1700,53 @@ function MainApp() {
       />
     </div>
   );
+  };
+
+  return (
+    <RouteTransitionProvider
+      routeKey={normalizedRouteKey}
+      hasNavigated={hasNavigated}
+      isPageLoading={isRoutePending || isPageLoadingPulse}
+    >
+      {isRoutePending && (
+        <div
+          className="fixed top-0 inset-x-0 z-[100] h-[2.5px] bg-[#0D1B2A]/10 overflow-hidden pointer-events-none"
+          role="progressbar"
+          aria-label="Loading page"
+        >
+          <div className="h-full w-1/3 bg-gradient-to-r from-transparent via-[#c5a059] to-transparent route-progress-bar" />
+        </div>
+      )}
+      <AnimatePresence
+        mode="wait"
+        initial={false}
+        onExitComplete={handleRouteExitComplete}
+      >
+        <motion.div
+          key={normalizedRouteKey}
+          className={
+            hasNavigated
+              ? "page-view-enter flex-1 flex flex-col"
+              : "flex-1 flex flex-col"
+          }
+        >
+          {renderRouteView()}
+        </motion.div>
+      </AnimatePresence>
+    </RouteTransitionProvider>
+  );
 }
 
-export default function App() {
+export interface AppProps {
+  initialPath?: string;
+}
+
+export default function App({ initialPath }: AppProps = {}) {
   return (
-    <LanguageProvider>
-      <MainApp />
-    </LanguageProvider>
+    <MotionConfig reducedMotion="user">
+      <LanguageProvider>
+        <MainApp initialPath={initialPath} />
+      </LanguageProvider>
+    </MotionConfig>
   );
 }

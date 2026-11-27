@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
+import PageMainTransition from "../components/PageMainTransition";
 import SectionCTA from "../components/editorial/SectionCTA";
 import { blogsData } from "../data/blogsData";
 import { BlogPost } from "../types";
@@ -295,7 +296,7 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
         onOpenAudit={onOpenAudit}
       />
 
-      <main id="main-content">
+      <PageMainTransition id="main-content">
         {/* 1. Clean Centered Header + Filter Pills */}
         <section className="bg-[#FFFFFF] border-b border-[#E2E8F0] pt-12 pb-14 lg:pt-20 lg:pb-16">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -319,7 +320,7 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
                 UAE Regulatory Insights &amp; Briefings
               </span>
               <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0D1B2A] tracking-tight leading-[1.12]">
-                UAE Corporate Tax, VAT &amp; Accounting Insights
+                UAE Corporate Tax, 5% VAT &amp; IFRS Accounting Insights
               </h1>
               <p className="text-base sm:text-lg text-[#475569] leading-[1.65] max-w-[60ch] mx-auto">
                 Practical FTA regulatory briefings, Ministerial Decision analysis, and IFRS compliance guidance authored by our Dubai and Sharjah tax agents.
@@ -756,7 +757,7 @@ export const BlogsPage: React.FC<BlogsPageProps> = ({
           secondaryLabel="Book Free Consultation →"
           onSecondaryClick={() => onNavigate("/contact")}
         />
-      </main>
+      </PageMainTransition>
 
       <PageFooter
         onNavigate={onNavigate}

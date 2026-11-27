@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
+import PageMainTransition from "../components/PageMainTransition";
 import WhyChooseUsGrid from "../components/WhyChooseUsGrid";
 import OurAffiliations from "../components/OurAffiliations";
 import ClientCaseStudies from "../components/ClientCaseStudies";
@@ -68,7 +69,7 @@ export const WhyChooseUsPage: React.FC<WhyChooseUsPageProps> = ({
         onOpenAudit={onOpenAudit}
       />
 
-      <main id="main-content">
+      <PageMainTransition id="main-content">
         {/* Hero Section */}
         <section className="relative bg-gradient-to-b from-navy-950 via-navy-900 to-navy-950 text-white py-16 lg:py-24 border-b border-white/10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -226,7 +227,7 @@ export const WhyChooseUsPage: React.FC<WhyChooseUsPageProps> = ({
         <section className="py-12 bg-slate-100/70 border-t border-slate-200">
           <OurAffiliations />
         </section>
-      </main>
+      </PageMainTransition>
 
       <PageFooter
         onNavigate={onNavigate}

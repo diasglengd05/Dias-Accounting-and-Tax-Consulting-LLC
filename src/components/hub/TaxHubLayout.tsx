@@ -2,6 +2,7 @@ import React from "react";
 import { ChevronRight } from "lucide-react";
 import PageNavigation from "../PageNavigation";
 import PageFooter from "../PageFooter";
+import PageMainTransition from "../PageMainTransition";
 import { MobileJumpBar, StickyTOC, TocItem, useActiveSection } from "./StickyTOC";
 import { ExecutiveClosingCta } from "./ExecutivePrimitives";
 import { RelatedResources } from "../editorial/RelatedResources";
@@ -76,7 +77,7 @@ export const TaxHubLayout: React.FC<TaxHubLayoutProps> = ({
         onOpenAudit={onOpenAudit}
       />
 
-      <main id="main-content" className="flex-1">
+      <PageMainTransition id="main-content" className="flex-1">
         {/* 1. Clean Hub Header & Key Figures Strip */}
         <section className="bg-[#FFFFFF] pt-12 pb-12 lg:pt-16 lg:pb-14 border-b border-[#E2E8F0]">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -187,7 +188,7 @@ export const TaxHubLayout: React.FC<TaxHubLayoutProps> = ({
           secondaryLabel="Try 2026 UAE Tax Calculator →"
           onSecondaryClick={() => onNavigate("/uae-tax-planner")}
         />
-      </main>
+      </PageMainTransition>
 
       <PageFooter
         onNavigate={onNavigate}

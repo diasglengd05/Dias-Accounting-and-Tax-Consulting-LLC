@@ -2,6 +2,8 @@ import React, { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, BookOpen, ExternalLink, FileText } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
+import PageMainTransition from "../components/PageMainTransition";
+import MonthlyPackageConversionStrip from "../components/MonthlyPackageConversionStrip";
 import ArticleContentRenderer from "../components/ArticleContentRenderer";
 import ArticleLayout from "../components/editorial/ArticleLayout";
 import { blogsData } from "../data/blogsData";
@@ -221,7 +223,7 @@ export const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
         onOpenAudit={onOpenAudit}
       />
 
-      <main id="main-content">
+      <PageMainTransition id="main-content">
         {loadingRemote ? (
           <section className="bg-[#FFFFFF] py-28">
             <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
@@ -362,15 +364,20 @@ export const BlogDetailPage: React.FC<BlogDetailPageProps> = ({
               {isHtmlContent ? (
                 <div
                   className="article-body text-[15px] sm:text-base leading-[1.7] text-[#475569] space-y-4 [&>p]:mb-4 [&>h2]:font-display [&>h2]:text-xl [&>h2]:sm:text-2xl [&>h2]:font-bold [&>h2]:text-[#0D1B2A] [&>h2]:mt-10 [&>h2]:mb-3.5 [&>h3]:font-display [&>h3]:text-lg [&>h3]:font-bold [&>h3]:text-[#0D1B2A] [&>h3]:mt-7 [&>h3]:mb-2.5 [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:space-y-2 [&>ol]:list-decimal [&>ol]:pl-5 [&>ol]:space-y-2 [&>a]:text-[#1B4332] [&>a]:underline [&>blockquote]:rounded-xl [&>blockquote]:bg-[#F8FAFC] [&>blockquote]:border [&>blockquote]:border-[#E2E8F0] [&>blockquote]:border-l-[3px] [&>blockquote]:border-l-[#C5A059] [&>blockquote]:p-5 [&>blockquote]:my-6 [&>table]:w-full [&>table]:border-collapse [&>table]:my-7 [&>table]:text-sm [&>table_th]:bg-[#0D1B2A] [&>table_th]:text-white [&>table_th]:p-3.5 [&>table_th]:text-left [&>table_td]:border-b [&>table_td]:border-[#E2E8F0] [&>table_td]:p-3.5 [&>img]:rounded-2xl [&>img]:border [&>img]:border-[#E2E8F0] [&>img]:my-6"
-                  dangerouslySetInnerHTML={{ __html: post.content }}
+                  dangerouslySetInnerHTML={{
+                    __html: post.content.replace(/<(\/?)h1\b/gi, "<$1h2"),
+                  }}
                 />
               ) : (
                 <ArticleContentRenderer content={post.content} onNavigate={onNavigate} />
               )}
             </div>
+
+            {/* Bottom Monthly Package Conversion Strip */}
+            <MonthlyPackageConversionStrip onNavigate={onNavigate} compact />
           </ArticleLayout>
         )}
-      </main>
+      </PageMainTransition>
 
       <PageFooter
         onNavigate={onNavigate}

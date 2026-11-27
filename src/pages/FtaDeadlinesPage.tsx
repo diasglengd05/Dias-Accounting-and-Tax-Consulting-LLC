@@ -33,7 +33,7 @@ const TOC_ITEMS = [
   { id: "faqs", label: "Deadline Rules & FAQs" },
 ];
 
-const DEADLINES_FAQS = [
+export const DEADLINES_FAQS = [
   {
     question: "How is the 9-month UAE Corporate Tax filing deadline calculated?",
     answer:

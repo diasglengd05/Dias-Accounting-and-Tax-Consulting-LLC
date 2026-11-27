@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
+import PageMainTransition from "../components/PageMainTransition";
 import { ExecutiveClosingCta } from "../components/hub/ExecutivePrimitives";
 import { servicesData } from "../data/staticData";
 import {
@@ -123,7 +124,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
         onOpenAudit={onOpenAudit}
       />
 
-      <main id="main-content" className="flex-1">
+      <PageMainTransition id="main-content" className="flex-1">
         {/* 1. Focused Executive Hero */}
         <section className="bg-[#FFFFFF] pt-12 pb-14 lg:pt-20 lg:pb-20 border-b border-[#E2E8F0]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -353,7 +354,7 @@ export const ServicesPage: React.FC<ServicesPageProps> = ({
           secondaryLabel="Try 2026 UAE Tax Calculator →"
           onSecondaryClick={() => onNavigate("/uae-tax-planner")}
         />
-      </main>
+      </PageMainTransition>
 
       <PageFooter
         onNavigate={onNavigate}

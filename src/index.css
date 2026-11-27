@@ -124,6 +124,52 @@ body {
   width: 100%;
 }
 
+/* Subtle CSS fades for route fallbacks & footer (main slide-up is handled by Framer Motion) */
+@keyframes page-shell-fade-in {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes route-progress-glide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(350%);
+  }
+}
+
+.page-view-enter [data-page-transition="content"] {
+  animation: page-shell-fade-in 260ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+.page-view-enter footer {
+  animation: page-shell-fade-in 340ms cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+
+.route-progress-bar {
+  animation: route-progress-glide 900ms cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes brand-emblem-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.brand-emblem-loading {
+  transform-origin: center center;
+  will-change: transform;
+  animation: brand-emblem-rotate 1.15s cubic-bezier(0.45, 0.05, 0.2, 0.95) infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -132,5 +178,11 @@ body {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  .page-view-enter footer,
+  .page-view-enter [data-page-transition="content"],
+  .brand-emblem-loading {
+    animation: none !important;
+    transform: none !important;
   }
 }

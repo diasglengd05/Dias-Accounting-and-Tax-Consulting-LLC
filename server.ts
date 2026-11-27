@@ -2216,6 +2216,7 @@ async function bootstrap() {
         maxAge: "1y",
         etag: true,
         lastModified: true,
+        redirect: false,
         setHeaders: (res, filePath) => {
           if (filePath.endsWith(".html")) {
             // HTML must revalidate so clients get updates immediately
@@ -2240,11 +2241,32 @@ async function bootstrap() {
       return cachedIndexHtml;
     };
 
-    // Dynamic Meta Prerendering SPA wildcard serving for Production
+    // Serve pre-rendered SSG HTML for every known route, falling back to dynamic meta injection for unknown routes
     app.get("*", (req, res) => {
       try {
+        const cleanRoutePath = (req.path || "/")
+          .replace(/^\/+/, "")
+          .replace(/\/+$/, "");
+
+        if (cleanRoutePath) {
+          const candidateHtmlPath = path.resolve(distPath, cleanRoutePath, "index.html");
+          if (
+            candidateHtmlPath.startsWith(distPath + path.sep) &&
+            fs.existsSync(candidateHtmlPath)
+          ) {
+            res.setHeader("Content-Type", "text/html; charset=utf-8");
+            res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
+            return res.sendFile(candidateHtmlPath);
+          }
+        }
+
         const template = getCachedIndexTemplate();
         if (template) {
+          if (!cleanRoutePath) {
+            res.setHeader("Content-Type", "text/html; charset=utf-8");
+            res.setHeader("Cache-Control", "public, max-age=0, must-revalidate");
+            return res.status(200).send(template);
+          }
           const meta = resolveMetaForRequest(req.url, req.headers.host || "diasuae.ae");
           const finalHtml = injectMetaIntoHtml(template, meta);
           res.setHeader("Content-Type", "text/html; charset=utf-8");

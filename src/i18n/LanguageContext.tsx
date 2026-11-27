@@ -15,28 +15,30 @@ const LanguageContext = createContext<LanguageContextType | undefined>(undefined
 const LANGUAGE_STORAGE_KEY = "dias_accounting_language";
 
 export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY) as Language | null;
-        if (stored === "en" || stored === "ar") {
-          return stored;
-        }
-      } catch {
-        // Fallback if localStorage access is denied
+  // Initialize to "en" so SSR pre-rendered HTML and first client hydration pass match 100%.
+  const [language, setLanguageState] = useState<Language>("en");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      const stored = localStorage.getItem(LANGUAGE_STORAGE_KEY) as Language | null;
+      if (stored === "en" || stored === "ar") {
+        if (stored !== "en") setLanguageState(stored);
+        return;
       }
-      // Check browser language preferences
-      try {
-        const browserLang = navigator.language || (navigator as { userLanguage?: string }).userLanguage || "";
-        if (browserLang.startsWith("ar")) {
-          return "ar";
-        }
-      } catch {
-        // Safe fallback
-      }
+    } catch {
+      // Fallback if localStorage access is denied
     }
-    return "en";
-  });
+    try {
+      const browserLang =
+        navigator.language || (navigator as { userLanguage?: string }).userLanguage || "";
+      if (browserLang.startsWith("ar")) {
+        setLanguageState("ar");
+      }
+    } catch {
+      // Safe fallback
+    }
+  }, []);
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);

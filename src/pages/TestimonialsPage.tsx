@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Award, ChevronRight, ExternalLink, Star } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
+import PageMainTransition from "../components/PageMainTransition";
 import ReviewCard from "../components/editorial/ReviewCard";
 import SectionCTA from "../components/editorial/SectionCTA";
 import {
@@ -98,7 +99,7 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({
         onOpenAudit={onOpenAudit}
       />
 
-      <main id="main-content">
+      <PageMainTransition id="main-content">
         {/* 1. Trust Summary Header */}
         <section className="bg-[#FFFFFF] border-b border-[#E2E8F0] pt-12 pb-16 lg:pt-20 lg:pb-20">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -157,7 +158,7 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({
               </div>
 
               <h1 className="font-display text-3xl sm:text-4xl lg:text-[2.6rem] font-extrabold text-[#0D1B2A] tracking-tight leading-[1.15]">
-                Trusted by UAE Founders &amp; Finance Teams
+                Verified 5.0★ UAE Accounting &amp; Tax Client Reviews (2x Clutch 2026 Winner)
               </h1>
 
               <p className="text-base sm:text-lg text-[#475569] leading-[1.65] max-w-[58ch] mx-auto">
@@ -257,7 +258,7 @@ export const TestimonialsPage: React.FC<TestimonialsPageProps> = ({
           ctaLabel="Book Free Consultation"
           onCtaClick={() => onNavigate("/contact")}
         />
-      </main>
+      </PageMainTransition>
 
       <PageFooter
         onNavigate={onNavigate}

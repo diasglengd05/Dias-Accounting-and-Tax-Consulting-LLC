@@ -7,6 +7,7 @@ import {
   upsertJsonLd,
 } from "../lib/seo";
 import TaxHubLayout from "../components/hub/TaxHubLayout";
+import MonthlyPackageConversionStrip from "../components/MonthlyPackageConversionStrip";
 import {
   CalculatorToolBridge,
   ComplianceTable,
@@ -28,7 +29,7 @@ const TOC_ITEMS = [
   { id: "faqs", label: "SBR Nuances & FAQs" },
 ];
 
-const SBR_FAQS = [
+export const SBR_FAQS = [
   {
     question: "Does Small Business Relief apply to UAE Free Zone companies?",
     answer:
@@ -103,7 +104,7 @@ export const SmallBusinessTaxReliefPage: React.FC<PageProps> = ({
       currentPath="/small-business-tax-relief"
       breadcrumbName="Small Business Tax Relief (SBR)"
       updatedTag="Last Updated: 2026 UAE Tax Rules · Extended to Dec 31, 2029"
-      title="UAE Small Business Tax Relief (0% CT up to AED 3M)"
+      title="0% UAE Small Business Relief (SBR) & Corporate Tax Filing"
       overview="Under Article 21 of Federal Decree-Law No. 47 of 2022 and Ministerial Decision No. 73 of 2023, qualifying UAE resident businesses with gross revenue up to AED 3,000,000 can legally elect 0% Corporate Tax on EmaraTax."
       keyFigures={[
         { value: "AED 3.0M", label: "Gross Revenue Ceiling" },
@@ -284,6 +285,9 @@ export const SmallBusinessTaxReliefPage: React.FC<PageProps> = ({
           <ExecutiveAccordion items={SBR_FAQS} defaultOpenIndex={0} />
         </div>
       </section>
+
+      {/* 5. Monthly Package Conversion Strip */}
+      <MonthlyPackageConversionStrip onNavigate={navigate} compact />
     </TaxHubLayout>
   );
 };

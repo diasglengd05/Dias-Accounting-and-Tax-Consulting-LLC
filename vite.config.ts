@@ -3,9 +3,9 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig} from 'vite';
 
-export default defineConfig(() => {
+export default defineConfig(({ isSsrBuild }) => {
   return {
-    base: './',
+    base: '/',
     plugins: [react(), tailwindcss()],
     resolve: {
       alias: {
@@ -14,53 +14,57 @@ export default defineConfig(() => {
     },
     build: {
       target: 'es2020',
-      minify: 'esbuild' as const,
+      minify: isSsrBuild ? false : ('esbuild' as const),
       cssCodeSplit: true,
       sourcemap: false,
       chunkSizeWarningLimit: 1000,
-      modulePreload: {
-        resolveDependencies(filename, deps) {
-          // Do not preload heavy non-critical vendors on initial page load
-          return deps.filter(
-            (dep) => !dep.includes('vendor-pdf') && !dep.includes('vendor-charts')
-          );
-        },
-      },
-      rollupOptions: {
-        output: {
-          manualChunks(id) {
-            if (
-              id.includes('/node_modules/react/') ||
-              id.includes('/node_modules/react-dom/') ||
-              id.includes('/node_modules/scheduler/')
-            ) {
-              return 'vendor-react';
-            }
-            if (id.includes('/node_modules/lucide-react/')) {
-              return 'vendor-lucide';
-            }
-            if (
-              id.includes('/node_modules/motion/') ||
-              id.includes('/node_modules/framer-motion/')
-            ) {
-              return 'vendor-motion';
-            }
-            if (
-              id.includes('/node_modules/recharts/') ||
-              id.includes('/node_modules/d3-') ||
-              id.includes('/node_modules/victory-vendor/')
-            ) {
-              return 'vendor-charts';
-            }
-            if (
-              id.includes('/node_modules/jspdf/') ||
-              id.includes('/node_modules/html2canvas/')
-            ) {
-              return 'vendor-pdf';
-            }
-          },
-        },
-      },
+      ...(isSsrBuild
+        ? {}
+        : {
+            modulePreload: {
+              resolveDependencies(filename, deps) {
+                // Do not preload heavy non-critical vendors on initial page load
+                return deps.filter(
+                  (dep) => !dep.includes('vendor-pdf') && !dep.includes('vendor-charts')
+                );
+              },
+            },
+            rollupOptions: {
+              output: {
+                manualChunks(id) {
+                  if (
+                    id.includes('/node_modules/react/') ||
+                    id.includes('/node_modules/react-dom/') ||
+                    id.includes('/node_modules/scheduler/')
+                  ) {
+                    return 'vendor-react';
+                  }
+                  if (id.includes('/node_modules/lucide-react/')) {
+                    return 'vendor-lucide';
+                  }
+                  if (
+                    id.includes('/node_modules/motion/') ||
+                    id.includes('/node_modules/framer-motion/')
+                  ) {
+                    return 'vendor-motion';
+                  }
+                  if (
+                    id.includes('/node_modules/recharts/') ||
+                    id.includes('/node_modules/d3-') ||
+                    id.includes('/node_modules/victory-vendor/')
+                  ) {
+                    return 'vendor-charts';
+                  }
+                  if (
+                    id.includes('/node_modules/jspdf/') ||
+                    id.includes('/node_modules/html2canvas/')
+                  ) {
+                    return 'vendor-pdf';
+                  }
+                },
+              },
+            },
+          }),
     },
     esbuild: {
       legalComments: 'none' as const,

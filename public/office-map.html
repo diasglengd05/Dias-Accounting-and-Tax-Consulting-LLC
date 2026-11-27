@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>DiasUAE — Dias Accounting and Tax Consulting LLC | Office Location</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        background-color: #070d19;
+      }
+      gmpx-store-locator {
+        width: 100%;
+        height: 100%;
+        --gmpx-color-surface: #0d1b2a;
+        --gmpx-color-on-surface: #ffffff;
+        --gmpx-color-on-surface-variant: #cbd5e1;
+        --gmpx-color-primary: #c5a059;
+        --gmpx-color-outline: #334155;
+        --gmpx-fixed-panel-width-row-layout: 28.5em;
+        --gmpx-fixed-panel-height-column-layout: 65%;
+        --gmpx-font-family-base: "Inter", "Roboto", sans-serif;
+        --gmpx-font-family-headings: "Inter", "Roboto", sans-serif;
+        --gmpx-font-size-base: 0.875rem;
+        --gmpx-hours-color-open: #4ade80;
+        --gmpx-hours-color-closed: #f87171;
+        --gmpx-rating-color: #c5a059;
+        --gmpx-rating-color-empty: #334155;
+      }
+    </style>
+    <script>
+      const CONFIGURATION = {
+        "locations": [
+          {
+            "title": "DiasUAE — Dias Accounting and Tax Consulting LLC",
+            "address1": "7MHH+98 Al Bataeh, Sharjah Media City (SHAMS)",
+            "address2": "Sharjah, United Arab Emirates",
+            "coords": { "lat": 25.2784375, "lng": 55.6783125 },
+            "placeId": "ChIJlyGuqVdDXz4R2AwMpM1O1SE"
+          }
+        ],
+        "mapOptions": {
+          "center": { "lat": 25.2784375, "lng": 55.6783125 },
+          "fullscreenControl": true,
+          "mapTypeControl": false,
+          "streetViewControl": false,
+          "zoom": 14,
+          "zoomControl": true,
+          "maxZoom": 17,
+          "mapId": ""
+        },
+        "mapsApiKey": "AIzaSyDQi9I54lMvBxCs80eakklsNz4yx51tCBI",
+        "capabilities": {
+          "input": false,
+          "autocomplete": false,
+          "directions": true,
+          "distanceMatrix": false,
+          "details": true,
+          "actions": true
+        }
+      };
+    </script>
+    <script type="module">
+      document.addEventListener('DOMContentLoaded', async () => {
+        await customElements.whenDefined('gmpx-store-locator');
+        const locator = document.querySelector('gmpx-store-locator');
+        locator.configureFromQuickBuilder(CONFIGURATION);
+      });
+    </script>
+  </head>
+  <body>
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/@googlemaps/extended-component-library/0.6.15/index.min.js"></script>
+    <gmpx-api-loader key="AIzaSyDQi9I54lMvBxCs80eakklsNz4yx51tCBI" solution-channel="GMP_QB_locatorplus_v11_c"></gmpx-api-loader>
+    <gmpx-store-locator map-id="DEMO_MAP_ID"></gmpx-store-locator>
+  </body>
+</html>

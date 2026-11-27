@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { Lock, ChevronRight } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
+import PageMainTransition from "../components/PageMainTransition";
 import {
   applyPageSEO,
   buildBreadcrumbSchema,
@@ -30,7 +31,6 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({
       canonicalPath: "/privacy-policy",
       keywords:
         "Dias Accounting privacy policy, UAE PDPL compliance, client confidentiality tax advisory",
-      robots: "noindex, follow",
     });
     upsertJsonLd(
       "page-breadcrumb-jsonld",
@@ -53,7 +53,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({
         onOpenAudit={onOpenAudit}
       />
 
-      <main id="main-content" className="flex-1">
+      <PageMainTransition id="main-content" className="flex-1">
         <section className="bg-[#FFFFFF] border-b border-[#E2E8F0] pt-12 pb-14 lg:pt-16 lg:pb-16">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <nav
@@ -145,7 +145,7 @@ export const PrivacyPolicyPage: React.FC<PrivacyPolicyPageProps> = ({
             </div>
           </div>
         </section>
-      </main>
+      </PageMainTransition>
 
       <PageFooter
         onNavigate={onNavigate}

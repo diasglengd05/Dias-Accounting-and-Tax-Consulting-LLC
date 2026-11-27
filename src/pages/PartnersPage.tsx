@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
+import PageMainTransition from "../components/PageMainTransition";
 import {
   applyPageSEO,
   buildBreadcrumbSchema,
@@ -130,7 +131,7 @@ export const PartnersPage: React.FC<PartnersPageProps> = ({
         onOpenAudit={onOpenAudit}
       />
 
-      <main id="main-content" className="flex-1">
+      <PageMainTransition id="main-content" className="flex-1">
         {/* Hero Section */}
         <section className="bg-[#070d19] border-b border-white/10 pt-14 pb-16 lg:pt-20 lg:pb-24">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -344,7 +345,7 @@ export const PartnersPage: React.FC<PartnersPageProps> = ({
             </div>
           </div>
         </section>
-      </main>
+      </PageMainTransition>
 
       <PageFooter
         onNavigate={onNavigate}

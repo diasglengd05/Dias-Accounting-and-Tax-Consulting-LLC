@@ -1,13 +1,20 @@
-import {StrictMode} from 'react';
-import {createRoot} from 'react-dom/client';
+import { StrictMode } from 'react';
+import { createRoot, hydrateRoot } from 'react-dom/client';
 import App from './App.tsx';
 import ErrorBoundary from './components/ErrorBoundary.tsx';
 import './index.css';
 
-createRoot(document.getElementById('root')!).render(
+const rootEl = document.getElementById('root')!;
+const appTree = (
   <StrictMode>
     <ErrorBoundary>
       <App />
     </ErrorBoundary>
-  </StrictMode>,
+  </StrictMode>
 );
+
+if (rootEl.getAttribute('data-ssr') === 'true' && rootEl.hasChildNodes()) {
+  hydrateRoot(rootEl, appTree);
+} else {
+  createRoot(rootEl).render(appTree);
+}

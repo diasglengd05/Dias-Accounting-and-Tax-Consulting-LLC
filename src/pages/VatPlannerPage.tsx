@@ -33,7 +33,7 @@ const TOC_ITEMS = [
   { id: "faqs", label: "VAT Compliance FAQs" },
 ];
 
-const VAT_FAQS = [
+export const VAT_FAQS = [
   {
     question: "When is UAE VAT registration mandatory vs. voluntary?",
     answer:
@@ -200,7 +200,7 @@ export const VatPlannerPage: React.FC<VatPlannerPageProps> = ({
       currentPath="/uae-vat-calculator"
       breadcrumbName="UAE 5% VAT Hub"
       updatedTag="Last Updated: 2026 UAE VAT Rules · Decree-Law No. 8"
-      title="UAE 5% VAT Compliance Hub & Form 201 Planner"
+      title="Free UAE 5% VAT Calculator (Inclusive & Exclusive Form 201 Tool)"
       overview="Compute output VAT, recoverable input VAT, and net payable or refund balances for FTA Form 201, verify AED 375,000 mandatory registration thresholds, and avoid common VAT audit penalties."
       keyFigures={[
         { value: "5%", label: "UAE Standard VAT Rate" },

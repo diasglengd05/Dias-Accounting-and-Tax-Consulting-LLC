@@ -18,6 +18,9 @@ import {
 import ServicePageTemplate from "../components/hub/ServicePageTemplate";
 import { ComplianceTable, ExecutiveCallout } from "../components/hub/ExecutivePrimitives";
 import SameDayQuoteBox from "../components/SameDayQuoteBox";
+import QuickSummaryBox from "../components/QuickSummaryBox";
+import TaxAgentReviewStrip from "../components/TaxAgentReviewStrip";
+import MonthlyPackageConversionStrip from "../components/MonthlyPackageConversionStrip";
 
 interface PageProps {
   onNavigate?: (path: string) => void;
@@ -37,7 +40,7 @@ const DIVIDEND_FAQS = [
   {
     question: "How fast is a statutory dividends audit in Dubai & UAE?",
     answer:
-      "A statutory interim or final dividends audit in Dubai, DIFC, or UAE Free Zones typically takes 4 to 5 business days with Dias Accounting: Day 1 covers ledger and 10% statutory reserve verification, Days 2–3 complete IFRS solvency and working-capital testing, and Days 4–5 deliver the signed statutory audit report and bank clearance certificate.",
+      "A statutory interim or final dividends audit in Dubai Mainland, DIFC, DTEC, DMCC, IFZA, or SHAMS typically takes 5 working days with DiasUAE (Dias Accounting and Tax Consulting LLC): Day 1 covers ledger and 10% statutory reserve verification, Days 2–3 complete IFRS solvency and working-capital testing, and Days 4–5 deliver the signed statutory audit report and bank clearance certificate.",
   },
   {
     question: "Can a UAE company distribute interim dividends mid-year?",
@@ -56,7 +59,7 @@ const DIVIDEND_FAQS = [
   },
 ];
 
-const ALL_DIVIDEND_SCHEMA_FAQS = [FEATURED_DIVIDEND_FAQ, ...DIVIDEND_FAQS];
+export const ALL_DIVIDEND_SCHEMA_FAQS = [FEATURED_DIVIDEND_FAQ, ...DIVIDEND_FAQS];
 
 export const DividendsAuditPage: React.FC<PageProps> = ({
   onNavigate,
@@ -232,6 +235,96 @@ export const DividendsAuditPage: React.FC<PageProps> = ({
             ))}
           </div>
         </div>
+
+        {/* Interim vs. Final Dividends Audit Comparison Table */}
+        <div className="space-y-5">
+          <div className="max-w-3xl space-y-2">
+            <span className="inline-block text-xs font-semibold uppercase tracking-[0.14em] text-[#856422]">
+              Dividend Audit Comparison · UAE 2026
+            </span>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-[#0D1B2A] tracking-tight">
+              Interim Dividends Audit vs. Final Dividends Audit
+            </h2>
+            <p className="text-sm sm:text-base text-[#475569] leading-[1.65] max-w-[65ch]">
+              Compare IFRS financial requirements, turnaround times, bank KYC sign-off, and 0% UAE dividend tax protection for mid-year vs. year-end shareholder distributions.
+            </p>
+          </div>
+
+          <div className="overflow-x-auto rounded-2xl border border-[#c5a059]/35 bg-[#070d19] text-white shadow-sm">
+            <table className="w-full text-left border-collapse text-sm">
+              <thead>
+                <tr className="border-b border-[#c5a059]/25 bg-[#0d1b2a] text-xs uppercase tracking-wider">
+                  <th scope="col" className="px-5 py-4 font-semibold text-slate-300">
+                    Audit Factor
+                  </th>
+                  <th scope="col" className="px-5 py-4 font-semibold text-[#c5a059]">
+                    Interim Dividends Audit
+                  </th>
+                  <th scope="col" className="px-5 py-4 font-semibold text-[#c5a059]">
+                    Final Dividends Audit
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/10">
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                    Payout Timing
+                  </td>
+                  <td className="px-5 py-4 text-slate-200">
+                    Mid-year distribution (Q1, Q2, or Q3 realized profits before financial year-end)
+                  </td>
+                  <td className="px-5 py-4 text-slate-200">
+                    Post-year-end distribution approved at the Annual General Meeting (AGM)
+                  </td>
+                </tr>
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                    Required IFRS Financials
+                  </td>
+                  <td className="px-5 py-4 text-slate-200">
+                    Audited interim IFRS Balance Sheet, Profit &amp; Loss, retained earnings schedule &amp; MOA authorization check
+                  </td>
+                  <td className="px-5 py-4 text-slate-200">
+                    Full-year audited IFRS financial statements, 9% CT / 5% VAT tax provisions &amp; final retained earnings
+                  </td>
+                </tr>
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                    Typical Timeline
+                  </td>
+                  <td className="px-5 py-4 font-semibold text-[#c5a059] whitespace-nowrap">
+                    5 working days
+                  </td>
+                  <td className="px-5 py-4 font-semibold text-[#c5a059] whitespace-nowrap">
+                    5 working days
+                  </td>
+                </tr>
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                    Legal Reserve &amp; Solvency
+                  </td>
+                  <td className="px-5 py-4 text-slate-200">
+                    Post-payout liquidity &amp; working-capital solvency verification protecting directors under CCL
+                  </td>
+                  <td className="px-5 py-4 text-slate-200">
+                    Mandatory 10% Legal Reserve allocation (Article 103, up to 50% share capital) plus solvency sign-off
+                  </td>
+                </tr>
+                <tr className="hover:bg-white/[0.02] transition-colors">
+                  <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                    Bank KYC &amp; 0% Dividend Tax Protection
+                  </td>
+                  <td className="px-5 py-4 text-slate-200">
+                    Signed bank clearance letter (ENBD, FAB, ADCB, Mashreq), 0% WHT (Art. 45) &amp; Art. 36 salary-vs-dividend defense
+                  </td>
+                  <td className="px-5 py-4 text-slate-200">
+                    Full audited AGM dossier for overseas/local bank remittance, 0% WHT &amp; Participation Exemption (Art. 23)
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -241,11 +334,23 @@ export const DividendsAuditPage: React.FC<PageProps> = ({
       currentPath="/dividends-audit"
       breadcrumbName="Dividends Audit & Certification"
       eyebrow="Audit & Assurance · UAE Commercial Law"
-      title="Dividends Audit & Lawful Profit Certification"
+      title="Statutory Dividends Audit in Dubai, DIFC & UAE Free Zones"
+      quickSummary={
+        <QuickSummaryBox>
+          <strong className="text-white font-semibold">
+            DiasUAE (Dias Accounting and Tax Consulting LLC)
+          </strong>
+          , led by FTA-Registered Tax Agent{" "}
+          <strong className="text-[#c5a059] font-semibold">Glen Dias</strong> (SHAMS Licence{" "}
+          <span className="tabular-nums">2646813.01</span>) and recognized as a 2x Clutch 2026 UAE Leader, conducts statutory interim and final dividend audits, 10% legal reserve checks, and Tier-1 UAE bank clearance dossiers. Covering Dubai Mainland, DIFC, DTEC, DMCC, IFZA, and SHAMS, we deliver signed IFRS audit sign-off in{" "}
+          <strong className="text-white font-semibold">5 working days</strong> alongside ongoing monthly accounting retainers starting{" "}
+          <strong className="text-white font-semibold">from AED 400/month</strong>.
+        </QuickSummaryBox>
+      }
       subtitle="Verify distributable profits under Federal Decree-Law No. 32 of 2021, satisfy UAE Tier-1 corporate bank remittance requirements, and safeguard 0% tax dividend treatment under Decree-Law No. 47."
       metadataStrip={[
         { label: "UAE Withholding Tax", value: "0% WHT on Dividends (Article 45)" },
-        { label: "Statutory Reserve Check", value: "10% Legal Reserve Allocation" },
+        { label: "Typical Turnaround", value: "5 Working Days Statutory Sign-Off" },
         { label: "Bank Clearance", value: "Accepted by ENBD, FAB, ADCB & Mashreq" },
       ]}
       heroBottomSlot={
@@ -256,6 +361,12 @@ export const DividendsAuditPage: React.FC<PageProps> = ({
         />
       }
       customTopSection={statutoryFrameworkSection}
+      bottomAttributionSlot={
+        <>
+          <MonthlyPackageConversionStrip onNavigate={navigate} />
+          <TaxAgentReviewStrip />
+        </>
+      }
       deliverablesHeading="What's Included in a Dividends Audit"
       deliverablesSubheading="Complete financial verification and corporate governance documentation required by shareholders, auditors, and UAE corporate banks."
       deliverables={[
@@ -334,14 +445,14 @@ export const DividendsAuditPage: React.FC<PageProps> = ({
         law: "Federal Decree-Law No. 32/2021 (CCL) & Decree-Law No. 47/2022 (CT)",
         authority: "UAE Commercial Banks, DIFC / Free Zone Registrars & FTA",
         deadline: "Prior to passing shareholder distribution resolutions and bank wire transfers",
-        plan: "Standalone engagement (AED 1,500 – AED 6,000 scoped)",
+        plan: "Scoped standalone audit · Ongoing IFRS retainers from AED 400/month",
       }}
       faqsHeading="UAE Dividend Distribution FAQs"
       customFaqSection={
         <article className="rounded-2xl bg-[#070d19] text-white border border-[#c5a059]/35 p-6 sm:p-8 shadow-sm">
           <div className="w-10 h-[2px] bg-[#c5a059] mb-4" aria-hidden="true" />
           <h2 className="font-display text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug mb-3">
-            When is a statutory dividends audit required in Dubai, DIFC, or UAE Free Zones?
+            {FEATURED_DIVIDEND_FAQ.question}
           </h2>
           <p className="text-sm sm:text-[15px] text-slate-200 leading-relaxed">
             A statutory dividends audit is required whenever a Dubai Mainland, DIFC, or UAE Free Zone company distributes{" "}

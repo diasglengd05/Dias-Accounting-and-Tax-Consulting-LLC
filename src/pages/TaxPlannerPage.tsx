@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ChevronRight, Info, Minus, Plus } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
+import PageMainTransition from "../components/PageMainTransition";
 import UaeTaxCalculatorSuite from "../components/UaeTaxCalculatorSuite";
 import { RelatedResources } from "../components/editorial/RelatedResources";
 import { getRelatedResourcesForPath } from "../lib/internalLinks";
@@ -26,7 +27,7 @@ interface TaxPlannerPageProps {
   onWhatsAppClicked?: () => void;
 }
 
-const FAQ_ITEMS = [
+export const TAX_PLANNER_FAQS = [
   {
     q: "Can my business elect for 0% Small Business Relief (SBR) in 2026?",
     a: "Yes. Under UAE Ministerial Decision No. 73 of 2023 (extended through December 31, 2029), taxable resident businesses with revenue up to AED 3,000,000 can elect for Small Business Relief. When elected, your taxable income is treated as AED 0, resulting in zero corporate tax liability. However, you must still maintain IFRS-compliant books and file your annual tax return on EmaraTax.",
@@ -48,6 +49,7 @@ const FAQ_ITEMS = [
     a: "Under Cabinet Decision No. 75 of 2023, the FTA imposes an automatic AED 10,000 administrative penalty for late Corporate Tax registration. However, under the FTA penalty waiver initiative, this penalty can be waived or refunded if your first Corporate Tax return is submitted within 7 months of the end of your first tax period.",
   },
 ];
+const FAQ_ITEMS = TAX_PLANNER_FAQS;
 
 export const TaxPlannerPage: React.FC<TaxPlannerPageProps> = ({
   onNavigate,
@@ -60,13 +62,7 @@ export const TaxPlannerPage: React.FC<TaxPlannerPageProps> = ({
   onWhatsAppClicked,
 }) => {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const [urlDefaultTab, setUrlDefaultTab] = useState<"corporate-tax" | "vat">(() => {
-    if (typeof window !== "undefined") {
-      const tabParam = new URLSearchParams(window.location.search).get("tab");
-      return tabParam === "vat" ? "vat" : "corporate-tax";
-    }
-    return "corporate-tax";
-  });
+  const [urlDefaultTab, setUrlDefaultTab] = useState<"corporate-tax" | "vat">("corporate-tax");
 
   useEffect(() => {
     const syncTabFromUrl = () => {
@@ -132,7 +128,7 @@ export const TaxPlannerPage: React.FC<TaxPlannerPageProps> = ({
         onOpenAudit={onOpenAudit}
       />
 
-      <main id="main-content">
+      <PageMainTransition id="main-content">
         {/* Clean Centered Header */}
         <section className="bg-[#FFFFFF] pt-12 pb-8 lg:pt-16 lg:pb-10 border-b border-[#E2E8F0]">
           <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -152,7 +148,7 @@ export const TaxPlannerPage: React.FC<TaxPlannerPageProps> = ({
             </nav>
 
             <h1 className="font-display text-3xl sm:text-4xl lg:text-[42px] font-bold text-[#0D1B2A] tracking-tight leading-[1.15]">
-              2026 UAE Corporate Tax &amp; VAT Calculator
+              Free 2026 UAE Corporate Tax, Small Business Relief &amp; 5% VAT Calculator
             </h1>
             <p className="mt-3 text-[#475569] text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">
               Estimate your 2026 Corporate Tax liability, Small Business Relief, Free Zone QFZP status, or 5% VAT recovery in under a minute.
@@ -236,7 +232,7 @@ export const TaxPlannerPage: React.FC<TaxPlannerPageProps> = ({
           onNavigate={onNavigate}
           background="neutral"
         />
-      </main>
+      </PageMainTransition>
 
       <PageFooter
         onNavigate={onNavigate}

@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
+import PageMainTransition from "../components/PageMainTransition";
 import CompanySetupHub from "../components/CompanySetupHub";
 import SameDayQuoteBox from "../components/SameDayQuoteBox";
 import {
@@ -31,6 +32,29 @@ interface CompanySetupPageProps {
   onOpenPrivacy?: () => void;
   onOpenGooglePreferred?: () => void;
 }
+
+export const COMPANY_SETUP_FAQS = [
+  {
+    q: "How does UAE company setup impact our Corporate Tax liability?",
+    a: "Under UAE Federal Decree-Law No. 47 of 2022, every newly incorporated UAE entity—whether in a Free Zone or Mainland—must register with the FTA for Corporate Tax. Free Zone entities can benefit from a 0% Qualifying Free Zone Person (QFZP) rate on qualifying income, provided they maintain adequate substance, audited financials, and do not elect into the standard 9% regime. Mainland entities pay 0% on taxable profits up to AED 375,000 and 9% on profits exceeding that threshold.",
+  },
+  {
+    q: "Can a Free Zone company qualify for 0% Corporate Tax (QFZP)?",
+    a: "Yes. To qualify for 0% Corporate Tax under Cabinet Decision No. 55 of 2023 and Ministerial Decision No. 139 of 2023, the Free Zone entity must: (1) derive Qualifying Income from transactions with other Free Zone persons or qualifying foreign activities, (2) maintain adequate economic substance and staff in the Free Zone, (3) comply with arm's-length transfer pricing rules, and (4) prepare audited financial statements under IFRS. Dias UAE structures your licensing and corporate governance from Day 1 to safeguard your 0% QFZP status.",
+  },
+  {
+    q: "What is the difference between Mainland and Free Zone company setup in Dubai?",
+    a: "Free Zone companies enjoy 100% foreign ownership, 0% import/export customs exemptions, and potential 0% QFZP Corporate Tax, but generally cannot supply goods or services directly to mainland UAE consumers without an agent or dual-license. Dubai Mainland (DET) licenses allow unconstrained trading across the entire UAE and direct participation in government tenders, but are subject to the standard 9% Corporate Tax above AED 375,000.",
+  },
+  {
+    q: "What are the all-inclusive costs of company formation in UAE?",
+    a: "Formation costs comprise the authority trade license fee (ranging from AED 11,500 to AED 25,000+ depending on jurisdiction such as SHAMS, IFZA, or DMCC), office/desk lease (flexi-desk vs physical office), establishment card, residence visa quotas, and mandatory FTA Corporate Tax registration. Dias UAE provides fully itemized transparent pricing with zero surprise add-ons.",
+  },
+  {
+    q: "How fast can we open a corporate bank account for a new UAE entity?",
+    a: "With complete statutory documentation, verifiable business models, and proper shareholder profiles, digital corporate accounts (e.g., Wio Bank) can be opened in 48 to 72 hours. Traditional tier-1 banks (Emirates NBD, Mashreq, FAB) typically take 2 to 3 weeks. Dias UAE pre-screens your compliance files to fast-track account approval.",
+  },
+];
 
 export const CompanySetupPage: React.FC<CompanySetupPageProps> = ({
   onNavigate,
@@ -100,28 +124,7 @@ export const CompanySetupPage: React.FC<CompanySetupPageProps> = ({
 
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  const setupFaqs = [
-    {
-      q: "How does UAE company setup impact our Corporate Tax liability?",
-      a: "Under UAE Federal Decree-Law No. 47 of 2022, every newly incorporated UAE entity—whether in a Free Zone or Mainland—must register with the FTA for Corporate Tax. Free Zone entities can benefit from a 0% Qualifying Free Zone Person (QFZP) rate on qualifying income, provided they maintain adequate substance, audited financials, and do not elect into the standard 9% regime. Mainland entities pay 0% on taxable profits up to AED 375,000 and 9% on profits exceeding that threshold.",
-    },
-    {
-      q: "Can a Free Zone company qualify for 0% Corporate Tax (QFZP)?",
-      a: "Yes. To qualify for 0% Corporate Tax under Cabinet Decision No. 55 of 2023 and Ministerial Decision No. 139 of 2023, the Free Zone entity must: (1) derive Qualifying Income from transactions with other Free Zone persons or qualifying foreign activities, (2) maintain adequate economic substance and staff in the Free Zone, (3) comply with arm's-length transfer pricing rules, and (4) prepare audited financial statements under IFRS. Dias UAE structures your licensing and corporate governance from Day 1 to safeguard your 0% QFZP status.",
-    },
-    {
-      q: "What is the difference between Mainland and Free Zone company setup in Dubai?",
-      a: "Free Zone companies enjoy 100% foreign ownership, 0% import/export customs exemptions, and potential 0% QFZP Corporate Tax, but generally cannot supply goods or services directly to mainland UAE consumers without an agent or dual-license. Dubai Mainland (DET) licenses allow unconstrained trading across the entire UAE and direct participation in government tenders, but are subject to the standard 9% Corporate Tax above AED 375,000.",
-    },
-    {
-      q: "What are the all-inclusive costs of company formation in UAE?",
-      a: "Formation costs comprise the authority trade license fee (ranging from AED 11,500 to AED 25,000+ depending on jurisdiction such as SHAMS, IFZA, or DMCC), office/desk lease (flexi-desk vs physical office), establishment card, residence visa quotas, and mandatory FTA Corporate Tax registration. Dias UAE provides fully itemized transparent pricing with zero surprise add-ons.",
-    },
-    {
-      q: "How fast can we open a corporate bank account for a new UAE entity?",
-      a: "With complete statutory documentation, verifiable business models, and proper shareholder profiles, digital corporate accounts (e.g., Wio Bank) can be opened in 48 to 72 hours. Traditional tier-1 banks (Emirates NBD, Mashreq, FAB) typically take 2 to 3 weeks. Dias UAE pre-screens your compliance files to fast-track account approval.",
-    },
-  ];
+  const setupFaqs = COMPANY_SETUP_FAQS;
 
   useEffect(() => {
     upsertJsonLd(
@@ -144,7 +147,7 @@ export const CompanySetupPage: React.FC<CompanySetupPageProps> = ({
         onOpenAudit={onOpenAudit}
       />
 
-      <main id="main-content">
+      <PageMainTransition id="main-content">
         {/* Hero Section */}
         <section className="relative bg-gradient-to-b from-navy-950 via-navy-900 to-navy-950 text-white py-16 lg:py-24 border-b border-white/10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -166,7 +169,7 @@ export const CompanySetupPage: React.FC<CompanySetupPageProps> = ({
                 <span>Turnkey Corporate Formation &amp; Structuring</span>
               </div>
               <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight mb-6">
-                UAE Mainland &amp; Free Zone Company Formation &amp; Tax Registration
+                UAE Company Setup (SHAMS, IFZA, DIFC &amp; Dubai Mainland) With Tax Compliance
               </h1>
               <p className="text-slate-300 text-base sm:text-lg leading-relaxed mb-8">
                 Form your business in Dubai or Sharjah with full regulatory compliance from Day 1. Benefit from 100% foreign ownership, 0% Qualifying Free Zone Person (QFZP) tax structuring, and fast-track corporate bank account opening.
@@ -418,7 +421,7 @@ export const CompanySetupPage: React.FC<CompanySetupPageProps> = ({
             </div>
           </div>
         </section>
-      </main>
+      </PageMainTransition>
 
       <PageFooter
         onNavigate={onNavigate}

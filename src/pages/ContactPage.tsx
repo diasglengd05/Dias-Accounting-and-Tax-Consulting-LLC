@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
+import PageMainTransition from "../components/PageMainTransition";
+import GoogleOfficeMap from "../components/GoogleOfficeMap";
 import {
   applyPageSEO,
   buildBreadcrumbSchema,
@@ -201,13 +203,6 @@ export const ContactPage: React.FC<ContactPageProps> = ({
     setSubmitted(true);
   };
 
-  const mapsApiKey = (import.meta as unknown as { env?: Record<string, string> })
-    .env?.VITE_GOOGLE_MAPS_API_KEY;
-  const mapQuery = "Sharjah+Media+City+(Shams)+Sharjah+UAE";
-  const mapEmbedUrl = mapsApiKey
-    ? `https://www.google.com/maps/embed/v1/place?key=${mapsApiKey}&q=${mapQuery}&center=25.3214,55.5126&zoom=14&solution_id=gmp_mcp_codeassist_v1_aistudio`
-    : `https://maps.google.com/maps?q=${mapQuery}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
-
   return (
     <div className="min-h-screen bg-[#FFFFFF] font-sans text-[#0D1B2A] antialiased">
       <PageNavigation
@@ -216,7 +211,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
         onOpenAudit={onOpenAudit}
       />
 
-      <main id="main-content">
+      <PageMainTransition id="main-content">
         {/* 1. Clean Two-Column Executive Split */}
         <section className="bg-[#FFFFFF] pt-12 pb-20 lg:pt-20 lg:pb-24">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -609,7 +604,7 @@ export const ContactPage: React.FC<ContactPageProps> = ({
                 </h2>
               </div>
               <a
-                href={`https://www.google.com/maps/search/?api=1&query=${mapQuery}`}
+                href="https://www.google.com/maps/place/?q=place_id:ChIJlyGuqVdDXz4R2AwMpM1O1SE"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1B4332] hover:text-[#0D1B2A] transition-colors min-h-[44px]"
@@ -619,22 +614,10 @@ export const ContactPage: React.FC<ContactPageProps> = ({
               </a>
             </div>
 
-            <div className="rounded-2xl overflow-hidden border border-[#E2E8F0] bg-[#FFFFFF] h-72 sm:h-80">
-              <iframe
-                title="Dias Accounting Sharjah Media City Office Map"
-                src={mapEmbedUrl}
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                loading="lazy"
-                allowFullScreen
-                referrerPolicy="no-referrer-when-downgrade"
-                className="w-full h-full"
-              />
-            </div>
+            <GoogleOfficeMap />
           </div>
         </section>
-      </main>
+      </PageMainTransition>
 
       <PageFooter
         onNavigate={onNavigate}

@@ -189,6 +189,12 @@ export function buildAccountingServiceSchema() {
       postalCode: BUSINESS_ENTITY.address.postalCode,
       addressCountry: BUSINESS_ENTITY.address.addressCountry,
     },
+    hasMap: BUSINESS_ENTITY.hasMap,
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: BUSINESS_ENTITY.geo.latitude,
+      longitude: BUSINESS_ENTITY.geo.longitude,
+    },
     areaServed: BUSINESS_ENTITY.areaServed,
     aggregateRating: {
       "@type": "AggregateRating",

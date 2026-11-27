@@ -2,6 +2,7 @@ import React from "react";
 import { ArrowRight, Check, ChevronRight } from "lucide-react";
 import PageNavigation from "../PageNavigation";
 import PageFooter from "../PageFooter";
+import PageMainTransition from "../PageMainTransition";
 import {
   AccordionItem,
   ExecutiveAccordion,
@@ -43,7 +44,9 @@ export interface ServicePageTemplateProps {
   deliverablesSubheading?: string;
   deliverables: ServiceDeliverableCard[];
   heroBottomSlot?: React.ReactNode;
+  quickSummary?: React.ReactNode;
   customTopSection?: React.ReactNode;
+  bottomAttributionSlot?: React.ReactNode;
   processHeading?: string;
   processSubheading?: string;
   processSteps: ServiceProcessStep[];
@@ -83,7 +86,9 @@ export const ServicePageTemplate: React.FC<ServicePageTemplateProps> = ({
   deliverablesSubheading = "Structured deliverables managed directly by senior UAE chartered accountants and tax specialists.",
   deliverables,
   heroBottomSlot,
+  quickSummary,
   customTopSection,
+  bottomAttributionSlot,
   processHeading = "How We Work",
   processSubheading = "A predictable, low-friction onboarding and execution workflow with zero surprise handoffs.",
   processSteps,
@@ -117,7 +122,7 @@ export const ServicePageTemplate: React.FC<ServicePageTemplateProps> = ({
         onOpenAudit={onOpenAudit}
       />
 
-      <main id="main-content" className="flex-1">
+      <PageMainTransition id="main-content" className="flex-1">
         {/* 1. Focused Executive Hero */}
         <section className="bg-[#FFFFFF] pt-12 pb-14 lg:pt-20 lg:pb-20 border-b border-[#E2E8F0]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -152,6 +157,7 @@ export const ServicePageTemplate: React.FC<ServicePageTemplateProps> = ({
               <h1 className="font-display text-3xl sm:text-4xl lg:text-[46px] font-bold text-[#0D1B2A] tracking-tight leading-[1.14]">
                 {title}
               </h1>
+              {quickSummary}
               <p className="text-[#475569] text-base sm:text-lg leading-[1.65] max-w-[65ch]">
                 {subtitle}
               </p>
@@ -388,7 +394,9 @@ export const ServicePageTemplate: React.FC<ServicePageTemplateProps> = ({
           secondaryLabel="View Fixed-Fee Pricing →"
           onSecondaryClick={() => onNavigate("/pricing")}
         />
-      </main>
+
+        {bottomAttributionSlot}
+      </PageMainTransition>
 
       <PageFooter
         onNavigate={onNavigate}

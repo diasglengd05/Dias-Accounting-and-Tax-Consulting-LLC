@@ -37,22 +37,23 @@ function parseGenuineIsoDate(raw?: string): string | undefined {
 
 const CANONICAL_STATIC_PATHS: string[] = [
   "/",
+  "/pricing",
   "/services",
+  "/small-business-tax-relief",
   "/tax-planning-difc",
   "/dividends-audit",
   "/company-setup",
-  "/pricing",
   "/uae-tax-planner",
   "/uae-vat-calculator",
-  "/small-business-tax-relief",
   "/fta-deadlines",
   "/blog",
-  "/about",
-  "/why-choose-us",
   "/testimonials",
   "/faqs",
-  "/partners",
   "/contact",
+  "/about",
+  "/why-choose-us",
+  "/partners",
+  "/privacy-policy",
   "/terms",
 ];
 

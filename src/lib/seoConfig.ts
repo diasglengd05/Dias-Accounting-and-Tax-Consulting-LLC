@@ -36,9 +36,10 @@ export const BUSINESS_ENTITY = {
     postOfficeBoxNumber: "P.O. Box 515000",
     addressCountry: "AE",
   },
+  hasMap: "https://www.google.com/maps/place/?q=place_id:ChIJlyGuqVdDXz4R2AwMpM1O1SE",
   geo: {
-    latitude: 25.2788,
-    longitude: 55.6626,
+    latitude: 25.2784375,
+    longitude: 55.6783125,
   },
   openingHours: [
     {

@@ -110,6 +110,8 @@
         "postalCode": "515000",
         "addressCountry": "AE"
       },
+      "hasMap": "https://www.google.com/maps/place/?q=place_id:ChIJlyGuqVdDXz4R2AwMpM1O1SE",
+      "geo": { "@type": "GeoCoordinates", "latitude": 25.2784375, "longitude": 55.6783125 },
       "areaServed": [
         { "@type": "City", "name": "Dubai" },
         { "@type": "City", "name": "Sharjah" },
@@ -258,7 +260,7 @@
       <!-- Luxury Brand Preloader - Renders instantaneously on first load with zero layout shift -->
       <div style="min-height: 100vh; background-color: #070d19; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; text-align: center; box-sizing: border-box;">
         <div style="width: 84px; height: 84px; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: center; filter: drop-shadow(0 4px 24px rgba(197, 160, 89, 0.3));">
-          <svg viewBox="0 0 250 250" style="width: 100%; height: 100%;" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg viewBox="0 0 250 250" style="width: 100%; height: 100%; transform-origin: center; animation: dias-emblem-rotate 1.35s cubic-bezier(0.45, 0.05, 0.2, 0.95) infinite;" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <linearGradient id="gold-grad-splash" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stop-color="#DFBA5F" />
@@ -295,6 +297,13 @@
           @keyframes dias-shimmer-load {
             0% { transform: translateX(-100%); }
             100% { transform: translateX(350%); }
+          }
+          @keyframes dias-emblem-rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+          @media (prefers-reduced-motion: reduce) {
+            svg[style*="dias-emblem-rotate"] { animation: none !important; }
           }
         </style>
       </div>

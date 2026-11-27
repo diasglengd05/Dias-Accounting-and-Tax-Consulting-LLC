@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo } from "react";
 import {
+  ArrowRight,
   Calculator,
   CheckCircle2,
   FileCheck,
@@ -26,6 +27,8 @@ import {
   CLUTCH_AWARD_CAPTION,
 } from "../components/ClutchBadges";
 import SameDayQuoteBox from "../components/SameDayQuoteBox";
+import QuickSummaryBox from "../components/QuickSummaryBox";
+import TaxAgentReviewStrip from "../components/TaxAgentReviewStrip";
 
 interface ServiceDetailPageProps {
   serviceId?: string;
@@ -203,7 +206,6 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
     return () => {
       removeJsonLd("page-service-jsonld");
       removeJsonLd("page-breadcrumb-jsonld");
-      removeJsonLd("page-faq-jsonld");
     };
   }, [currentService, serviceId]);
 
@@ -237,7 +239,7 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
           law: "Federal Decree-Law No. 8 of 2017 (UAE VAT)",
           authority: "Federal Tax Authority (Form VAT 201)",
           timeline: "Due by the 28th day following period close",
-          pricingTier: "Included in Corporate Growth (from AED 600 / mo)",
+          pricingTier: "Fixed monthly retainers starting from AED 400/month",
         };
       case "auditing-assurance":
         return {
@@ -407,7 +409,7 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
       return {
         question: "What is included in 5% UAE VAT compliance services at Dias Accounting?",
         answer:
-          "Dias Accounting's 5% UAE VAT compliance services include FTA TRN registration, quarterly Form 201 return filing, 2026 FTA input tax recovery reviews, tax invoice compliance audits, and VAT-to-Corporate-Tax ledger reconciliation, bundled inside transparent fixed monthly retainers starting from AED 400/month with zero hourly surprises.",
+          "DiasUAE's (Dias Accounting and Tax Consulting LLC) 5% UAE VAT compliance services include FTA TRN registration, quarterly Form 201 return filing, 2026 FTA Decision 13 input tax recovery reviews, tax invoice compliance audits, and VAT-to-Corporate-Tax ledger reconciliation, bundled inside transparent fixed monthly retainers starting from AED 400/month with zero hourly surprises.",
       };
     }
     if (currentService.id === "corporate-tax-advisory") {
@@ -427,6 +429,8 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
         "page-faq-jsonld",
         buildFAQPageSchema(schemaFaqs, `https://diasuae.ae/services/${currentService.id}#faqs`)
       );
+    } else {
+      removeJsonLd("page-faq-jsonld");
     }
     return () => {
       removeJsonLd("page-faq-jsonld");
@@ -456,12 +460,38 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
     .slice(0, 4)
     .map((s) => ({ label: s.title, path: `/services/${s.id}` }));
 
+  const heroH1 = useMemo(() => {
+    switch (currentService.id) {
+      case "vat-compliance":
+        return "UAE 5% VAT Compliance, Form 201 Filing & FTA Audit Support";
+      case "corporate-tax-advisory":
+        return "9% UAE Corporate Tax Advisory, Registration & EmaraTax Filing";
+      case "accounting-bookkeeping":
+        return "Monthly IFRS Accounting & Bookkeeping Services in Dubai & UAE";
+      default:
+        return currentService.title;
+    }
+  }, [currentService.id, currentService.title]);
+
   return (
     <ServicePageTemplate
       currentPath={`/services/${currentService.id}`}
       breadcrumbName={currentService.title}
       eyebrow="FTA-Registered Practice · Dubai & UAE"
-      title={currentService.title}
+      title={heroH1}
+      quickSummary={
+        currentService.id === "vat-compliance" ? (
+          <QuickSummaryBox>
+            <strong className="text-white font-semibold">
+              DiasUAE (Dias Accounting and Tax Consulting LLC)
+            </strong>
+            , led by FTA-Registered Tax Agent{" "}
+            <strong className="text-[#c5a059] font-semibold">Glen Dias</strong> (SHAMS Licence{" "}
+            <span className="tabular-nums">2646813.01</span>) and recognized as a 2x Clutch 2026 UAE Leader, delivers 5% UAE VAT TRN registration, quarterly Form 201 filings, 2026 FTA Decision 13 input tax recovery reviews, and FTA audit defense. Serving Dubai Mainland, DIFC, DTEC, DMCC, IFZA, and SHAMS, we deliver same-week TRN onboarding and pre-28th VAT returns inside fixed-fee monthly retainers starting{" "}
+            <strong className="text-white font-semibold">from AED 400/month</strong>.
+          </QuickSummaryBox>
+        ) : undefined
+      }
       subtitle={currentService.longDesc}
       metadataStrip={[
         { label: "Ideal For", value: serviceMeta.idealFor },
@@ -480,94 +510,286 @@ export const ServiceDetailPage: React.FC<ServiceDetailPageProps> = ({
           />
         ) : undefined
       }
+      bottomAttributionSlot={
+        currentService.id === "vat-compliance" ||
+        currentService.id === "corporate-tax-advisory" ? (
+          <TaxAgentReviewStrip />
+        ) : undefined
+      }
       customTopSection={
         currentService.id === "vat-compliance" ? (
+          <>
+            {/* Dedicated Corporate Growth VAT Package Section */}
+            <section
+              aria-label="Monthly Accounting and Quarterly 5% VAT Form 201 Packages"
+              className="bg-[#0d1b2a] border-b border-[#c5a059]/30 py-14 lg:py-16 text-white"
+            >
+              <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+                  <div className="max-w-3xl space-y-3">
+                    <span className="inline-block text-xs font-semibold uppercase tracking-[0.14em] text-[#c5a059]">
+                      Corporate Growth Package · Most Popular for UAE SMEs
+                    </span>
+                    <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight leading-snug">
+                      Monthly Accounting &amp; Quarterly 5% VAT Form 201 Packages (Corporate Growth)
+                    </h2>
+                    <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-[68ch]">
+                      Stop paying separate fees for monthly bookkeeping, quarterly VAT filings, and annual Corporate Tax returns. DiasUAE&apos;s{" "}
+                      <strong className="text-white font-semibold">Corporate Growth</strong> package bundles full monthly IFRS accounting, EmaraTax Form VAT 201 filing, VAT-to-Corporate-Tax reconciliation, and FTA audit-ready documentation for one fixed monthly fee.
+                    </p>
+                  </div>
+                  <a
+                    href="/pricing"
+                    onClick={(e) => {
+                      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+                      e.preventDefault();
+                      onNavigate("/pricing");
+                    }}
+                    className="min-h-[46px] px-6 py-3 rounded-xl bg-[#c5a059] hover:bg-[#b58f47] text-[#070d19] font-semibold text-sm inline-flex items-center justify-center gap-2 transition-colors shrink-0 whitespace-nowrap"
+                  >
+                    <span>Explore Corporate Growth Pricing</span>
+                    <ArrowRight className="w-4 h-4 shrink-0" />
+                  </a>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                  <div className="rounded-2xl bg-[#070d19] border border-[#c5a059]/30 p-6 space-y-2.5">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-[#c5a059]">
+                      Strict 28-Day Filing Deadlines
+                    </span>
+                    <h3 className="font-display text-lg font-bold text-white">
+                      Pre-28th Form VAT 201 Submission
+                    </h3>
+                    <p className="text-sm text-slate-300 leading-relaxed">
+                      Every quarterly or monthly UAE VAT Form 201 return and EmaraTax payment must be settled within{" "}
+                      <strong className="text-white font-semibold">28 days</strong> of the tax period end. We close ledgers early and reconcile Emirate-wise output VAT, Reverse Charge (Box 3/10), and supplier TRNs ahead of the deadline.
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl bg-[#070d19] border border-[#c5a059]/30 p-6 space-y-2.5">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-[#c5a059]">
+                      Penalty Protection
+                    </span>
+                    <h3 className="font-display text-lg font-bold text-white">
+                      14% p.a. Late-Payment Penalty Avoidance
+                    </h3>
+                    <p className="text-sm text-slate-300 leading-relaxed">
+                      Late VAT payments trigger up to{" "}
+                      <strong className="text-white font-semibold">14% per annum</strong> compounding late-payment penalties on top of AED 1,000–2,000 late filing fines. Monthly IFRS tracking gives you exact VAT payable forecasts weeks before due dates.
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl bg-[#070d19] border border-[#c5a059]/30 p-6 space-y-2.5">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-[#c5a059]">
+                      Statutory Cutoff · Dec 31, 2026
+                    </span>
+                    <h3 className="font-display text-lg font-bold text-white">
+                      Dec 31, 2026 Box 14 VAT Credit Recovery
+                    </h3>
+                    <p className="text-sm text-slate-300 leading-relaxed">
+                      Businesses carrying unclaimed excess input VAT credits face critical{" "}
+                      <strong className="text-white font-semibold">December 31, 2026 Box 14 VAT credit recovery</strong> cutoffs. Our FTA-Registered Tax Agents audit historical tax invoices and execute compliant refund or offset claims before credits lapse.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="pt-1 text-sm text-slate-300">
+                  Ready to consolidate your monthly books and quarterly VAT?{" "}
+                  <a
+                    href="/pricing"
+                    onClick={(e) => {
+                      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+                      e.preventDefault();
+                      onNavigate("/pricing");
+                    }}
+                    className="text-[#c5a059] hover:text-[#e6c884] font-semibold underline underline-offset-4 transition-colors"
+                  >
+                    Compare Corporate Growth &amp; Business Starter packages on our Pricing page →
+                  </a>
+                </div>
+              </div>
+            </section>
+
+            <section
+              aria-label="2026 UAE VAT Compliance Checklist"
+              className="bg-[#070d19] border-b border-[#c5a059]/25 py-14 lg:py-20 text-white"
+            >
+              <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                <div className="max-w-3xl space-y-2.5">
+                  <span className="inline-block text-xs font-semibold uppercase tracking-[0.14em] text-[#c5a059]">
+                    Federal Decree-Law No. 8 of 2017 · 2026 FTA Standards
+                  </span>
+                  <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">
+                    2026 UAE VAT Compliance Checklist
+                  </h2>
+                  <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-[65ch]">
+                    Key statutory thresholds, Form 201 submission deadlines, 2026 FTA Decision 13 input tax rules, and audit-defense controls managed end-to-end by our FTA-Registered Tax Agents from AED 400/month.
+                  </p>
+                </div>
+
+                <div className="overflow-x-auto rounded-2xl border border-[#c5a059]/30 bg-[#0d1b2a] shadow-sm">
+                  <table className="w-full text-left border-collapse text-sm">
+                    <thead>
+                      <tr className="border-b border-[#c5a059]/25 bg-[#070d19]/80 text-xs uppercase tracking-wider text-[#c5a059]">
+                        <th scope="col" className="px-5 py-4 font-semibold">Compliance Area</th>
+                        <th scope="col" className="px-5 py-4 font-semibold">2026 Statutory Rule</th>
+                        <th scope="col" className="px-5 py-4 font-semibold">Key Threshold / Penalty</th>
+                        <th scope="col" className="px-5 py-4 font-semibold">DiasUAE Action</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/10">
+                      <tr className="hover:bg-white/[0.02] transition-colors">
+                        <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                          Registration Threshold
+                        </td>
+                        <td className="px-5 py-4 text-slate-300 leading-relaxed">
+                          Mandatory when taxable supplies and imports exceed AED 375,000 over the prior 12 months or projected next 30 days; voluntary at AED 187,500.
+                        </td>
+                        <td className="px-5 py-4 font-semibold text-[#c5a059] whitespace-nowrap">
+                          AED 375,000 · AED 10,000 Late Fine
+                        </td>
+                        <td className="px-5 py-4 text-slate-200 leading-relaxed">
+                          Monthly turnover monitoring and same-week EmaraTax TRN registration.
+                        </td>
+                      </tr>
+                      <tr className="hover:bg-white/[0.02] transition-colors">
+                        <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                          Quarterly Form 201 Deadlines
+                        </td>
+                        <td className="px-5 py-4 text-slate-300 leading-relaxed">
+                          VAT Form 201 return filing and tax settlement due by the 28th day following the end of each assigned quarterly or monthly tax period.
+                        </td>
+                        <td className="px-5 py-4 font-semibold text-[#c5a059] whitespace-nowrap">
+                          28th of Following Month · 14% p.a. Late Fee
+                        </td>
+                        <td className="px-5 py-4 text-slate-200 leading-relaxed">
+                          Emirates-wise sales mapping, RCM Box 3/10 reconciliation, and pre-deadline filing.
+                        </td>
+                      </tr>
+                      <tr className="hover:bg-white/[0.02] transition-colors">
+                        <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                          2026 Input VAT &amp; Box 14 Recovery
+                        </td>
+                        <td className="px-5 py-4 text-slate-300 leading-relaxed">
+                          Strict FTA Decision 13 tax invoice verification, supplier TRN validation, and Dec 31, 2026 Box 14 VAT credit recovery deadline compliance.
+                        </td>
+                        <td className="px-5 py-4 font-semibold text-[#c5a059] whitespace-nowrap">
+                          100% Tax Invoice &amp; Dec 31, 2026 Cutoff
+                        </td>
+                        <td className="px-5 py-4 text-slate-200 leading-relaxed">
+                          Line-by-line input VAT audit before every return to maximize lawful refunds.
+                        </td>
+                      </tr>
+                      <tr className="hover:bg-white/[0.02] transition-colors">
+                        <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
+                          FTA Audit Defense
+                        </td>
+                        <td className="px-5 py-4 text-slate-300 leading-relaxed">
+                          Mandatory 5–7 year archival of IFRS ledgers, Voluntary Disclosures (Form 211) for historical corrections, and VAT-to-Corporate-Tax revenue tie-out.
+                        </td>
+                        <td className="px-5 py-4 font-semibold text-[#c5a059] whitespace-nowrap">
+                          FAF Audit File &amp; Form 211 Ready
+                        </td>
+                        <td className="px-5 py-4 text-slate-200 leading-relaxed">
+                          Direct FTA-Registered Tax Agent representation led by Glen Dias and penalty reconsideration support.
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+          </>
+        ) : currentService.id === "corporate-tax-advisory" ? (
           <section
-            aria-label="2026 UAE VAT Compliance Checklist"
-            className="bg-[#070d19] border-b border-[#c5a059]/25 py-14 lg:py-20 text-white"
+            aria-label="Small Business Corporate Tax Filing and AED 10,000 Penalty Waiver"
+            className="bg-[#070d19] border-b border-[#c5a059]/30 py-14 lg:py-20 text-white"
           >
             <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-              <div className="max-w-3xl space-y-2.5">
-                <span className="inline-block text-xs font-semibold uppercase tracking-[0.14em] text-[#c5a059]">
-                  Federal Decree-Law No. 8 of 2017 · 2026 FTA Standards
-                </span>
-                <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight">
-                  2026 UAE VAT Compliance Checklist
-                </h2>
-                <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-[65ch]">
-                  Key statutory thresholds, Form 201 submission deadlines, 2026 FTA Decision 13 input tax rules, and audit-defense controls managed end-to-end by our FTA-Registered Tax Agents from AED 400/month.
-                </p>
+              <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
+                <div className="max-w-3xl space-y-3">
+                  <span className="inline-block text-xs font-semibold uppercase tracking-[0.14em] text-[#c5a059]">
+                    Business Starter Package · From AED 400/Month · MD 131/2026
+                  </span>
+                  <h2 className="font-display text-2xl sm:text-3xl font-bold text-white tracking-tight leading-snug">
+                    Small Business Corporate Tax Filing &amp; AED 10,000 Penalty Waiver (Business Starter)
+                  </h2>
+                  <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-[68ch]">
+                    Protect your UAE Free Zone or Mainland company from automatic FTA fines while keeping your Corporate Tax rate at 0% legally. DiasUAE&apos;s{" "}
+                    <strong className="text-white font-semibold">Business Starter</strong> package (from AED 400/month) combines monthly IFRS bookkeeping with EmaraTax Corporate Tax registration, timely first-return filing, and 0% Small Business Relief elections.
+                  </p>
+                </div>
+                <a
+                  href="/pricing"
+                  onClick={(e) => {
+                    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+                    e.preventDefault();
+                    onNavigate("/pricing");
+                  }}
+                  className="min-h-[46px] px-6 py-3 rounded-xl bg-[#c5a059] hover:bg-[#b58f47] text-[#070d19] font-semibold text-sm inline-flex items-center justify-center gap-2 transition-colors shrink-0 whitespace-nowrap"
+                >
+                  <span>View Business Starter Pricing</span>
+                  <ArrowRight className="w-4 h-4 shrink-0" />
+                </a>
               </div>
 
-              <div className="overflow-x-auto rounded-2xl border border-[#c5a059]/30 bg-[#0d1b2a] shadow-sm">
-                <table className="w-full text-left border-collapse text-sm">
-                  <thead>
-                    <tr className="border-b border-[#c5a059]/25 bg-[#070d19]/80 text-xs uppercase tracking-wider text-[#c5a059]">
-                      <th scope="col" className="px-5 py-4 font-semibold">Compliance Area</th>
-                      <th scope="col" className="px-5 py-4 font-semibold">2026 Statutory Rule</th>
-                      <th scope="col" className="px-5 py-4 font-semibold">Key Threshold / Penalty</th>
-                      <th scope="col" className="px-5 py-4 font-semibold">Dias Accounting Action</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-white/10">
-                    <tr className="hover:bg-white/[0.02] transition-colors">
-                      <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
-                        Registration Threshold
-                      </td>
-                      <td className="px-5 py-4 text-slate-300 leading-relaxed">
-                        Mandatory when taxable supplies and imports exceed AED 375,000 over the prior 12 months or projected next 30 days; voluntary at AED 187,500.
-                      </td>
-                      <td className="px-5 py-4 font-semibold text-[#c5a059] whitespace-nowrap">
-                        AED 375,000 · AED 10,000 Late Fine
-                      </td>
-                      <td className="px-5 py-4 text-slate-200 leading-relaxed">
-                        Monthly turnover monitoring and same-week EmaraTax TRN registration.
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-white/[0.02] transition-colors">
-                      <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
-                        Quarterly Form 201 Deadlines
-                      </td>
-                      <td className="px-5 py-4 text-slate-300 leading-relaxed">
-                        VAT Form 201 return filing and tax settlement due by the 28th day following the end of each assigned quarterly or monthly tax period.
-                      </td>
-                      <td className="px-5 py-4 font-semibold text-[#c5a059] whitespace-nowrap">
-                        28th of Following Month · AED 1k–2k Fine
-                      </td>
-                      <td className="px-5 py-4 text-slate-200 leading-relaxed">
-                        Emirates-wise sales mapping, RCM Box 3/10 reconciliation, and pre-deadline filing.
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-white/[0.02] transition-colors">
-                      <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
-                        2026 Input VAT Recovery
-                      </td>
-                      <td className="px-5 py-4 text-slate-300 leading-relaxed">
-                        Strict FTA Decision 13 tax invoice verification, supplier TRN validation, and screening of blocked inputs (entertainment &amp; personal vehicles).
-                      </td>
-                      <td className="px-5 py-4 font-semibold text-[#c5a059] whitespace-nowrap">
-                        100% Compliant Tax Invoice Required
-                      </td>
-                      <td className="px-5 py-4 text-slate-200 leading-relaxed">
-                        Line-by-line input VAT audit before every return to maximize lawful refunds.
-                      </td>
-                    </tr>
-                    <tr className="hover:bg-white/[0.02] transition-colors">
-                      <td className="px-5 py-4 font-semibold text-white whitespace-nowrap">
-                        FTA Audit Defense
-                      </td>
-                      <td className="px-5 py-4 text-slate-300 leading-relaxed">
-                        Mandatory 5–7 year archival of IFRS ledgers, Voluntary Disclosures (Form 211) for historical corrections, and VAT-to-Corporate-Tax revenue tie-out.
-                      </td>
-                      <td className="px-5 py-4 font-semibold text-[#c5a059] whitespace-nowrap">
-                        FAF Audit File &amp; Form 211 Ready
-                      </td>
-                      <td className="px-5 py-4 text-slate-200 leading-relaxed">
-                        Direct FTA-Registered Tax Agent representation led by Glen Dias and penalty reconsideration support.
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div className="rounded-2xl bg-[#0d1b2a] border border-[#c5a059]/30 p-6 space-y-2.5">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#c5a059]">
+                    FTA Decision No. 3 of 2024
+                  </span>
+                  <h3 className="font-display text-lg font-bold text-white">
+                    3-Month Corporate Tax Registration Rule
+                  </h3>
+                  <p className="text-sm text-slate-300 leading-relaxed">
+                    Every newly incorporated UAE Mainland or Free Zone entity must submit its EmaraTax Corporate Tax registration within{" "}
+                    <strong className="text-white font-semibold">3 months</strong> of trade licence issuance to avoid the automatic AED 10,000 administrative penalty.
+                  </p>
+                </div>
+
+                <div className="rounded-2xl bg-[#0d1b2a] border border-[#c5a059]/30 p-6 space-y-2.5">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#c5a059]">
+                    FTA Penalty Waiver Initiative
+                  </span>
+                  <h3 className="font-display text-lg font-bold text-white">
+                    7-Month First-Return Waiver Window
+                  </h3>
+                  <p className="text-sm text-slate-300 leading-relaxed">
+                    Missed the registration deadline? Under the FTA waiver initiative, filing your first Corporate Tax return (or annual declaration) within{" "}
+                    <strong className="text-white font-semibold">7 months</strong> of your first tax period end qualifies your company to waive or credit back the{" "}
+                    <strong className="text-[#c5a059] font-semibold">AED 10,000</strong> late-registration penalty.
+                  </p>
+                </div>
+
+                <div className="rounded-2xl bg-[#0d1b2a] border border-[#c5a059]/30 p-6 space-y-2.5">
+                  <span className="text-xs font-semibold uppercase tracking-wider text-[#c5a059]">
+                    Ministerial Decision No. 131 of 2026
+                  </span>
+                  <h3 className="font-display text-lg font-bold text-white">
+                    Small Business Relief Extended to Dec 31, 2029
+                  </h3>
+                  <p className="text-sm text-slate-300 leading-relaxed">
+                    UAE resident businesses with annual gross revenue up to{" "}
+                    <strong className="text-white font-semibold">AED 3,000,000</strong> can elect{" "}
+                    <strong className="text-[#c5a059] font-semibold">0% Small Business Relief</strong> on their EmaraTax return for tax periods ending on or before{" "}
+                    <strong className="text-white font-semibold">December 31, 2029</strong>—bundled into our Business Starter retainer.
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-1 text-sm text-slate-300">
+                Looking for fixed-fee monthly IFRS bookkeeping + EmaraTax filing?{" "}
+                <a
+                  href="/pricing"
+                  onClick={(e) => {
+                    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+                    e.preventDefault();
+                    onNavigate("/pricing");
+                  }}
+                  className="text-[#c5a059] hover:text-[#e6c884] font-semibold underline underline-offset-4 transition-colors"
+                >
+                  Start Business Starter (from AED 400/mo) or upgrade to Corporate Growth on our Pricing page →
+                </a>
               </div>
             </div>
           </section>

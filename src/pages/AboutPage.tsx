@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
+import PageMainTransition from "../components/PageMainTransition";
 import SectionCTA from "../components/editorial/SectionCTA";
 import {
   applyPageSEO,
@@ -102,7 +103,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
         onOpenAudit={onOpenAudit}
       />
 
-      <main id="main-content">
+      <PageMainTransition id="main-content">
         {/* 1. Focused Positioning Hero */}
         <section className="bg-[#FFFFFF] border-b border-[#E2E8F0] pt-12 pb-16 lg:pt-20 lg:pb-24">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -403,7 +404,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({
           secondaryLabel="Explore Fixed-Fee Pricing →"
           onSecondaryClick={() => onNavigate("/pricing")}
         />
-      </main>
+      </PageMainTransition>
 
       <PageFooter
         onNavigate={onNavigate}

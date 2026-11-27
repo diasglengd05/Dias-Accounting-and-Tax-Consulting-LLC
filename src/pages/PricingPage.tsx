@@ -4,6 +4,7 @@ import {
   Check,
   ChevronDown,
   ChevronRight,
+  MessageCircle,
   Minus,
   Plus,
   ShieldCheck,
@@ -12,6 +13,7 @@ import {
 } from "lucide-react";
 import PageNavigation from "../components/PageNavigation";
 import PageFooter from "../components/PageFooter";
+import PageMainTransition from "../components/PageMainTransition";
 import SameDayQuoteBox from "../components/SameDayQuoteBox";
 import {
   applyPageSEO,
@@ -48,43 +50,49 @@ interface PricingTier {
   features: string[];
 }
 
+const WHATSAPP_STARTER_URL =
+  "https://wa.me/971529226958?text=Hi%20DiasUAE%2C%20I%20want%20to%20start%20the%20Business%20Starter%20package%20(AED%20400%2Fmo)%20for%20my%20UAE%20company.";
+const WHATSAPP_GROWTH_URL =
+  "https://wa.me/971529226958?text=Hi%20DiasUAE%2C%20I%20need%20a%20quote%20for%20the%20Corporate%20Growth%20(Accounting%2C%20VAT%20%26%20CT)%20package.";
+
 const MONTHLY_TIERS: PricingTier[] = [
   {
     id: "business-starter",
     name: "Business Starter",
-    bestFor: "Best for new UAE startups and solo founders.",
+    bestFor: "Best for new Free Zone & Mainland companies under AED 3M revenue.",
     priceAnnual: "400",
     priceMonthly: "500",
     unit: "/ month",
     billingNoteAnnual: "Billed AED 4,000 / year + 5% VAT",
     billingNoteMonthly: "Billed monthly at AED 500 + 5% VAT",
-    ctaLabel: "Get Started",
+    ctaLabel: "Start Business Starter on WhatsApp",
     features: [
       "Monthly IFRS double-entry bookkeeping",
+      "Monthly P&L & Balance Sheet statements",
+      "EmaraTax Corporate Tax registration & compliance",
+      "0% Small Business Relief election (extended through 2029 under MD 131/2026)",
       "Bank & card reconciliation (up to 50 txns/mo)",
-      "Monthly Balance Sheet & P&L statements",
-      "Annual Corporate Tax return & 0% SBR election",
-      "Dedicated Senior Accountant email support",
+      "Dedicated FTA Tax Agent & Senior Accountant support",
     ],
   },
   {
     id: "corporate-growth",
     name: "Corporate Growth",
-    bestFor: "Best for growing SMEs with active VAT & CT.",
+    bestFor: "Best for VAT-registered & scaling Dubai/UAE companies.",
     priceAnnual: "600",
     priceMonthly: "750",
     unit: "/ month",
     billingNoteAnnual: "Billed AED 6,000 / year + 5% VAT",
     billingNoteMonthly: "Billed monthly at AED 750 + 5% VAT",
     popular: true,
-    ctaLabel: "Get Started",
+    ctaLabel: "Get Corporate Growth Quote on WhatsApp",
     features: [
-      "Everything in Business Starter included",
-      "Quarterly VAT 201 preparation & EmaraTax filing",
-      "Input VAT recovery & invoice compliance check",
-      "Annual Corporate Tax filing & 9% adjustments",
-      "UAE E-Invoicing Phase 1 readiness guidance",
-      "Priority phone & direct advisor support",
+      "Full monthly IFRS bookkeeping & reconciliations",
+      "Quarterly 5% VAT Form 201 filing on EmaraTax",
+      "VAT-to-Corporate-Tax revenue & ledger reconciliation",
+      "Annual 9% Corporate Tax return preparation & filing",
+      "FTA audit-ready documentation & 7-year archival",
+      "Priority phone & direct FTA Tax Agent advisory",
     ],
   },
   {
@@ -279,14 +287,15 @@ const COMPARISON_ROWS: ComparisonRow[] = [
 const FEATURED_PRICING_FAQS: FAQSchemaItem[] = [
   {
     question:
-      "How much do accounting and tax services cost for a small business in Dubai & UAE in 2026?",
+      "What is the best affordable monthly accounting package for a small business in Dubai & UAE?",
     answer:
-      "In 2026, fixed-fee monthly IFRS bookkeeping, 5% UAE VAT Form 201 returns, and EmaraTax Corporate Tax filings start from AED 400/month (Starter), AED 600–750/month (Growth VAT + CT), and AED 1,250/month (QFZP Audit-Ready), all managed by FTA-Registered Tax Agents with zero hourly surprises.",
+      "DiasUAE's Business Starter package (starting from AED 400/month billed annually) is built specifically for new Dubai Mainland and UAE Free Zone companies under AED 3,000,000 in annual revenue. Managed by FTA-Registered Tax Agent Glen Dias (Dias Accounting and Tax Consulting LLC, SHAMS Licence 2646813.01), it bundles monthly IFRS bookkeeping, Profit & Loss and Balance Sheet statements, EmaraTax Corporate Tax registration and compliance, and 0% Small Business Relief elections extended through December 31, 2029 under Ministerial Decision No. 131 of 2026.",
   },
   {
-    question: "What is included in Dias Accounting's AED 400/month package?",
+    question:
+      "What is the difference between DiasUAE's Business Starter and Corporate Growth packages?",
     answer:
-      "Dias Accounting's AED 400/month Starter package includes monthly IFRS double-entry bookkeeping, bank and card reconciliation, monthly Profit & Loss and Balance Sheet statements, 0% Small Business Relief (SBR) election for revenue up to AED 3,000,000, and annual Corporate Tax return filing on EmaraTax.",
+      "Business Starter (from AED 400/month) is tailored for non-VAT-registered UAE startups and SMEs under AED 3M revenue needing monthly IFRS bookkeeping, P&L and Balance Sheet reporting, EmaraTax Corporate Tax compliance, and 0% Small Business Relief elections through 2029. Corporate Growth (from AED 600/month billed annually or AED 750/month monthly) is our most popular plan for VAT-registered and scaling Dubai/UAE companies—adding quarterly 5% VAT Form 201 filing, VAT-to-Corporate-Tax ledger reconciliation, annual 9% Corporate Tax filing, and FTA audit-ready documentation.",
   },
 ];
 
@@ -318,7 +327,7 @@ const PRICING_FAQS: FAQSchemaItem[] = [
   },
 ];
 
-const ALL_PRICING_SCHEMA_FAQS: FAQSchemaItem[] = [...FEATURED_PRICING_FAQS, ...PRICING_FAQS];
+export const ALL_PRICING_SCHEMA_FAQS: FAQSchemaItem[] = [...FEATURED_PRICING_FAQS, ...PRICING_FAQS];
 
 export const PricingPage: React.FC<PricingPageProps> = ({
   onNavigate,
@@ -328,19 +337,23 @@ export const PricingPage: React.FC<PricingPageProps> = ({
 }) => {
   const [activeCategory, setActiveCategory] = useState<ServiceCategory>("monthly");
   const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>("annual");
-  const [comparisonOpen, setComparisonOpen] = useState<boolean>(() =>
-    typeof window !== "undefined" ? window.innerWidth >= 768 : true
-  );
+  const [comparisonOpen, setComparisonOpen] = useState<boolean>(true);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   useEffect(() => {
+    if (typeof window !== "undefined" && window.innerWidth < 768) {
+      setComparisonOpen(false);
+    }
+  }, []);
+
+  useEffect(() => {
     applyPageSEO({
-      title: "Accounting & Tax Packages in Dubai & UAE | Fixed Fees From AED 400/Month",
+      title: "UAE Monthly Accounting, VAT & Corporate Tax Packages | From AED 400/Mo — DiasUAE",
       description:
-        "Compare transparent monthly IFRS bookkeeping, 5% VAT filing & 2026 UAE Corporate Tax packages for startups and SMEs in Dubai & Sharjah. Zero hidden fees.",
+        "Fixed-fee UAE monthly IFRS bookkeeping, 5% VAT Form 201 & 9% Corporate Tax packages. Business Starter from AED 400/mo & Corporate Growth for VAT-registered SMEs. FTA Tax Agents.",
       canonicalPath: "/pricing",
       keywords:
-        "UAE accounting packages, monthly bookkeeping pricing Dubai, fixed fee corporate tax filing UAE, VAT return filing cost Dubai",
+        "UAE monthly accounting packages, Dubai bookkeeping pricing from AED 400, UAE VAT Form 201 and Corporate Tax package, Business Starter accounting UAE, Corporate Growth SME tax package",
     });
     upsertJsonLd(
       "page-faq-jsonld",
@@ -401,7 +414,7 @@ export const PricingPage: React.FC<PricingPageProps> = ({
         onOpenAudit={onOpenAudit}
       />
 
-      <main id="main-content">
+      <PageMainTransition id="main-content">
         {/* Clean Header & Dual Controls */}
         <section className="bg-[#FFFFFF] pt-12 pb-10 lg:pt-16 lg:pb-12 border-b border-[#E2E8F0]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -421,14 +434,160 @@ export const PricingPage: React.FC<PricingPageProps> = ({
               <span className="text-[#0D1B2A] font-semibold">Pricing</span>
             </nav>
 
-            {/* Compact Centered Title & 1-Line Subtitle */}
-            <div className="max-w-2xl mx-auto text-center space-y-3">
-              <h1 className="font-display text-3xl sm:text-4xl lg:text-[44px] font-bold text-[#0D1B2A] tracking-tight leading-[1.15]">
-                Transparent, Fixed-Fee UAE Accounting
+            {/* Compact Centered Title & Subtitle */}
+            <div className="max-w-3xl mx-auto text-center space-y-3">
+              <span className="inline-block text-xs font-semibold uppercase tracking-[0.14em] text-[#856422]">
+                DiasUAE · FTA-Registered Tax Agents · Fixed Monthly Packages
+              </span>
+              <h1 className="font-display text-3xl sm:text-4xl lg:text-[44px] font-bold text-[#0D1B2A] tracking-tight leading-[1.14]">
+                Fixed-Fee UAE Accounting, VAT &amp; Corporate Tax Packages (Business Starter &amp; Corporate Growth)
               </h1>
-              <p className="text-[#475569] text-base sm:text-lg leading-relaxed">
-                Predictable fixed-fee bookkeeping, VAT, and Corporate Tax support by FTA-registered specialists—zero hidden charges.
+              <p className="text-[#475569] text-base sm:text-lg leading-relaxed max-w-2xl mx-auto">
+                Fixed-fee monthly IFRS bookkeeping, quarterly VAT Form 201, and EmaraTax Corporate Tax compliance—choose{" "}
+                <strong className="text-[#0D1B2A] font-semibold">Business Starter from AED 400/mo</strong> or{" "}
+                <strong className="text-[#0D1B2A] font-semibold">Corporate Growth</strong> for VAT-registered SMEs.
               </p>
+            </div>
+
+            {/* Two Flagship Side-by-Side Packages (#070d19 Navy, #0d1b2a Slate, #c5a059 Gold) */}
+            <div
+              aria-label="Flagship Monthly UAE Accounting Packages"
+              className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-7 items-stretch"
+            >
+              {/* Flagship Card 1: Business Starter */}
+              <article className="relative rounded-2xl bg-[#0d1b2a] text-white border border-white/15 p-7 sm:p-8 flex flex-col justify-between shadow-lg">
+                <div>
+                  <div className="flex items-center justify-between gap-3 mb-2">
+                    <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#c5a059]">
+                      Startup &amp; SBR Compliance
+                    </span>
+                    <span className="px-2.5 py-0.5 rounded-full border border-white/15 bg-white/5 text-slate-200 text-xs font-medium">
+                      Under AED 3M Revenue
+                    </span>
+                  </div>
+                  <h2 className="font-display text-2xl sm:text-[26px] font-bold text-white tracking-tight">
+                    Business Starter
+                  </h2>
+                  <p className="mt-2 text-sm text-slate-300 leading-relaxed">
+                    Best for new Free Zone &amp; Mainland companies under AED 3M revenue.
+                  </p>
+
+                  <div className="mt-6 pb-6 border-b border-white/10">
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+                        From AED
+                      </span>
+                      <span className="font-display text-4xl sm:text-[44px] font-bold text-[#c5a059] tabular-nums leading-none">
+                        400
+                      </span>
+                      <span className="text-sm text-slate-300 font-medium">/ month</span>
+                    </div>
+                    <p className="mt-2 text-xs text-slate-400 tabular-nums">
+                      Billed annually (AED 4,000/yr) or AED 500/month · Excl. 5% VAT
+                    </p>
+                  </div>
+
+                  <ul className="mt-6 space-y-3 text-sm text-slate-200">
+                    {[
+                      "Monthly IFRS bookkeeping & bank reconciliations",
+                      "Monthly Profit & Loss (P&L) & Balance Sheet statements",
+                      "EmaraTax Corporate Tax registration & annual compliance",
+                      "0% Small Business Relief election (extended through 2029 under MD 131/2026)",
+                    ].map((item) => (
+                      <li key={item} className="flex items-start gap-2.5 leading-snug">
+                        <Check
+                          className="w-4 h-4 text-[#c5a059] shrink-0 mt-0.5"
+                          strokeWidth={2.5}
+                        />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="mt-8 pt-2">
+                  <a
+                    href={WHATSAPP_STARTER_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full min-h-[48px] px-5 py-3 rounded-xl bg-white hover:bg-[#c5a059] text-[#070d19] font-semibold text-sm inline-flex items-center justify-center gap-2 transition-colors shadow-xs"
+                  >
+                    <MessageCircle className="w-4 h-4 shrink-0" />
+                    <span>Start Business Starter on WhatsApp</span>
+                    <ArrowRight className="w-4 h-4 shrink-0" />
+                  </a>
+                </div>
+              </article>
+
+              {/* Flagship Card 2: Corporate Growth (Most Popular for UAE SMEs) */}
+              <article className="relative rounded-2xl bg-[#070d19] text-white border-2 border-[#c5a059] p-7 sm:p-8 flex flex-col justify-between shadow-[0_18px_44px_-16px_rgba(7,13,25,0.45)] overflow-hidden">
+                <div
+                  className="absolute top-0 inset-x-0 h-[4px] bg-gradient-to-r from-[#c5a059] via-[#e6c884] to-[#c5a059]"
+                  aria-hidden="true"
+                />
+                <div>
+                  <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+                    <span className="text-xs font-semibold uppercase tracking-[0.14em] text-[#c5a059]">
+                      VAT + Corporate Tax
+                    </span>
+                    <span className="px-3 py-1 rounded-full bg-[#c5a059] text-[#070d19] text-xs font-bold tracking-tight">
+                      Most Popular for UAE SMEs
+                    </span>
+                  </div>
+                  <h2 className="font-display text-2xl sm:text-[26px] font-bold text-white tracking-tight">
+                    Corporate Growth
+                  </h2>
+                  <p className="mt-2 text-sm text-slate-300 leading-relaxed">
+                    Best for VAT-registered &amp; scaling Dubai/UAE companies.
+                  </p>
+
+                  <div className="mt-6 pb-6 border-b border-[#c5a059]/25">
+                    <div className="flex items-baseline gap-1.5">
+                      <span className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+                        From AED
+                      </span>
+                      <span className="font-display text-4xl sm:text-[44px] font-bold text-[#c5a059] tabular-nums leading-none">
+                        600
+                      </span>
+                      <span className="text-sm text-slate-300 font-medium">/ month</span>
+                    </div>
+                    <p className="mt-2 text-xs text-slate-400 tabular-nums">
+                      Billed annually (AED 6,000/yr) or AED 750/month · Excl. 5% VAT
+                    </p>
+                  </div>
+
+                  <ul className="mt-6 space-y-3 text-sm text-slate-100">
+                    {[
+                      "Full monthly IFRS bookkeeping & bank/card reconciliations",
+                      "Quarterly 5% VAT Form 201 filing & input tax recovery",
+                      "VAT-to-Corporate-Tax revenue & ledger reconciliation",
+                      "Annual 9% Corporate Tax return filing on EmaraTax",
+                      "FTA audit-ready documentation & 7-year statutory archive",
+                    ].map((item) => (
+                      <li key={item} className="flex items-start gap-2.5 leading-snug">
+                        <Check
+                          className="w-4 h-4 text-[#c5a059] shrink-0 mt-0.5"
+                          strokeWidth={2.5}
+                        />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="mt-8 pt-2">
+                  <a
+                    href={WHATSAPP_GROWTH_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full min-h-[48px] px-5 py-3 rounded-xl bg-[#c5a059] hover:bg-[#b58f47] text-[#070d19] font-bold text-sm inline-flex items-center justify-center gap-2 transition-colors shadow-sm"
+                  >
+                    <MessageCircle className="w-4 h-4 shrink-0" />
+                    <span>Get Corporate Growth Quote on WhatsApp</span>
+                    <ArrowRight className="w-4 h-4 shrink-0" />
+                  </a>
+                </div>
+              </article>
             </div>
 
             {/* Dual Controls: Segmented Service Tabs + Billing Toggle */}
@@ -578,18 +737,39 @@ export const PricingPage: React.FC<PricingPageProps> = ({
                       </div>
 
                       {/* d. ONE Full-Width CTA Button */}
-                      <button
-                        type="button"
-                        onClick={() => handleSelectTier(tier)}
-                        className={`w-full min-h-[46px] px-5 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer inline-flex items-center justify-center gap-2 ${
-                          tier.popular
-                            ? "bg-[#1B4332] hover:bg-[#143326] text-white shadow-xs"
-                            : "bg-[#FFFFFF] hover:bg-[#1B4332] text-[#0D1B2A] hover:text-white border border-[#0D1B2A] hover:border-[#1B4332]"
-                        }`}
-                      >
-                        <span>{tier.ctaLabel}</span>
-                        <ArrowRight className="w-4 h-4 shrink-0" />
-                      </button>
+                      {tier.id === "business-starter" || tier.id === "corporate-growth" ? (
+                        <a
+                          href={
+                            tier.id === "business-starter"
+                              ? WHATSAPP_STARTER_URL
+                              : WHATSAPP_GROWTH_URL
+                          }
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`w-full min-h-[46px] px-5 py-3 rounded-xl text-sm font-semibold transition-all inline-flex items-center justify-center gap-2 ${
+                            tier.popular
+                              ? "bg-[#070d19] hover:bg-[#0d1b2a] text-[#c5a059] border border-[#c5a059]/60 shadow-xs"
+                              : "bg-[#FFFFFF] hover:bg-[#070d19] text-[#0D1B2A] hover:text-white border border-[#0D1B2A]"
+                          }`}
+                        >
+                          <MessageCircle className="w-4 h-4 shrink-0" />
+                          <span>{tier.ctaLabel}</span>
+                          <ArrowRight className="w-4 h-4 shrink-0" />
+                        </a>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => handleSelectTier(tier)}
+                          className={`w-full min-h-[46px] px-5 py-3 rounded-xl text-sm font-semibold transition-all cursor-pointer inline-flex items-center justify-center gap-2 ${
+                            tier.popular
+                              ? "bg-[#1B4332] hover:bg-[#143326] text-white shadow-xs"
+                              : "bg-[#FFFFFF] hover:bg-[#1B4332] text-[#0D1B2A] hover:text-white border border-[#0D1B2A] hover:border-[#1B4332]"
+                          }`}
+                        >
+                          <span>{tier.ctaLabel}</span>
+                          <ArrowRight className="w-4 h-4 shrink-0" />
+                        </button>
+                      )}
 
                       {/* e. Thin Horizontal Divider + 5–6 Crisp Single-Line Checkmarks */}
                       <hr className="my-6 border-[#E2E8F0]" />
@@ -718,18 +898,15 @@ export const PricingPage: React.FC<PricingPageProps> = ({
               </p>
             </div>
 
-            {/* Direct Answer H2 Cards (#070d19 Navy & #c5a059 Gold Accents) */}
+            {/* Direct Answer H2 Cards (#070d19 Navy & #c5a059 Gold Accents — 1:1 with FAQPage JSON-LD) */}
             <div className="space-y-6 mb-12">
               <article className="rounded-2xl bg-[#070d19] text-white border border-[#c5a059]/35 p-6 sm:p-8 shadow-sm">
                 <div className="w-10 h-[2px] bg-[#c5a059] mb-4" aria-hidden="true" />
                 <h2 className="font-display text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug mb-3">
-                  How much do accounting and tax services cost for a small business in Dubai &amp; UAE in 2026?
+                  {FEATURED_PRICING_FAQS[0].question}
                 </h2>
                 <p className="text-sm sm:text-[15px] text-slate-200 leading-relaxed mb-5">
-                  In 2026, fixed-fee monthly IFRS bookkeeping, 5% UAE VAT Form 201 returns, and EmaraTax Corporate Tax filings start from{" "}
-                  <strong className="text-[#c5a059] font-semibold">AED 400/month (Starter)</strong>,{" "}
-                  <strong className="text-[#c5a059] font-semibold">AED 600–750/month (Growth VAT + CT)</strong>, and{" "}
-                  <strong className="text-[#c5a059] font-semibold">AED 1,250/month (QFZP Audit-Ready)</strong>, all managed by FTA-Registered Tax Agents with zero hourly surprises.
+                  {FEATURED_PRICING_FAQS[0].answer}
                 </p>
                 <div className="rounded-xl overflow-hidden border border-white/15 bg-[#0D1B2A]/60">
                   <div className="overflow-x-auto">
@@ -743,18 +920,18 @@ export const PricingPage: React.FC<PricingPageProps> = ({
                       </thead>
                       <tbody className="divide-y divide-white/10 text-slate-200">
                         <tr>
-                          <td className="py-3 px-4 font-semibold text-white">Starter Compliance</td>
-                          <td className="py-3 px-4 font-semibold text-[#c5a059] tabular-nums">AED 400/mo</td>
-                          <td className="py-3 px-4">Monthly IFRS bookkeeping, P&amp;L/Balance Sheet &amp; annual 0% SBR Corporate Tax filing</td>
+                          <td className="py-3 px-4 font-semibold text-white">Business Starter</td>
+                          <td className="py-3 px-4 font-semibold text-[#c5a059] tabular-nums">From AED 400/mo</td>
+                          <td className="py-3 px-4">Monthly IFRS bookkeeping, P&amp;L &amp; Balance Sheet, EmaraTax CT compliance &amp; 0% SBR election (extended through 2029)</td>
                         </tr>
                         <tr className="bg-white/[0.03]">
-                          <td className="py-3 px-4 font-semibold text-white">Growth VAT + CT</td>
+                          <td className="py-3 px-4 font-semibold text-white">Corporate Growth (Most Popular)</td>
                           <td className="py-3 px-4 font-semibold text-[#c5a059] tabular-nums">AED 600–750/mo</td>
-                          <td className="py-3 px-4">Monthly IFRS books, quarterly 5% VAT Form 201 filing, input VAT recovery &amp; 9% Corporate Tax</td>
+                          <td className="py-3 px-4">Full monthly IFRS books, quarterly 5% VAT Form 201 filing, VAT-to-CT reconciliation, annual 9% CT &amp; FTA audit-ready files</td>
                         </tr>
                         <tr>
-                          <td className="py-3 px-4 font-semibold text-white">Free Zone QFZP Audit-Ready</td>
-                          <td className="py-3 px-4 font-semibold text-[#c5a059] tabular-nums">AED 1,250/mo</td>
+                          <td className="py-3 px-4 font-semibold text-white">Enterprise &amp; QFZP Audit-Ready</td>
+                          <td className="py-3 px-4 font-semibold text-[#c5a059] tabular-nums">From AED 1,000/mo</td>
                           <td className="py-3 px-4">Full IFRS audit file, 0% QFZP De Minimis &amp; substance checks, VAT 201 &amp; fractional CFO review</td>
                         </tr>
                       </tbody>
@@ -766,10 +943,10 @@ export const PricingPage: React.FC<PricingPageProps> = ({
               <article className="rounded-2xl bg-[#070d19] text-white border border-[#c5a059]/35 p-6 sm:p-8 shadow-sm">
                 <div className="w-10 h-[2px] bg-[#c5a059] mb-4" aria-hidden="true" />
                 <h2 className="font-display text-xl sm:text-2xl font-bold text-white tracking-tight leading-snug mb-3">
-                  What is included in Dias Accounting&apos;s AED 400/month package?
+                  {FEATURED_PRICING_FAQS[1].question}
                 </h2>
                 <p className="text-sm sm:text-[15px] text-slate-200 leading-relaxed">
-                  Dias Accounting&apos;s <strong className="text-[#c5a059] font-semibold">AED 400/month Starter package</strong> includes monthly IFRS double-entry bookkeeping, bank and card reconciliation, monthly Profit &amp; Loss and Balance Sheet statements, 0% Small Business Relief (SBR) election for revenue up to AED 3,000,000, and annual Corporate Tax return filing on EmaraTax.
+                  {FEATURED_PRICING_FAQS[1].answer}
                 </p>
               </article>
             </div>
@@ -843,7 +1020,7 @@ export const PricingPage: React.FC<PricingPageProps> = ({
             </div>
           </div>
         </section>
-      </main>
+      </PageMainTransition>
 
       <PageFooter
         onNavigate={onNavigate}

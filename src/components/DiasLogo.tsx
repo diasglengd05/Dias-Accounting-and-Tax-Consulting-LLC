@@ -7,6 +7,7 @@ interface DiasLogoProps {
   textSize?: string;
   textColor?: string;
   subLabelColor?: string;
+  isLoading?: boolean;
 }
 
 export default function DiasLogo({
@@ -16,6 +17,7 @@ export default function DiasLogo({
   textSize = "text-xl",
   textColor = "text-navy-950",
   subLabelColor = "text-slate-500",
+  isLoading = false,
 }: DiasLogoProps) {
   return (
     <div className="flex items-center gap-2.5 sm:gap-3 select-none">
@@ -24,7 +26,9 @@ export default function DiasLogo({
           viewBox="0 0 250 250"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="w-full h-full filter drop-shadow-sm"
+          className={`w-full h-full filter drop-shadow-sm transition-transform duration-300 ${
+            isLoading ? "brand-emblem-loading" : ""
+          }`}
         >
           {/* Definitions for Gradients */}
           <defs>
