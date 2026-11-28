@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { fileURLToPath, pathToFileURL } from "url";
+import { syncBloggerToPublicJson } from "./sync-blogger.mjs";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -10,8 +11,6 @@ const PUBLIC_DIR = path.join(ROOT_DIR, "public");
 const DIST_SSR_DIR = path.join(ROOT_DIR, "dist-ssr");
 
 const SITE_DOMAIN = "https://diasuae.ae";
-const BLOGGER_JSON_FEED_URL =
-  "https://insights.diasuae.ae/feeds/posts/default?alt=json&max-results=100";
 
 function escapeHtmlAttr(str) {
   return String(str || "")
@@ -115,65 +114,35 @@ function extractH1Matches(html) {
 }
 
 /**
- * Fetches live Blogger posts directly in Node during `npm run build`.
- * Falls back gracefully to the existing static snapshot `public/blogger-posts.json`
- * if offline, and always merges via `mergeWithFallbackPosts` so
- * `top-tax-mistakes-uae-companies-make` stays safe when absent from Blogger.
+ * Runs `scripts/sync-blogger.mjs` (falling back gracefully to existing
+ * `public/blogger-posts.json` if offline), copies the deterministic snapshot
+ * into `dist/blogger-posts.json`, and normalizes + merges with our protected
+ * fallback post (`top-tax-mistakes-uae-companies-make`).
  */
-async function fetchLiveBloggerPostsInNode(parseBloggerFeedEntries, mergeWithFallbackPosts) {
+async function loadFreshUnifiedBloggerPosts(
+  normalizeSnapshotPosts,
+  mergeWithFallbackPosts
+) {
   const snapshotPath = path.join(PUBLIC_DIR, "blogger-posts.json");
+  let rawSnapshot = [];
 
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
-    const res = await fetch(BLOGGER_JSON_FEED_URL, {
-      method: "GET",
-      redirect: "follow",
-      cache: "no-store",
-      headers: {
-        Accept: "application/json",
-        "Cache-Control": "no-cache",
-        "User-Agent": "DiasUAE-SSG-Prerender/2026 (+https://diasuae.ae)",
-      },
-      signal: controller.signal,
+    rawSnapshot = await syncBloggerToPublicJson({
+      outputPath: snapshotPath,
+      allowOfflineFallback: true,
     });
-    clearTimeout(timeoutId);
-
-    if (!res.ok) {
-      throw new Error(`HTTP ${res.status} fetching Blogger feed`);
-    }
-
-    const payload = await res.json();
-    const entries = payload?.feed?.entry;
-    if (!Array.isArray(entries) || entries.length === 0) {
-      throw new Error("Blogger feed returned zero entries");
-    }
-
-    const parsed = parseBloggerFeedEntries(payload);
-    const unified = mergeWithFallbackPosts(parsed);
-    console.log(
-      `\n[SSG Prerender] Live Blogger sync succeeded: fetched ${parsed.length} Blogger posts -> ${unified.length} unified blog articles:`
-    );
-    parsed.forEach((post, idx) => {
-      console.log(`  [${String(idx + 1).padStart(2, "0")}] /blog/${post.slug}`);
-    });
-    return unified;
   } catch (err) {
     console.warn(
-      `[SSG Prerender] Live Blogger fetch unavailable (${err instanceof Error ? err.message : String(err)}). Using local snapshot fallback.`
+      `[SSG Prerender] Blogger sync unavailable (${err instanceof Error ? err.message : String(err)}). Falling back to built-in post.`
     );
-    if (fs.existsSync(snapshotPath)) {
-      try {
-        const cached = JSON.parse(fs.readFileSync(snapshotPath, "utf-8"));
-        if (Array.isArray(cached) && cached.length > 0) {
-          return mergeWithFallbackPosts(cached);
-        }
-      } catch {
-        // Ignore malformed snapshot and fall through to built-in fallback
-      }
-    }
-    return mergeWithFallbackPosts([]);
   }
+
+  if (fs.existsSync(snapshotPath)) {
+    fs.copyFileSync(snapshotPath, path.join(DIST_DIR, "blogger-posts.json"));
+  }
+
+  const normalized = normalizeSnapshotPosts(rawSnapshot);
+  return mergeWithFallbackPosts(normalized);
 }
 
 /**
@@ -351,30 +320,26 @@ async function runPrerender() {
   const {
     render,
     getAllPrerenderRoutes,
-    parseBloggerFeedEntries,
+    normalizeSnapshotPosts,
     mergeWithFallbackPosts,
   } = serverModule;
 
   if (
     typeof render !== "function" ||
     typeof getAllPrerenderRoutes !== "function" ||
-    typeof parseBloggerFeedEntries !== "function" ||
+    typeof normalizeSnapshotPosts !== "function" ||
     typeof mergeWithFallbackPosts !== "function"
   ) {
     throw new Error(
-      "SSR entry bundle must export `render`, `getAllPrerenderRoutes`, `parseBloggerFeedEntries`, and `mergeWithFallbackPosts`."
+      "SSR entry bundle must export `render`, `getAllPrerenderRoutes`, `normalizeSnapshotPosts`, and `mergeWithFallbackPosts`."
     );
   }
 
-  // 1. Sync live Blogger posts at build time and persist static JSON snapshot
-  const bloggerPosts = await fetchLiveBloggerPostsInNode(
-    parseBloggerFeedEntries,
+  // 1. Sync live Blogger posts via sync-blogger.mjs & hydrate unified post list
+  const bloggerPosts = await loadFreshUnifiedBloggerPosts(
+    normalizeSnapshotPosts,
     mergeWithFallbackPosts
   );
-
-  const snapshotJson = JSON.stringify(bloggerPosts, null, 2);
-  fs.writeFileSync(path.join(PUBLIC_DIR, "blogger-posts.json"), snapshotJson, "utf-8");
-  fs.writeFileSync(path.join(DIST_DIR, "blogger-posts.json"), snapshotJson, "utf-8");
 
   const postBySlug = new Map(bloggerPosts.map((p) => [p.slug.toLowerCase(), p]));
 

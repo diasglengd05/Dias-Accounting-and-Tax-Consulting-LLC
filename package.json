@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
+    "sync:blogger": "node scripts/sync-blogger.mjs",
     "publish:queue": "tsx scripts/publish-scheduled-queue.ts",
     "generate-sitemap": "tsx scripts/generate-sitemap.ts",
     "build": "tsx scripts/generate-sitemap.ts && vite build && vite build --ssr src/entry-server.tsx --outDir dist-ssr && node scripts/prerender.mjs && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",

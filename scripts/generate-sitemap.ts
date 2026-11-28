@@ -3,6 +3,7 @@ import path from "path";
 import { servicesData } from "../src/data/staticData.ts";
 import {
   mergeWithFallbackPosts,
+  normalizeSnapshotPosts,
   type BloggerPost,
 } from "../src/utils/bloggerFeed.ts";
 
@@ -68,7 +69,7 @@ function loadUnifiedBloggerSnapshot(): BloggerPost[] {
     try {
       const raw = JSON.parse(fs.readFileSync(snapshotPath, "utf-8"));
       if (Array.isArray(raw)) {
-        return mergeWithFallbackPosts(raw as BloggerPost[]);
+        return mergeWithFallbackPosts(normalizeSnapshotPosts(raw));
       }
     } catch {
       // Fall through to built-in fallback

@@ -10,6 +10,7 @@ import {
 import {
   type BloggerPost,
   mergeWithFallbackPosts,
+  normalizeSnapshotPosts,
   parseBloggerFeedEntries,
   setSsrBloggerPosts,
   TOP_TAX_MISTAKES_FALLBACK_POST,
@@ -62,6 +63,7 @@ export {
   getAllPrerenderRoutes,
   resolveSsrRouteHead,
   parseBloggerFeedEntries,
+  normalizeSnapshotPosts,
   mergeWithFallbackPosts,
   TOP_TAX_MISTAKES_FALLBACK_POST,
 };

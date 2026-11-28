@@ -488,11 +488,123 @@ export function parseBloggerFeedEntries(data: unknown): BloggerPost[] {
   return sortPostsNewestFirst(posts);
 }
 
+/**
+ * Normalizes a post loaded from `public/blogger-posts.json` (compact deterministic
+ * schema `{ id, slug, title, published, updated, labels, excerpt, image, contentHtml }`
+ * OR full `BloggerPost`) into a complete `BloggerPost` object.
+ */
+export function normalizeSnapshotPost(raw: unknown): BloggerPost | null {
+  if (!raw || typeof raw !== "object") return null;
+  const item = raw as Record<string, any>;
+
+  const title = decodeHtmlEntities(String(item.title || "").trim());
+  const slug = normalizeSlugParam(String(item.slug || item.id || title || ""));
+  if (!title || !slug || slug.startsWith("draft-")) return null;
+
+  const publishedIso = String(item.publishedIso || item.published || "").trim();
+  const updatedIso = String(item.updatedIso || item.updated || publishedIso).trim();
+  const publishedDate =
+    typeof item.publishedDate === "string" && item.publishedDate.trim()
+      ? item.publishedDate.trim()
+      : formatBloggerDate(publishedIso);
+  const updatedDate =
+    typeof item.updatedDate === "string" && item.updatedDate.trim()
+      ? item.updatedDate.trim()
+      : formatBloggerDate(updatedIso);
+
+  const rawCategories = Array.isArray(item.categories)
+    ? item.categories
+    : Array.isArray(item.labels)
+      ? item.labels
+      : [];
+  const categories: string[] = Array.from(
+    new Set(rawCategories.map((c: unknown) => String(c || "").trim()).filter(Boolean))
+  );
+
+  const contentFormat: "html" | "markdown" =
+    item.contentFormat === "markdown" ? "markdown" : "html";
+  const rawContentHtml = String(item.contentHtml || "");
+  const contentHtml =
+    contentFormat === "markdown"
+      ? rawContentHtml
+      : sanitizeBloggerHtml(rawContentHtml);
+
+  const summary =
+    String(item.summary || item.excerpt || "").trim() ||
+    buildCleanExcerpt(contentHtml, 165) ||
+    `${title} — UAE Corporate Tax, 5% VAT & IFRS compliance briefing by FTA-Registered Tax Agents at DiasUAE.`;
+
+  const featuredImage = validateSafeImageUrl(
+    typeof item.featuredImage === "string"
+      ? item.featuredImage
+      : typeof item.image === "string"
+        ? item.image
+        : undefined
+  );
+
+  const primaryCategory =
+    typeof item.primaryCategory === "string" && item.primaryCategory.trim()
+      ? item.primaryCategory.trim()
+      : inferPrimaryCategory(categories, title);
+
+  const readTime =
+    typeof item.readTime === "string" && item.readTime.trim()
+      ? item.readTime.trim()
+      : estimateReadTime(contentHtml);
+
+  const author =
+    item.author && typeof item.author === "object" && item.author.name
+      ? {
+          name: String(item.author.name),
+          role: String(item.author.role || DEFAULT_AUTHOR.role),
+          avatar: String(item.author.avatar || DEFAULT_AUTHOR.avatar),
+        }
+      : DEFAULT_AUTHOR;
+
+  const keywords =
+    Array.isArray(item.keywords) && item.keywords.length > 0
+      ? item.keywords.map((k: unknown) => String(k || "").trim()).filter(Boolean)
+      : categories.length > 0
+        ? categories
+        : ["UAE Corporate Tax", "UAE VAT Compliance", "IFRS Bookkeeping", "DiasUAE"];
+
+  return {
+    slug,
+    id: slug,
+    title,
+    publishedIso,
+    publishedDate,
+    updatedIso,
+    updatedDate,
+    categories,
+    primaryCategory,
+    summary,
+    featuredImage,
+    contentHtml,
+    contentFormat,
+    readTime,
+    author,
+    keywords,
+    isFallback: Boolean(item.isFallback),
+  };
+}
+
+export function normalizeSnapshotPosts(rawList: unknown): BloggerPost[] {
+  if (!Array.isArray(rawList)) return [];
+  const normalized: BloggerPost[] = [];
+  for (const item of rawList) {
+    const post = normalizeSnapshotPost(item);
+    if (post) normalized.push(post);
+  }
+  return sortPostsNewestFirst(normalized);
+}
+
 export function sortPostsNewestFirst(posts: BloggerPost[]): BloggerPost[] {
   return [...posts].sort((a, b) => {
     const timeA = Date.parse(a.publishedIso || a.updatedIso || "") || 0;
     const timeB = Date.parse(b.publishedIso || b.updatedIso || "") || 0;
-    return timeB - timeA;
+    if (timeB !== timeA) return timeB - timeA;
+    return a.slug.localeCompare(b.slug);
   });
 }
 
@@ -605,7 +717,11 @@ export function fetchBloggerPostsJsonp(
     }
 
     jsonpCallbackSequence += 1;
-    const callbackName = `__diasBloggerCb_${Date.now()}_${jsonpCallbackSequence}`;
+    const cacheTs = Date.now();
+    const callbackName =
+      jsonpCallbackSequence === 1
+        ? `__diasBloggerCb_${cacheTs}`
+        : `__diasBloggerCb_${cacheTs}_${jsonpCallbackSequence}`;
     const script = document.createElement("script");
     let settled = false;
 
@@ -639,7 +755,7 @@ export function fetchBloggerPostsJsonp(
 
     script.src = `${BLOGGER_FEED_URL}?alt=json-in-script&max-results=${maxResults}&callback=${encodeURIComponent(
       callbackName
-    )}`;
+    )}&_t=${cacheTs}`;
     script.async = true;
     script.onerror = () => {
       if (settled) return;
@@ -662,7 +778,7 @@ export async function loadStaticBloggerSnapshot(): Promise<BloggerPost[]> {
   }
 
   try {
-    const res = await fetch("/blogger-posts.json", { cache: "default" });
+    const res = await fetch("/blogger-posts.json", { cache: "no-cache" });
     if (!res.ok) return [];
     const data = await res.json();
     const rawList = Array.isArray(data)
@@ -670,8 +786,9 @@ export async function loadStaticBloggerSnapshot(): Promise<BloggerPost[]> {
       : Array.isArray(data?.posts)
         ? data.posts
         : [];
-    if (rawList.length === 0) return [];
-    const merged = mergeWithFallbackPosts(rawList as BloggerPost[]);
+    const normalized = normalizeSnapshotPosts(rawList);
+    if (normalized.length === 0) return [];
+    const merged = mergeWithFallbackPosts(normalized);
     if (!liveSyncCompleted) {
       memoryCachedPosts = merged;
     }
